@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="angela">
+        <createTable tableName="book">
+            <column name="ISBN" type="VARCHAR(255) PRIMARY KEY"/>
+            <column name="title" type="VARCHAR(255) NOT NULL"/>
+            <column name="book_status" type="VARCHAR(255) NOT NULL"/>
+            <column name="description" type="VARCHAR(512) NOT NULL"/>
+            <column name="summary" type="VARCHAR(1024) NOT NULL"/>
+            <column name="total_pages" type="INT NOT NULL"/>
+            <column name="rating_from_web" type="DOUBLE DEFAULT 0.0"/>
+            <column name="rating_from_firm" type="DOUBLE DEFAULT 0.0"/>
+            <column name="language" type="VARCHAR NOT NULL"/>
+            <column name="image" type="VARBINARY(8000) NOT NULL"/>
+            <column name="genre" type="VARCHAR(255) NOT NULL"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="angela">
+        <createTable tableName="book_item">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="barcode" type="VARBINARY(8000) NOT NULL"/>
+            <column name="book_state" type="VARCHAR(255) NOT NULL"/>
+            <column name="book_isbn" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="book_item"
+                                 baseColumnNames="book_isbn"
+                                 constraintName="fk_book_ISBN"
+                                 referencedTableName="book"
+                                 referencedColumnNames="ISBN" onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="3" author="angela">
+        <createTable tableName="author">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="name" type="VARCHAR(255) NOT NULL"/>
+            <column name="surname" type="VARCHAR(255) NOT NULL"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="angela">
+        <createTable tableName="book_author">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="book_ISBN" type="VARCHAR(255) NOT NULL"/>
+            <column name="author_id" type="BIGINT NOT NULL"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="book_author"
+                                 baseColumnNames="book_ISBN"
+                                 constraintName="fk_book_ISBN"
+                                 referencedTableName="book"
+                                 referencedColumnNames="ISBN"
+                                 onUpdate="CASCADE"
+                                 onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="book_author"
+                                 baseColumnNames="author_id"
+                                 constraintName="fk_author_id"
+                                 referencedTableName="author"
+                                 referencedColumnNames="id"
+                                 onUpdate="CASCADE"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="5" author="martin">
+        <createTable tableName="user">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="name" type="VARCHAR(255) NOT NULL"/>
+            <column name="surname" type="VARCHAR(255) NOT NULL"/>
+            <column name="password" type="VARCHAR(255) NOT NULL"/>
+            <column name="email" type="VARCHAR(255) NOT NULL"/>
+            <column name="role" type="VARCHAR(255) NOT NULL"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="martin">
+        <createTable tableName="book_checkout">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="user_id" type="BIGINT NOT NULL"/>
+            <column name="book_item_id" type="BIGINT NOT NULL"/>
+            <column name="date_borrowed" type="DATE NOT NULL"/>
+            <column name="date_returned" type="DATE"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="book_checkout"
+                baseColumnNames="user_id"
+                constraintName="fk_user"
+                referencedTableName="user"
+                referencedColumnNames="id"
+                onDelete="SET NULL"
+                onUpdate="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="book_checkout"
+                baseColumnNames="book_item_id"
+                constraintName="fk_book_item"
+                referencedTableName="book_item"
+                referencedColumnNames="id"
+                onUpdate="CASCADE"
+                onDelete="SET NULL"/>
+
+    </changeSet>
+
+    <changeSet id="8" author="ljupco">
+        <createTable tableName="review">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="date" type="DATE NOT NULL"/>
+            <column name="message" type="VARCHAR(255) NOT NULL"/>
+            <column name="rating" type="INT NOT NULL"/>
+            <column name="book_ISBN" type="VARCHAR(255) NOT NULL"/>
+            <column name="user_id" type="BIGINT NOT NULL"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="review"
+                                 baseColumnNames="book_ISBN"
+                                 constraintName="fk_review_book"
+                                 referencedTableName="book"
+                                 referencedColumnNames="ISBN"/>
+
+        <addForeignKeyConstraint baseTableName="review"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_review_user"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="9" author="ljupco">
+        <createTable tableName="recommended_book">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="likeCounter" type="BIGINT DEFAULT 1"/>
+            <column name="book_ISBN" type="VARCHAR(255) NOT NULL"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="recommended_book"
+                                 baseColumnNames="book_ISBN"
+                                 constraintName="fk_recommended_book_book"
+                                 referencedTableName="book"
+                                 referencedColumnNames="ISBN"/>
+    </changeSet>
+
+    <changeSet id="10" author="ljupco">
+        <createTable tableName="liked_by">
+            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="recommended_book_id" type="BIGINT NOT NULL"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="liked_by"
+                                 baseColumnNames="recommended_book_id"
+                                 constraintName="fk_liked_by_recommended_book"
+                                 referencedTableName="recommended_book"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="liked_by"
+                                 baseColumnNames="user_id"
+                                 constraintName="fk_liked_by_user"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
