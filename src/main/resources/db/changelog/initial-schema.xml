@@ -92,10 +92,10 @@
     <changeSet id="create-user-table" author="mbojkovski">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="user"/>
+                <tableExists tableName="user_table"/>
             </not>
         </preConditions>
-        <createTable tableName="user">
+        <createTable tableName="user_table">
             <column name="id" type="BIGINT PRIMARY KEY"/>
             <column name="name" type="VARCHAR(255) NOT NULL"/>
             <column name="surname" type="VARCHAR(255) NOT NULL"/>
@@ -123,7 +123,7 @@
                 baseTableName="book_checkout"
                 baseColumnNames="user_id"
                 constraintName="fk_user"
-                referencedTableName="user"
+                referencedTableName="user_table"
                 referencedColumnNames="id"
                 onDelete="SET NULL"
                 onUpdate="CASCADE"/>
@@ -163,7 +163,7 @@
         <addForeignKeyConstraint baseTableName="review"
                                  baseColumnNames="user_id"
                                  constraintName="fk_review_user"
-                                 referencedTableName="user"
+                                 referencedTableName="user_table"
                                  referencedColumnNames="id"/>
     </changeSet>
 
@@ -207,7 +207,7 @@
         <addForeignKeyConstraint baseTableName="liked_by"
                                  baseColumnNames="user_id"
                                  constraintName="fk_liked_by_user"
-                                 referencedTableName="user"
+                                 referencedTableName="user_table"
                                  referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>
