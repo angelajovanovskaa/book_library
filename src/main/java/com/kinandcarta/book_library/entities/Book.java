@@ -3,11 +3,13 @@ package com.kinandcarta.book_library.entities;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
+import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
@@ -46,29 +48,32 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private BookStatus bookStatus;
 
-    @Enumerated(EnumType.STRING)
-    @Lob
+    @Type(StringArrayType.class)
+    @Column(
+            name = "genres",
+            columnDefinition = "text[]"
+    )
     private Genre[] genres;
 
-    @ManyToMany(mappedBy = "books",cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
     private Set<Author> authors;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book")
     private List<BookItem> bookItems;
 
 
-    public void addGenres(Collection<Genre> genres) {
-        if (nonNull(genres) && !genres.isEmpty()) {
-            genres.forEach(this::addGenre);
-        }
-    }
+    public void replaceGenres(Collection<Genre> genres) {
+        if (!isNull(this.genres) && this.genres.length != 0) {
+            List<Genre> currentGenres = new ArrayList<>(Arrays.asList(this.genres));
+            currentGenres.addAll(genres);
 
-    public void addGenre(Genre genre) {
-        if (isNull(this.genres)) {
-            this.genres = new Genre[1];
+            List<Genre> distinctGenres = currentGenres.stream().distinct().toList();
+
+            this.genres = distinctGenres.toArray(new Genre[0]);
+        } else {
+            this.genres = new Genre[genres.size()];
+            this.genres = genres.toArray(new Genre[0]);
         }
-        int n = 0;
-        this.genres[n] = genre;
     }
 
     public void addBookItems(Collection<BookItem> bookItems) {
@@ -85,6 +90,4 @@ public class Book {
         bookItem.setBook(this);
     }
 
-    public void setGenres(Object[] array) {
-    }
 }
