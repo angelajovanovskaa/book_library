@@ -2,10 +2,11 @@ package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookState;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Collection;
+
+import static java.util.Objects.nonNull;
 
 @Entity
 @Data
@@ -25,7 +26,16 @@ public class BookItem {
     private String barcode;
 
     @ManyToOne
+    @ToString.Exclude
     @JoinColumn(name = "book_id")
     private Book book;
 
+    public void addBook(Book book) {
+        if (nonNull(book)) {
+            this.book = book;
+            Collection<BookItem> bookItems = book.getBookItems();
+            bookItems.add(this);
+            book.addBookItems(bookItems);
+        }
+    }
 }
