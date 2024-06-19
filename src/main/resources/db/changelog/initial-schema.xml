@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-book-table" author="ajovanovska">
+    <changeSet id="create-book-table" author="ajovanovska" >
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book"/>
@@ -21,9 +21,20 @@
             <column name="rating_from_web" type="DOUBLE DEFAULT 0.0"/>
             <column name="rating_from_firm" type="DOUBLE DEFAULT 0.0"/>
             <column name="language" type="VARCHAR(255) NOT NULL"/>
-            <column name="image" type="VARBINARY(8000) NOT NULL"/>
-            <column name="genre" type="TEXT[] NOT NULL"/>
+            <column name="image" type="VARCHAR(1024) NOT NULL"/>
+            <column name="genres" type="TEXT[] NOT NULL"/>
         </createTable>
+    </changeSet>
+
+    <changeSet id="create-sequence-for-book-item" author="mbojkovski">
+        <createSequence  cacheSize="1"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="50"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="book_item_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-book-item-table" author="ajovanovska">
@@ -32,19 +43,31 @@
                 <tableExists tableName="book_item"/>
             </not>
         </preConditions>
-        <createTable tableName="book_item">
+        <createTable tableName="book_item" >
             <column name="id" type="BIGINT PRIMARY KEY"/>
             <column name="barcode" type="VARBINARY(8000) NOT NULL"/>
             <column name="book_state" type="VARCHAR(255) NOT NULL"/>
-            <column name="book_isbn" type="VARCHAR(255)"/>
+            <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="book_item"
                                  baseColumnNames="book_isbn"
                                  constraintName="fk_book_ISBN"
                                  referencedTableName="book"
-                                 referencedColumnNames="ISBN" onDelete="CASCADE"
+                                 referencedColumnNames="ISBN"
+                                 onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="create-sequence-for-author" author="mbojkovski" runOnChange="true">
+        <createSequence  cacheSize="1"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="50"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="author_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-author-table" author="ajovanovska">
@@ -60,20 +83,23 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-book-author-relation-table" author="ajovanovska">
+    <changeSet id="create-book-author-relation-table" author="ajovanovska" runOnChange="true">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book_author"/>
             </not>
         </preConditions>
         <createTable tableName="book_author">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
-            <column name="book_ISBN" type="VARCHAR(255) NOT NULL"/>
+            <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
             <column name="author_id" type="BIGINT NOT NULL"/>
         </createTable>
+        
+        <addPrimaryKey tableName="book_author"
+                       columnNames="book_isbn, author_id"
+                       constraintName="pk_book_author" />
 
         <addForeignKeyConstraint baseTableName="book_author"
-                                 baseColumnNames="book_ISBN"
+                                 baseColumnNames="book_isbn"
                                  constraintName="fk_book_ISBN"
                                  referencedTableName="book"
                                  referencedColumnNames="ISBN"
@@ -87,6 +113,17 @@
                                  referencedColumnNames="id"
                                  onUpdate="CASCADE"
                                  onDelete="SET NULL"/>
+    </changeSet>
+
+    <changeSet id="create-sequence-for-user" author="mbojkovski" runOnChange="true">
+        <createSequence  cacheSize="1"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="50"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="user_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-user-table" author="mbojkovski">
@@ -105,7 +142,18 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-book-user-relation-table" author="mbojkovski">
+    <changeSet id="create-sequence-for-book-checkout" author="mbojkovski" runOnChange="true">
+        <createSequence  cacheSize="1"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="50"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="book_checkout_id_sequence"
+                         startValue="1"/>
+    </changeSet>
+
+    <changeSet id="create-book-user-relation-table" author="mbojkovski" runOnChange="true">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book_checkout"/>
@@ -115,7 +163,7 @@
             <column name="id" type="BIGINT PRIMARY KEY"/>
             <column name="user_id" type="BIGINT NOT NULL"/>
             <column name="book_item_id" type="BIGINT NOT NULL"/>
-            <column name="date_borrowed" type="DATE DEFAULT CURRENT_DATE"/>
+            <column name="date_borrowed" type="DATE"/>
             <column name="date_returned" type="DATE"/>
         </createTable>
 
@@ -136,7 +184,17 @@
                 referencedColumnNames="id"
                 onUpdate="CASCADE"
                 onDelete="SET NULL"/>
+    </changeSet>
 
+    <changeSet id="create-sequence-for-review" author="mbojkovski" runOnChange="true">
+        <createSequence  cacheSize="1"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="50"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="review_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-review-table" author="ljupcoristov02">
@@ -167,6 +225,17 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
+    <changeSet id="create-sequence-for-recommended-book" author="mbojkovski" runOnChange="true">
+        <createSequence  cacheSize="1"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="50"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="recommended_book_id_sequence"
+                         startValue="1"/>
+    </changeSet>
+
     <changeSet id="create-recommended-book-table" author="ljupcoristov02">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -193,10 +262,13 @@
             </not>
         </preConditions>
         <createTable tableName="liked_by">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
             <column name="recommended_book_id" type="BIGINT NOT NULL"/>
             <column name="user_id" type="BIGINT"/>
         </createTable>
+
+        <addPrimaryKey tableName="liked_by"
+                       columnNames="recommended_book_id, user_id"
+                       constraintName="pk_recommended_book" />
 
         <addForeignKeyConstraint baseTableName="liked_by"
                                  baseColumnNames="recommended_book_id"
