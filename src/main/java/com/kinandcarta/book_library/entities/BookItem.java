@@ -2,17 +2,20 @@ package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookState;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Collection;
 
 import static java.util.Objects.nonNull;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+
+@Entity
 public class BookItem {
 
     @Id
@@ -27,7 +30,7 @@ public class BookItem {
 
     @ManyToOne
     @ToString.Exclude
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "book_isbn")
     private Book book;
 
     public void addBook(Book book) {

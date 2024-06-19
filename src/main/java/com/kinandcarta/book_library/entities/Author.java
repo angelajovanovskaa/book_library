@@ -25,21 +25,18 @@ public class Author {
 
     private String surname;
 
-//    @ManyToMany(mappedBy = "author", cascade = CascadeType.PERSIST)
-//    private Set<Book> books;
-
-    @ManyToMany(cascade = { CascadeType.PERSIST })
+    @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "author_id"),
             inverseJoinColumns = @JoinColumn(name = "book_isbn"))
     @EqualsAndHashCode.Exclude
     private Set<Book> books;
 
-    public void addBooks(Collection<Book> books){
+    public void addBooks(Collection<Book> books) {
         books.forEach(this::addBook);
     }
 
-    public void addBook(Book book){
+    public void addBook(Book book) {
         if (isNull(books)) {
             books = new HashSet<>();
         }

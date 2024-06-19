@@ -1,14 +1,16 @@
 package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 
 import static java.util.Objects.nonNull;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 
@@ -23,27 +25,24 @@ public class Review {
 
     private String message;
 
-    // From 1 to 10
     private Integer rating;
 
-    // Book relation
     @ManyToOne
     @ToString.Exclude
     private Book book;
 
-    // User relation
     @ManyToOne
     @ToString.Exclude
     private User user;
 
     public void addBook(Book book) {
-        if (nonNull(book)){
+        if (nonNull(book)) {
             this.book = book;
         }
     }
 
     public void addUser(User user) {
-        if (nonNull(user)){
+        if (nonNull(user)) {
             this.user = user;
         }
     }

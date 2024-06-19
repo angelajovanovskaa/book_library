@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.enums.Language;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
@@ -18,10 +17,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Data
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+
+@Entity
 public class Book {
     @Id
     private String ISBN;
