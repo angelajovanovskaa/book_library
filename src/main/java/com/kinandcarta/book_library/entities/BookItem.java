@@ -19,7 +19,7 @@ import static java.util.Objects.nonNull;
 public class BookItem {
 
     @Id
-    @SequenceGenerator(name = "book_item_id_sequence")
+    @SequenceGenerator(name = "book_item_id_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_sequence")
     private Long id;
 

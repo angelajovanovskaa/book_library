@@ -27,10 +27,10 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-book-item" author="mbojkovski">
-        <createSequence  cacheSize="1"
+        <createSequence  cacheSize="100"
                          cycle="false"
                          dataType="BIGINT"
-                         incrementBy="50"
+                         incrementBy="1"
                          maxValue="10000"
                          minValue="1"
                          sequenceName="book_item_id_sequence"
@@ -59,11 +59,11 @@
                                  onUpdate="CASCADE"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-author" author="mbojkovski" runOnChange="true">
-        <createSequence  cacheSize="1"
+    <changeSet id="create-sequence-for-author" author="mbojkovski">
+        <createSequence  cacheSize="100"
                          cycle="false"
                          dataType="BIGINT"
-                         incrementBy="50"
+                         incrementBy="1"
                          maxValue="10000"
                          minValue="1"
                          sequenceName="author_id_sequence"
@@ -83,7 +83,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-book-author-relation-table" author="ajovanovska" runOnChange="true">
+    <changeSet id="create-book-author-relation-table" author="ajovanovska">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book_author"/>
@@ -115,11 +115,11 @@
                                  onDelete="SET NULL"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-user" author="mbojkovski" runOnChange="true">
-        <createSequence  cacheSize="1"
+    <changeSet id="create-sequence-for-user" author="mbojkovski">
+        <createSequence  cacheSize="100"
                          cycle="false"
                          dataType="BIGINT"
-                         incrementBy="50"
+                         incrementBy="1"
                          maxValue="10000"
                          minValue="1"
                          sequenceName="user_id_sequence"
@@ -142,18 +142,18 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-sequence-for-book-checkout" author="mbojkovski" runOnChange="true">
-        <createSequence  cacheSize="1"
+    <changeSet id="create-sequence-for-book-checkout" author="mbojkovski">
+        <createSequence  cacheSize="100"
                          cycle="false"
                          dataType="BIGINT"
-                         incrementBy="50"
+                         incrementBy="1"
                          maxValue="10000"
                          minValue="1"
                          sequenceName="book_checkout_id_sequence"
                          startValue="1"/>
     </changeSet>
 
-    <changeSet id="create-book-user-relation-table" author="mbojkovski" runOnChange="true">
+    <changeSet id="create-book-user-relation-table" author="mbojkovski">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book_checkout"/>
@@ -186,11 +186,11 @@
                 onDelete="SET NULL"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-review" author="mbojkovski" runOnChange="true">
-        <createSequence  cacheSize="1"
+    <changeSet id="create-sequence-for-review" author="mbojkovski">
+        <createSequence  cacheSize="100"
                          cycle="false"
                          dataType="BIGINT"
-                         incrementBy="50"
+                         incrementBy="1"
                          maxValue="10000"
                          minValue="1"
                          sequenceName="review_id_sequence"
@@ -208,12 +208,12 @@
             <column name="date" type="DATE NOT NULL"/>
             <column name="message" type="VARCHAR(255) NOT NULL"/>
             <column name="rating" type="INT NOT NULL"/>
-            <column name="book_ISBN" type="VARCHAR(255) NOT NULL"/>
+            <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
             <column name="user_id" type="BIGINT NOT NULL"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="review"
-                                 baseColumnNames="book_ISBN"
+                                 baseColumnNames="book_isbn"
                                  constraintName="fk_review_book"
                                  referencedTableName="book"
                                  referencedColumnNames="ISBN"/>
@@ -225,11 +225,11 @@
                                  referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-recommended-book" author="mbojkovski" runOnChange="true">
-        <createSequence  cacheSize="1"
+    <changeSet id="create-sequence-for-recommended-book" author="mbojkovski">
+        <createSequence  cacheSize="100"
                          cycle="false"
                          dataType="BIGINT"
-                         incrementBy="50"
+                         incrementBy="1"
                          maxValue="10000"
                          minValue="1"
                          sequenceName="recommended_book_id_sequence"
@@ -245,11 +245,11 @@
         <createTable tableName="recommended_book">
             <column name="id" type="BIGINT PRIMARY KEY"/>
             <column name="likeCounter" type="BIGINT DEFAULT 1"/>
-            <column name="book_ISBN" type="VARCHAR(255) NOT NULL"/>
+            <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="recommended_book"
-                                 baseColumnNames="book_ISBN"
+                                 baseColumnNames="book_isbn"
                                  constraintName="fk_recommended_book_book"
                                  referencedTableName="book"
                                  referencedColumnNames="ISBN"/>

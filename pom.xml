@@ -15,6 +15,7 @@
 	<description>Book Library Project</description>
 	<properties>
 		<java.version>22</java.version>
+		<hypersistence.version>3.7.6</hypersistence.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -52,7 +53,7 @@
 		<dependency>
 			<groupId>io.hypersistence</groupId>
 			<artifactId>hypersistence-utils-hibernate-63</artifactId>
-			<version>3.7.6</version>
+			<version>${hypersistence.version}</version>
 		</dependency>
 	</dependencies>
 

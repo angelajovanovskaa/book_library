@@ -17,7 +17,7 @@ import static java.util.Objects.nonNull;
 @Entity
 public class Review {
     @Id
-    @SequenceGenerator(name = "review_id_sequence")
+    @SequenceGenerator(name = "review_id_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_id_sequence")
     private Long id;
 

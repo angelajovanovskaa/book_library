@@ -17,7 +17,7 @@ import static java.util.Objects.isNull;
 public class Author {
 
     @Id
-    @SequenceGenerator(name = "author_id_sequence")
+    @SequenceGenerator(name = "author_id_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_id_sequence")
     private Long id;
 

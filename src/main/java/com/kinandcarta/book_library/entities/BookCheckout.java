@@ -16,7 +16,7 @@ import java.time.LocalDate;
 public class BookCheckout {
 
     @Id
-    @SequenceGenerator(name = "book_checkout_id_sequence")
+    @SequenceGenerator(name = "book_checkout_id_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_checkout_id_sequence")
     private Long id;
 
