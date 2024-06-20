@@ -31,13 +31,13 @@ public class BookItem {
 
     @Id
     @SequenceGenerator(name = "book_item_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_id_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_item_id_sequence")
     private Long id;
 
     @Enumerated(EnumType.STRING)
     private BookState bookState;
 
-    private String barcode;
+    private byte[] barcode;
 
     @ManyToOne
     @ToString.Exclude

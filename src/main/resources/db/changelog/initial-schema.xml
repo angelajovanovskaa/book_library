@@ -27,7 +27,7 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-book-item" author="mbojkovski">
-        <createSequence  cacheSize="100"
+        <createSequence  cacheSize="50"
                          cycle="false"
                          dataType="BIGINT"
                          incrementBy="1"
@@ -60,7 +60,7 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-author" author="mbojkovski">
-        <createSequence  cacheSize="100"
+        <createSequence  cacheSize="50"
                          cycle="false"
                          dataType="BIGINT"
                          incrementBy="1"
@@ -116,7 +116,7 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-user" author="mbojkovski">
-        <createSequence  cacheSize="100"
+        <createSequence  cacheSize="50"
                          cycle="false"
                          dataType="BIGINT"
                          incrementBy="1"
@@ -143,7 +143,7 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-book-checkout" author="mbojkovski">
-        <createSequence  cacheSize="100"
+        <createSequence  cacheSize="50"
                          cycle="false"
                          dataType="BIGINT"
                          incrementBy="1"
@@ -187,7 +187,7 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-review" author="mbojkovski">
-        <createSequence  cacheSize="100"
+        <createSequence  cacheSize="50"
                          cycle="false"
                          dataType="BIGINT"
                          incrementBy="1"
@@ -226,7 +226,7 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-recommended-book" author="mbojkovski">
-        <createSequence  cacheSize="100"
+        <createSequence  cacheSize="50"
                          cycle="false"
                          dataType="BIGINT"
                          incrementBy="1"
