@@ -244,7 +244,7 @@
         </preConditions>
         <createTable tableName="recommended_book">
             <column name="id" type="BIGINT PRIMARY KEY"/>
-            <column name="likeCounter" type="BIGINT DEFAULT 1"/>
+            <column name="like_counter" type="BIGINT DEFAULT 1"/>
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
         </createTable>
 

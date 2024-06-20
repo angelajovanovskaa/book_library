@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.entities;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -23,14 +24,16 @@ public class RecommendedBook {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recommended_book_id_sequence")
     private Long id;
 
-    @Value("${1.0}")
-    private Long likeCounter;
+    private Long likeCounter = 1L;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private Book book;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    private Set<User> users;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @JoinTable(name = "liked_by",
+            joinColumns = @JoinColumn(name = "recommended_book_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users = new HashSet<>();
 
     public void addBook(Book book) {
         if (nonNull(book)) {

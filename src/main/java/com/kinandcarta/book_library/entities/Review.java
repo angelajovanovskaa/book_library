@@ -29,6 +29,7 @@ public class Review {
 
     @ManyToOne
     @ToString.Exclude
+    @JoinColumn(name = "book_isbn")
     private Book book;
 
     @ManyToOne
