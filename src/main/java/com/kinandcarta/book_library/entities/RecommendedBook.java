@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashSet;
@@ -29,7 +30,7 @@ public class RecommendedBook {
     @OneToOne(fetch = FetchType.EAGER)
     private Book book;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE})
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "liked_by",
             joinColumns = @JoinColumn(name = "recommended_book_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -46,7 +47,7 @@ public class RecommendedBook {
             this.users = new HashSet<>();
         }
 
-        if (nonNull(users) && !users.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(users)) {
             users.forEach(this::addUser);
         }
     }
