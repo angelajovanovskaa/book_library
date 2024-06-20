@@ -3,25 +3,40 @@ package com.kinandcarta.book_library.entities;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
+
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.hibernate.annotations.Type;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.Arrays;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 public class Book {
+
     @Id
     private String ISBN;
 
@@ -62,7 +77,7 @@ public class Book {
 
 
     public void replaceGenres(Collection<Genre> genres) {
-        if (!isNull(this.genres) && this.genres.length != 0) {
+        if (CollectionUtils.isNotEmpty(genres)) {
             List<Genre> currentGenres = new ArrayList<>(Arrays.asList(this.genres));
             currentGenres.addAll(genres);
 
@@ -76,7 +91,7 @@ public class Book {
     }
 
     public void addBookItems(Collection<BookItem> bookItems) {
-        if (nonNull(bookItems) && !bookItems.isEmpty()) {
+        if (CollectionUtils.isNotEmpty(bookItems)) {
             bookItems.forEach(this::addBookItem);
         }
     }

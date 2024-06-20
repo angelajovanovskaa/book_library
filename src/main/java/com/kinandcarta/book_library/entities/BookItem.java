@@ -1,11 +1,22 @@
 package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookState;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
 
@@ -37,8 +48,11 @@ public class BookItem {
         if (nonNull(book)) {
             this.book = book;
             Collection<BookItem> bookItems = book.getBookItems();
-            bookItems.add(this);
-            book.addBookItems(bookItems);
+            if(CollectionUtils.isNotEmpty(bookItems)) {
+                bookItems.add(this);
+                book.addBookItems(bookItems);
+            }
         }
     }
+
 }
