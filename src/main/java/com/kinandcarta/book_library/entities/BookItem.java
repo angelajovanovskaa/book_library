@@ -16,11 +16,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @Data
 @AllArgsConstructor
@@ -48,7 +48,7 @@ public class BookItem {
         if (nonNull(book)) {
             this.book = book;
             Collection<BookItem> bookItems = book.getBookItems();
-            if(CollectionUtils.isNotEmpty(bookItems)) {
+            if (isNotEmpty(bookItems)) {
                 bookItems.add(this);
                 book.addBookItems(bookItems);
             }
