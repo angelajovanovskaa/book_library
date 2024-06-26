@@ -112,7 +112,7 @@
                                  referencedTableName="author"
                                  referencedColumnNames="id"
                                  onUpdate="CASCADE"
-                                 onDelete="RESTRICT"/>
+                                 onDelete="SET NULL"/>
     </changeSet>
 
     <changeSet id="create-sequence-for-user" author="mbojkovski">
@@ -174,7 +174,7 @@
                 constraintName="fk_user"
                 referencedTableName="user_table"
                 referencedColumnNames="id"
-                onDelete="CASCADE"
+                onDelete="SET NULL"
                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint
@@ -184,7 +184,7 @@
                 referencedTableName="book_item"
                 referencedColumnNames="id"
                 onUpdate="CASCADE"
-                onDelete="CASCADE"/>
+                onDelete="SET NULL"/>
     </changeSet>
 
     <changeSet id="create-sequence-for-review" author="mbojkovski">
