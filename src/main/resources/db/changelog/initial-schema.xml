@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-book-table" author="ajovanovska">
+    <changeSet id="create-book-table" author="ajovanovska" >
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book"/>
@@ -27,14 +27,14 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-book-item" author="mbojkovski">
-        <createSequence cacheSize="50"
-                        cycle="false"
-                        dataType="BIGINT"
-                        incrementBy="1"
-                        maxValue="10000"
-                        minValue="1"
-                        sequenceName="book_item_id_sequence"
-                        startValue="1"/>
+        <createSequence  cacheSize="50"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="1"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="book_item_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-book-item-table" author="ajovanovska">
@@ -43,7 +43,7 @@
                 <tableExists tableName="book_item"/>
             </not>
         </preConditions>
-        <createTable tableName="book_item">
+        <createTable tableName="book_item" >
             <column name="id" type="BIGINT PRIMARY KEY"/>
             <column name="barcode" type="VARBINARY(8000) NOT NULL"/>
             <column name="book_state" type="VARCHAR(255) NOT NULL"/>
@@ -60,14 +60,14 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-author" author="mbojkovski">
-        <createSequence cacheSize="50"
-                        cycle="false"
-                        dataType="BIGINT"
-                        incrementBy="1"
-                        maxValue="10000"
-                        minValue="1"
-                        sequenceName="author_id_sequence"
-                        startValue="1"/>
+        <createSequence  cacheSize="50"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="1"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="author_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-author-table" author="ajovanovska">
@@ -93,10 +93,10 @@
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
             <column name="author_id" type="BIGINT NOT NULL"/>
         </createTable>
-
+        
         <addPrimaryKey tableName="book_author"
                        columnNames="book_isbn, author_id"
-                       constraintName="pk_book_author"/>
+                       constraintName="pk_book_author" />
 
         <addForeignKeyConstraint baseTableName="book_author"
                                  baseColumnNames="book_isbn"
@@ -116,14 +116,14 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-user" author="mbojkovski">
-        <createSequence cacheSize="50"
-                        cycle="false"
-                        dataType="BIGINT"
-                        incrementBy="1"
-                        maxValue="10000"
-                        minValue="1"
-                        sequenceName="user_id_sequence"
-                        startValue="1"/>
+        <createSequence  cacheSize="50"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="1"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="user_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-user-table" author="mbojkovski">
@@ -143,14 +143,14 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-book-checkout" author="mbojkovski">
-        <createSequence cacheSize="50"
-                        cycle="false"
-                        dataType="BIGINT"
-                        incrementBy="1"
-                        maxValue="10000"
-                        minValue="1"
-                        sequenceName="book_checkout_id_sequence"
-                        startValue="1"/>
+        <createSequence  cacheSize="50"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="1"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="book_checkout_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-book-user-relation-table" author="mbojkovski">
@@ -188,14 +188,14 @@
     </changeSet>
 
     <changeSet id="create-sequence-for-review" author="mbojkovski">
-        <createSequence cacheSize="50"
-                        cycle="false"
-                        dataType="BIGINT"
-                        incrementBy="1"
-                        maxValue="10000"
-                        minValue="1"
-                        sequenceName="review_id_sequence"
-                        startValue="1"/>
+        <createSequence  cacheSize="50"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="1"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="review_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-review-table" author="ljupcoristov02">
@@ -217,28 +217,24 @@
                                  baseColumnNames="book_isbn"
                                  constraintName="fk_review_book"
                                  referencedTableName="book"
-                                 referencedColumnNames="ISBN"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"/>
+                                 referencedColumnNames="ISBN"/>
 
         <addForeignKeyConstraint baseTableName="review"
                                  baseColumnNames="user_id"
                                  constraintName="fk_review_user"
                                  referencedTableName="user_table"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"/>
+                                 referencedColumnNames="id"/>
     </changeSet>
 
     <changeSet id="create-sequence-for-recommended-book" author="mbojkovski">
-        <createSequence cacheSize="50"
-                        cycle="false"
-                        dataType="BIGINT"
-                        incrementBy="1"
-                        maxValue="10000"
-                        minValue="1"
-                        sequenceName="recommended_book_id_sequence"
-                        startValue="1"/>
+        <createSequence  cacheSize="50"
+                         cycle="false"
+                         dataType="BIGINT"
+                         incrementBy="1"
+                         maxValue="10000"
+                         minValue="1"
+                         sequenceName="recommended_book_id_sequence"
+                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-recommended-book-table" author="ljupcoristov02">
@@ -257,9 +253,7 @@
                                  baseColumnNames="book_isbn"
                                  constraintName="fk_recommended_book_book"
                                  referencedTableName="book"
-                                 referencedColumnNames="ISBN"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"/>
+                                 referencedColumnNames="ISBN"/>
     </changeSet>
 
     <changeSet id="create-user-recommended-book-relation-table" author="ljupcoristov02">
@@ -275,22 +269,18 @@
 
         <addPrimaryKey tableName="liked_by"
                        columnNames="recommended_book_id, user_id"
-                       constraintName="pk_recommended_book"/>
+                       constraintName="pk_recommended_book" />
 
         <addForeignKeyConstraint baseTableName="liked_by"
                                  baseColumnNames="recommended_book_id"
                                  constraintName="fk_liked_by_recommended_book"
                                  referencedTableName="recommended_book"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"
-                                 onUpdate="CASCADE"/>
+                                 referencedColumnNames="id"/>
 
         <addForeignKeyConstraint baseTableName="liked_by"
                                  baseColumnNames="user_id"
                                  constraintName="fk_liked_by_user"
                                  referencedTableName="user_table"
-                                 referencedColumnNames="id"
-                                 onDelete="SET NULL"
-                                 onUpdate="CASCADE"/>
+                                 referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>
