@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Builder
 @Entity
 @Table(name = "book_checkout")
 public class BookCheckout {
@@ -31,5 +32,7 @@ public class BookCheckout {
     private LocalDate dateBorrowed;
 
     private LocalDate dateReturned;
+
+    private LocalDate scheduledReturn;
 
 }
