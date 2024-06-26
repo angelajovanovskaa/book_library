@@ -174,7 +174,7 @@
                 constraintName="fk_user"
                 referencedTableName="user_table"
                 referencedColumnNames="id"
-                onDelete="SET NULL"
+                onDelete="CASCADE"
                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint
@@ -184,7 +184,7 @@
                 referencedTableName="book_item"
                 referencedColumnNames="id"
                 onUpdate="CASCADE"
-                onDelete="SET NULL"/>
+                onDelete="CASCADE"/>
     </changeSet>
 
     <changeSet id="create-sequence-for-review" author="mbojkovski">
