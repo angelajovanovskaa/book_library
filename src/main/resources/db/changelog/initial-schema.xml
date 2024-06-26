@@ -153,7 +153,7 @@
                          startValue="1"/>
     </changeSet>
 
-    <changeSet id="create-book-user-relation-table" author="mbojkovski">
+    <changeSet id="create-book-item-user-relation-table" author="mbojkovski">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book_checkout"/>
