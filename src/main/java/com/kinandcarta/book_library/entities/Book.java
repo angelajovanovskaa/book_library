@@ -21,11 +21,7 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.Type;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.Arrays;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -73,20 +69,28 @@ public class Book {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book")
     private List<BookItem> bookItems;
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                ", ISBN='" + ISBN + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", language='" + language + '\'' +
+                // Avoid referencing related entities directly in toString()
+                '}';
+    }
 
-    public void replaceGenres(Collection<Genre> genres) {
+    public void setGenres(Collection<Genre> genres) {
         if (isNotEmpty(genres)) {
-            List<Genre> currentGenres = new ArrayList<>(Arrays.asList(this.genres));
-            currentGenres.addAll(genres);
-
-            List<Genre> distinctGenres = currentGenres.stream().distinct().toList();
-
-            this.genres = distinctGenres.toArray(new Genre[0]);
+         Set<Genre> currentGenres = new HashSet<>(Arrays.asList(this.genres));
+         currentGenres.addAll(genres);
+            this.genres = currentGenres.toArray(new Genre[0]);
         } else {
-            this.genres = new Genre[genres.size()];
-            this.genres = genres.toArray(new Genre[0]);
+            this.genres = new Genre[0];
         }
     }
+
 
     public void addBookItems(Collection<BookItem> bookItems) {
         if (isNotEmpty(bookItems)) {
