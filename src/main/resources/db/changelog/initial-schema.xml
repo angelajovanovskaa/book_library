@@ -217,13 +217,17 @@
                                  baseColumnNames="book_isbn"
                                  constraintName="fk_review_book"
                                  referencedTableName="book"
-                                 referencedColumnNames="ISBN"/>
+                                 referencedColumnNames="ISBN"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="review"
                                  baseColumnNames="user_id"
                                  constraintName="fk_review_user"
                                  referencedTableName="user_table"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
     </changeSet>
 
     <changeSet id="create-sequence-for-recommended-book" author="mbojkovski">
@@ -253,7 +257,9 @@
                                  baseColumnNames="book_isbn"
                                  constraintName="fk_recommended_book_book"
                                  referencedTableName="book"
-                                 referencedColumnNames="ISBN"/>
+                                 referencedColumnNames="ISBN"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
     </changeSet>
 
     <changeSet id="create-user-recommended-book-relation-table" author="ljupcoristov02">
@@ -275,12 +281,16 @@
                                  baseColumnNames="recommended_book_id"
                                  constraintName="fk_liked_by_recommended_book"
                                  referencedTableName="recommended_book"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
 
         <addForeignKeyConstraint baseTableName="liked_by"
                                  baseColumnNames="user_id"
                                  constraintName="fk_liked_by_user"
                                  referencedTableName="user_table"
-                                 referencedColumnNames="id"/>
+                                 referencedColumnNames="id"
+                                 onDelete="SET NULL"
+                                 onUpdate="CASCADE"/>
     </changeSet>
 </databaseChangeLog>
