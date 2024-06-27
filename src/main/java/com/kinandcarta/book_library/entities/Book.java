@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.Arrays;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -61,10 +60,7 @@ public class Book {
     private BookStatus bookStatus;
 
     @Type(StringArrayType.class)
-    @Column(
-            name = "genres",
-            columnDefinition = "text[]"
-    )
+    @Column(name = "genres", columnDefinition = "text[]")
     private Genre[] genres;
 
     @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
@@ -73,20 +69,6 @@ public class Book {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book")
     private List<BookItem> bookItems;
 
-
-    public void replaceGenres(Collection<Genre> genres) {
-        if (isNotEmpty(genres)) {
-            List<Genre> currentGenres = new ArrayList<>(Arrays.asList(this.genres));
-            currentGenres.addAll(genres);
-
-            List<Genre> distinctGenres = currentGenres.stream().distinct().toList();
-
-            this.genres = distinctGenres.toArray(new Genre[0]);
-        } else {
-            this.genres = new Genre[genres.size()];
-            this.genres = genres.toArray(new Genre[0]);
-        }
-    }
 
     public void addBookItems(Collection<BookItem> bookItems) {
         if (isNotEmpty(bookItems)) {
