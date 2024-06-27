@@ -4,6 +4,5 @@ public enum BookStatus {
     RECOMMENDED,
     PENDING_PURCHASE,
     REJECTED,
-    PRESENT,
-
+    PRESENT
 }

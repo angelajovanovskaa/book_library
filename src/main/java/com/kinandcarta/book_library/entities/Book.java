@@ -21,7 +21,10 @@ import lombok.NoArgsConstructor;
 
 import org.hibernate.annotations.Type;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -57,10 +60,7 @@ public class Book {
     private BookStatus bookStatus;
 
     @Type(StringArrayType.class)
-    @Column(
-            name = "genres",
-            columnDefinition = "text[]"
-    )
+    @Column(name = "genres", columnDefinition = "text[]")
     private Genre[] genres;
 
     @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
@@ -68,28 +68,6 @@ public class Book {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book")
     private List<BookItem> bookItems;
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                ", ISBN='" + ISBN + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", image='" + image + '\'' +
-                ", language='" + language + '\'' +
-                // Avoid referencing related entities directly in toString()
-                '}';
-    }
-
-    public void setGenres(Collection<Genre> genres) {
-        if (isNotEmpty(genres)) {
-         Set<Genre> currentGenres = new HashSet<>(Arrays.asList(this.genres));
-         currentGenres.addAll(genres);
-            this.genres = currentGenres.toArray(new Genre[0]);
-        } else {
-            this.genres = new Genre[0];
-        }
-    }
 
 
     public void addBookItems(Collection<BookItem> bookItems) {

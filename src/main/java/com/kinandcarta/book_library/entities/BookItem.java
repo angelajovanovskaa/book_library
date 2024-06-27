@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.entities;
 
-import com.kinandcarta.book_library.enums.BookState;
+import com.kinandcarta.book_library.enums.BookItemState;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
@@ -35,7 +35,7 @@ public class BookItem {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private BookState bookState;
+    private BookItemState bookItemState;
 
     private byte[] barcode;
 
