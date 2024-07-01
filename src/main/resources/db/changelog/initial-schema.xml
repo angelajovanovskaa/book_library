@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <changeSet id="create-book-table" author="ajovanovska" >
+    <changeSet id="create-book-table" author="ajovanovska">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="book"/>
@@ -26,17 +26,6 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="create-sequence-for-book-item" author="mbojkovski">
-        <createSequence  cacheSize="50"
-                         cycle="false"
-                         dataType="BIGINT"
-                         incrementBy="1"
-                         maxValue="10000"
-                         minValue="1"
-                         sequenceName="book_item_id_sequence"
-                         startValue="1"/>
-    </changeSet>
-
     <changeSet id="create-book-item-table" author="ajovanovska">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -44,9 +33,8 @@
             </not>
         </preConditions>
         <createTable tableName="book_item" >
-            <column name="id" type="BIGINT PRIMARY KEY"/>
-            <column name="barcode" type="VARBINARY(8000) NOT NULL"/>
-            <column name="book_state" type="VARCHAR(255) NOT NULL"/>
+            <column name="barcode" type="VARCHAR(1024) PRIMARY KEY"/>
+            <column name="book_item_state" type="VARCHAR(255) NOT NULL"/>
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
         </createTable>
 
@@ -59,16 +47,6 @@
                                  onUpdate="CASCADE"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-author" author="mbojkovski">
-        <createSequence  cacheSize="50"
-                         cycle="false"
-                         dataType="BIGINT"
-                         incrementBy="1"
-                         maxValue="10000"
-                         minValue="1"
-                         sequenceName="author_id_sequence"
-                         startValue="1"/>
-    </changeSet>
 
     <changeSet id="create-author-table" author="ajovanovska">
         <preConditions onFail="MARK_RAN">
@@ -77,7 +55,9 @@
             </not>
         </preConditions>
         <createTable tableName="author">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="id" type="UUID" >
+                <constraints primaryKey="true"/>
+            </column>
             <column name="name" type="VARCHAR(255) NOT NULL"/>
             <column name="surname" type="VARCHAR(255) NOT NULL"/>
         </createTable>
@@ -91,7 +71,7 @@
         </preConditions>
         <createTable tableName="book_author">
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
-            <column name="author_id" type="BIGINT NOT NULL"/>
+            <column name="author_id" type="UUID NOT NULL"/>
         </createTable>
         
         <addPrimaryKey tableName="book_author"
@@ -115,17 +95,6 @@
                                  onDelete="RESTRICT"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-user" author="mbojkovski">
-        <createSequence  cacheSize="50"
-                         cycle="false"
-                         dataType="BIGINT"
-                         incrementBy="1"
-                         maxValue="10000"
-                         minValue="1"
-                         sequenceName="user_id_sequence"
-                         startValue="1"/>
-    </changeSet>
-
     <changeSet id="create-user-table" author="mbojkovski">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -133,24 +102,15 @@
             </not>
         </preConditions>
         <createTable tableName="user_table">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
             <column name="name" type="VARCHAR(255) NOT NULL"/>
             <column name="surname" type="VARCHAR(255) NOT NULL"/>
             <column name="password" type="VARCHAR(255) NOT NULL"/>
             <column name="email" type="VARCHAR(255) NOT NULL"/>
             <column name="role" type="VARCHAR(255) NOT NULL"/>
         </createTable>
-    </changeSet>
-
-    <changeSet id="create-sequence-for-book-checkout" author="mbojkovski">
-        <createSequence  cacheSize="50"
-                         cycle="false"
-                         dataType="BIGINT"
-                         incrementBy="1"
-                         maxValue="10000"
-                         minValue="1"
-                         sequenceName="book_checkout_id_sequence"
-                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-book-item-user-relation-table" author="mbojkovski">
@@ -160,9 +120,11 @@
             </not>
         </preConditions>
         <createTable tableName="book_checkout">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
-            <column name="user_id" type="BIGINT NOT NULL"/>
-            <column name="book_item_id" type="BIGINT NOT NULL"/>
+            <column name="id" type="UUID" >
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID NOT NULL"/>
+            <column name="book_item_barcode" type="VARCHAR(1024) NOT NULL"/>
             <column name="date_borrowed" type="DATE"/>
             <column name="date_returned" type="DATE"/>
             <column name="scheduled_return" type="DATE"/>
@@ -179,23 +141,12 @@
 
         <addForeignKeyConstraint
                 baseTableName="book_checkout"
-                baseColumnNames="book_item_id"
+                baseColumnNames="book_item_barcode"
                 constraintName="fk_book_item"
                 referencedTableName="book_item"
-                referencedColumnNames="id"
+                referencedColumnNames="barcode"
                 onUpdate="CASCADE"
                 onDelete="CASCADE"/>
-    </changeSet>
-
-    <changeSet id="create-sequence-for-review" author="mbojkovski">
-        <createSequence  cacheSize="50"
-                         cycle="false"
-                         dataType="BIGINT"
-                         incrementBy="1"
-                         maxValue="10000"
-                         minValue="1"
-                         sequenceName="review_id_sequence"
-                         startValue="1"/>
     </changeSet>
 
     <changeSet id="create-review-table" author="ljupcoristov02">
@@ -205,12 +156,14 @@
             </not>
         </preConditions>
         <createTable tableName="review">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
             <column name="date" type="DATE NOT NULL"/>
             <column name="message" type="VARCHAR(255) NOT NULL"/>
             <column name="rating" type="INT NOT NULL"/>
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
-            <column name="user_id" type="BIGINT NOT NULL"/>
+            <column name="user_id" type="UUID NOT NULL"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="review"
@@ -230,17 +183,6 @@
                                  onUpdate="CASCADE"/>
     </changeSet>
 
-    <changeSet id="create-sequence-for-recommended-book" author="mbojkovski">
-        <createSequence  cacheSize="50"
-                         cycle="false"
-                         dataType="BIGINT"
-                         incrementBy="1"
-                         maxValue="10000"
-                         minValue="1"
-                         sequenceName="recommended_book_id_sequence"
-                         startValue="1"/>
-    </changeSet>
-
     <changeSet id="create-recommended-book-table" author="ljupcoristov02">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -248,7 +190,9 @@
             </not>
         </preConditions>
         <createTable tableName="recommended_book">
-            <column name="id" type="BIGINT PRIMARY KEY"/>
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
             <column name="like_counter" type="BIGINT DEFAULT 1"/>
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
         </createTable>
@@ -269,8 +213,8 @@
             </not>
         </preConditions>
         <createTable tableName="liked_by">
-            <column name="recommended_book_id" type="BIGINT NOT NULL"/>
-            <column name="user_id" type="BIGINT"/>
+            <column name="recommended_book_id" type="UUID NOT NULL"/>
+            <column name="user_id" type="UUID"/>
         </createTable>
 
         <addPrimaryKey tableName="liked_by"
