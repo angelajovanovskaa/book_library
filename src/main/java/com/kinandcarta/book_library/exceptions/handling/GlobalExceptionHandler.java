@@ -45,7 +45,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CustomNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ExceptionMessage> handleCustomNotFoundException(CustomNotFoundException customNotFoundException) {
+    public ResponseEntity<ExceptionMessage> handleCustomNotFoundException(
+            CustomNotFoundException customNotFoundException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customNotFoundException.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionMessage);
@@ -53,7 +54,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CustomBadRequestException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionMessage> handleCustomBadRequestException(CustomBadRequestException customBadRequestException) {
+    public ResponseEntity<ExceptionMessage> handleCustomBadRequestException(
+            CustomBadRequestException customBadRequestException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customBadRequestException.getMessage());
 
         return ResponseEntity.badRequest().body(exceptionMessage);
@@ -61,7 +63,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CustomUnprocessableEntityException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<ExceptionMessage> handleCustomUnprocessableEntityException(CustomUnprocessableEntityException customUnprocessableEntityException) {
+    public ResponseEntity<ExceptionMessage> handleCustomUnprocessableEntityException(
+            CustomUnprocessableEntityException customUnprocessableEntityException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customUnprocessableEntityException.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exceptionMessage);
@@ -69,7 +72,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ExceptionMessage> handleCustomIllegalArgumentException(IllegalArgumentException illegalArgumentException) {
+    public ResponseEntity<ExceptionMessage> handleCustomIllegalArgumentException(
+            IllegalArgumentException illegalArgumentException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(illegalArgumentException.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
