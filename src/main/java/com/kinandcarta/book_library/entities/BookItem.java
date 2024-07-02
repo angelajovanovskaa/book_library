@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collection;
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -17,7 +18,8 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 public class BookItem {
 
     @Id
-    private String barcode;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Enumerated(EnumType.STRING)
     private BookItemState bookItemState;

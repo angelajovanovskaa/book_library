@@ -26,7 +26,7 @@ public class BookCheckout {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "book_item_barcode")
+    @JoinColumn(name = "book_item_id")
     private BookItem bookItem;
 
     private LocalDate dateBorrowed;
