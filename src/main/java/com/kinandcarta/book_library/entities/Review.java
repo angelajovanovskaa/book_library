@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.Date;
+import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
@@ -17,9 +18,8 @@ import static java.util.Objects.nonNull;
 @Entity
 public class Review {
     @Id
-    @SequenceGenerator(name = "review_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_id_sequence")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private Date date;
 
