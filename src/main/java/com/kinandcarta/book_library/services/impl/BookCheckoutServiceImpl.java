@@ -12,6 +12,7 @@ import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutService;
+import com.kinandcarta.book_library.services.CalculatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +25,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookCheckoutServiceImpl implements BookCheckoutService {
     private static final long MAX_NUMBER_OF_BORROWED_BOOKS = 3L;
-    private static final int AVERAGE_PAGES_READ_PER_DAY = 25;
     private static final int DAYS_UNTIL_SAME_BOOK_CAN_BE_BORROWED = 14;
 
     private final BookCheckoutRepository bookCheckoutRepository;
     private final BookCheckoutConverter bookCheckoutConverter;
     private final BookItemRepository bookItemRepository;
     private final UserRepository userRepository;
+    private final CalculatorService calculatorService;
 
     @Override
     public List<BookCheckoutDTO> getAllBookCheckouts() {
@@ -110,7 +111,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
             throw new TimeLimitForBorrowBookExceeded(DAYS_UNTIL_SAME_BOOK_CAN_BE_BORROWED);
         }
 
-        LocalDate scheduledReturn = calculateReturnDate(bookItem);
+        LocalDate scheduledReturn = this.calculatorService.calculateReturnDateOfBookItem(bookItem);
 
         bookCheckout.setUser(user);
         bookCheckout.setBookItem(bookItem);
@@ -190,11 +191,5 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
 
 
         return lastBorrowDate.isBefore(earliestBorrowDateAllowed);
-    }
-
-    private LocalDate calculateReturnDate(BookItem bookItem) {
-        int daysNeededToReadABook = Math.ceilDiv(bookItem.getBook().getTotalPages(), AVERAGE_PAGES_READ_PER_DAY);
-
-        return LocalDate.now().plusDays(daysNeededToReadABook);
     }
 }
