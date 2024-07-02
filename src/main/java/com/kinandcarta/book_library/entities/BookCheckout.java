@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -17,9 +18,8 @@ import java.time.LocalDate;
 public class BookCheckout {
 
     @Id
-    @SequenceGenerator(name = "book_checkout_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_checkout_id_sequence")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,5 +34,4 @@ public class BookCheckout {
     private LocalDate dateReturned;
 
     private LocalDate scheduledReturn;
-
 }
