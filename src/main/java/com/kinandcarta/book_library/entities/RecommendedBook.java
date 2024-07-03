@@ -56,5 +56,11 @@ public class RecommendedBook {
         }
     }
 
+    public String getIsbn() {
+        return book != null ? book.getISBN() : null;
+    }
 
+    public String getTitle() {
+        return book != null ? book.getTitle() : null;
+    }
 }
