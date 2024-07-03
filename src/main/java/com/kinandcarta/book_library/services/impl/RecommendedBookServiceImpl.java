@@ -80,7 +80,7 @@ public class RecommendedBookServiceImpl implements RecommendedBookService {
 
     @Override
     public RecommendedBookDTO save(String bookISBN) {
-
+        //todo:implement using Google Books API
         String result = this.googleBooksService.searchBooks(bookISBN);
 
         Book object = this.googleBooksService.convertToBook(result);
@@ -111,8 +111,9 @@ public class RecommendedBookServiceImpl implements RecommendedBookService {
 
         recommendedBook.get().getBook().setBookStatus(BookStatus.PENDING_PURCHASE);
 
-        return this.recommendedBookConverter.toRecommendedBookDTO(recommendedBook.get());
-    }
+        this.recommendedBookRepository.save(recommendedBook.get());
+
+        return this.recommendedBookConverter.toRecommendedBookDTO(recommendedBook.get());    }
 
     @Override
     public RecommendedBookDTO setStatusToRejected(UUID recommendedBookId) {
@@ -124,8 +125,9 @@ public class RecommendedBookServiceImpl implements RecommendedBookService {
 
         recommendedBook.get().getBook().setBookStatus(BookStatus.REJECTED);
 
-        return this.recommendedBookConverter.toRecommendedBookDTO(recommendedBook.get());
-    }
+        this.recommendedBookRepository.save(recommendedBook.get());
+
+        return this.recommendedBookConverter.toRecommendedBookDTO(recommendedBook.get());    }
 
     @Override
     public RecommendedBookDTO setStatusToRecommendedBook(UUID recommendedBookId) {
@@ -136,6 +138,8 @@ public class RecommendedBookServiceImpl implements RecommendedBookService {
         }
 
         recommendedBook.get().getBook().setBookStatus(BookStatus.RECOMMENDED);
+
+        this.recommendedBookRepository.save(recommendedBook.get());
 
         return this.recommendedBookConverter.toRecommendedBookDTO(recommendedBook.get());
     }

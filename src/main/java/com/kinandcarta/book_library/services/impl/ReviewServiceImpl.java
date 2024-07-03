@@ -5,6 +5,7 @@ import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
+import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.projections.ReviewDTO;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
@@ -62,7 +63,7 @@ public class ReviewServiceImpl implements ReviewService {
         Optional<User> user = this.userRepository.findById(userId);
 
         if (user.isEmpty()){
-//            throw new UserNotFoundException(userId);
+            throw new UserNotFoundException(userId);
         }
 
         List<Review> reviews = new ArrayList<>(this.reviewRepository.findAllByUser(user.get()));
