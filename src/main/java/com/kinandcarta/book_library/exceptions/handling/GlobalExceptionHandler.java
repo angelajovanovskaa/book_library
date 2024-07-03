@@ -40,16 +40,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ExceptionMessage exceptionMessage = new ExceptionMessage(errorFields);
-        return ResponseEntity.badRequest().body(exceptionMessage);
-    }
-
-    @ExceptionHandler(CustomNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ExceptionMessage> handleCustomNotFoundException(
-            CustomNotFoundException customNotFoundException) {
-        ExceptionMessage exceptionMessage = new ExceptionMessage(customNotFoundException.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
     @ExceptionHandler(CustomBadRequestException.class)
@@ -68,6 +59,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionMessage exceptionMessage = new ExceptionMessage(illegalArgumentException.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+    }
+
+    @ExceptionHandler(CustomNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ExceptionMessage> handleCustomNotFoundException(
+            CustomNotFoundException customNotFoundException) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(customNotFoundException.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionMessage);
     }
 
     @ExceptionHandler(CustomUnprocessableEntityException.class)
