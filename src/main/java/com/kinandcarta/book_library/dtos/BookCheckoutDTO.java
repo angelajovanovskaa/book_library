@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

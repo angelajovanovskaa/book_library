@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.converters;
 import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.projections.BookCheckoutDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
