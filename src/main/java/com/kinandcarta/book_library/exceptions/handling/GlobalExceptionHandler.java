@@ -58,16 +58,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             CustomBadRequestException customBadRequestException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customBadRequestException.getMessage());
 
-        return ResponseEntity.badRequest().body(exceptionMessage);
-    }
-
-    @ExceptionHandler(CustomUnprocessableEntityException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<ExceptionMessage> handleCustomUnprocessableEntityException(
-            CustomUnprocessableEntityException customUnprocessableEntityException) {
-        ExceptionMessage exceptionMessage = new ExceptionMessage(customUnprocessableEntityException.getMessage());
-
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exceptionMessage);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -77,5 +68,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionMessage exceptionMessage = new ExceptionMessage(illegalArgumentException.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+    }
+
+    @ExceptionHandler(CustomUnprocessableEntityException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ResponseEntity<ExceptionMessage> handleCustomUnprocessableEntityException(
+            CustomUnprocessableEntityException customUnprocessableEntityException) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(customUnprocessableEntityException.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exceptionMessage);
     }
 }
