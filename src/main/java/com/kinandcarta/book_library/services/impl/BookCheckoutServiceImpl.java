@@ -1,13 +1,13 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookCheckoutConverter;
+import com.kinandcarta.book_library.dtos.BookCheckoutDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.*;
-import com.kinandcarta.book_library.projections.BookCheckoutDTO;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
@@ -46,13 +46,61 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
             throw new InvalidFilterForBookCheckoutException();
         }
 
-        List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserId(bookISBN, userId);
+        List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserId(bookISBN,
+                userId);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutDTO).toList();
     }
 
     @Override
-    public List<BookCheckoutDTO> getAllBookCheckoutsFromUser(UUID userId) {
+    public List<BookCheckoutDTO> getAllBookCheckoutsForBookTitle(String title) {
+        if (title == null) {
+            throw new InvalidFilterForBookCheckoutException();
+        }
+
+        List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCase(
+                title);
+
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutDTO).toList();
+    }
+
+    @Override
+    public List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithNameAndSurname(String name, String surname) {
+        if (name == null || surname == null) {
+            throw new InvalidFilterForBookCheckoutException();
+        }
+
+        List<BookCheckout> bookCheckouts =
+                this.bookCheckoutRepository.findByUser_NameIgnoreCaseContainingAndUser_SurnameIgnoreCaseContaining(
+                        name, surname);
+
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutDTO).toList();
+    }
+
+    @Override
+    public List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithName(String name) {
+        if (name == null) {
+            throw new InvalidFilterForBookCheckoutException();
+        }
+
+        List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByUser_NameIgnoreCaseContaining(name);
+
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutDTO).toList();
+    }
+
+    @Override
+    public List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithSurname(String surname) {
+        if (surname == null) {
+            throw new InvalidFilterForBookCheckoutException();
+        }
+
+        List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByUser_SurnameIgnoreCaseContaining(surname);
+
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutDTO).toList();
+    }
+
+    @Override
+    public List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithId(UUID userId) {
         if (userId == null) {
             throw new InvalidFilterForBookCheckoutException();
         }
@@ -63,7 +111,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     }
 
     @Override
-    public List<BookCheckoutDTO> getAllBookCheckoutsForBook(String bookISBN) {
+    public List<BookCheckoutDTO> getAllBookCheckoutsForBookISBN(String bookISBN) {
         if (bookISBN == null) {
             throw new InvalidFilterForBookCheckoutException();
         }
@@ -95,7 +143,8 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         UUID bookItemId = bookCheckoutDTO.bookItemId();
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId).orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         if (bookItem.getBookItemState() == BookItemState.BORROWED) {
             throw new BookItemAlreadyBorrowedException(bookItemId);
@@ -132,7 +181,8 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         }
 
         UUID bookItemId = bookCheckoutDTO.bookItemId();
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId).orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         BookCheckout bookCheckout = this.bookCheckoutRepository.findByBookItemId(bookItem.getId())
                 .stream()
@@ -147,8 +197,10 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         this.bookItemRepository.save(bookItem);
 
         if (bookCheckout.getScheduledReturn().isBefore(bookCheckout.getDateReturned())) {
-            long daysDifference = ChronoUnit.DAYS.between(bookCheckout.getScheduledReturn(), bookCheckout.getDateReturned());
-            return "The book return is overdue by " + daysDifference + " day(s), next time be more careful about the scheduled return date.";
+            long daysDifference = ChronoUnit.DAYS.between(bookCheckout.getScheduledReturn(),
+                    bookCheckout.getDateReturned());
+            return "The book return is overdue by "
+                    + daysDifference + " day(s), next time be more careful about the scheduled return date.";
         } else if (bookCheckout.getScheduledReturn().isEqual(bookCheckout.getDateReturned())) {
             return "The book is returned on the scheduled return date.";
         } else {
@@ -167,20 +219,24 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     }
 
     private boolean hasInstanceOfBookBorrowed(UUID userId, UUID bookItemId) {
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId).orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
         Book book = bookItem.getBook();
 
-        List<BookCheckout> bookCheckoutsForUserAndBook = this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserId(book.getISBN(), userId);
+        List<BookCheckout> bookCheckoutsForUserAndBook = this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserId(
+                book.getISBN(), userId);
 
         return bookCheckoutsForUserAndBook.stream()
                 .anyMatch(x -> x.getDateReturned() == null);
     }
 
     private boolean canBorrowAgain(UUID userId, UUID bookItemId) {
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId).orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
         Book book = bookItem.getBook();
 
-        List<BookCheckout> bookCheckoutsForUserAndBook = this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserId(book.getISBN(), userId);
+        List<BookCheckout> bookCheckoutsForUserAndBook = this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserId(
+                book.getISBN(), userId);
 
         if (bookCheckoutsForUserAndBook.isEmpty()) {
             return true;
