@@ -11,6 +11,7 @@ import com.kinandcarta.book_library.services.RequestedBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,9 +24,11 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     private final RequestedBookRepository requestedBookRepository;
     private final RequestedBookConverter requestedBookConverter;
 
-    private final static BookStatus requestedFilter = BookStatus.REQUESTED;
-    private final static BookStatus pendingPurchaseFilter = BookStatus.PENDING_PURCHASE;
-    private final static BookStatus rejectedFilter = BookStatus.REJECTED;
+    private final static BookStatus requestedStatus = BookStatus.REQUESTED;
+    private final static BookStatus pendingStatus = BookStatus.PENDING_PURCHASE;
+    private final static BookStatus rejectedStatus = BookStatus.REJECTED;
+    private final static BookStatus stockStatus = BookStatus.IN_STOCK;
+    private final static List<BookStatus> validStatuses = new ArrayList<>(List.of(BookStatus.REQUESTED, BookStatus.PENDING_PURCHASE, BookStatus.REJECTED));
 
     /**
      * <b><i>Using this method, you can get all RecommendedBook objects without regard to the book's status.
@@ -53,7 +56,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public List<RequestedBookDTO> getAllRequestedBooks() {
 
-        List<RequestedBook> requestedBooks = this.requestedBookRepository.findAllByBookStatus(requestedFilter);
+        List<RequestedBook> requestedBooks = this.requestedBookRepository.findAllByBookStatus(requestedStatus);
 
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRecommendedBookDTO)
@@ -69,7 +72,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public List<RequestedBookDTO> getAllPendingRequestedBooks() {
 
-        List<RequestedBook> requestedBooks = this.requestedBookRepository.findAllByBookStatus(pendingPurchaseFilter);
+        List<RequestedBook> requestedBooks = this.requestedBookRepository.findAllByBookStatus(pendingStatus);
 
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRecommendedBookDTO)
@@ -145,7 +148,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public RequestedBookDTO getFavoriteRequestedBook() {
 
-        List<RequestedBook> requestedBook = this.requestedBookRepository.findTopByOrderByLikeCounterDesc(requestedFilter.toString());
+        List<RequestedBook> requestedBook = this.requestedBookRepository.findTopByOrderByLikeCounterDesc(requestedStatus.toString());
 
         if (requestedBook.isEmpty()) {
             throw new RequestedBookNotFoundException();
@@ -214,13 +217,18 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         RequestedBook requestedBook = this.getRequestedBook(requestedBookId);
 
-        String bookStatus = requestedBook.getBook().getBookStatus().toString();
+        BookStatus bookStatus = requestedBook.getBook().getBookStatus();
+        BookStatus methodStatus = BookStatus.PENDING_PURCHASE;
 
-        if (!bookStatus.equals(requestedFilter) || !bookStatus.equals(rejectedFilter)) {
-            throw new RequestedBookStatusException(bookStatus, pendingPurchaseFilter.name());
+        if (bookStatus == methodStatus) {
+            return this.requestedBookConverter.toRecommendedBookDTO(requestedBook);
         }
 
-        requestedBook.getBook().setBookStatus(pendingPurchaseFilter);
+        if (!bookStatus.equals(requestedStatus) && !bookStatus.equals(rejectedStatus)) {
+            throw new RequestedBookStatusException(bookStatus.name(), methodStatus.name());
+        }
+
+        requestedBook.getBook().setBookStatus(methodStatus);
 
         this.requestedBookRepository.save(requestedBook);
 
@@ -246,12 +254,17 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         RequestedBook requestedBook = this.getRequestedBook(requestedBookId);
 
         BookStatus bookStatus = requestedBook.getBook().getBookStatus();
+        BookStatus methodStatus = BookStatus.REQUESTED;
 
-        if (!bookStatus.equals(pendingPurchaseFilter) || !bookStatus.equals(rejectedFilter)) {
-            throw new RequestedBookStatusException(bookStatus.name(), requestedFilter.name());
+        if (bookStatus.equals(methodStatus)){
+            return this.requestedBookConverter.toRecommendedBookDTO(requestedBook);
         }
 
-        requestedBook.getBook().setBookStatus(requestedFilter);
+        if (!bookStatus.equals(pendingStatus) && !bookStatus.equals(rejectedStatus)) {
+            throw new RequestedBookStatusException(bookStatus.name(), methodStatus.name());
+        }
+
+        requestedBook.getBook().setBookStatus(methodStatus);
 
         this.requestedBookRepository.save(requestedBook);
 
@@ -264,16 +277,67 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         RequestedBook requestedBook = this.getRequestedBook(requestedBookId);
 
         BookStatus bookStatus = requestedBook.getBook().getBookStatus();
+        BookStatus methodStatus = BookStatus.REJECTED;
 
-        if (!bookStatus.equals(pendingPurchaseFilter) || !bookStatus.equals(requestedFilter)) {
-            throw new RequestedBookStatusException(bookStatus.name(), rejectedFilter.name());
+        if (bookStatus.equals(methodStatus)){
+            return this.requestedBookConverter.toRecommendedBookDTO(requestedBook);
         }
 
-        requestedBook.getBook().setBookStatus(rejectedFilter);
+        if (!bookStatus.equals(pendingStatus) && !bookStatus.equals(requestedStatus)) {
+            throw new RequestedBookStatusException(bookStatus.name(), methodStatus.name());
+        }
+
+        requestedBook.getBook().setBookStatus(methodStatus);
 
         this.requestedBookRepository.save(requestedBook);
 
         return this.requestedBookConverter.toRecommendedBookDTO(requestedBook);
+    }
+
+    @Override
+    public RequestedBookDTO changeStatus(UUID requestedBookId, BookStatus to) {
+
+        RequestedBook requestedBook = this.getRequestedBook(requestedBookId);
+
+        BookStatus from = requestedBook.getBook().getBookStatus();
+
+        if (from.equals(to)) {
+            return requestedBookConverter.toRecommendedBookDTO(requestedBook);
+        }
+
+        if (!validStatuses.contains(from) || !validStatuses.contains(to)) {
+            throw new RequestedBookStatusException(from.name(), to.name());
+        }
+
+        requestedBook.getBook().setBookStatus(to);
+
+        this.requestedBookRepository.save(requestedBook);
+
+        return requestedBookConverter.toRecommendedBookDTO(requestedBook);
+    }
+
+    @Override
+    public RequestedBookDTO buyRequestedBook(UUID requestedBookId) {
+
+        //todo: now this method only changes status but in the feature it will need to implement adding BookItems;
+        RequestedBook requestedBook = this.getRequestedBook(requestedBookId);
+
+        BookStatus from = requestedBook.getBook().getBookStatus();
+        BookStatus to = stockStatus;
+
+        if (from.equals(to)) {
+            return requestedBookConverter.toRecommendedBookDTO(requestedBook);
+        }
+
+        if (!from.equals(pendingStatus)) {
+            throw new RequestedBookStatusException(from.name(), to.name());
+        }
+
+        requestedBook.getBook().setBookStatus(to);
+
+        this.requestedBookRepository.save(requestedBook);
+
+        return requestedBookConverter.toRecommendedBookDTO(requestedBook);
     }
 
     private RequestedBook getRequestedBook(UUID requestedBookId) {

@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Date;
@@ -37,6 +38,7 @@ public class RequestedBook {
 
     private Long likeCounter = 1L;
 
+    @ToString.Exclude
     @OneToOne(fetch = FetchType.EAGER)
     private Book book;
 
