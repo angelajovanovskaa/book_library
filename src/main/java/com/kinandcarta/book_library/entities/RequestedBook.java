@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -27,10 +28,12 @@ import static java.util.Objects.nonNull;
 @NoArgsConstructor
 
 @Entity
-public class RecommendedBook {
+public class RequestedBook {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    private Date date;
 
     private Long likeCounter = 1L;
 
@@ -39,7 +42,7 @@ public class RecommendedBook {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "liked_by",
-            joinColumns = @JoinColumn(name = "recommended_book_id"),
+            joinColumns = @JoinColumn(name = "requested_book_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users = new HashSet<>();
 

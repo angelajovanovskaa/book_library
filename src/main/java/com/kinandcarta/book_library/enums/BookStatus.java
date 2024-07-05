@@ -1,8 +1,9 @@
 package com.kinandcarta.book_library.enums;
 
 public enum BookStatus {
-    RECOMMENDED,
+    REQUESTED,
     PENDING_PURCHASE,
     REJECTED,
-    PRESENT
+    IN_STOCK,
+    CURRENTLY_UNAVAILABLE
 }

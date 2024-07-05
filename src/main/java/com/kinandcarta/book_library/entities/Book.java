@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import lombok.ToString;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
@@ -57,6 +59,7 @@ public class Book {
     private String image;
 
     @Enumerated(EnumType.STRING)
+    @ToStringExclude
     private BookStatus bookStatus;
 
     @Type(StringArrayType.class)

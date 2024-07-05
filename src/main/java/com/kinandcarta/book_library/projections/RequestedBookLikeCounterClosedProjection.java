@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.projections;
 
-public interface RecommendedBookLikeCounterClosedProjection {
+public interface RequestedBookLikeCounterClosedProjection {
 
     String getIsbn();
 
