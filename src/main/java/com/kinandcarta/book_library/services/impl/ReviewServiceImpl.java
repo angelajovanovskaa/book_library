@@ -31,12 +31,25 @@ public class ReviewServiceImpl implements ReviewService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
 
+    /**
+     * <b><i>Using this method, you can get all ReviewDTO objects.</i></b>
+     * <hr>
+     *
+     * @return (List of ReviewDTO)
+     */
     public List<ReviewDTO> getAllReviews() {
         List<Review> reviews = this.reviewRepository.findAll();
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
 
+    /**
+     * <b><i>Using this method, you can get ReviewDTO object by its id.</i></b>
+     * <hr>
+     *
+     * @param id Type: <i><u>UUID</u></i>
+     * @return ReviewDTO
+     */
     public ReviewDTO getReviewById(UUID id) {
         Optional<Review> review = reviewRepository.findById(id);
 
@@ -47,6 +60,13 @@ public class ReviewServiceImpl implements ReviewService {
         return this.reviewConverter.toReviewDTO(review.get());
     }
 
+    /**
+     * <b><i>Using this method, you can get all ReviewDTO objects for Book with isbn = param.</i></b>
+     * <hr>
+     *
+     * @param isbn Type: <i><u>String</u></i>
+     * @return (List of ReviewDTO)
+     */
     public List<ReviewDTO> getAllReviewsByBookId(String isbn) {
         Optional<Book> book = this.bookRepository.findById(isbn);
 
@@ -59,6 +79,13 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
 
+    /**
+     * <b><i>Using this method, you can get all ReviewDTO objects by User with userId = param.</i></b>
+     * <hr>
+     *
+     * @param userId Type: <i><u>UUID</u></i>
+     * @return (List of ReviewDTO)
+     */
     public List<ReviewDTO> getAllReviewsByUserId(UUID userId) {
         Optional<User> user = this.userRepository.findById(userId);
 
@@ -71,6 +98,13 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
 
+    /**
+     * <b><i>Using this method, you can save Review.</i></b>
+     * <hr>
+     *
+     * @param reviewDTO Type: (<i><u>ReviewDTO</u></i>)
+     * @return (ReviewDTO)
+     */
     public ReviewDTO save(ReviewDTO reviewDTO) {
         Review review = reviewConverter.toReview(reviewDTO);
 
@@ -79,6 +113,13 @@ public class ReviewServiceImpl implements ReviewService {
         return this.reviewConverter.toReviewDTO(review);
     }
 
+    /**
+     * <b><i>Using this method, you can delete Review by id.</i></b>
+     * <hr>
+     *
+     * @param id Type: (<i><u>UUID</u></i>)
+     * @return (ReviewDTO)
+     */
     public ReviewDTO delete(UUID id) {
         Optional<Review> review = this.reviewRepository.findById(id);
 
@@ -91,6 +132,13 @@ public class ReviewServiceImpl implements ReviewService {
         return this.reviewConverter.toReviewDTO(review.get());
     }
 
+    /**
+     * <b><i>Using this method, you can retrieve rating on Book by bookISBN.</i></b>
+     * <hr>
+     *
+     * @param bookISBN Type: (<i><u>String</u></i>)
+     * @return (ReviewDTO)
+     */
     public Double getAverageRatingOnBook(String bookISBN) {
         ReviewCalculations calculations = new ReviewCalculations(this.bookRepository, this.reviewRepository);
 
