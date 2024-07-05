@@ -205,8 +205,6 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * <b>Constraint:</b>
      * <ol>
      *     <li>RecommendedBook must exist.</li>
-     *     <li>You can only convert RecommendedBook status from RECOMMENDED to PENDING_PURCHASE
-     *     (RecommendedBook status must be RECOMMENDED so the operation is successful).</li>
      * </ol>
      *
      * @param requestedBookId Type: <i><u>UUID</u></i>
@@ -241,15 +239,13 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * <b>Constraints:</b>
      * <ol>
      *     <li>RecommendedBook must exist.</li>
-     *     <li>You can only convert RecommendedBook status from PENDING_PURCHASE to RECOMMENDED
-     *     (RecommendedBook status must be PENDING_PURCHASE so the operation is successful).</li>
      * </ol>
      *
      * @param requestedBookId Type: <i><u>UUID</u></i>
      * @return (RecommendedBookDTO) The RecommendedBook object that we made changes on.
      */
     @Override
-    public RequestedBookDTO setStatusToRequestedBook(UUID requestedBookId) {
+    public RequestedBookDTO setStatusToRequested(UUID requestedBookId) {
 
         RequestedBook requestedBook = this.getRequestedBook(requestedBookId);
 
@@ -271,6 +267,17 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         return this.requestedBookConverter.toRecommendedBookDTO(requestedBook);
     }
 
+    /**
+     * <b><i>Using this method, you can set RecommendedBook status to REJECTED.</i></b>
+     * <hr>
+     * <b>Constraints:</b>
+     * <ol>
+     *     <li>RecommendedBook must exist.</li>
+     * </ol>
+     *
+     * @param requestedBookId Type: <i><u>UUID</u></i>
+     * @return (RecommendedBookDTO) The RecommendedBook object that we made changes on.
+     */
     @Override
     public RequestedBookDTO setStatusToRejected(UUID requestedBookId) {
 
@@ -294,6 +301,24 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         return this.requestedBookConverter.toRecommendedBookDTO(requestedBook);
     }
 
+    /**
+     * <b><i>Using this method, you can set RecommendedBook status to BookStatus to.</i></b>
+     * <hr>
+     * <b>Constraints:</b>
+     * <ol>
+     *     <li>RecommendedBook must exist.</li>
+     *     <li>Conversions:</li>
+     *     <ul>
+     *         <li>You can switch between RECOMMENDED and REJECTED, and vice versa.</li>
+     *         <li>You can switch between RECOMMENDED and PENDING_PURCHASE, and vice versa.</li>
+     *         <li>You can switch between PENDING_PURCHASE and REJECTED, and vice versa.</li>
+     *     </ul>
+     * </ol>
+     *
+     * @param requestedBookId Type: <i><u>UUID</u></i>
+     * @param to Type: <i><u>BookStatus</u></i>
+     * @return (RecommendedBookDTO) The RecommendedBook object that we made changes on.
+     */
     @Override
     public RequestedBookDTO changeStatus(UUID requestedBookId, BookStatus to) {
 
@@ -316,6 +341,23 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         return requestedBookConverter.toRecommendedBookDTO(requestedBook);
     }
 
+    /**
+     * <b><i>Using this method, you can set RecommendedBook status to IN_STOCK.</i></b>
+     * <hr>
+     * <b>Constraints:</b>
+     * <ol>
+     *     <li>RecommendedBook must exist.</li>
+     *     <li>Conversions:</li>
+     *     <ul>
+     *         <li>You can only convert from PENDING_PURCHASE to IN_STOCK.</li>
+     *     </ul>
+     * </ol>
+     *
+     * <h1>NEED TO IMPLEMENT BOOKITEM INSERT</h1>
+     *
+     * @param requestedBookId Type: <i><u>UUID</u></i>
+     * @return (RecommendedBookDTO) The RecommendedBook object that we made changes on.
+     */
     @Override
     public RequestedBookDTO buyRequestedBook(UUID requestedBookId) {
 

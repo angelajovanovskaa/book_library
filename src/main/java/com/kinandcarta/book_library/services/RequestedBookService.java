@@ -28,7 +28,7 @@ public interface RequestedBookService {
 
     RequestedBookDTO setStatusToPendingPurchase(UUID requestedBookId);
 
-    RequestedBookDTO setStatusToRequestedBook(UUID requestedBookId);
+    RequestedBookDTO setStatusToRequested(UUID requestedBookId);
 
     RequestedBookDTO setStatusToRejected(UUID requestedBookId);
 
