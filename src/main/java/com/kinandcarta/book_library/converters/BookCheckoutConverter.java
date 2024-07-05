@@ -1,38 +1,53 @@
 package com.kinandcarta.book_library.converters;
 
+import com.kinandcarta.book_library.dtos.BookCheckoutComplexResponseDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutSchedulerResponseDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutSimpleResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.dtos.BookCheckoutDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class BookCheckoutConverter {
-
-    public BookCheckoutDTO toBookCheckoutDTO(BookCheckout bookCheckout) {
+    public BookCheckoutComplexResponseDTO toComplexBookCheckoutDTO(BookCheckout bookCheckout) {
         User user = bookCheckout.getUser();
         BookItem bookItem = bookCheckout.getBookItem();
 
-        return new BookCheckoutDTO(
+        return new BookCheckoutComplexResponseDTO(
                 bookCheckout.getId(),
                 user.getId(),
                 bookItem.getId(),
+                bookItem.getBook().getTitle(),
+                bookItem.getBook().getISBN(),
                 bookCheckout.getDateBorrowed(),
                 bookCheckout.getDateReturned(),
                 bookCheckout.getScheduledReturn()
         );
     }
 
-    public BookCheckout toBookCheckoutEntity(BookCheckoutDTO bookCheckoutDTO) {
-        BookCheckout bookCheckout = new BookCheckout();
+    public BookCheckoutSimpleResponseDTO toSimpleBookCheckoutDTO(BookCheckout bookCheckout) {
+        BookItem bookItem = bookCheckout.getBookItem();
 
-        bookCheckout.setId(bookCheckoutDTO.id());
-        bookCheckout.setDateBorrowed(bookCheckoutDTO.dateBorrowed());
-        bookCheckout.setDateReturned(bookCheckoutDTO.dateReturned());
-        bookCheckout.setScheduledReturn(bookCheckoutDTO.scheduledReturn());
+        return new BookCheckoutSimpleResponseDTO(
+                bookItem.getBook().getTitle(),
+                bookItem.getBook().getISBN(),
+                bookCheckout.getDateBorrowed(),
+                bookCheckout.getDateReturned(),
+                bookCheckout.getScheduledReturn()
+        );
+    }
 
-        return bookCheckout;
+    public BookCheckoutSchedulerResponseDTO toSchedulerBookCheckoutDTO(BookCheckout bookCheckout) {
+        User user = bookCheckout.getUser();
+        BookItem bookItem = bookCheckout.getBookItem();
+
+        return new BookCheckoutSchedulerResponseDTO(
+                user.getId(),
+                bookItem.getBook().getTitle(),
+                bookCheckout.getScheduledReturn()
+        );
     }
 }
