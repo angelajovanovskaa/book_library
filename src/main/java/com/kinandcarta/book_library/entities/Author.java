@@ -21,9 +21,7 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
-
-    private String surname;
+    private String fullName;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_author",

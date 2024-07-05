@@ -60,8 +60,7 @@
             <column name="id" type="UUID" >
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR(255) NOT NULL"/>
-            <column name="surname" type="VARCHAR(255) NOT NULL"/>
+            <column name="full_name" type="VARCHAR(255) NOT NULL"/>
         </createTable>
     </changeSet>
 
@@ -107,8 +106,7 @@
             <column name="id" type="UUID">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="name" type="VARCHAR(255) NOT NULL"/>
-            <column name="surname" type="VARCHAR(255) NOT NULL"/>
+            <column name="full_name" type="VARCHAR(255) NOT NULL"/>
             <column name="password" type="VARCHAR(255) NOT NULL"/>
             <column name="email" type="VARCHAR(255) NOT NULL"/>
             <column name="role" type="VARCHAR(255) NOT NULL"/>
