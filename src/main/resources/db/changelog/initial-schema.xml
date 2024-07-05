@@ -185,48 +185,49 @@
                                  onUpdate="CASCADE"/>
     </changeSet>
 
-    <changeSet id="create-recommended-book-table" author="ljupcoristov02">
+    <changeSet id="create-requested-book-table" author="ljupcoristov02">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="recommended_book"/>
+                <tableExists tableName="requested_book"/>
             </not>
         </preConditions>
-        <createTable tableName="recommended_book">
+        <createTable tableName="requested_book">
             <column name="id" type="UUID">
                 <constraints primaryKey="true"/>
             </column>
+            <column name="date" type="DATE NOT NULL"/>
             <column name="like_counter" type="BIGINT DEFAULT 1"/>
             <column name="book_isbn" type="VARCHAR(255) NOT NULL"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="recommended_book"
+        <addForeignKeyConstraint baseTableName="requested_book"
                                  baseColumnNames="book_isbn"
-                                 constraintName="fk_recommended_book_book"
+                                 constraintName="fk_requested_book_book"
                                  referencedTableName="book"
                                  referencedColumnNames="ISBN"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
     </changeSet>
 
-    <changeSet id="create-user-recommended-book-relation-table" author="ljupcoristov02">
+    <changeSet id="create-user-requested-book-relation-table" author="ljupcoristov02">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="liked_by"/>
             </not>
         </preConditions>
         <createTable tableName="liked_by">
-            <column name="recommended_book_id" type="UUID NOT NULL"/>
+            <column name="requested_book_id" type="UUID NOT NULL"/>
             <column name="user_id" type="UUID"/>
         </createTable>
 
         <addPrimaryKey tableName="liked_by"
-                       columnNames="recommended_book_id, user_id"
-                       constraintName="pk_recommended_book" />
+                       columnNames="requested_book_id, user_id"
+                       constraintName="pk_requested_book" />
 
         <addForeignKeyConstraint baseTableName="liked_by"
-                                 baseColumnNames="recommended_book_id"
-                                 constraintName="fk_liked_by_recommended_book"
-                                 referencedTableName="recommended_book"
+                                 baseColumnNames="requested_book_id"
+                                 constraintName="fk_liked_by_requested_book"
+                                 referencedTableName="requested_book"
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
@@ -239,4 +240,5 @@
                                  onDelete="SET NULL"
                                  onUpdate="CASCADE"/>
     </changeSet>
+
 </databaseChangeLog>
