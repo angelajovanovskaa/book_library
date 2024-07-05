@@ -7,21 +7,24 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID> {
-    List<BookCheckout> findByUserId(UUID userId);
+    List<BookCheckout> findByUserIdOrderByDateBorrowedDesc(UUID userId);
 
-    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCase(String title);
+    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(String title);
 
-    List<BookCheckout> findByUser_NameIgnoreCaseContainingAndUser_SurnameIgnoreCaseContaining(String name,
-                                                                                              String surname);
+    List<BookCheckout> findByUser_FullNameContainingIgnoreCaseOrderByDateBorrowed(String fullName);
 
-    List<BookCheckout> findByUser_NameIgnoreCaseContaining(String name);
+    List<BookCheckout> findByBookItemIdOrderByDateBorrowedDesc(UUID bookItemId);
 
-    List<BookCheckout> findByUser_SurnameIgnoreCaseContaining(String surname);
+    List<BookCheckout> findByBookItem_Book_ISBNOrderByDateBorrowedDesc(String isbn);
 
-    List<BookCheckout> findByBookItemId(UUID bookItemId);
+    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(String title,
+                                                                                                     UUID userId);
 
-    List<BookCheckout> findByBookItem_Book_ISBN(String isbn);
+    List<BookCheckout> findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(String ISBN, UUID userId);
 
-    List<BookCheckout> findByBookItem_Book_ISBNAndUserId(String isbn, UUID userId);
+    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowed(String title);
 
+    List<BookCheckout> findByDateReturnedIsNull();
+
+    List<BookCheckout> findByDateReturnedIsNotNull();
 }

@@ -1,31 +1,40 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.dtos.BookCheckoutDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutComplexResponseDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutSchedulerResponseDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutSimpleResponseDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface BookCheckoutService {
-    List<BookCheckoutDTO> getAllBookCheckouts();
+    List<BookCheckoutComplexResponseDTO> getAllBookCheckouts();
 
-    List<BookCheckoutDTO> getAllBookCheckoutsFromUserForBook(UUID userId, String bookISBN);
+    List<BookCheckoutComplexResponseDTO> getAllActiveBookCheckouts();
 
-    List<BookCheckoutDTO> getAllBookCheckoutsForBookTitle(String title);
+    List<BookCheckoutComplexResponseDTO> getAllPastBookCheckouts();
 
-    List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithNameAndSurname(String name, String surname);
+    List<BookCheckoutSimpleResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId, String bookTitle);
 
-    List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithName(String name);
+    List<BookCheckoutComplexResponseDTO> getAllBookCheckoutsForBookTitle(String title);
 
-    List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithSurname(String surname);
+    List<BookCheckoutComplexResponseDTO> getAllBookCheckoutsFromUserWithFullName(String fullName);
 
-    List<BookCheckoutDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
+    List<BookCheckoutSimpleResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
 
-    List<BookCheckoutDTO> getAllBookCheckoutsForBookISBN(String bookISBN);
+    List<BookCheckoutComplexResponseDTO> getAllBookCheckoutsForBookISBN(String bookISBN);
 
-    List<BookCheckoutDTO> getAllBookCheckoutsForBookItem(UUID bookItemId);
+    List<BookCheckoutComplexResponseDTO> getAllBookCheckoutsForBookItem(UUID bookItemId);
 
-    BookCheckoutDTO borrowBookItem(BookCheckoutDTO bookCheckoutDTO);
+    String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
 
-    String returnBookItem(BookCheckoutDTO bookCheckoutDTO);
+    String returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
+
+    String reportBookItemAsDamaged(UUID bookItemId);
+
+    String reportBookItemAsLost(UUID bookItemId);
+
+    List<BookCheckoutSchedulerResponseDTO> getAllBookCheckoutsNearingReturnDate();
 
 }
