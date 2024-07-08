@@ -107,6 +107,7 @@
                 <constraints primaryKey="true"/>
             </column>
             <column name="full_name" type="VARCHAR(255) NOT NULL"/>
+            <column name="profile_picture" type="VARBINARY(8000) NOT NULL"/>
             <column name="password" type="VARCHAR(255) NOT NULL"/>
             <column name="email" type="VARCHAR(255) NOT NULL"/>
             <column name="role" type="VARCHAR(255) NOT NULL"/>
