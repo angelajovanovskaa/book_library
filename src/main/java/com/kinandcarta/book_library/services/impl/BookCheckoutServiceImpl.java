@@ -31,7 +31,6 @@ import java.util.UUID;
  * This service includes methods for retrieving various views of book checkout history and managing book item states.
  * Access controls are specified for different operations.
  */
-
 @Service
 @RequiredArgsConstructor
 public class BookCheckoutServiceImpl implements BookCheckoutService {
