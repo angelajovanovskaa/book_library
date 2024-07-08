@@ -22,9 +22,12 @@ public class User {
 
     private String fullName;
 
+    private byte[] profilePicture;
+
     private String email;
 
-    private String role;
+    private String role = "USER";
 
     private String password;
+
 }
