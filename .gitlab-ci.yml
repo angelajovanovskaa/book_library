@@ -1,0 +1,11 @@
+image: docker:latest
+services:
+  - docker:dind
+
+stages:
+  - build
+
+maven-build:
+  image: maven:3-jdk-22
+  stage: build
+  script: "mvn clean install -U"
