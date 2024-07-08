@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 @Data
@@ -25,7 +22,7 @@ public class User {
 
     private String fullName;
 
-    private byte[] profilePicture = getDefaultProfilePicture();
+    private byte[] profilePicture;
 
     private String email;
 
@@ -33,13 +30,4 @@ public class User {
 
     private String password;
 
-    private static byte[] getDefaultProfilePicture() {
-        try {
-            InputStream inputStream = User.class.getResourceAsStream("/image/profile-picture.png");
-            return IOUtils.toByteArray(inputStream);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new byte[0];
-        }
-    }
 }
