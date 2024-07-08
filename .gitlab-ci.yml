@@ -6,6 +6,6 @@ stages:
   - build
 
 maven-build:
-  image: maven:3.8.7-eclipse-temurin-19
+  image: maven:3.9.8-eclipse-temurin-22
   stage: build
   script: "mvn clean install -U"
