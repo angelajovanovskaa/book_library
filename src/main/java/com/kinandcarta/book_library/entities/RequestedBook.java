@@ -24,7 +24,7 @@ public class RequestedBook {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Date date;
+    private Date requestedDate;
 
     private Long likeCounter = 1L;
 
