@@ -20,13 +20,14 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private String name;
+    private String fullName;
 
-    private String surname;
+    private byte[] profilePicture;
 
     private String email;
 
-    private String role;
+    private String role = "USER";
 
     private String password;
+
 }

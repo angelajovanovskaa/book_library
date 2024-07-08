@@ -47,8 +47,7 @@ public class Book {
 
     private int totalPages;
 
-    @Enumerated(EnumType.STRING)
-    private Language language;
+    private String language;
 
     private double ratingFromWeb = 0.0;
 
@@ -61,7 +60,7 @@ public class Book {
 
     @Type(StringArrayType.class)
     @Column(name = "genres", columnDefinition = "text[]")
-    private Genre[] genres;
+    private String[] genres;
 
     @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
     private Set<Author> authors;
