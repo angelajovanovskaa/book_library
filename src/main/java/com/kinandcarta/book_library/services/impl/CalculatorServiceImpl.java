@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+/**
+ * Implementation of {@link CalculatorService}. It has different calculation algorithms
+ * used in the service logic for all the other services.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class CalculatorServiceImpl implements CalculatorService {

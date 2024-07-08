@@ -3,9 +3,8 @@ package com.kinandcarta.book_library.dtos;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record BookCheckoutComplexResponseDTO(
-        UUID id,
-        UUID userId,
+public record BookCheckoutWithUserAndBookItemInfoResponseDTO(
+        String userFullName,
         UUID bookItemId,
         String bookTitle,
         String bookISBN,
