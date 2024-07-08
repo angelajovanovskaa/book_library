@@ -22,6 +22,9 @@ import java.util.UUID;
 
 import com.kinandcarta.book_library.converters.*;
 
+/**
+ *  <h4><i>This class is used for implementing service logic for model Review.</i></h4>
+ */
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {

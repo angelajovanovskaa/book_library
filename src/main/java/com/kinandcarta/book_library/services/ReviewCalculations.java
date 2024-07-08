@@ -12,6 +12,14 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ *  <h4><i>This class is used for implementing calculations used by method in the service logic
+ *  by the model Review.</i></h4>
+ *  <h6><i>Methods:</i></h6>
+ *  <un>
+ *      <li>getAverageRatingOnBook - calculates the average rating given by employees who borrowed the book.</li>
+ *  </un>
+ */
 @RequiredArgsConstructor
 public class ReviewCalculations {
 

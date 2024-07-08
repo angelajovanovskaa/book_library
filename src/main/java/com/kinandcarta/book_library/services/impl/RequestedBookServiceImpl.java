@@ -17,6 +17,9 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ *  <h4><i>This class is used for implementing service logic for model RequestedBook.</i></h4>
+ */
 @Service
 @RequiredArgsConstructor
 public class RequestedBookServiceImpl implements RequestedBookService {
