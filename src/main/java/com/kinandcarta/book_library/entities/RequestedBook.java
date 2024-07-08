@@ -1,15 +1,6 @@
 package com.kinandcarta.book_library.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,7 +25,7 @@ public class RequestedBook {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Date date;
+    private Date requestedDate;
 
     private Long likeCounter = 1L;
 
