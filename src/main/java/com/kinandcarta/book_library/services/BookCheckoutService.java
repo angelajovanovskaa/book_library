@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.dtos.BookCheckoutOnlyForUserProfileInfoResponseDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
@@ -15,15 +15,15 @@ public interface BookCheckoutService {
 
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts();
 
-    List<BookCheckoutOnlyForUserProfileInfoResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
-                                                                                           String bookTitle);
+    List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
+                                                                     String bookTitle);
 
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(String title);
 
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsFromUserWithFullName(
             String fullNameSearchTerm);
 
-    List<BookCheckoutOnlyForUserProfileInfoResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
+    List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
 
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookISBN(String bookISBN);
 
@@ -32,10 +32,6 @@ public interface BookCheckoutService {
     String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
 
     String returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
-
-    String reportBookItemAsDamaged(UUID bookItemId);
-
-    String reportBookItemAsLost(UUID bookItemId);
 
     List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate();
 

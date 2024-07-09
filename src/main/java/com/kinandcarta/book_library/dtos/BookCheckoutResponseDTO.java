@@ -2,11 +2,11 @@ package com.kinandcarta.book_library.dtos;
 
 import java.time.LocalDate;
 
-public record BookCheckoutOnlyForUserProfileInfoResponseDTO(
+public record BookCheckoutResponseDTO(
         String bookTitle,
         String bookISBN,
         LocalDate dateBorrowed,
         LocalDate dateReturned,
-        LocalDate scheduledReturn
+        LocalDate scheduledReturnDate
 ) {
 }

@@ -9,15 +9,15 @@ import java.util.UUID;
 public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID> {
     List<BookCheckout> findByUserIdOrderByDateBorrowedDesc(UUID userId);
 
-    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(String title);
+    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(String titleSearchTerm);
 
-    List<BookCheckout> findByUser_FullNameContainingIgnoreCaseOrderByDateBorrowed(String fullName);
+    List<BookCheckout> findByUser_FullNameContainingIgnoreCaseOrderByDateBorrowed(String fullNameSearchTerm);
 
     List<BookCheckout> findByBookItemIdOrderByDateBorrowedDesc(UUID bookItemId);
 
     List<BookCheckout> findByBookItem_Book_ISBNOrderByDateBorrowedDesc(String isbn);
 
-    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(String title,
+    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(String titleSearchTerm,
                                                                                                      UUID userId);
 
     List<BookCheckout> findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(String ISBN, UUID userId);

@@ -6,6 +6,6 @@ import java.util.UUID;
 public record BookCheckoutReturnReminderResponseDTO(
         UUID userId,
         String bookTitle,
-        LocalDate scheduledReturn
+        LocalDate scheduledReturnDate
 ) {
 }

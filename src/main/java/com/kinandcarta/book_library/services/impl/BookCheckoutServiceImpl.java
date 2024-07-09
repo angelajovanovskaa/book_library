@@ -1,8 +1,8 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookCheckoutConverter;
-import com.kinandcarta.book_library.dtos.BookCheckoutOnlyForUserProfileInfoResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Implementation of {@link BookCheckoutService} that manages the borrowing, returning, and status tracking of book items.
+ * Implementation of {@link BookCheckoutService} that manages the borrowing, returning, and status tracking of book items.</br>
  * This service includes methods for retrieving various views of book checkout history and managing book item states.
  * Access controls are specified for different operations.
  */
@@ -35,7 +35,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookCheckoutServiceImpl implements BookCheckoutService {
     private static final int MAX_NUMBER_OF_BORROWED_BOOKS = 3;
-    private static final int DAYS_UNTIL_SAME_BOOK_CAN_BE_BORROWED = 14;
     private static final int DAYS_NEARING_THE_SCHEDULED_RETURN_DATE = 3;
 
     private final BookCheckoutRepository bookCheckoutRepository;
@@ -45,7 +44,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     private final CalculatorService calculatorService;
 
     /**
-     * <b>This method is used to get all of the book checkouts.</b><br>
+     * This method is used to get all of the book checkouts.<br>
      * Only admin will have access to this method.
      *
      * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
@@ -54,11 +53,12 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts() {
         List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findAll();
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to get all of the active book checkouts.</b><br>
+     * This method is used to get all of the active book checkouts.<br>
      * Only admin will have access to this method.
      *
      * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
@@ -67,11 +67,12 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts() {
         List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByDateReturnedIsNull();
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to get all of the past book checkouts.</b><br>
+     * This method is used to get all of the past book checkouts.<br>
      * Only admin will have access to this method.
      *
      * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
@@ -80,56 +81,59 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts() {
         List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByDateReturnedIsNotNull();
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to get all of the book checkouts for a given user and book.</b><br>
+     * This method is used to get all of the book checkouts for a given user and book.<br>
      * All users will have access to this method, but to only see their book checkouts.
      *
-     * @param userId    UUID value for the id of the User, cannot be {@code null}
-     * @param bookTitle String value for the Title of the Book, cannot be {@code null}
-     * @return List of {@link BookCheckoutOnlyForUserProfileInfoResponseDTO}
+     * @param userId              UUID value for the id of the User, cannot be {@code null}
+     * @param bookTitleSearchTerm String value for the Title of the Book, cannot be {@code null}
+     * @return List of {@link BookCheckoutResponseDTO}
      * @throws InvalidFilterForBookCheckoutException if userId or bookISBN is {@code null}
      */
     @Override
-    public List<BookCheckoutOnlyForUserProfileInfoResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
-                                                                                                  String bookTitle) {
-        if (userId == null || StringUtils.isBlank(bookTitle)) {
+    public List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
+                                                                            String bookTitleSearchTerm) {
+        if (userId == null || StringUtils.isBlank(bookTitleSearchTerm)) {
             throw new InvalidFilterForBookCheckoutException();
         }
 
         List<BookCheckout> bookCheckouts =
                 this.bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
-                        bookTitle,
+                        bookTitleSearchTerm,
                         userId);
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toSimpleBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
     }
 
     /**
-     * <b>This method is used to get all of the book checkouts for a given book by its title.</b><br>
+     * This method is used to get all of the book checkouts for a given book by its titleSearchTerm.<br>
      * Only admin will have access.
      *
-     * @param title String value for the Title of the Book, cannot be {@code null}
+     * @param titleSearchTerm String value for the Title of the Book, cannot be {@code null}
      * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      * @throws InvalidFilterForBookCheckoutException if Title is {@code null}
      */
     @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(String title) {
-        if (title == null) {
+    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(
+            String titleSearchTerm) {
+        if (StringUtils.isBlank(titleSearchTerm)) {
             throw new InvalidFilterForBookCheckoutException();
         }
 
         List<BookCheckout> bookCheckouts =
                 this.bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowed(
-                        title);
+                        titleSearchTerm);
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to get all of the book checkouts for a given user by its name and surname.</b><br>
+     * This method is used to get all of the book checkouts for a given user by its name and surname.<br>
      * The name and surname is sent as a fullNameSearchTerm string with an empty space between the two.
      * Only admin will have access to this method.
      *
@@ -148,30 +152,31 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
                 this.bookCheckoutRepository.findByUser_FullNameContainingIgnoreCaseOrderByDateBorrowed(
                         fullNameSearchTerm);
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to get all of the book checkouts for a given user.</b><br>
+     * This method is used to get all of the book checkouts for a given user.<br>
      * All users will have access to this method, but to only see their bookCheckouts.
      *
      * @param userId UUID value for the id of the User, cannot be {@code null}
-     * @return List of {@link BookCheckoutOnlyForUserProfileInfoResponseDTO}
+     * @return List of {@link BookCheckoutResponseDTO}
      * @throws InvalidFilterForBookCheckoutException if userId is {@code null}
      */
     @Override
-    public List<BookCheckoutOnlyForUserProfileInfoResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId) {
+    public List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId) {
         if (userId == null) {
             throw new InvalidFilterForBookCheckoutException();
         }
 
         List<BookCheckout> bookCheckouts = this.bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(userId);
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toSimpleBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
     }
 
     /**
-     * <b>This method is used to get all of the book checkouts for a given book.</b><br>
+     * This method is used to get all of the book checkouts for a given book.<br>
      * Only admin will have access to this method.
      *
      * @param bookISBN String value for the ISBN of the Book, cannot be {@code null}
@@ -180,18 +185,19 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookISBN(String bookISBN) {
-        if (bookISBN == null) {
+        if (StringUtils.isBlank(bookISBN)) {
             throw new InvalidFilterForBookCheckoutException();
         }
 
         List<BookCheckout> bookCheckouts =
                 this.bookCheckoutRepository.findByBookItem_Book_ISBNOrderByDateBorrowedDesc(bookISBN);
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to get all of the book checkouts for a given bookItem.</b><br>
+     * This method is used to get all of the book checkouts for a given bookItem.<br>
      * Only admin will have access to this method.
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
@@ -207,11 +213,12 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         List<BookCheckout> bookCheckouts =
                 this.bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId);
 
-        return bookCheckouts.stream().map(bookCheckoutConverter::toComplexBookCheckoutDTO).toList();
+        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
+                .toList();
     }
 
     /**
-     * <b>This method is used to borrow a book from the library.</b><br>
+     * This method is used to borrow a book from the library.<br>
      * For this method to perform a successful borrowing of a book, the following constraints must be satisfied by the user:
      * <ul>
      *     <li>Check if the user has reached the limit for borrowed books.</li>
@@ -219,7 +226,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
      *     <li>Ensure the user does not already have an instance of the same book borrowed.</li>
      *     <li>Verify if enough time has passed for the user to borrow the same book again.</li>
      * </ul>
-     * If all constraints are met, the book is borrowed and the {@code dateBorrowed} and {@code scheduledReturn}
+     * If all constraints are met, the book is borrowed and the {@code dateBorrowed} and {@code scheduledReturnDate}
      * dates are set.
      *
      * @param bookCheckoutDTO The DTO containing userId and bookItemId for the book to be borrowed, cannot be
@@ -231,8 +238,6 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
      *                                            repository.
      * @throws BookItemAlreadyBorrowedException   If the book item is already borrowed by another user.
      * @throws BookAlreadyBorrowedByUserException If the user already has an instance of the same book borrowed.
-     * @throws TimeLimitForBorrowBookExceeded     If the user cannot borrow the same book again within the specified
-     *                                            time limit.
      */
     @Override
     @Transactional
@@ -240,7 +245,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         BookCheckout bookCheckout = new BookCheckout();
 
         UUID userId = bookCheckoutDTO.userId();
-        if (!isBorrowedBooksLimitReached(userId)) {
+        if (isBorrowedBooksLimitReached(userId)) {
             throw new LimitReachedForBorrowedBooks(MAX_NUMBER_OF_BORROWED_BOOKS);
         }
         User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -253,14 +258,9 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
             throw new BookItemAlreadyBorrowedException(bookItemId);
         }
 
-        if (hasInstanceOfBookBorrowed(userId, bookItemId)) {
-            Book book = bookItem.getBook();
-
+        Book book = bookItem.getBook();
+        if (hasInstanceOfBookBorrowed(userId, bookItem)) {
             throw new BookAlreadyBorrowedByUserException(book.getISBN());
-        }
-
-        if (!canBorrowAgain(userId, bookItem)) {
-            throw new TimeLimitForBorrowBookExceeded(DAYS_UNTIL_SAME_BOOK_CAN_BE_BORROWED);
         }
 
         LocalDate scheduledReturn = this.calculatorService.calculateReturnDateOfBookItem(bookItem);
@@ -268,17 +268,17 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         bookCheckout.setUser(user);
         bookCheckout.setBookItem(bookItem);
         bookCheckout.setDateBorrowed(LocalDate.now());
-        bookCheckout.setScheduledReturn(scheduledReturn);
+        bookCheckout.setScheduledReturnDate(scheduledReturn);
         this.bookCheckoutRepository.save(bookCheckout);
 
         bookItem.setBookItemState(BookItemState.BORROWED);
         this.bookItemRepository.save(bookItem);
 
-        return "You have successfully borrowed the book " + bookItem.getBook().getTitle();
+        return "You have successfully borrowed the book " + book.getTitle();
     }
 
     /**
-     * <b>This method is used to return a borrowed book to the library.</b><br>
+     * This method is used to return a borrowed book to the library.<br>
      * This method handles the process of returning a book item by marking it as returned in the system
      * and updating its state to AVAILABLE. It also checks if the return was on time or overdue.
      *
@@ -296,21 +296,18 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
      * @throws BookItemIsNotBorrowedException        If the book item identified by bookItemId is not currently borrowed.
      */
     @Override
+    @Transactional
     public String returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
-        if (bookCheckoutDTO.bookItemId() == null) {
-            throw new InvalidReturnBookItemRequestException();
-        }
-
         UUID bookItemId = bookCheckoutDTO.bookItemId();
         BookItem bookItem = this.bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         BookCheckout bookCheckout =
-                this.bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItem.getId())
+                this.bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId)
                         .stream()
                         .filter(x -> x.getDateReturned() == null)
                         .findFirst()
-                        .orElseThrow(() -> new BookItemIsNotBorrowedException(bookCheckoutDTO.bookItemId()));
+                        .orElseThrow(() -> new BookItemIsNotBorrowedException(bookItemId));
 
         bookCheckout.setDateReturned(LocalDate.now());
         this.bookCheckoutRepository.save(bookCheckout);
@@ -318,66 +315,11 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
         bookItem.setBookItemState(BookItemState.AVAILABLE);
         this.bookItemRepository.save(bookItem);
 
-        if (bookCheckout.getScheduledReturn().isBefore(bookCheckout.getDateReturned())) {
-            long daysDifference = ChronoUnit.DAYS.between(bookCheckout.getScheduledReturn(),
-                    bookCheckout.getDateReturned());
-            return "The book return is overdue by "
-                    + daysDifference + " day(s), next time be more careful about the scheduled return date.";
-        } else if (bookCheckout.getScheduledReturn().isEqual(bookCheckout.getDateReturned())) {
-            return "The book is returned on the scheduled return date.";
-        } else {
-            return "The book is returned before the scheduled return date.";
-        }
+        return resolveBookCheckoutResponseMessage(bookCheckout);
     }
 
     /**
-     * <b>This method is used to report a book as damaged after a return.</b><br>
-     * All users will have access to this method. Only accessible after a successful return
-     *
-     * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
-     * @return A message indicating that the book has been reported as damaged.
-     * @throws InvalidReportBookItemRequestException if bookItemId is {@code null}
-     */
-    @Override
-    public String reportBookItemAsDamaged(UUID bookItemId) {
-        if (bookItemId == null) {
-            throw new InvalidReportBookItemRequestException();
-        }
-
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
-                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
-
-        bookItem.setBookItemState(BookItemState.DAMAGED);
-        this.bookItemRepository.save(bookItem);
-
-        return "The book " + bookItem.getBook().getTitle() + " is reported as damaged";
-    }
-
-    /**
-     * <b>This method is used to report a book as lost.</b><br>
-     * All users will have access to this method.
-     *
-     * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
-     * @return A message indicating that the book has been reported as lost.
-     * @throws InvalidReportBookItemRequestException if bookItemId is {@code null}
-     */
-    @Override
-    public String reportBookItemAsLost(UUID bookItemId) {
-        if (bookItemId == null) {
-            throw new InvalidReportBookItemRequestException();
-        }
-
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
-                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
-
-        bookItem.setBookItemState(BookItemState.LOST);
-        this.bookItemRepository.save(bookItem);
-
-        return "The book " + bookItem.getBook().getTitle() + " is reported as lost";
-    }
-
-    /**
-     * <b>This method is used to filter all of the active bookCheckouts which return date is nearing.</b><br>
+     * This method is used to filter all of the active bookCheckouts which return date is nearing.<br>
      * This will be accessed by the application for sending out notifications.
      *
      * @return returns {@link BookCheckoutReturnReminderResponseDTO}
@@ -388,10 +330,8 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
 
         return bookCheckouts.stream()
                 .filter(x -> x.getDateReturned() == null)
-                .filter(x -> x.getScheduledReturn().isEqual(
-                        LocalDate.now().plusDays(DAYS_NEARING_THE_SCHEDULED_RETURN_DATE)) || x.getScheduledReturn()
-                        .isBefore(LocalDate.now().plusDays(DAYS_NEARING_THE_SCHEDULED_RETURN_DATE)))
-                .map(bookCheckoutConverter::toSchedulerBookCheckoutDTO)
+                .filter(x -> isBookCheckoutNearingReturnDate(x.getScheduledReturnDate()))
+                .map(bookCheckoutConverter::toBookCheckoutReturnReminderResponseDTO)
                 .toList();
     }
 
@@ -403,12 +343,10 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
                 .filter(x -> x.getDateReturned() == null)
                 .count();
 
-        return countInstancesOfUser < MAX_NUMBER_OF_BORROWED_BOOKS;
+        return countInstancesOfUser == MAX_NUMBER_OF_BORROWED_BOOKS;
     }
 
-    private boolean hasInstanceOfBookBorrowed(UUID userId, UUID bookItemId) {
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
-                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+    private boolean hasInstanceOfBookBorrowed(UUID userId, BookItem bookItem) {
         Book book = bookItem.getBook();
 
         List<BookCheckout> bookCheckoutsForUserAndBook =
@@ -419,21 +357,26 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
                 .anyMatch(x -> x.getDateReturned() == null);
     }
 
-    private boolean canBorrowAgain(UUID userId, BookItem bookItem) {
-        Book book = bookItem.getBook();
+    private String resolveBookCheckoutResponseMessage(BookCheckout bookCheckout) {
+        LocalDate scheduledReturnDate = bookCheckout.getScheduledReturnDate();
+        LocalDate dateReturned = bookCheckout.getDateReturned();
 
-        List<BookCheckout> bookCheckoutsForUserAndBook =
-                this.bookCheckoutRepository.findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(
-                        book.getISBN(), userId);
+        if (scheduledReturnDate.isBefore(dateReturned)) {
+            int daysDifference = (int) ChronoUnit.DAYS.between(scheduledReturnDate, dateReturned);
 
-        if (bookCheckoutsForUserAndBook.isEmpty()) {
-            return true;
+            return "The book return is overdue by "
+                    + daysDifference + " day(s), next time be more careful about the scheduled return date.";
+        } else if (scheduledReturnDate.isEqual(dateReturned)) {
+            return "The book is returned on the scheduled return date.";
+        } else {
+            return "The book is returned before the scheduled return date.";
         }
-
-        LocalDate lastBorrowDate = bookCheckoutsForUserAndBook.getLast().getDateBorrowed();
-        LocalDate earliestBorrowDateAllowed = LocalDate.now().minusDays(DAYS_UNTIL_SAME_BOOK_CAN_BE_BORROWED);
-
-
-        return lastBorrowDate.isBefore(earliestBorrowDateAllowed);
     }
+
+    private boolean isBookCheckoutNearingReturnDate(LocalDate scheduledReturnDate){
+        int daysBeforeReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), scheduledReturnDate);
+
+        return daysBeforeReturn <= DAYS_NEARING_THE_SCHEDULED_RETURN_DATE;
+    }
+
 }

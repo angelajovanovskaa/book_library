@@ -33,5 +33,5 @@ public class BookCheckout {
 
     private LocalDate dateReturned;
 
-    private LocalDate scheduledReturn;
+    private LocalDate scheduledReturnDate;
 }

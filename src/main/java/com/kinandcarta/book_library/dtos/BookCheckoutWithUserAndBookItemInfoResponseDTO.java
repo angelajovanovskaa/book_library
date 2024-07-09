@@ -10,6 +10,6 @@ public record BookCheckoutWithUserAndBookItemInfoResponseDTO(
         String bookISBN,
         LocalDate dateBorrowed,
         LocalDate dateReturned,
-        LocalDate scheduledReturn
+        LocalDate scheduledReturnDate
 ) {
 }

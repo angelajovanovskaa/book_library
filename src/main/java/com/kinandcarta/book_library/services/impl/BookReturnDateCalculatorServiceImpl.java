@@ -14,12 +14,12 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class CalculatorServiceImpl implements CalculatorService {
+public class BookReturnDateCalculatorServiceImpl implements CalculatorService {
 
     private static final int AVERAGE_PAGES_READ_PER_DAY = 25;
 
     /**
-     * <b>This method is used to calculate the scheduledReturnDate for a BookItem when it's borrowed</b><br>
+     * This method is used to calculate the scheduledReturnDate for a BookItem when it's borrowed<br>
      * The algorithm get the books totalPages and divides it by the {@code AVERAGE_PAGES_READ_PER_DAY}.
      *
      * @param bookItem Object of the whole BookItem, cannot be {@code null}

@@ -8,7 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
- * Converts {@link UserConverter} entities to various Data Transfer Objects (DTOs) used in responses.
+ * This class is responsible for providing conversion methods from {@link User} entity to
+ * Data Transfer Objects and vice versa.
  */
 @Component
 @RequiredArgsConstructor
