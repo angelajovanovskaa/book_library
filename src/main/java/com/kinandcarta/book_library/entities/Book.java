@@ -1,8 +1,6 @@
 package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Genre;
-import com.kinandcarta.book_library.enums.Language;
 
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 
@@ -19,7 +17,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import lombok.ToString;
 import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.Type;
 

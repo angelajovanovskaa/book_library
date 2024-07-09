@@ -60,12 +60,4 @@ public class RequestedBook {
             this.users.add(user);
         }
     }
-
-    public String getIsbn() {
-        return book != null ? book.getISBN() : null;
-    }
-
-    public String getTitle() {
-        return book != null ? book.getTitle() : null;
-    }
 }

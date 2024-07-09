@@ -1,11 +1,10 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.DTOs;
 
 import lombok.Builder;
 
 import java.util.List;
 import java.util.UUID;
 
-@Builder
 public record RequestedBookDTO(
 
         UUID id,
@@ -15,5 +14,7 @@ public record RequestedBookDTO(
         String bookISBN,
 
         List<String> userEmails
+
+
 ) {
 }

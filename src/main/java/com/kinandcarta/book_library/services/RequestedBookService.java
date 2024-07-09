@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.projections.RequestedBookDTO;
+import com.kinandcarta.book_library.DTOs.RequestedBookDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +24,7 @@ public interface RequestedBookService {
 
     RequestedBookDTO save(String bookISBN);
 
-    RequestedBookDTO delete(UUID requestedBookId);
+    RequestedBookDTO deleteRequestedBook(UUID requestedBookId);
 
     RequestedBookDTO setStatusToPendingPurchase(UUID requestedBookId);
 

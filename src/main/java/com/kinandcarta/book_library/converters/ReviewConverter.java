@@ -4,9 +4,10 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.projections.ReviewDTO;
+import com.kinandcarta.book_library.DTOs.ReviewDTO;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -14,15 +15,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class ReviewConverter {
+
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-
-    public ReviewConverter(UserRepository userRepository, BookRepository bookRepository) {
-
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-    }
 
     public ReviewDTO toReviewDTO(Review review) {
 
@@ -48,7 +45,7 @@ public class ReviewConverter {
         review.setMessage(reviewDTO.message());
         review.setRating(reviewDTO.rating());
 
-        Optional<Book> book = this.bookRepository.findById(reviewDTO.bookISBN());
+        Optional<Book> book = bookRepository.findById(reviewDTO.bookISBN());
 
         if (book.isEmpty()) {
             throw new BookNotFoundException(reviewDTO.bookISBN());
@@ -56,7 +53,7 @@ public class ReviewConverter {
 
         review.setBook(book.get());
 
-        User user = this.userRepository.findByEmail(reviewDTO.userEmail());
+        User user = userRepository.findByEmail(reviewDTO.userEmail());
         review.setUser(user);
 
         return review;

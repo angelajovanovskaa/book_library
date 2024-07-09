@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.DTOs;
 
 public interface RequestedBookLikeCounterClosedProjection {
 

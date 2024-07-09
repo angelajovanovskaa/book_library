@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.projections.ReviewDTO;
+import com.kinandcarta.book_library.DTOs.ReviewDTO;
 
 import java.util.List;
 import java.util.UUID;
