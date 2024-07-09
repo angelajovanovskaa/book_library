@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
 
     /**
-     * <b>This method is used to get all of the registered users.</b>
+     * <b>This method is used to get all of the registered users.</b><br>
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * <b>This method is used to get all of the information ofr users profile</b>
+     * <b>This method is used to get all of the information ofr users profile</b><br>
      * All the users will have access to this method so they can view their profile.
      *
      * @param userId the Id of the user that we are trying to get details for.
@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * <b>This method is used for registering a new user</b>
+     * <b>This method is used for registering a new user</b><br>
      * All the users will have access to this method.
      *
      * @param userDTO the DTO will contain fullName, email and password, cannot be @{code null}
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * <b>This method is used for login in the user in the application</b>
+     * <b>This method is used for login in the user in the application</b><br>
      * All the users will have access to this method.
      *
      * @param userDTO the DTO contains userEmail and Password, cannot be @{code null}
@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * <b>This method is used for updating users @{code fullName(name and surname)}, @{code email} and @{code profilePicture}</b>
+     * <b>This method is used for updating users @{code fullName(name and surname)}, @{code email} and @{code profilePicture}</b><br>
      * At least one of the 3 attributes needs to not be @{null} so the method can pass.
      * All the users have access to this method for their account.
      *
@@ -132,7 +132,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * <b>This method is used for updating users role</b>
+     * <b>This method is used for updating users role</b><br>
      * This method will only be accessible by the admin.
      *
      * @param userDTO the DTO contains userId and Role, cannot be @{code null}
@@ -150,7 +150,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * <b>This method is used to delete the account of an unused user</b>
+     * <b>This method is used to delete the account of an unused user</b><br>
      * This method will only be accessible by the admin.
      *
      * @param userId the Id of the user that we are trying to delete.
@@ -164,6 +164,13 @@ public class UserServiceImpl implements UserService {
         return "The account of the user: " + user.getFullName() + "has been successfully deleted";
     }
 
+    /**
+     * <b>This method is used to change the password for the users account</b><br>
+     * All the users have access to this method for their account.
+     *
+     * @param userDTO the DTO contains userId, oldPassword and newPassword cannot be @{code null}
+     * @return A string message confirming that the password has been successfully changed.
+     */
     @Override
     public String changeUserPassword(UserChangePasswordRequestDTO userDTO) {
         UUID userId = userDTO.userId();
