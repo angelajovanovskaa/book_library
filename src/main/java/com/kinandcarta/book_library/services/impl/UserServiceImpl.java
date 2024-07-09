@@ -119,10 +119,6 @@ public class UserServiceImpl implements UserService {
         UUID userId = userDTO.userId();
         User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
-        if (StringUtils.isNotBlank(userDTO.email())) {
-            user.setEmail(userDTO.email());
-        }
-
         if (StringUtils.isNotBlank(userDTO.fullName())) {
             user.setFullName(userDTO.fullName());
         }

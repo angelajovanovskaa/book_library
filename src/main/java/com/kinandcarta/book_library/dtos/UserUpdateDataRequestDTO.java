@@ -10,7 +10,6 @@ public record UserUpdateDataRequestDTO(
         @NotBlank
         UUID userId,
         String fullName,
-        String email,
         byte[] image
 ) {
     @Override
@@ -18,14 +17,13 @@ public record UserUpdateDataRequestDTO(
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserUpdateDataRequestDTO that = (UserUpdateDataRequestDTO) o;
-        return Objects.equals(userId, that.userId) && Objects.equals(email,
-                that.email) && Objects.deepEquals(image, that.image) && Objects.equals(fullName,
+        return Objects.equals(userId, that.userId) && Objects.deepEquals(image, that.image) && Objects.equals(fullName,
                 that.fullName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, fullName, email, Arrays.hashCode(image));
+        return Objects.hash(userId, fullName, Arrays.hashCode(image));
     }
 
     @Override
@@ -33,7 +31,6 @@ public record UserUpdateDataRequestDTO(
         return "UserChangePictureRequestDTO{" +
                 "userId=" + userId +
                 ", fullName='" + fullName + '\'' +
-                ", email='" + email + '\'' +
                 ", image=" + Arrays.toString(image) +
                 '}';
     }
