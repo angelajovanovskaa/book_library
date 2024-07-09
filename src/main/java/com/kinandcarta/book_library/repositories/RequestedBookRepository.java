@@ -13,17 +13,13 @@ import java.util.UUID;
 
 public interface RequestedBookRepository extends JpaRepository<RequestedBook, UUID> {
 
-    @Query("SELECT rb FROM RequestedBook rb WHERE rb.book.ISBN = :isbn")
-    Optional<RequestedBook> findRequestedBookByISBN(@Param("isbn") String isbn);
+    Optional<RequestedBook> findByBookISBN(String isbn);
 
-    @Query("SELECT rb FROM RequestedBook rb WHERE rb.book.title = :title")
-    Optional<RequestedBook> findRequestedBookByTitle(@Param("title") String title);
+    Optional<RequestedBook> findByBookTitle(String title);
 
-    @Query("SELECT rb FROM RequestedBook rb WHERE rb.book.bookStatus = :status ORDER BY rb.likeCounter DESC")
-    List<RequestedBook> findTopByOrderByLikeCounterDesc(@Param("status") String status);
+    List<RequestedBook> findTopByBookBookStatusOrderByLikeCounterDesc(BookStatus status);
 
-    @Query("SELECT rb FROM RequestedBook rb WHERE rb.book.bookStatus = :status")
-    List<RequestedBook> findAllByBookStatus(@Param("status") BookStatus status);
+    List<RequestedBook> findAllByBookBookStatus(BookStatus status);
 
     @Query("SELECT rb.book.ISBN AS isbn, rb.book.title AS title, rb.likeCounter AS likeCounter FROM RequestedBook rb")
     List<RequestedBookLikeCounterClosedProjection> findAllRequestedBookLikeCounterProjection();

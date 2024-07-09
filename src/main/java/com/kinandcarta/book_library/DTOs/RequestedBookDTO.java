@@ -1,7 +1,5 @@
 package com.kinandcarta.book_library.DTOs;
 
-import lombok.Builder;
-
 import java.util.List;
 import java.util.UUID;
 
@@ -13,8 +11,14 @@ public record RequestedBookDTO(
 
         String bookISBN,
 
+        String title,
+
+        String language,
+
+        String image,
+
+        List<String> authorsFullName,
+
         List<String> userEmails
-
-
 ) {
 }

@@ -1,14 +1,11 @@
 package com.kinandcarta.book_library.DTOs;
 
-import lombok.Builder;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 import java.util.UUID;
 
-@Builder
 public record ReviewDTO(
 
         UUID id,

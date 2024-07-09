@@ -26,13 +26,7 @@ public interface RequestedBookService {
 
     RequestedBookDTO deleteRequestedBook(UUID requestedBookId);
 
-    RequestedBookDTO setStatusToPendingPurchase(UUID requestedBookId);
-
-    RequestedBookDTO setStatusToRequested(UUID requestedBookId);
-
-    RequestedBookDTO setStatusToRejected(UUID requestedBookId);
-
     RequestedBookDTO changeStatus(UUID requestedBookId, BookStatus to);
 
-    RequestedBookDTO buyRequestedBook(UUID requestedBookId);
+    RequestedBookDTO enterRequestedBookInStock(UUID requestedBookId);
 }

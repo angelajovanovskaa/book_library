@@ -8,8 +8,8 @@ public class RequestedBookNotFoundException extends CustomNotFoundException {
         super("Recommended book with id " + id + " not found");
     }
 
-    public RequestedBookNotFoundException(String message) {
-        super("Recommended book with isbn/title " + message + " not found");
+    public RequestedBookNotFoundException(String isbn) {
+        super("Recommended book with isbn " + isbn + " not found");
     }
 
     public RequestedBookNotFoundException() {

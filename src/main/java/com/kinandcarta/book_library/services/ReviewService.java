@@ -17,7 +17,7 @@ public interface ReviewService {
 
     ReviewDTO save(ReviewDTO reviewDTO);
 
-    ReviewDTO delete(UUID id);
+    ReviewDTO update(ReviewDTO reviewDTO);
 
-    Double getAverageRatingOnBook(String bookISBN);
+    ReviewDTO delete(UUID id);
 }
