@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.services;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.projections.BookDTO;
 import com.kinandcarta.book_library.projections.BookDisplayDTO;
 
@@ -15,10 +14,10 @@ public interface BookService {
     Optional<BookDTO> findBookByISBN(String ISBN);
     List<BookDTO> findBooksByTitle(String title);
     List<BookDisplayDTO> filterAvailableBooks(BookStatus bookStatus, BookItemState bookItemState);
-    List<BookDisplayDTO> findBooksByBookStatusRecommended(BookStatus bookStatus);
-    List<BookDisplayDTO> findBooksByLanguage(Language language);
+    List<BookDisplayDTO> findBooksByBookStatusRequested(BookStatus bookStatus);
+    List<BookDisplayDTO> findBooksByLanguage(String language);
     List<BookDisplayDTO> findBooksByGenresContaining(String[] genres);
     BookDTO create(BookDTO bookDTO);
     String delete(String ISBN);
-    Optional<BookDTO> setBookStatusPresent(Book book);
+    Optional<BookDTO> setBookStatusInStock(Book book);
 }

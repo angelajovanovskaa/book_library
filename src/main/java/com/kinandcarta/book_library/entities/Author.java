@@ -14,7 +14,6 @@ import static java.util.Objects.isNull;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class Author {
 
     @Id

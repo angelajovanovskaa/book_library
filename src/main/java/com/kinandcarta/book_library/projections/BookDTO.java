@@ -1,8 +1,6 @@
 package com.kinandcarta.book_library.projections;
 
-import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Language;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
@@ -16,16 +14,15 @@ public record BookDTO(
         String title,
         @NotBlank
         String description,
-        String summary,
-        Language language,
+        String language,
         @Positive
         int totalPages,
         BookStatus bookStatus,
         String image,
         double ratingFromWeb,
         double ratingFromFirm,
-        Set<AuthorFullNameProjection> authors,
-        Set<Review> reviews
+        Set<AuthorFullNameProjection> authors
+//        Set<Review> reviews
 
 ) {
 }

@@ -7,8 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class AuthorFullNameProjection {
 
-    private String name;
+    private String fullName;
 
-    private String surname;
+
 
 }

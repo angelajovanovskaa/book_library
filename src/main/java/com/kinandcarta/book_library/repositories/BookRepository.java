@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.repositories;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Language;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +15,7 @@ public interface BookRepository extends JpaRepository<Book, String> {
     List<Book> findBookByBookStatus(BookStatus bookStatus);
     Optional<Book> findByISBN(String isbn);
     List<Book> findBooksByTitle(String title);
-    List<Book> findByLanguage(Language language);
+    List<Book> findByLanguage(String language);
     @Query(value = "SELECT * FROM book WHERE genres @> ARRAY[:genres]::text[]", nativeQuery = true)
     List<Book> findBooksByGenresContaining(@Param("genres") String[] genres);
 

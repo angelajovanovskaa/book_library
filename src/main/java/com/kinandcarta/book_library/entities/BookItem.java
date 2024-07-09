@@ -15,7 +15,6 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Entity
 public class BookItem {
 

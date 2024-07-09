@@ -5,16 +5,32 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.projections.AuthorFullNameProjection;
 import com.kinandcarta.book_library.projections.BookDTO;
 import com.kinandcarta.book_library.projections.BookDisplayDTO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Component
 public class BookConverter {
 
     public BookDTO toBookDTO(Book book) {
-        return BookDTO.builder().ISBN(book.getISBN()).title(book.getTitle()).description(book.getDescription()).image(book.getImage()).language(book.getLanguage()).totalPages(book.getTotalPages()).bookStatus(book.getBookStatus()).ratingFromFirm(book.getRatingFromFirm()).ratingFromWeb(book.getRatingFromWeb()).authors(book.getAuthors().stream().map(author -> new AuthorFullNameProjection(author.getName(), author.getSurname())).collect(Collectors.toSet())).build();
+        return new BookDTO(
+                book.getISBN(),
+                book.getTitle(),
+                book.getDescription(),
+                book.getImage(),
+                book.getTotalPages(),
+                book.getBookStatus(),
+                book.getLanguage(),
+                book.getRatingFromFirm(),
+                book.getRatingFromWeb(),
+                book.getAuthors().stream()
+                        .map(author -> new AuthorFullNameProjection(author.getFullName()))
+                        .collect(Collectors.toSet())
+        );
+
     }
 
     public Book toBookEntity(BookDTO bookDTO) {
@@ -32,8 +48,7 @@ public class BookConverter {
 
         Set<Author> authors = bookDTO.authors().stream().map(authorFullNameProjection -> {
             Author author = new Author();
-            author.setName(authorFullNameProjection.getName());
-            author.setSurname(authorFullNameProjection.getSurname());
+            author.setFullName(authorFullNameProjection.getFullName());
             return author;
         }).collect(Collectors.toSet());
 
@@ -43,7 +58,15 @@ public class BookConverter {
     }
 
     public BookDisplayDTO bookDisplayDTO(Book book) {
-        return BookDisplayDTO.builder().ISBN(book.getISBN()).title(book.getTitle()).language(book.getLanguage()).image(book.getImage()).authors(book.getAuthors().stream().map(author -> new AuthorFullNameProjection(author.getName(), author.getSurname())).collect(Collectors.toSet())).build();
+        return new BookDisplayDTO(
+                book.getISBN(),
+                book.getTitle(),
+                book.getLanguage(),
+                book.getImage(),
+                book.getAuthors().stream()
+                        .map(author -> new AuthorFullNameProjection(author.getFullName()))
+                        .collect(Collectors.toSet())
+        );
     }
 }
 

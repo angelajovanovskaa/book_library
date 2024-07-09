@@ -9,7 +9,7 @@ import java.util.Set;
 public record BookDisplayDTO(
         String ISBN,
         String title,
-        Language language,
+        String language,
         String image,
         Set<AuthorFullNameProjection> authors
 ) {

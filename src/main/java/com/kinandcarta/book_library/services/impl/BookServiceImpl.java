@@ -4,7 +4,6 @@ import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.projections.BookDTO;
 import com.kinandcarta.book_library.projections.BookDisplayDTO;
@@ -83,7 +82,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public List<BookDisplayDTO> filterAvailableBooks(BookStatus bookStatus, BookItemState bookItemState) {
-        List<Book> books = bookRepository.findByBookStatusAndBookItems_BookItemState(BookStatus.PRESENT, BookItemState.AVAILABLE);
+        List<Book> books = bookRepository.findByBookStatusAndBookItems_BookItemState(BookStatus.IN_STOCK, BookItemState.AVAILABLE);
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
@@ -97,8 +96,8 @@ public class BookServiceImpl implements BookService {
      * @return List of recommended books converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> findBooksByBookStatusRecommended(BookStatus bookStatus) {
-        List<Book> books = bookRepository.findBookByBookStatus(BookStatus.RECOMMENDED);
+    public List<BookDisplayDTO> findBooksByBookStatusRequested(BookStatus bookStatus) {
+        List<Book> books = bookRepository.findBookByBookStatus(BookStatus.REQUESTED);
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
@@ -112,8 +111,8 @@ public class BookServiceImpl implements BookService {
      * @return List of books in the specified language converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> findBooksByLanguage(Language language) {
-        List<Book> books = bookRepository.findByLanguage(language);
+    public List<BookDisplayDTO> findBooksByLanguage(String language) {
+        List<Book> books = bookRepository.findByLanguage(language.toString());
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
@@ -173,14 +172,14 @@ public class BookServiceImpl implements BookService {
      * @return An Optional containing the updated BookDTO if the book was found, otherwise empty.
      */
     @Override
-    public Optional<BookDTO> setBookStatusPresent(Book book) {
+    public Optional<BookDTO> setBookStatusInStock(Book book) {
         Optional<Book> foundBook = bookRepository.findByISBN(book.getISBN());
 
         if (foundBook.isEmpty()) {
             return Optional.empty();
         }
 
-        foundBook.get().setBookStatus(BookStatus.PRESENT);
+        foundBook.get().setBookStatus(BookStatus.IN_STOCK);
 
         BookDTO updatedBookDTO = bookConverter.toBookDTO(foundBook.get());
 
