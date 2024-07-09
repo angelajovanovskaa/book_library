@@ -10,5 +10,6 @@ public interface BookItemService {
     List<BookItemDTO> findByBookIsbn(String isbn);
     BookItem create(BookItemDTO bookItemDTO);
     UUID deleteById(UUID id);
-
+    String reportBookItemAsDamaged(UUID bookItemId);
+    String reportBookItemAsLost(UUID bookItemId);
 }

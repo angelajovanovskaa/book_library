@@ -3,7 +3,9 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookItemConverter;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
+import com.kinandcarta.book_library.exceptions.InvalidReportBookItemRequestException;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.projections.BookItemDTO;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
@@ -66,7 +68,6 @@ public class BookItemServiceImpl implements BookItemService {
      * @return The ID of the deleted BookItem.
      * @throws BookItemNotFoundException If no BookItem exists with the given ID.
      */
-
     @Override
     public UUID deleteById(UUID id) {
         if (!bookItemRepository.existsById(id)) {
@@ -74,5 +75,42 @@ public class BookItemServiceImpl implements BookItemService {
         }
         bookItemRepository.deleteById(id);
         return id;
+    }
+    /**
+     * This method is used to report a book as damaged after a return.<br>
+     * All users will have access to this method. Only accessible after a successful return
+     *
+     * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
+     * @return A message indicating that the book has been reported as damaged.
+     * @throws InvalidReportBookItemRequestException if bookItemId is {@code null}
+     */
+    @Override
+    public String reportBookItemAsDamaged(UUID bookItemId) {
+        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+
+        bookItem.setBookItemState(BookItemState.DAMAGED);
+        this.bookItemRepository.save(bookItem);
+
+        return "The book " + bookItem.getBook().getTitle() + " is reported as damaged";
+    }
+
+    /**
+     * This method is used to report a book as lost.<br>
+     * All users will have access to this method.
+     *
+     * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
+     * @return A message indicating that the book has been reported as lost.
+     * @throws InvalidReportBookItemRequestException if bookItemId is {@code null}
+     */
+    @Override
+    public String reportBookItemAsLost(UUID bookItemId) {
+        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+                .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+
+        bookItem.setBookItemState(BookItemState.LOST);
+        this.bookItemRepository.save(bookItem);
+
+        return "The book " + bookItem.getBook().getTitle() + " is reported as lost";
     }
 }
