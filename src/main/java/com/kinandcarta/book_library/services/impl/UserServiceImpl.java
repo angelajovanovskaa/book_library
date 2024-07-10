@@ -107,11 +107,11 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used for updating users {@code fullName(name and surname)}, {@code email} and {@code profilePicture}<br>
-     * At least one of the 3 attributes needs to not be {@code null} so the method can pass.
+     * This method is used for updating users {@code fullName(name and surname)} and {@code profilePicture}<br>
+     * At least one of the two attributes needs to not be {@code null} so the method can pass.
      * All the users have access to this method for their account.
      *
-     * @param userDTO will contain fullName, email and profilePicture
+     * @param userDTO will contain fullName and profilePicture
      */
     @Override
     @Transactional
