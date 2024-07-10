@@ -13,6 +13,7 @@ import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
 import com.kinandcarta.book_library.services.impl.BookCheckoutServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,9 @@ class BookCheckoutUnitTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private BookReturnDateCalculatorService bookReturnDateCalculatorService;
 
     @InjectMocks
     private BookCheckoutServiceImpl bookCheckoutService;
