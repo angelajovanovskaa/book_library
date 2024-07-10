@@ -2,9 +2,9 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.projections.AuthorFullNameProjection;
-import com.kinandcarta.book_library.projections.BookDTO;
-import com.kinandcarta.book_library.projections.BookDisplayDTO;
+import com.kinandcarta.book_library.dtos.AuthorDTO;
+import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +17,7 @@ public class BookConverter {
 
     public BookDTO toBookDTO(Book book) {
         return new BookDTO(
-                book.getISBN(),
+                book.getIsbn(),
                 book.getTitle(),
                 book.getDescription(),
                 book.getImage(),
@@ -27,7 +27,7 @@ public class BookConverter {
                 book.getRatingFromFirm(),
                 book.getRatingFromWeb(),
                 book.getAuthors().stream()
-                        .map(author -> new AuthorFullNameProjection(author.getFullName()))
+                        .map(author -> new AuthorDTO(author.getFullName()))
                         .collect(Collectors.toSet())
         );
 
@@ -36,7 +36,7 @@ public class BookConverter {
     public Book toBookEntity(BookDTO bookDTO) {
         Book book = new Book();
 
-        book.setISBN(bookDTO.ISBN());
+        book.setIsbn(bookDTO.ISBN());
         book.setTitle(bookDTO.title());
         book.setDescription(bookDTO.description());
         book.setImage(bookDTO.image());
@@ -46,25 +46,24 @@ public class BookConverter {
         book.setRatingFromFirm(bookDTO.ratingFromFirm());
         book.setRatingFromWeb(bookDTO.ratingFromWeb());
 
-        Set<Author> authors = bookDTO.authors().stream().map(authorFullNameProjection -> {
+        Set<Author> authors = bookDTO.authorDTOS().stream().map(authorDTO -> {
             Author author = new Author();
-            author.setFullName(authorFullNameProjection.getFullName());
+            author.setFullName(authorDTO.getFullName());
             return author;
         }).collect(Collectors.toSet());
 
         book.setAuthors(authors);
-
         return book;
     }
 
     public BookDisplayDTO bookDisplayDTO(Book book) {
         return new BookDisplayDTO(
-                book.getISBN(),
+                book.getIsbn(),
                 book.getTitle(),
                 book.getLanguage(),
                 book.getImage(),
                 book.getAuthors().stream()
-                        .map(author -> new AuthorFullNameProjection(author.getFullName()))
+                        .map(author -> new AuthorDTO(author.getFullName()))
                         .collect(Collectors.toSet())
         );
     }

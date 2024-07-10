@@ -1,15 +1,13 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 import com.kinandcarta.book_library.enums.BookItemState;
-import lombok.Builder;
 
 import java.util.UUID;
 
-@Builder
+
 public record BookItemDTO(
         UUID id,
         String ISBN,
-        BookItemState bookItemState,
-        byte[] barcode
+        BookItemState bookItemState
 ) {
 }

@@ -1,12 +1,16 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
+import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.projections.BookDTO;
 import com.kinandcarta.book_library.projections.BookDisplayDTO;
+import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.BookService;
 
@@ -14,8 +18,10 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +33,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final BookConverter bookConverter;
-
+    private final AuthorRepository authorRepository;
     /**
      * <b>Retrieves a list of Books.</b>
      *
@@ -50,7 +56,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public Optional<BookDTO> findBookByISBN(String ISBN) {
-        Optional<Book> book = bookRepository.findByISBN(ISBN);
+        Optional<Book> book = bookRepository.findByIsbn(ISBN);
         if (book.isEmpty()) {
             throw new BookNotFoundException(ISBN);
         }
@@ -143,6 +149,22 @@ public class BookServiceImpl implements BookService {
     @Override
     public BookDTO create(BookDTO bookDTO) {
         Book book = bookConverter.toBookEntity(bookDTO);
+
+        Set<Author> managedAuthors = new HashSet<>();
+
+        for (Author authorFromDTO : book.getAuthors()) {
+            Optional<Author> existingAuthorOpt = authorRepository.findByFullName(authorFromDTO.getFullName());
+
+            if (existingAuthorOpt.isPresent()) {
+                managedAuthors.add(existingAuthorOpt.get());
+            } else {
+                Author newAuthor = authorRepository.save(authorFromDTO);
+                managedAuthors.add(newAuthor);
+            }
+        }
+
+        book.setAuthors(managedAuthors);
+
         Book savedBook = bookRepository.save(book);
 
         return bookConverter.toBookDTO(savedBook);
@@ -160,6 +182,7 @@ public class BookServiceImpl implements BookService {
         if (!bookRepository.existsById(ISBN)) {
             throw new BookNotFoundException(ISBN);
         }
+
         bookRepository.deleteById(ISBN);
 
         return ISBN;
@@ -173,7 +196,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public Optional<BookDTO> setBookStatusInStock(Book book) {
-        Optional<Book> foundBook = bookRepository.findByISBN(book.getISBN());
+        Optional<Book> foundBook = bookRepository.findByIsbn(book.getIsbn());
 
         if (foundBook.isEmpty()) {
             return Optional.empty();

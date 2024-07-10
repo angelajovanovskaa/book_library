@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.projections.BookItemDTO;
+import com.kinandcarta.book_library.dtos.BookItemDTO;
 
 import java.util.List;
 import java.util.UUID;

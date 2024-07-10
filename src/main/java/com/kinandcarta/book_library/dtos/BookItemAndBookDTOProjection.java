@@ -1,7 +1,6 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 import com.kinandcarta.book_library.enums.BookItemState;
-import com.kinandcarta.book_library.enums.Language;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

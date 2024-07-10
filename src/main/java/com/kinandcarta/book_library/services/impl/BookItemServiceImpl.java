@@ -7,7 +7,7 @@ import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
 import com.kinandcarta.book_library.exceptions.InvalidReportBookItemRequestException;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.projections.BookItemDTO;
+import com.kinandcarta.book_library.dtos.BookItemDTO;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.BookItemService;
@@ -54,7 +54,7 @@ public class BookItemServiceImpl implements BookItemService {
     public BookItem create(BookItemDTO bookItemDTO) {
         Optional<Book> maybeBook = bookRepository.findById(bookItemDTO.ISBN());
         if (maybeBook.isEmpty()) {
-            throw new BookNotFoundException(maybeBook.get().getISBN());
+            throw new BookNotFoundException(maybeBook.get().getIsbn());
         }
         BookItem bookItem = bookItemConverter.toBookItemEntity(bookItemDTO, maybeBook.get());
 

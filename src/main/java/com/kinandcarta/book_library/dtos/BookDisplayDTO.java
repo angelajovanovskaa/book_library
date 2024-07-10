@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 import com.kinandcarta.book_library.enums.Language;
 import lombok.Builder;
@@ -11,6 +11,6 @@ public record BookDisplayDTO(
         String title,
         String language,
         String image,
-        Set<AuthorFullNameProjection> authors
+        Set<AuthorDTO> authorDTOS
 ) {
 }

@@ -37,7 +37,7 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 public class Book {
 
     @Id
-    private String ISBN;
+    private String isbn;
 
     private String title;
 

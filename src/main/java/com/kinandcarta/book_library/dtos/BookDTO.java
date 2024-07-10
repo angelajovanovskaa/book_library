@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 import com.kinandcarta.book_library.enums.BookStatus;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +21,7 @@ public record BookDTO(
         String image,
         double ratingFromWeb,
         double ratingFromFirm,
-        Set<AuthorFullNameProjection> authors
+        Set<AuthorDTO> authorDTOS
 //        Set<Review> reviews
 
 ) {

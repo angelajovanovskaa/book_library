@@ -1,14 +1,11 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AuthorFullNameProjection {
+public class AuthorDTO {
 
     private String fullName;
-
-
-
 }

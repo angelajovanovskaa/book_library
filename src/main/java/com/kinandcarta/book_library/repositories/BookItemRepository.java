@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BookItemRepository extends JpaRepository<BookItem, UUID> {
-    @Query("SELECT bi FROM BookItem bi JOIN bi.book b WHERE b.ISBN = :isbn")
+    @Query("SELECT bi FROM BookItem bi JOIN bi.book b WHERE b.isbn = :isbn")
     List<BookItem> findByBookIsbn(@Param("isbn") String isbn);
 
 

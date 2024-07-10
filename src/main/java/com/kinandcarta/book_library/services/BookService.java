@@ -3,8 +3,8 @@ package com.kinandcarta.book_library.services;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.projections.BookDTO;
-import com.kinandcarta.book_library.projections.BookDisplayDTO;
+import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 
 import java.util.List;
 import java.util.Optional;

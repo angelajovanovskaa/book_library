@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.projections;
+package com.kinandcarta.book_library.dtos;
 
 
 import lombok.AllArgsConstructor;
@@ -18,5 +18,5 @@ public class BookAuthorDTOProjection {
 
     private String image;
 
-    private Set<AuthorFullNameProjection> actors;
+    private Set<AuthorDTO> authorDTOS;
 }
