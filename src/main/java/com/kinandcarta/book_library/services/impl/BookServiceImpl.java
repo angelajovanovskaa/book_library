@@ -6,8 +6,6 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.projections.BookDTO;
-import com.kinandcarta.book_library.projections.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.repositories.AuthorRepository;
