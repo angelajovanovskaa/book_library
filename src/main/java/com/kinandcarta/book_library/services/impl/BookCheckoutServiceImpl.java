@@ -15,7 +15,7 @@ import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutService;
-import com.kinandcarta.book_library.services.CalculatorService;
+import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
     private final BookCheckoutConverter bookCheckoutConverter;
     private final BookItemRepository bookItemRepository;
     private final UserRepository userRepository;
-    private final CalculatorService calculatorService;
+    private final BookReturnDateCalculatorService calculatorService;
 
     /**
      * This method is used to get all of the book checkouts.<br>
@@ -232,12 +232,13 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
      * @param bookCheckoutDTO The DTO containing userId and bookItemId for the book to be borrowed, cannot be
      *                        {@code null}.
      * @return A message indicating that the book was successfully borrowed.
-     * @throws LimitReachedForBorrowedBooks       If the user has already borrowed the maximum number of books.
-     * @throws UserNotFoundException              If the specified userId does not correspond to any user in the repository.
-     * @throws BookItemNotFoundException          If the specified bookItemId does not correspond to any book item in the
-     *                                            repository.
-     * @throws BookItemAlreadyBorrowedException   If the book item is already borrowed by another user.
-     * @throws BookAlreadyBorrowedByUserException If the user already has an instance of the same book borrowed.
+     * @throws LimitReachedForBorrowedBooksException  If the user has already borrowed the maximum number of books.
+     * @throws UserNotFoundException                  If the specified userId does not correspond to any user in the
+     *                                                repository.
+     * @throws BookItemNotFoundException              If the specified bookItemId does not correspond to any book item
+     *                                                in the repository.
+     * @throws BookItemAlreadyBorrowedException       If the book item is already borrowed by another user.
+     * @throws BookAlreadyBorrowedByUserException     If the user already has an instance of the same book borrowed.
      */
     @Override
     @Transactional
@@ -246,7 +247,7 @@ public class BookCheckoutServiceImpl implements BookCheckoutService {
 
         UUID userId = bookCheckoutDTO.userId();
         if (isBorrowedBooksLimitReached(userId)) {
-            throw new LimitReachedForBorrowedBooks(MAX_NUMBER_OF_BORROWED_BOOKS);
+            throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
         }
         User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
