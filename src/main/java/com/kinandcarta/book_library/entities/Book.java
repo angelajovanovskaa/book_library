@@ -12,7 +12,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
@@ -62,12 +65,14 @@ public class Book {
     @Column(name = "genres", columnDefinition = "text[]")
     private String[] genres;
 
-    @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
-    private Set<Author> authors= new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "book_author",
+            joinColumns = @JoinColumn(name = "book_isbn"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "book")
+    @OneToMany(mappedBy = "book")
     private List<BookItem> bookItems;
-
 
     public void addBookItems(Collection<BookItem> bookItems) {
         if (isNotEmpty(bookItems)) {

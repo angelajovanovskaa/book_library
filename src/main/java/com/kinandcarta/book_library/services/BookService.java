@@ -11,13 +11,13 @@ import java.util.Optional;
 
 public interface BookService {
     List<BookDTO> findAll();
-    Optional<BookDTO> findBookByISBN(String ISBN);
+    Optional<BookDTO> findBookByIsbn(String isbn);
     List<BookDTO> findBooksByTitle(String title);
     List<BookDisplayDTO> filterAvailableBooks(BookStatus bookStatus, BookItemState bookItemState);
     List<BookDisplayDTO> findBooksByBookStatusRequested(BookStatus bookStatus);
     List<BookDisplayDTO> findBooksByLanguage(String language);
     List<BookDisplayDTO> findBooksByGenresContaining(String[] genres);
     BookDTO create(BookDTO bookDTO);
-    String delete(String ISBN);
+    String delete(String isbn);
     Optional<BookDTO> setBookStatusInStock(Book book);
 }

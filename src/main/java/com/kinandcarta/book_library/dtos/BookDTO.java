@@ -15,6 +15,7 @@ public record BookDTO(
         @NotBlank
         String description,
         String language,
+        String[] genres,
         @Positive
         int totalPages,
         BookStatus bookStatus,

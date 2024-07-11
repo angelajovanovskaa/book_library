@@ -21,6 +21,7 @@ public class BookConverter {
                 book.getTitle(),
                 book.getDescription(),
                 book.getImage(),
+                book.getGenres(),
                 book.getTotalPages(),
                 book.getBookStatus(),
                 book.getLanguage(),
@@ -33,26 +34,21 @@ public class BookConverter {
 
     }
 
-    public Book toBookEntity(BookDTO bookDTO) {
+    public Book toBookEntity(BookDTO bookDTO, Set<Author> authors) {
         Book book = new Book();
 
         book.setIsbn(bookDTO.ISBN());
         book.setTitle(bookDTO.title());
         book.setDescription(bookDTO.description());
         book.setImage(bookDTO.image());
+        book.setGenres(bookDTO.genres());
         book.setLanguage(bookDTO.language());
         book.setTotalPages(bookDTO.totalPages());
         book.setBookStatus(bookDTO.bookStatus());
         book.setRatingFromFirm(bookDTO.ratingFromFirm());
         book.setRatingFromWeb(bookDTO.ratingFromWeb());
-
-        Set<Author> authors = bookDTO.authorDTOS().stream().map(authorDTO -> {
-            Author author = new Author();
-            author.setFullName(authorDTO.getFullName());
-            return author;
-        }).collect(Collectors.toSet());
-
         book.setAuthors(authors);
+
         return book;
     }
 
