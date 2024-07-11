@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,6 +31,7 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookConverter bookConverter;
     private final AuthorRepository authorRepository;
+
     /**
      * <b>Retrieves a list of Books.</b>
      *
@@ -48,15 +48,15 @@ public class BookServiceImpl implements BookService {
     /**
      * Retrieves a book by its ISBN from the repository and converts it into a BookDTO object.
      *
-     * @param ISBN ISBN of the book to find
+     * @param isbn isbn of the book to find
      * @return Optional containing the BookDTO if found, empty Optional otherwise
      * @throws BookNotFoundException if no book with the given ISBN is found
      */
     @Override
-    public Optional<BookDTO> findBookByISBN(String ISBN) {
-        Optional<Book> book = bookRepository.findByIsbn(ISBN);
+    public Optional<BookDTO> findBookByIsbn(String isbn) {
+        Optional<Book> book = bookRepository.findByIsbn(isbn);
         if (book.isEmpty()) {
-            throw new BookNotFoundException(ISBN);
+            throw new BookNotFoundException(isbn);
         }
         return book.map(bookConverter::toBookDTO);
     }
@@ -146,23 +146,21 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDTO create(BookDTO bookDTO) {
-        Book book = bookConverter.toBookEntity(bookDTO);
+        Set<Author> authors = bookDTO.authorDTOS().stream().map(authorDTO -> {
+            String fullNme = authorDTO.getFullName();
 
-        Set<Author> managedAuthors = new HashSet<>();
-
-        for (Author authorFromDTO : book.getAuthors()) {
-            Optional<Author> existingAuthorOpt = authorRepository.findByFullName(authorFromDTO.getFullName());
-
-            if (existingAuthorOpt.isPresent()) {
-                managedAuthors.add(existingAuthorOpt.get());
+            Optional<Author> maybeAuthor = authorRepository.findByFullName(fullNme);
+            Author author;
+            if (maybeAuthor.isPresent()) {
+                author = maybeAuthor.get();
             } else {
-                Author newAuthor = authorRepository.save(authorFromDTO);
-                managedAuthors.add(newAuthor);
+                author = new Author();
+                author.setFullName(fullNme);
             }
-        }
+            return author;
+        }).collect(Collectors.toSet());
 
-        book.setAuthors(managedAuthors);
-
+        Book book = bookConverter.toBookEntity(bookDTO, authors);
         Book savedBook = bookRepository.save(book);
 
         return bookConverter.toBookDTO(savedBook);
@@ -206,6 +204,4 @@ public class BookServiceImpl implements BookService {
 
         return Optional.of(updatedBookDTO);
     }
-
-
 }
