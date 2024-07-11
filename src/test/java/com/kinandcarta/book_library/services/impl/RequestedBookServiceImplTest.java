@@ -166,7 +166,7 @@ class RequestedBookServiceImplTest {
         //act & assert
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.getRequestedBookByISBN(isbn))
-                .withMessage("RequestedBook with isbn " + isbn + " not found");
+                .withMessage("RequestedBook with ISBN " + isbn + " not found");
     }
 
     @Test
@@ -198,7 +198,7 @@ class RequestedBookServiceImplTest {
         //act & assert
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.getRequestedBookByTitle(title))
-                .withMessage("RequestedBook with isbn " + title + " not found");
+                .withMessage("RequestedBook with ISBN " + title + " not found");
 
         then(requestedBookConverter).shouldHaveNoInteractions();
     }

@@ -18,10 +18,5 @@ public interface RequestedBookRepository extends JpaRepository<RequestedBook, UU
 
     Optional<RequestedBook> findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus status);
 
-    List<RequestedBook> findAll(BookStatus status);
-
     List<RequestedBook> findAllByBookBookStatus(BookStatus status);
-
-    @Query("SELECT rb.book.ISBN AS isbn, rb.book.title AS title, rb.likeCounter AS likeCounter FROM RequestedBook rb")
-    List<RequestedBookLikeCounterClosedProjection> findAllRequestedBookLikeCounterProjection();
 }
