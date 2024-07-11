@@ -16,7 +16,7 @@ public interface RequestedBookService {
 
     RequestedBookDTO getRequestedBookByISBN(String ISBN);
 
-    RequestedBookDTO getRequestedBookByTitle(String ISBN);
+    List<RequestedBookDTO> getRequestedBookByTitle(String ISBN);
 
     RequestedBookDTO getFavoriteRequestedBook();
 

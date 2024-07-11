@@ -19,13 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import com.kinandcarta.book_library.converters.*;
 
 /**
- * <h4>Implementation of {@link ReviewService} that contains service
- * logic implementation of the CRUD operations for Review.</h4>
+ * Implementation of {@link ReviewService} that contains service
+ * logic implementation of the CRUD operations for Review.
  */
 @Service
 @RequiredArgsConstructor
@@ -109,7 +108,7 @@ public class ReviewServiceImpl implements ReviewService {
     /**
      * Using this method, you can save new Review.
      * <hr>
-     * <a>Method also updates the ratingFromFirm attribute in the Book object.</a>
+     * Method also updates the ratingFromFirm attribute in the Book object.
      *
      * @param reviewDTO Type: (<i><u>ReviewDTO</u></i>)
      * @return (ReviewDTO)
@@ -118,7 +117,11 @@ public class ReviewServiceImpl implements ReviewService {
 
         Review review = reviewConverter.toReview(reviewDTO);
 
-        Book book = review.getBook();
+        Book book = getBook(reviewDTO.bookISBN());
+        review.setBook(book);
+
+        User user = getUser(reviewDTO.userEmail());
+        review.setUser(user);
 
         reviewRepository.save(review);
 
@@ -128,13 +131,24 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewConverter.toReviewDTO(review);
     }
 
+    /**
+     * Using this method, you can update an existing Review object by passing
+     * updated/modified ReviewDTO object.
+     * <hr>
+     *
+     * @param reviewDTO Type: (<i><u>ReviewDTO</u></i>)
+     * @return (ReviewDTO)
+     */
     @Override
     public ReviewDTO update(ReviewDTO reviewDTO) {
 
         Review review = reviewConverter.toReview(reviewDTO);
 
-        User user = review.getUser();
-        Book book = review.getBook();
+        Book book = getBook(reviewDTO.bookISBN());
+        review.setBook(book);
+
+        User user = getUser(reviewDTO.userEmail());
+        review.setUser(user);
 
         Optional<Review> oldVersion = reviewRepository.findByUserAndBook(user, book);
         if (oldVersion.isEmpty()) {
@@ -187,5 +201,27 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return calculateAverageReviewRatingOnBook.getAverageRatingOnBook(reviews);
+    }
+
+    private Book getBook(String isbn) {
+
+        Optional<Book> optionalBook = this.bookRepository.findById(isbn);
+
+        if (optionalBook.isEmpty()){
+            throw new BookNotFoundException(isbn);
+        }
+
+        return optionalBook.get();
+    }
+
+    private User getUser(String email) {
+
+        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+
+        if (optionalUser.isEmpty()){
+            throw new UserNotFoundException(email);
+        }
+
+        return optionalUser.get();
     }
 }

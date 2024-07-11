@@ -174,33 +174,17 @@ class RequestedBookServiceImplTest {
     void getRequestedBookByTitle_recommendedBookForGivenTitleExists_returnRequestedBook() {
         //arrange
         final String title = "title1";
-        final RequestedBook requestedBook = getRequestedBook();
-        final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        final List<RequestedBook> requestedBooks = List.of(getRequestedBook());
+        final List<RequestedBookDTO> requestedBookDTOS = List.of(getRequestedBookDTO());
 
-        given(requestedBookRepository.findByBookTitle(title)).willReturn(Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
+        given(requestedBookRepository.findByBookTitle(title)).willReturn(Optional.of(requestedBooks.getFirst()));
+        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(requestedBookDTOS.getFirst());
 
         //act
-        final RequestedBookDTO actualResult = requestedBookServiceImpl.getRequestedBookByTitle(title);
+        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.getRequestedBookByTitle(title);
 
         //assert
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    void getRequestedBookByTitle_recommendedBookForGivenTitleNotExists_returnRequestedBook() {
-        //arrange
-        final String title = "title1";
-
-        given(requestedBookRepository.findByBookTitle(title)).willReturn(Optional.empty());
-
-        //act & assert
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookServiceImpl.getRequestedBookByTitle(title))
-                .withMessage("RequestedBook with ISBN " + title + " not found");
-
-        then(requestedBookConverter).shouldHaveNoInteractions();
+        assertThat(actualResult).isEqualTo(requestedBookDTOS);
     }
 
     @Test
@@ -580,55 +564,55 @@ class RequestedBookServiceImplTest {
         genres[0] = "genre1";
         genres[1] = "genre2";
 
-        RequestedBookDTO requestedBookDTO1 = RequestedBookDTO.builder()
-                .id(RequestedBookID1)
-                .requestedDate(new Date())
-                .likeCounter(1L)
-                .bookISBN("isbn1")
-                .title("title1")
-                .language("MK")
-                .image("image1")
-                .genres(genres)
-                .authorsFullName(new ArrayList<String>())
-                .userEmails(new ArrayList<>())
-                .build();
+        RequestedBookDTO requestedBookDTO1 = new RequestedBookDTO(
+                RequestedBookID1,
+                new Date(),
+                1L,
+                "isbn1",
+                "title1",
+                "MK",
+                "image1",
+                genres,
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
 
-        RequestedBookDTO requestedBookDTO2 = RequestedBookDTO.builder()
-                .id(RequestedBookID2)
-                .requestedDate(new Date())
-                .likeCounter(3L)
-                .bookISBN("isbn2")
-                .title("title2")
-                .language("MK")
-                .image("image2")
-                .genres(genres)
-                .authorsFullName(new ArrayList<String>())
-                .userEmails(new ArrayList<>())
-                .build();
+        RequestedBookDTO requestedBookDTO2 = new RequestedBookDTO(
+                RequestedBookID2,
+                new Date(),
+                3L,
+                "isbn2",
+                "title2",
+                "MK",
+                "image2",
+                genres,
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
 
-        RequestedBookDTO requestedBookDTO3 = RequestedBookDTO.builder()
-                .id(RequestedBookID3)
-                .requestedDate(new Date())
-                .likeCounter(1L)
-                .bookISBN("isbn3")
-                .title("title3")
-                .language("MK")
-                .image("image3")
-                .genres(genres)
-                .authorsFullName(new ArrayList<String>())
-                .userEmails(new ArrayList<>())
-                .build();
+        RequestedBookDTO requestedBookDTO3 = new RequestedBookDTO(
+                RequestedBookID3,
+                new Date(),
+                1L,
+                "isbn3",
+                "title3",
+                "MK",
+                "image3",
+                genres,
+                new ArrayList<>(),
+                new ArrayList<>()
+        );
 
         return List.of(requestedBookDTO1, requestedBookDTO2, requestedBookDTO3);
     }
 
     private RequestedBook getRequestedBook() {
 
-        return getRequestedBooks().get(0);
+        return getRequestedBooks().getFirst();
     }
 
     private RequestedBookDTO getRequestedBookDTO() {
 
-        return getRequestedBookDTOs().get(0);
+        return getRequestedBookDTOs().getFirst();
     }
 }

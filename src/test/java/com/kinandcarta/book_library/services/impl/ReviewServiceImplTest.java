@@ -236,32 +236,32 @@ class ReviewServiceImplTest {
         UUID reviewId3 = UUID.fromString("123e4567-e89b-12d3-a456-300000000000");
 
 
-        ReviewDTO review1 = ReviewDTO.builder()
-                .id(reviewId1)
-                .date(new Date())
-                .message("message1")
-                .rating(1)
-                .bookISBN(getBooks().getFirst().getISBN())
-                .userEmail(getUsers().getFirst().getEmail())
-                .build();
+        ReviewDTO review1 = new ReviewDTO(
+                reviewId1,
+                new Date(),
+                "message1",
+                1,
+                getBooks().getFirst().getISBN(),
+                getUsers().getFirst().getEmail()
+        );
 
-        ReviewDTO review2 = ReviewDTO.builder()
-                .id(reviewId2)
-                .date(new Date())
-                .message("message2")
-                .rating(2)
-                .bookISBN(getBooks().getFirst().getISBN())
-                .userEmail(getUsers().getFirst().getEmail())
-                .build();
+        ReviewDTO review2 = new ReviewDTO(
+                reviewId2,
+                new Date(),
+                "message2",
+                2,
+                getBooks().getFirst().getISBN(),
+                getUsers().getFirst().getEmail()
+        );
 
-        ReviewDTO review3 = ReviewDTO.builder()
-                .id(reviewId3)
-                .date(new Date())
-                .message("message3")
-                .rating(3)
-                .bookISBN(getBooks().getLast().getISBN())
-                .userEmail(getUsers().getLast().getEmail())
-                .build();
+        ReviewDTO review3 = new ReviewDTO(
+                reviewId3,
+                new Date(),
+                "message3",
+                3,
+                getBooks().getLast().getISBN(),
+                getUsers().getLast().getEmail()
+        );
 
         return List.of(review1, review2, review3);
     }
@@ -330,6 +330,6 @@ class ReviewServiceImplTest {
                 .password("password2")
                 .build();
 
-        return List.of(user1, user2 );
+        return List.of(user1, user2);
     }
 }

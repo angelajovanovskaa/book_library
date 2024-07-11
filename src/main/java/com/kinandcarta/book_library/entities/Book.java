@@ -56,7 +56,6 @@ public class Book {
     private String image;
 
     @Enumerated(EnumType.STRING)
-    @ToStringExclude
     private BookStatus bookStatus;
 
     @Type(StringArrayType.class)

@@ -18,8 +18,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * <h4>Implementation of {@link RequestedBook} that contains service
- * logic implementation of the CRUD operations for RequestedBook.</h4>
+ * Implementation of {@link RequestedBook} that contains service
+ * logic implementation of the CRUD operations for RequestedBook.
  */
 @Service
 @RequiredArgsConstructor
@@ -106,27 +106,31 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * @return (RequestedBookDTO).
      */
     @Override
-    public RequestedBookDTO getRequestedBookByTitle(String title) {
+    public List<RequestedBookDTO> getRequestedBookByTitle(String title) {
+
+        List<RequestedBookDTO> list = new ArrayList<>();
 
         Optional<RequestedBook> requestedBook = requestedBookRepository.findByBookTitle(title);
 
-        if (requestedBook.isEmpty()) {
-            throw new RequestedBookNotFoundException(title);
-        }
+        requestedBook.ifPresent(book -> list.add(requestedBookConverter.toRequestedBookDTO(book)));
 
-        return requestedBookConverter.toRequestedBookDTO(requestedBook.get());
+        return list;
     }
 
     /**
      * Using this method, you can get the favourite RequestedBook among all RequestedBooks that
      * are with status REQUESTED.
      * <hr>
-     * <p>The purpose of this is to enable us to obtain Requested Books that are not in PENDING_PURCHASE
-     * state for the purpose of adding them for purchasing.</p>
-     * <b><i>Explanation:</i></b>
-     * <p>Books with status PENDING_PURCHASE may have a larger like counter than all other Requested Books,
+     * <p>
+     * The purpose of this is to enable us to obtain Requested Books that are not in PENDING_PURCHASE
+     * state for the purpose of adding them for purchasing.
+     * </p>
+     * Explanation:
+     * <p>
+     * Books with status PENDING_PURCHASE may have a larger like counter than all other Requested Books,
      * therefore if we don't filter the books based on their REQUESTED status, it could happen that we only
-     * ever retrieve books from PENDING_PURCHASE.</p>
+     * ever retrieve books from PENDING_PURCHASE.
+     * </p>
      *
      * @return (RequestedBookDTO).
      */
@@ -146,7 +150,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * Using this method, you can save RequestedBook.
      * <hr>
      * <p>Parameter bookISBN is used to insert new RequestedBook from the <i>Google Book API</i></p>
-     * <b><i>Constraints:</i></b>
+     * Constraints:
      *  <ol>
      *      <li>Can't create RequestedBook of Book that is already present in the database (Book table)</li>
      * </ol>
@@ -245,8 +249,8 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      *     </ul>
      * </ol>
      *
-     * <h1>NEED TO IMPLEMENT BOOKITEM INSERT</h1>
-     * <h1>FLOW</h1>
+     * <p>NEED TO IMPLEMENT BOOKITEM INSERT</p>
+     * <p>FLOW</p>
      * <ol>
      *     <li>Admin calls this method.</li>
      *     <li>Book status goes from PENDING_PURCHASE to IN_STOCK.</li>

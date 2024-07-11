@@ -13,9 +13,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class RequestedBookConverter {
 
-    private final BookRepository bookRepository;
-    private final UserRepository userRepository;
-
     public RequestedBookDTO toRequestedBookDTO(RequestedBook requestedBook) {
 
         UUID id = requestedBook.getId();
