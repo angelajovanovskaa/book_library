@@ -15,14 +15,12 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
 
     List<BookCheckout> findByBookItemIdOrderByDateBorrowedDesc(UUID bookItemId);
 
-    List<BookCheckout> findByBookItem_Book_ISBNOrderByDateBorrowedDesc(String isbn);
+    List<BookCheckout> findByBookItem_Book_ISBNOrderByDateBorrowedDesc(String bookISBN);
 
-    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(String titleSearchTerm,
-                                                                                                     UUID userId);
+    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
+            String titleSearchTerm, UUID userId);
 
-    List<BookCheckout> findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(String ISBN, UUID userId);
-
-    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowed(String title);
+    List<BookCheckout> findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(String bookISBN, UUID userId);
 
     List<BookCheckout> findByDateReturnedIsNull();
 

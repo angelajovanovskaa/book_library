@@ -3,23 +3,19 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.*;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
-import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
-import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
-import com.kinandcarta.book_library.exceptions.UserNotFoundException;
+import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -32,6 +28,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
+    private final ResourceLoader resourceLoader;
 
     /**
      * This method is used to get all of the registered users.<br>
@@ -42,14 +39,14 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public List<UserWithRoleFieldResponseDTO> getAllUsers() {
-        List<User> users = this.userRepository.findAllByOrderByRoleAsc();
+        List<User> users = userRepository.findAllByOrderByRoleAsc();
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
 
     @Override
     public List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String fullNameSearchTerm) {
-        List<User> users = this.userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm);
+        List<User> users = userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
@@ -63,7 +60,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserWithoutRoleFieldResponseDTO getUserProfile(UUID userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         return userConverter.toUserWithoutRoleDTO(user);
     }
@@ -77,18 +74,21 @@ public class UserServiceImpl implements UserService {
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
-    @SneakyThrows
     @Transactional
     public String registerUser(UserRegistrationRequestDTO userDTO) {
-        if (this.userRepository.findByEmail(userDTO.email()).isPresent()) {
-            throw new EmailAlreadyInUseException(userDTO.email());
+        String userEmail = userDTO.email();
+        Optional<User> userOptional = userRepository.findByEmail(userEmail);
+
+        if (userOptional.isPresent()) {
+            throw new EmailAlreadyInUseException(userEmail);
         }
 
         User user = userConverter.toUserEntity(userDTO);
-        user.setProfilePicture(getDefaultProfilePicture());
+        byte[] userProfilePicture = getDefaultProfilePicture();
+        user.setProfilePicture(userProfilePicture);
 
-        this.userRepository.save(user);
-        return "You have successfully created the account: " + user.getEmail();
+        userRepository.save(user);
+        return "You have successfully created the account: " + userEmail;
     }
 
     /**
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public String loginUser(UserLoginRequestDTO userDTO) {
-        User user = this.userRepository.findByEmailAndPassword(userDTO.userEmail(), userDTO.userPassword()).orElseThrow(
+        User user = userRepository.findByEmailAndPassword(userDTO.userEmail(), userDTO.userPassword()).orElseThrow(
                 InvalidUserCredentialsException::new);
 
         return "Welcome " + user.getFullName();
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateUserData(UserUpdateDataRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         if (StringUtils.isNotBlank(userDTO.fullName())) {
             user.setFullName(userDTO.fullName());
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
             user.setProfilePicture(userDTO.image());
         }
 
-        this.userRepository.save(user);
+        userRepository.save(user);
     }
 
     /**
@@ -141,10 +141,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String updateUserRole(UserUpdateRoleRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         user.setRole(userDTO.role());
-        this.userRepository.save(user);
+        userRepository.save(user);
 
         return "You have changed the role for user " + user.getFullName() + " to " + user.getRole();
     }
@@ -154,13 +154,13 @@ public class UserServiceImpl implements UserService {
      * This method will only be accessible by the admin.
      *
      * @param userId the Id of the user that we are trying to delete.
-     * @return A message confirming that the delete is successful.
+     * @return A message confirming that the delete operation is successful.
      */
     @Override
     @Transactional
     public String deleteAccount(UUID userId) {
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        this.userRepository.delete(user);
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        userRepository.delete(user);
 
         return "The account of the user: " + user.getFullName() + "has been successfully deleted";
     }
@@ -176,20 +176,27 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String changeUserPassword(UserChangePasswordRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = this.userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         if (!user.getPassword().equals(userDTO.oldPassword())) {
             throw new IncorrectPasswordException();
         }
 
         user.setPassword(userDTO.newPassword());
+        userRepository.save(user);
+
         return "The password has been successfully updated.";
     }
 
-    private byte[] getDefaultProfilePicture() throws IOException {
-        InputStream inputStream = User.class.getResourceAsStream("/image/profile-picture.png");
-        byte[] imageData = IOUtils.toByteArray(Objects.requireNonNull(inputStream));
-        inputStream.close();
+    private byte[] getDefaultProfilePicture() {
+        byte[] imageData;
+
+        Resource resource = resourceLoader.getResource("classpath:image/profile-picture.png");
+        try {
+            imageData = resource.getContentAsByteArray();
+        } catch (IOException e) {
+            throw new InvalidDataForProfilePictureException();
+        }
 
         return imageData;
     }

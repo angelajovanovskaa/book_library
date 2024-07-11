@@ -47,7 +47,7 @@ public class UserConverter {
     }
 
     /**
-     * Converts a {@link UserRegistrationRequestDTO} DTO to a @{code User} entity.
+     * Converts a {@link UserRegistrationRequestDTO} DTO to a {@link User} entity.
      * This will be used for the service logic when saving into the db.
      *
      * @param userDTO The {@link UserRegistrationRequestDTO} DTO to convert
