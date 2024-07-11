@@ -6,20 +6,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 public class Review {
     @Id

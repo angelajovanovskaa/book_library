@@ -44,7 +44,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**

@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.kinandcarta.book_library.converters.*;
 
 /**
- *  <h4>Implementation of {@link ReviewService} that contains service
- *  logic implementation of the CRUD operations for Review.</h4>
+ * <h4>Implementation of {@link ReviewService} that contains service
+ * logic implementation of the CRUD operations for Review.</h4>
  */
 @Service
 @RequiredArgsConstructor
@@ -43,6 +44,7 @@ public class ReviewServiceImpl implements ReviewService {
      * @return (List of ReviewDTO)
      */
     public List<ReviewDTO> getAllReviews() {
+
         List<Review> reviews = reviewRepository.findAll();
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
@@ -56,9 +58,10 @@ public class ReviewServiceImpl implements ReviewService {
      * @return ReviewDTO
      */
     public ReviewDTO getReviewById(UUID id) {
+
         Optional<Review> review = reviewRepository.findById(id);
 
-        if (review.isEmpty()){
+        if (review.isEmpty()) {
             throw new ReviewNotFoundException(id);
         }
 
@@ -75,7 +78,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewDTO> getAllReviewsByBookId(String isbn) {
         Optional<Book> book = bookRepository.findById(isbn);
 
-        if (book.isEmpty()){
+        if (book.isEmpty()) {
             throw new BookNotFoundException(isbn);
         }
 
@@ -94,7 +97,7 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewDTO> getAllReviewsByUserId(UUID userId) {
         Optional<User> user = userRepository.findById(userId);
 
-        if (user.isEmpty()){
+        if (user.isEmpty()) {
             throw new UserNotFoundException(userId);
         }
 
@@ -107,6 +110,7 @@ public class ReviewServiceImpl implements ReviewService {
      * Using this method, you can save new Review.
      * <hr>
      * <a>Method also updates the ratingFromFirm attribute in the Book object.</a>
+     *
      * @param reviewDTO Type: (<i><u>ReviewDTO</u></i>)
      * @return (ReviewDTO)
      */
@@ -133,7 +137,7 @@ public class ReviewServiceImpl implements ReviewService {
         Book book = review.getBook();
 
         Optional<Review> oldVersion = reviewRepository.findByUserAndBook(user, book);
-        if (oldVersion.isEmpty()){
+        if (oldVersion.isEmpty()) {
             save(reviewDTO);
         }
 
@@ -158,7 +162,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<Review> review = reviewRepository.findById(id);
 
-        if (review.isEmpty()){
+        if (review.isEmpty()) {
             throw new ReviewNotFoundException(id);
         }
 
@@ -174,11 +178,11 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewDTO;
     }
 
-    private Double calculateBookRating(Book book){
+    private Double calculateBookRating(Book book) {
 
         List<Review> reviews = reviewRepository.findAllByBook(book);
 
-        if (reviews.isEmpty()){
+        if (reviews.isEmpty()) {
             return 0.0;
         }
 
