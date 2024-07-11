@@ -5,7 +5,7 @@ import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
-import com.kinandcarta.book_library.DTOs.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.services.RequestedBookService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +18,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- *  <h4><i> Implementation of {@link RequestedBook} that contains service
- *  logic implementation of the CRUD operations for Review.</i></h4>
+ * <h4>Implementation of {@link RequestedBook} that contains service
+ * logic implementation of the CRUD operations for RequestedBook.</h4>
  */
 @Service
 @RequiredArgsConstructor
@@ -48,31 +48,16 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     }
 
     /**
-     * Using this method, you can get all the RequestedBook object with Book status = REQUESTED
+     * Using this method, you can get all the RequestedBook object with given
+     * Book status
      * <hr>
      *
      * @return (List of RequestedBookDTO)
      */
     @Override
-    public List<RequestedBookDTO> getAllRequestedBooks() {
+    public List<RequestedBookDTO> getAllRequestedBooksWithStatus(BookStatus status) {
 
-        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(BookStatus.REQUESTED);
-
-        return requestedBooks.stream()
-                .map(requestedBookConverter::toRequestedBookDTO)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Using this method, you can get all the RequestedBook object with Book status = PENDING_PURCHASE
-     * <hr>
-     *
-     * @return (List of RequestedBookDTO)
-     */
-    @Override
-    public List<RequestedBookDTO> getAllPendingRequestedBooks() {
-
-        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(BookStatus.PENDING_PURCHASE);
+        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(status);
 
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookDTO)
@@ -104,7 +89,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public RequestedBookDTO getRequestedBookByISBN(String isbn) {
 
-        Optional<RequestedBook> requestedBook = requestedBookRepository.findByBookTitle(isbn);
+        Optional<RequestedBook> requestedBook = requestedBookRepository.findByBookISBN(isbn);
 
         if (requestedBook.isEmpty()) {
             throw new RequestedBookNotFoundException(isbn);
@@ -148,13 +133,13 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public RequestedBookDTO getFavoriteRequestedBook() {
 
-        List<RequestedBook> requestedBook = requestedBookRepository.findTopByBookBookStatusOrderByLikeCounterDesc(BookStatus.REQUESTED);
+        Optional<RequestedBook> requestedBook = requestedBookRepository.findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus.REQUESTED);
 
         if (requestedBook.isEmpty()) {
             throw new RequestedBookNotFoundException();
         }
 
-        return requestedBookConverter.toRequestedBookDTO(requestedBook.getFirst());
+        return requestedBookConverter.toRequestedBookDTO(requestedBook.get());
     }
 
     /**
@@ -182,6 +167,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * Using this method, you can delete RequestedBook.
      * <hr>
      * Delete RequestedBook object after insert of Book object (if RequestedBook object of that Book exists).
+     *
      * @param requestedBookId Type: <i><u>UUID</u></i>
      * @return (RequestedBookDTO) The RequestedBook object that we deleted.
      */
@@ -194,9 +180,11 @@ public class RequestedBookServiceImpl implements RequestedBookService {
             throw new RequestedBookNotFoundException(requestedBookId);
         }
 
+        RequestedBookDTO requestedBookDTO = requestedBookConverter.toRequestedBookDTO(requestedBook.get());
+
         requestedBookRepository.delete(requestedBook.get());
 
-        return requestedBookConverter.toRequestedBookDTO(requestedBook.get());
+        return requestedBookDTO;
     }
 
     /**
@@ -213,7 +201,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      *     </ul>
      * </ol>
      *
-     * @param requestedBookId Type: <i><u>UUID</u></i>
+     * @param requestedBookId    Type: <i><u>UUID</u></i>
      * @param changeBookStatusTo Type: <i><u>BookStatus</u></i>
      * @return (RequestedBookDTO) The RequestedBook object that we made changes on.
      */
@@ -242,10 +230,10 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     /**
      * Using this method, you can set RequestedBook status to IN_STOCK
      * <p>
-     *     After admin decides to buy a certain book from the RequestedBook list with
-     *     Book objects with status REQUESTED this method is called. The RequestedBook
-     *     object status is set to IN_STOCK and the admin needs to input
-     *     number of BookItem object for that RequestedBook/Book object.
+     * After admin decides to buy a certain book from the RequestedBook list with
+     * Book objects with status REQUESTED this method is called. The RequestedBook
+     * object status is set to IN_STOCK and the admin needs to input
+     * number of BookItem object for that RequestedBook/Book object.
      * </p>
      * <hr>
      * Constraints:
@@ -265,11 +253,12 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      *     <li>Admin needs to enter number of copies of the Book object.</li>
      *     <li>RequestedBook object is deleted from the table.</li>
      * </ol>
+     *
      * @param requestedBookId Type: <i><u>UUID</u></i>
      * @return (RequestedBookDTO) The RequestedBook object that we made changes on.
      */
     @Override
-    public RequestedBookDTO enterRequestedBookInStock (UUID requestedBookId) {
+    public RequestedBookDTO enterRequestedBookInStock(UUID requestedBookId) {
 
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 

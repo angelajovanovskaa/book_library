@@ -4,7 +4,7 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.DTOs.ReviewDTO;
+import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;

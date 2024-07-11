@@ -5,14 +5,14 @@ import java.util.UUID;
 public class RequestedBookNotFoundException extends CustomNotFoundException {
 
     public RequestedBookNotFoundException(UUID id) {
-        super("Recommended book with id " + id + " not found");
+        super("RequestedBook with id " + id + " not found");
     }
 
     public RequestedBookNotFoundException(String isbn) {
-        super("Recommended book with isbn " + isbn + " not found");
+        super("RequestedBook with ISBN " + isbn + " not found");
     }
 
     public RequestedBookNotFoundException() {
-        super("Recommended book not found");
+        super("RequestedBook not found");
     }
 }

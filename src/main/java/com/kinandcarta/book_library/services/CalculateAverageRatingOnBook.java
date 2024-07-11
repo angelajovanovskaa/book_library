@@ -8,10 +8,6 @@ import java.util.List;
 /**
  *  <h2>This class is used for implementing calculations used by method in the service logic
  *  by the model Review.</h2>
- *  <h6><i>Methods:</i></h6>
- *  <un>
- *      <li>getAverageRatingOnBook - calculates the average rating given by employees who borrowed the book.</li>
- *  </un>
  */
 @Component
 public class CalculateAverageRatingOnBook {

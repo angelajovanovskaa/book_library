@@ -14,6 +14,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,7 +29,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

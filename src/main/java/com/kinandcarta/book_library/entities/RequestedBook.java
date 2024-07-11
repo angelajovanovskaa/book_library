@@ -1,10 +1,7 @@
 package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Date;
@@ -15,10 +12,10 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 public class RequestedBook {
     @Id

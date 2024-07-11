@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.DTOs.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,9 +10,7 @@ public interface RequestedBookService {
 
     List<RequestedBookDTO> getAll();
 
-    List<RequestedBookDTO> getAllRequestedBooks();
-
-    List<RequestedBookDTO> getAllPendingRequestedBooks();
+    List<RequestedBookDTO> getAllRequestedBooksWithStatus(BookStatus status);
 
     RequestedBookDTO getRequestedBookById(UUID id);
 

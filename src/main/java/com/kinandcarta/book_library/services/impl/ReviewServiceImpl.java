@@ -6,7 +6,7 @@ import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
-import com.kinandcarta.book_library.DTOs.ReviewDTO;
+import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
@@ -23,8 +23,8 @@ import java.util.UUID;
 import com.kinandcarta.book_library.converters.*;
 
 /**
- *  <h4><i> Implementation of {@link ReviewService} that contains service
- *  logic implementation of the CRUD operations for Review.</i></h4>
+ *  <h4>Implementation of {@link ReviewService} that contains service
+ *  logic implementation of the CRUD operations for Review.</h4>
  */
 @Service
 @RequiredArgsConstructor
