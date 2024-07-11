@@ -10,7 +10,6 @@ import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.CalculateAverageRatingOnBook;
 import com.kinandcarta.book_library.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewConverter reviewConverter;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
-    private final CalculateAverageRatingOnBook calculateAverageReviewRatingOnBook;
+    private final CalculateAverageRatingOnBookImpl calculateAverageReviewRatingOnBook;
 
     /**
      * Using this method, you can get all ReviewDTO objects.
