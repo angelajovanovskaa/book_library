@@ -52,14 +52,9 @@ class BookCheckoutManagementServiceImplTest {
         User user = getUsers().getFirst();
         final int MAX_NUMBER_OF_BORROWED_BOOKS = 3;
 
-        BookCheckout bookCheckout1 = BookCheckout.builder()
-                .id(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"))
-                .bookItem(bookItem)
-                .user(user)
-                .dateBorrowed(LocalDate.now())
-                .dateReturned(null)
-                .scheduledReturnDate(LocalDate.now().plusDays(14))
-                .build();
+        BookCheckout bookCheckout1 =
+                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
+                        LocalDate.now(), null, LocalDate.now().plusDays(14));
 
         bookCheckouts.add(bookCheckout1);
 
@@ -155,14 +150,9 @@ class BookCheckoutManagementServiceImplTest {
         BookItem bookItem = getBookItems().get(3);
         User user = getUsers().getFirst();
 
-        BookCheckout bookCheckout1 = BookCheckout.builder()
-                .id(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"))
-                .bookItem(bookItem)
-                .user(user)
-                .dateBorrowed(LocalDate.now())
-                .dateReturned(null)
-                .scheduledReturnDate(LocalDate.now().minusDays(5))
-                .build();
+        BookCheckout bookCheckout1 =
+                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
+                        LocalDate.now(), null, LocalDate.now().minusDays(5));
 
         bookCheckouts.add(bookCheckout1);
 
@@ -186,14 +176,9 @@ class BookCheckoutManagementServiceImplTest {
         BookItem bookItem = getBookItems().get(3);
         User user = getUsers().getFirst();
 
-        BookCheckout bookCheckout1 = BookCheckout.builder()
-                .id(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"))
-                .bookItem(bookItem)
-                .user(user)
-                .dateBorrowed(LocalDate.now())
-                .dateReturned(null)
-                .scheduledReturnDate(LocalDate.now())
-                .build();
+        BookCheckout bookCheckout1 =
+                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
+                        LocalDate.now(), null, LocalDate.now());
 
         bookCheckouts.add(bookCheckout1);
 
@@ -215,14 +200,9 @@ class BookCheckoutManagementServiceImplTest {
         BookItem bookItem = getBookItems().get(3);
         User user = getUsers().getFirst();
 
-        BookCheckout bookCheckout1 = BookCheckout.builder()
-                .id(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"))
-                .bookItem(bookItem)
-                .user(user)
-                .dateBorrowed(LocalDate.now())
-                .dateReturned(null)
-                .scheduledReturnDate(LocalDate.now().plusDays(3))
-                .build();
+        BookCheckout bookCheckout1 =
+                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
+                        LocalDate.now(), null, LocalDate.now().plusDays(3));
 
         bookCheckouts.add(bookCheckout1);
 
