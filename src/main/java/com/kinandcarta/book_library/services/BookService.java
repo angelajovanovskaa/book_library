@@ -1,23 +1,19 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.enums.BookItemState;
-import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface BookService {
     List<BookDTO> findAll();
-    Optional<BookDTO> findBookByIsbn(String isbn);
+    BookDTO findBookByIsbn(String isbn);
     List<BookDTO> findBooksByTitle(String title);
-    List<BookDisplayDTO> filterAvailableBooks(BookStatus bookStatus, BookItemState bookItemState);
-    List<BookDisplayDTO> findBooksByBookStatusRequested(BookStatus bookStatus);
+    List<BookDisplayDTO> filterAvailableBooks();
+    List<BookDisplayDTO> filterRequestedBooks();
     List<BookDisplayDTO> findBooksByLanguage(String language);
     List<BookDisplayDTO> findBooksByGenresContaining(String[] genres);
-    BookDTO create(BookDTO bookDTO);
-    String delete(String isbn);
-    Optional<BookDTO> setBookStatusInStock(Book book);
+    BookDTO createBookWithAuthors(BookDTO bookDTO);
+    String deleteBook(String isbn);
+    BookDTO setBookStatusInStock(String isbn);
 }

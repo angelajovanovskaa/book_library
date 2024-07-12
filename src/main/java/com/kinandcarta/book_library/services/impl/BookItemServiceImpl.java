@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Service layer for managing book items in the library.
@@ -40,25 +39,30 @@ public class BookItemServiceImpl implements BookItemService {
     @Override
     public List<BookItemDTO> findByBookIsbn(String isbn) {
         List<BookItem> bookItems = bookItemRepository.findByBookIsbn(isbn);
-        return bookItems.stream().map(bookItemConverter::toBookItemDTO).collect(Collectors.toList());
+        return bookItems.stream().map(bookItemConverter::toBookItemDTO).toList();
     }
 
     /**
-     * Creates a new BookItem based on the provided BookItemDTO.
+     * Inserts a new book item with the state set to AVAILABLE for the specified book ISBN.
      *
-     * @param bookItemDTO The DTO containing data for the new BookItem.
-     * @return The newly created BookItem entity.
-     * @throws BookNotFoundException If the BookItemDTO references a non-existent Book.
+     * @param isbn The ISBN of the book for which a new item is to be inserted.
+     * @return A DTO representation of the newly inserted book item.
+     * @throws BookNotFoundException If no book with the specified ISBN is found.
      */
     @Override
-    public BookItem create(BookItemDTO bookItemDTO) {
-        Optional<Book> maybeBook = bookRepository.findById(bookItemDTO.ISBN());
-        if (maybeBook.isEmpty()) {
-            throw new BookNotFoundException(maybeBook.get().getIsbn());
+    public BookItemDTO insertBookItem(String isbn) {
+        Optional<Book> bookOptional = bookRepository.findById(isbn);
+        if (bookOptional.isEmpty()) {
+            throw new BookNotFoundException(isbn);
         }
-        BookItem bookItem = bookItemConverter.toBookItemEntity(bookItemDTO, maybeBook.get());
 
-        return bookItemRepository.save(bookItem);
+        BookItem bookItem = new BookItem();
+        bookItem.setBookItemState(BookItemState.AVAILABLE);
+        Book book = bookOptional.get();
+        bookItem.setBook(book);
+        BookItem savedBookItem = bookItemRepository.save(bookItem);
+
+        return bookItemConverter.toBookItemDTO(savedBookItem);
     }
 
     /**
@@ -76,6 +80,7 @@ public class BookItemServiceImpl implements BookItemService {
         bookItemRepository.deleteById(id);
         return id;
     }
+
     /**
      * This method is used to report a book as damaged after a return.<br>
      * All users will have access to this method. Only accessible after a successful return
@@ -86,13 +91,13 @@ public class BookItemServiceImpl implements BookItemService {
      */
     @Override
     public String reportBookItemAsDamaged(UUID bookItemId) {
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+        BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         bookItem.setBookItemState(BookItemState.DAMAGED);
-        this.bookItemRepository.save(bookItem);
+        bookItemRepository.save(bookItem);
 
-        return "The book " + bookItem.getBook().getTitle() + " is reported as damaged";
+        return "The book item is reported as damaged.";
     }
 
     /**
@@ -105,12 +110,12 @@ public class BookItemServiceImpl implements BookItemService {
      */
     @Override
     public String reportBookItemAsLost(UUID bookItemId) {
-        BookItem bookItem = this.bookItemRepository.findById(bookItemId)
+        BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         bookItem.setBookItemState(BookItemState.LOST);
-        this.bookItemRepository.save(bookItem);
+        bookItemRepository.save(bookItem);
 
-        return "The book " + bookItem.getBook().getTitle() + " is reported as lost";
+        return "The book is reported as lost";
     }
 }

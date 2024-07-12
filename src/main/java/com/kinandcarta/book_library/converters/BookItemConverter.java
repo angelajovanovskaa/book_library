@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.dtos.BookItemDTO;
 
@@ -17,16 +16,8 @@ public class BookItemConverter {
         if (isbn == null) {
             throw new BookNotFoundException(isbn);
         }
-        return new BookItemDTO(bookItem.getId(),
-                isbn,
-                bookItem.getBookItemState()
+        return new BookItemDTO(
+                isbn
         );
-    }
-
-    public BookItem toBookItemEntity(BookItemDTO bookItemDTO, Book book) {
-        BookItem bookItem = new BookItem();
-        bookItem.setBook(book);
-        bookItem.setBookItemState(bookItemDTO.bookItemState());
-        return bookItem;
     }
 }

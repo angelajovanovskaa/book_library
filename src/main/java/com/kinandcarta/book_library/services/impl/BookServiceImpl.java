@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
+import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
@@ -16,10 +17,10 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Service layer for managing books in the library.
@@ -33,9 +34,9 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
 
     /**
-     * <b>Retrieves a list of Books.</b>
+     * <b>Retrieves all books.</b>
      *
-     * @return A list of BookDTOs representing Books associated with the book.
+     * @return A list of all books represented as {@link BookDTO}.
      */
 
     @Override
@@ -46,81 +47,76 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Retrieves a book by its ISBN from the repository and converts it into a BookDTO object.
+     * Retrieves a book by its ISBN.
      *
-     * @param isbn isbn of the book to find
-     * @return Optional containing the BookDTO if found, empty Optional otherwise
-     * @throws BookNotFoundException if no book with the given ISBN is found
+     * @param isbn isbn of the book to find.
+     * @return converted BookDTO if book exists by the input isbn.
+     * @throws BookNotFoundException if no book with the given ISBN is found.
      */
     @Override
-    public Optional<BookDTO> findBookByIsbn(String isbn) {
-        Optional<Book> book = bookRepository.findByIsbn(isbn);
-        if (book.isEmpty()) {
-            throw new BookNotFoundException(isbn);
-        }
-        return book.map(bookConverter::toBookDTO);
+    public BookDTO findBookByIsbn(String isbn) {
+        Book book = bookRepository.findByIsbn(isbn)
+                .orElseThrow(() -> new BookNotFoundException(isbn));
+        return bookConverter.toBookDTO(book);
     }
 
     /**
-     * Retrieves books by their title from the repository and converts them into BookDTO objects.
+     * Retrieves books by their title.
      *
-     * @param title Title of the books to find (case-insensitive)
-     * @return List of books matching the title converted to BookDTOs
+     * @param title Title of the books to find (case-insensitive).
+     * @return List of books matching the title converted to BookDTOs.
      */
-
     @Override
     public List<BookDTO> findBooksByTitle(String title) {
-        List<Book> books = bookRepository.findBooksByTitle(title.toLowerCase());
+        List<Book> books = bookRepository.findBooksByTitleContainingIgnoreCase(title);
 
         return books.stream()
                 .map(bookConverter::toBookDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
      * Filters books that are currently available and converts them into BookDisplayDTO objects.
      *
-     * @param bookStatus    Status of the books to filter by (PRESENT)
-     * @param bookItemState State of the book items to filter by (AVAILABLE)
      * @return List of available books converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> filterAvailableBooks(BookStatus bookStatus, BookItemState bookItemState) {
-        List<Book> books = bookRepository.findByBookStatusAndBookItems_BookItemState(BookStatus.IN_STOCK, BookItemState.AVAILABLE);
+    public List<BookDisplayDTO> filterAvailableBooks() {
+        List<Book> books = bookRepository.findBooksByStatusAndAvailableItems(BookStatus.IN_STOCK,
+                BookItemState.AVAILABLE);
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
-     * Retrieves books marked as recommended from the repository and converts them into BookDisplayDTO objects.
+     * Filters books that are currently requested and converts them into BookDisplayDTO objects.
      *
-     * @param bookStatus Status of the books to find (RECOMMENDED)
      * @return List of recommended books converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> findBooksByBookStatusRequested(BookStatus bookStatus) {
+    public List<BookDisplayDTO> filterRequestedBooks() {
         List<Book> books = bookRepository.findBookByBookStatus(BookStatus.REQUESTED);
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
-     * Retrieves books written in a specific language from the repository and converts them into BookDisplayDTO objects.
+     * Retrieves books written in a specific language and converts them into BookDisplayDTO objects.
      *
      * @param language Language of the books to find
      * @return List of books in the specified language converted to BookDisplayDTOs
      */
     @Override
     public List<BookDisplayDTO> findBooksByLanguage(String language) {
-        List<Book> books = bookRepository.findByLanguage(language.toString());
+        List<Book> books = bookRepository.findByLanguage(language);
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -135,7 +131,7 @@ public class BookServiceImpl implements BookService {
 
         return books.stream()
                 .map(bookConverter::bookDisplayDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -145,20 +141,20 @@ public class BookServiceImpl implements BookService {
      * @return The created BookDTO object
      */
     @Override
-    public BookDTO create(BookDTO bookDTO) {
-        Set<Author> authors = bookDTO.authorDTOS().stream().map(authorDTO -> {
-            String fullNme = authorDTO.getFullName();
-
-            Optional<Author> maybeAuthor = authorRepository.findByFullName(fullNme);
-            Author author;
-            if (maybeAuthor.isPresent()) {
-                author = maybeAuthor.get();
+    public BookDTO createBookWithAuthors(BookDTO bookDTO) {
+        Set<AuthorDTO> authorsDTOs = bookDTO.authorDTOS();
+        Set<Author> authors = new HashSet<>();
+        for (AuthorDTO authorDTO : authorsDTOs) {
+            String fullName = authorDTO.fullName();
+            Optional<Author> authorOptional = authorRepository.findByFullName(fullName);
+            if (authorOptional.isPresent()) {
+                authors.add(authorOptional.get());
             } else {
-                author = new Author();
-                author.setFullName(fullNme);
+                Author newAuthor = new Author();
+                newAuthor.setFullName(fullName);
+                authors.add(newAuthor);
             }
-            return author;
-        }).collect(Collectors.toSet());
+        }
 
         Book book = bookConverter.toBookEntity(bookDTO, authors);
         Book savedBook = bookRepository.save(book);
@@ -169,39 +165,34 @@ public class BookServiceImpl implements BookService {
     /**
      * Deletes a book from the repository based on its ISBN.
      *
-     * @param ISBN The ISBN of the book to delete
+     * @param isbn The isbn of the book to delete
      * @return The ISBN of the deleted book
      * @throws BookNotFoundException If no book with the specified ISBN exists
      */
     @Override
-    public String delete(String ISBN) {
-        if (!bookRepository.existsById(ISBN)) {
-            throw new BookNotFoundException(ISBN);
+    public String deleteBook(String isbn) {
+        if (!bookRepository.existsById(isbn)) {
+            throw new BookNotFoundException(isbn);
         }
 
-        bookRepository.deleteById(ISBN);
+        bookRepository.deleteById(isbn);
 
-        return ISBN;
+        return isbn;
     }
 
     /**
-     * Sets the status of the given book to "PRESENT".
+     * Sets the status of the given book to "IN_STOCK".
      *
-     * @param book The book entity to update.
+     * @param isbn The isbn of the book in which the status is changed IN STOCK.
      * @return An Optional containing the updated BookDTO if the book was found, otherwise empty.
      */
     @Override
-    public Optional<BookDTO> setBookStatusInStock(Book book) {
-        Optional<Book> foundBook = bookRepository.findByIsbn(book.getIsbn());
+    public BookDTO setBookStatusInStock(String isbn) {
+        Book foundBook  = bookRepository.findByIsbn(isbn)
+                .orElseThrow(() -> new BookNotFoundException(isbn));
 
-        if (foundBook.isEmpty()) {
-            return Optional.empty();
-        }
+        foundBook.setBookStatus(BookStatus.IN_STOCK);
 
-        foundBook.get().setBookStatus(BookStatus.IN_STOCK);
-
-        BookDTO updatedBookDTO = bookConverter.toBookDTO(foundBook.get());
-
-        return Optional.of(updatedBookDTO);
+        return bookConverter.toBookDTO(foundBook);
     }
 }

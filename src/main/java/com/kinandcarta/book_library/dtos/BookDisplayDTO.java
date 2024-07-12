@@ -1,10 +1,7 @@
 package com.kinandcarta.book_library.dtos;
 
-import lombok.Builder;
-
 import java.util.Set;
 
-@Builder
 public record BookDisplayDTO(
         String ISBN,
         String title,
