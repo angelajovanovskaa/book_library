@@ -2,9 +2,7 @@ package com.kinandcarta.book_library.repositories;
 
 import com.kinandcarta.book_library.entities.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface AuthorRepository extends JpaRepository<Author, UUID> {

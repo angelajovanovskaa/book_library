@@ -1,30 +1,27 @@
 package com.kinandcarta.book_library.converters;
 
+import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.dtos.ReviewDTO;
-import com.kinandcarta.book_library.repositories.BookRepository;
-import com.kinandcarta.book_library.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
 @Component
-@RequiredArgsConstructor
 public class ReviewConverter {
-
-    private final UserRepository userRepository;
-    private final BookRepository bookRepository;
 
     public ReviewDTO toReviewDTO(Review review) {
 
         UUID id = review.getId();
-        Date date = review.getDate();
+        LocalDate date = review.getDate();
         String message = review.getMessage();
         Integer rating = review.getRating();
-        String bookISBN = review.getBook().getISBN();
+
+        Book book = review.getBook();
+        String bookISBN = book.getISBN();
 
         User user = review.getUser();
         String userEmail = user.getEmail();

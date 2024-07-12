@@ -1,25 +1,26 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.entities.Review;
+import com.kinandcarta.book_library.services.CalculateAverageRatingOnBook;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 /**
- *  <h2>This class is used for implementing calculations used by method in the service logic
- *  by the model Review.</h2>
+ * This class is used for implementing calculations used by method in the service logic
+ * by the model Review.
  */
 @Component
-public class CalculateAverageRatingOnBookImpl {
+public class CalculateAverageRatingOnBookImpl implements CalculateAverageRatingOnBook {
 
-    public Double getAverageRatingOnBook(List<Review> reviews) {
+    public Double getAverageRatingOnBook(List<Integer> reviews) {
 
-        double sumOfReviews = 0.0;
+        int sumReviews = 0;
 
-        for (Review review : reviews){
-            sumOfReviews += review.getRating();
+        for (Integer value : reviews) {
+            sumReviews += value;
         }
 
-        return sumOfReviews/reviews.size();
+        return (double) (sumReviews / reviews.size());
     }
 }

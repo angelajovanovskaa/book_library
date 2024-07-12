@@ -14,6 +14,7 @@ import com.kinandcarta.book_library.services.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,10 +37,10 @@ public class ReviewServiceImpl implements ReviewService {
     private final CalculateAverageRatingOnBookImpl calculateAverageReviewRatingOnBook;
 
     /**
-     * Using this method, you can get all ReviewDTO objects.
+     * This method, retrieves all reviews in our system.
      * <hr>
      *
-     * @return (List of ReviewDTO)
+     * @return List of {@link ReviewDTO}
      */
     public List<ReviewDTO> getAllReviews() {
 
@@ -52,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
      * Using this method, you can get ReviewDTO object by its id.
      * <hr>
      *
-     * @param id Type: <i><u>UUID</u></i>
+     * @param id Type: UUID
      * @return ReviewDTO
      */
     public ReviewDTO getReviewById(UUID id) {
@@ -70,36 +71,30 @@ public class ReviewServiceImpl implements ReviewService {
      * Using this method, you can get all ReviewDTO objects for Book with isbn = param.
      * <hr>
      *
-     * @param isbn Type: <i><u>String</u></i>
-     * @return (List of ReviewDTO)
+     * @param isbn Type: String
+     * @return List of {@link ReviewDTO}
      */
-    public List<ReviewDTO> getAllReviewsByBookId(String isbn) {
-        Optional<Book> book = bookRepository.findById(isbn);
+    public List<ReviewDTO> getAllReviewsByBookISBN(String isbn) {
 
-        if (book.isEmpty()) {
-            throw new BookNotFoundException(isbn);
-        }
+        Book book = getBook(isbn);
 
-        List<Review> reviews = new ArrayList<>(reviewRepository.findAllByBook(book.get()));
+        List<Review> reviews = reviewRepository.findAllByBook(book);
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
 
     /**
-     * Using this method, you can get all ReviewDTO objects by User with userId = param.
+     * This method, retrieves the reviews related to User with the provided user id.
      * <hr>
      *
-     * @param userId Type: <i><u>UUID</u></i>
-     * @return (List of ReviewDTO)
+     * @param id Type: UUID
+     * @return List of {@link ReviewDTO}
      */
-    public List<ReviewDTO> getAllReviewsByUserId(UUID userId) {
-        Optional<User> user = userRepository.findById(userId);
+    public List<ReviewDTO> getAllReviewsByUserId(UUID id) {
 
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(userId);
-        }
+        User user = getUser(id);
 
-        List<Review> reviews = new ArrayList<>(reviewRepository.findAllByUser(user.get()));
+        List<Review> reviews = reviewRepository.findAllByUser(user);
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
@@ -109,10 +104,10 @@ public class ReviewServiceImpl implements ReviewService {
      * <hr>
      * Method also updates the ratingFromFirm attribute in the Book object.
      *
-     * @param reviewDTO Type: (<i><u>ReviewDTO</u></i>)
-     * @return (ReviewDTO)
+     * @param reviewDTO Type: ReviewDTO
+     * @return {@link ReviewDTO}
      */
-    public ReviewDTO save(ReviewDTO reviewDTO) {
+    public ReviewDTO insertReview(ReviewDTO reviewDTO) {
 
         Review review = reviewConverter.toReview(reviewDTO);
 
@@ -124,7 +119,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.save(review);
 
-        book.setRatingFromFirm(calculateBookRating(book));
+        Double rating = calculateBookRating(book);
+        book.setRatingFromFirm(rating);
+
         bookRepository.save(book);
 
         return reviewConverter.toReviewDTO(review);
@@ -135,30 +132,37 @@ public class ReviewServiceImpl implements ReviewService {
      * updated/modified ReviewDTO object.
      * <hr>
      *
-     * @param reviewDTO Type: (<i><u>ReviewDTO</u></i>)
-     * @return (ReviewDTO)
+     * @param reviewDTO Type: ReviewDTO
+     * @return {@link ReviewDTO}
      */
     @Override
-    public ReviewDTO update(ReviewDTO reviewDTO) {
-
-        Review review = reviewConverter.toReview(reviewDTO);
+    public ReviewDTO updateReview(ReviewDTO reviewDTO) {
 
         Book book = getBook(reviewDTO.bookISBN());
-        review.setBook(book);
 
         User user = getUser(reviewDTO.userEmail());
-        review.setUser(user);
 
-        Optional<Review> oldVersion = reviewRepository.findByUserAndBook(user, book);
-        if (oldVersion.isEmpty()) {
-            save(reviewDTO);
+        Optional<Review> existingReviewOptional = reviewRepository.findByUserEmailAndBookISBN(user.getEmail(), book.getISBN());
+
+        if (existingReviewOptional.isEmpty()) {
+            throw new ReviewNotFoundException(user.getEmail(), book.getISBN());
         }
 
-        oldVersion.ifPresent(reviewRepository::delete);
+        Review review = existingReviewOptional.get();
+
+        LocalDate newReviewDate = LocalDate.now();
+        review.setDate(newReviewDate);
+
+        int newRatingFromUser = reviewDTO.rating();
+        review.setRating(newRatingFromUser);
+
+        String newMessageFromUser = reviewDTO.message();
+        review.setMessage(newMessageFromUser);
 
         reviewRepository.save(review);
 
-        book.setRatingFromFirm(calculateBookRating(book));
+        double newRatingOnBook = calculateBookRating(book);
+        book.setRatingFromFirm(newRatingOnBook);
         bookRepository.save(book);
 
         return reviewConverter.toReviewDTO(review);
@@ -168,10 +172,10 @@ public class ReviewServiceImpl implements ReviewService {
      * Using this method, you can delete Review by id.
      * <hr>
      *
-     * @param id Type: (<i><u>UUID</u></i>)
-     * @return (ReviewDTO)
+     * @param id Type: UUID
+     * @return {@link ReviewDTO}
      */
-    public ReviewDTO delete(UUID id) {
+    public ReviewDTO deleteReviewById(UUID id) {
 
         Optional<Review> review = reviewRepository.findById(id);
 
@@ -199,14 +203,16 @@ public class ReviewServiceImpl implements ReviewService {
             return 0.0;
         }
 
-        return calculateAverageReviewRatingOnBook.getAverageRatingOnBook(reviews);
+        List<Integer> reviewRatings = reviews.stream().map(Review::getRating).toList();
+
+        return calculateAverageReviewRatingOnBook.getAverageRatingOnBook(reviewRatings);
     }
 
     private Book getBook(String isbn) {
 
         Optional<Book> optionalBook = this.bookRepository.findById(isbn);
 
-        if (optionalBook.isEmpty()){
+        if (optionalBook.isEmpty()) {
             throw new BookNotFoundException(isbn);
         }
 
@@ -217,8 +223,19 @@ public class ReviewServiceImpl implements ReviewService {
 
         Optional<User> optionalUser = this.userRepository.findByEmail(email);
 
-        if (optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new UserNotFoundException(email);
+        }
+
+        return optionalUser.get();
+    }
+
+    private User getUser(UUID id) {
+
+        Optional<User> optionalUser = this.userRepository.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException(id);
         }
 
         return optionalUser.get();

@@ -2,9 +2,7 @@ package com.kinandcarta.book_library.repositories;
 
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.dtos.RequestedBookLikeCounterClosedProjection;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +12,9 @@ public interface RequestedBookRepository extends JpaRepository<RequestedBook, UU
 
     Optional<RequestedBook> findByBookISBN(String isbn);
 
-    Optional<RequestedBook> findByBookTitle(String title);
+    List<RequestedBook> findAllByBookBookStatusAndBookTitleContainingIgnoreCase(BookStatus status, String title);
+
+    List<RequestedBook> findAllByBookBookStatusAndBookISBNContainingIgnoreCase(BookStatus status, String title);
 
     Optional<RequestedBook> findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus status);
 

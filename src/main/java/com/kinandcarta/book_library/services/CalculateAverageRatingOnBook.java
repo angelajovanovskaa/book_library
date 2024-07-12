@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface CalculateAverageRatingOnBook {
 
-    Double getAverageRatingOnBook(List<Review> reviews);
+    Double getAverageRatingOnBook(List<Integer> reviews);
 }

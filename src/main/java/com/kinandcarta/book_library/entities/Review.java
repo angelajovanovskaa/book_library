@@ -8,22 +8,22 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.GenerationType;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
-@Builder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Date date;
+    private LocalDate date;
 
     private String message;
 

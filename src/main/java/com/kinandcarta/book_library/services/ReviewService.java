@@ -11,13 +11,13 @@ public interface ReviewService {
 
     ReviewDTO getReviewById(UUID id);
 
-    List<ReviewDTO> getAllReviewsByBookId(String isbn);
+    List<ReviewDTO> getAllReviewsByBookISBN(String isbn);
 
     List<ReviewDTO> getAllReviewsByUserId(UUID userId);
 
-    ReviewDTO save(ReviewDTO reviewDTO);
+    ReviewDTO insertReview(ReviewDTO reviewDTO);
 
-    ReviewDTO update(ReviewDTO reviewDTO);
+    ReviewDTO updateReview(ReviewDTO reviewDTO);
 
-    ReviewDTO delete(UUID id);
+    ReviewDTO deleteReviewById(UUID id);
 }

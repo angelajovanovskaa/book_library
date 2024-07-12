@@ -1,21 +1,21 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
+import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.RequestedBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * Implementation of {@link RequestedBook} that contains service
@@ -29,22 +29,20 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     private final RequestedBookConverter requestedBookConverter;
 
     private final static List<BookStatus> validStatuses = new ArrayList<>(List.of(BookStatus.REQUESTED, BookStatus.PENDING_PURCHASE, BookStatus.REJECTED));
+    private final UserRepository userRepository;
 
     /**
-     * Using this method, you can get all RequestedBook objects without regard to the book's status.
-     * (REQUESTED, PENDING_PURCHASE)
+     * Retrieves all entries for requested books in our system without taking in consideration their current status.
      * <hr>
      *
-     * @return (List of RequestedBookDTO)
+     * @return List of {@link RequestedBookDTO}
      */
     @Override
     public List<RequestedBookDTO> getAll() {
 
         List<RequestedBook> requestedBooks = requestedBookRepository.findAll();
 
-        return requestedBooks.stream()
-                .map(requestedBookConverter::toRequestedBookDTO)
-                .toList();
+        return requestedBooks.stream().map(requestedBookConverter::toRequestedBookDTO).toList();
     }
 
     /**
@@ -52,24 +50,59 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * Book status
      * <hr>
      *
-     * @return (List of RequestedBookDTO)
+     * @return List of {@link RequestedBookDTO}
      */
     @Override
     public List<RequestedBookDTO> getAllRequestedBooksWithStatus(BookStatus status) {
 
-        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(status);
+        BookStatus defaultStatus = BookStatus.REQUESTED;
 
-        return requestedBooks.stream()
-                .map(requestedBookConverter::toRequestedBookDTO)
-                .collect(Collectors.toList());
+        BookStatus filterStatus = Objects.requireNonNullElse(status, defaultStatus);
+
+        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(filterStatus);
+
+        return requestedBooks.stream().map(requestedBookConverter::toRequestedBookDTO).toList();
+    }
+
+    /**
+     * Using this method, you can get all the RequestedBook object with given
+     * Book status, only changed by the admin and filter by isbn or title depending on the
+     * user choice from the front end.
+     * <hr>
+     * Type can be title or isbn (drop down list with 2 options title and isbn), input is the value
+     * that the user enters and status is a dropdown list only visible to the admin, users have
+     * predefined REQUESTED status.A
+     *
+     * @return List of {@link RequestedBookDTO}
+     */
+    @Override
+    public List<RequestedBookDTO> filterRequestedBooks(String type, String input, BookStatus status) {
+
+        BookStatus defaultStatus = BookStatus.REQUESTED;
+
+        BookStatus filterStatus = Objects.requireNonNullElse(status, defaultStatus);
+
+        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(filterStatus);
+
+        if (input == null || input.isEmpty()) {
+            return requestedBooks.stream().map(requestedBookConverter::toRequestedBookDTO).toList();
+        }
+
+        if (type.equals("title")) {
+            requestedBooks = requestedBookRepository.findAllByBookBookStatusAndBookTitleContainingIgnoreCase(filterStatus, input);
+        } else if (type.equals("isbn")) {
+            requestedBooks = requestedBookRepository.findAllByBookBookStatusAndBookISBNContainingIgnoreCase(filterStatus, input);
+        }
+
+        return requestedBooks.stream().map(requestedBookConverter::toRequestedBookDTO).toList();
     }
 
     /**
      * Using this method, you can get RequestedBook by its id.
      * <hr>
      *
-     * @param id Type: <i><u>UUID</u></i>
-     * @return (RequestedBookDTO).
+     * @param id Type: UUID
+     * @return {@link RequestedBookDTO}
      */
     @Override
     public RequestedBookDTO getRequestedBookById(UUID id) {
@@ -83,39 +116,23 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * Using this method, you can get RequestedBook by its isbn.
      * <hr>
      *
-     * @param isbn Type: <i><u>String</u></i>
-     * @return (RequestedBookDTO).
+     * @param isbn Type: String
+     * @return {@link RequestedBookDTO}
      */
     @Override
     public RequestedBookDTO getRequestedBookByISBN(String isbn) {
 
-        Optional<RequestedBook> requestedBook = requestedBookRepository.findByBookISBN(isbn);
+        Optional<RequestedBook> optionalBook = requestedBookRepository.findByBookISBN(isbn);
 
-        if (requestedBook.isEmpty()) {
+        if (optionalBook.isEmpty()) {
             throw new RequestedBookNotFoundException(isbn);
         }
 
-        return requestedBookConverter.toRequestedBookDTO(requestedBook.get());
+        RequestedBook requestedBook = optionalBook.get();
+
+        return requestedBookConverter.toRequestedBookDTO(requestedBook);
     }
 
-    /**
-     * Using this method, you can get RequestedBook by its title.
-     * <hr>
-     *
-     * @param title Type: <i><u>String</u></i>
-     * @return (RequestedBookDTO).
-     */
-    @Override
-    public List<RequestedBookDTO> getRequestedBookByTitle(String title) {
-
-        List<RequestedBookDTO> list = new ArrayList<>();
-
-        Optional<RequestedBook> requestedBook = requestedBookRepository.findByBookTitle(title);
-
-        requestedBook.ifPresent(book -> list.add(requestedBookConverter.toRequestedBookDTO(book)));
-
-        return list;
-    }
 
     /**
      * Using this method, you can get the favourite RequestedBook among all RequestedBooks that
@@ -132,7 +149,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * ever retrieve books from PENDING_PURCHASE.
      * </p>
      *
-     * @return (RequestedBookDTO).
+     * @return {@link RequestedBookDTO}
      */
     @Override
     public RequestedBookDTO getFavoriteRequestedBook() {
@@ -155,11 +172,11 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      *      <li>Can't create RequestedBook of Book that is already present in the database (Book table)</li>
      * </ol>
      *
-     * @param bookISBN Type: <i><u>String</u></i>
-     * @return (RequestedBookDTO) The RequestedBook object that was saved.
+     * @param bookISBN Type: String
+     * @return {@link RequestedBookDTO}
      */
     @Override
-    public RequestedBookDTO save(String bookISBN) {
+    public RequestedBookDTO saveRequestedBook(String bookISBN) {
         //todo: check if there is a Book with bookISBN
 
         //todo:implement using Google Books API
@@ -172,27 +189,23 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * <hr>
      * Delete RequestedBook object after insert of Book object (if RequestedBook object of that Book exists).
      *
-     * @param requestedBookId Type: <i><u>UUID</u></i>
-     * @return (RequestedBookDTO) The RequestedBook object that we deleted.
+     * @param requestedBookId Type: UUID
+     * @return {@link RequestedBookDTO}
      */
     @Override
-    public RequestedBookDTO deleteRequestedBook(UUID requestedBookId) {
+    public UUID deleteRequestedBook(UUID requestedBookId) {
 
-        Optional<RequestedBook> requestedBook = requestedBookRepository.findById(requestedBookId);
-
-        if (requestedBook.isEmpty()) {
+        if (!requestedBookRepository.existsById(requestedBookId)) {
             throw new RequestedBookNotFoundException(requestedBookId);
         }
 
-        RequestedBookDTO requestedBookDTO = requestedBookConverter.toRequestedBookDTO(requestedBook.get());
+        requestedBookRepository.deleteById(requestedBookId);
 
-        requestedBookRepository.delete(requestedBook.get());
-
-        return requestedBookDTO;
+        return requestedBookId;
     }
 
     /**
-     * Using this method, you can set RequestedBook status to BookStatus to.
+     * Using this method, you can the book status of a RequestedBook object with the provided ISBN.
      * <hr>
      * Constraints:
      * <ol>
@@ -205,26 +218,28 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      *     </ul>
      * </ol>
      *
-     * @param requestedBookId    Type: <i><u>UUID</u></i>
-     * @param changeBookStatusTo Type: <i><u>BookStatus</u></i>
-     * @return (RequestedBookDTO) The RequestedBook object that we made changes on.
+     * @param requestedBookId Type: UUID
+     * @param newBookStatus   Type: BookStatus
+     * @return {@link RequestedBookDTO}
      */
     @Override
-    public RequestedBookDTO changeStatus(UUID requestedBookId, BookStatus changeBookStatusTo) {
+    public RequestedBookDTO changeBookStatus(UUID requestedBookId, BookStatus newBookStatus) {
 
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 
-        BookStatus defaultBookStatus = requestedBook.getBook().getBookStatus();
+        Book book = requestedBook.getBook();
 
-        if (defaultBookStatus.equals(changeBookStatusTo)) {
+        BookStatus currentBookStatus = book.getBookStatus();
+
+        if (currentBookStatus == newBookStatus) {
             return requestedBookConverter.toRequestedBookDTO(requestedBook);
         }
 
-        if (!validStatuses.contains(defaultBookStatus) || !validStatuses.contains(changeBookStatusTo)) {
-            throw new RequestedBookStatusException(defaultBookStatus.name(), changeBookStatusTo.name());
+        if (!validateBookStatusTransition(currentBookStatus, newBookStatus)) {
+            throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
         }
 
-        requestedBook.getBook().setBookStatus(changeBookStatusTo);
+        book.setBookStatus(newBookStatus);
 
         requestedBookRepository.save(requestedBook);
 
@@ -232,22 +247,9 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     }
 
     /**
-     * Using this method, you can set RequestedBook status to IN_STOCK
-     * <p>
-     * After admin decides to buy a certain book from the RequestedBook list with
-     * Book objects with status REQUESTED this method is called. The RequestedBook
-     * object status is set to IN_STOCK and the admin needs to input
-     * number of BookItem object for that RequestedBook/Book object.
-     * </p>
+     * Using this method, you can enter a RequestedBook object in stock. After a book is added to stock,
+     * the corresponding requested book is removed.
      * <hr>
-     * Constraints:
-     * <ol>
-     *     <li>RequestedBook must exist.</li>
-     *     <li>Conversions:</li>
-     *     <ul>
-     *         <li>You can only convert from PENDING_PURCHASE to IN_STOCK.</li>
-     *     </ul>
-     * </ol>
      *
      * <p>NEED TO IMPLEMENT BOOKITEM INSERT</p>
      * <p>FLOW</p>
@@ -258,26 +260,28 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      *     <li>RequestedBook object is deleted from the table.</li>
      * </ol>
      *
-     * @param requestedBookId Type: <i><u>UUID</u></i>
-     * @return (RequestedBookDTO) The RequestedBook object that we made changes on.
+     * @param requestedBookId Type: UUID
+     * @throws RequestedBookNotFoundException if RequestedBook object for given UUID doesn't exist
+     * @throws RequestedBookStatusException if the current Book status is not PENDING_PURCHASE
+     * @return {@link RequestedBookDTO}
      */
     @Override
     public RequestedBookDTO enterRequestedBookInStock(UUID requestedBookId) {
 
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 
-        BookStatus defaultBookStatus = requestedBook.getBook().getBookStatus();
-        BookStatus changeBookStatusTo = BookStatus.IN_STOCK;
+        BookStatus currentBookStatus = requestedBook.getBook().getBookStatus();
+        BookStatus newBookStatus = BookStatus.IN_STOCK;
 
-        if (defaultBookStatus.equals(changeBookStatusTo)) {
+        if (currentBookStatus.equals(newBookStatus)) {
             return requestedBookConverter.toRequestedBookDTO(requestedBook);
         }
 
-        if (!defaultBookStatus.equals(BookStatus.PENDING_PURCHASE)) {
-            throw new RequestedBookStatusException(defaultBookStatus.name(), changeBookStatusTo.name());
+        if (!currentBookStatus.equals(BookStatus.PENDING_PURCHASE)) {
+            throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
         }
 
-        requestedBook.getBook().setBookStatus(changeBookStatusTo);
+        requestedBook.getBook().setBookStatus(newBookStatus);
 
         //todo: call method for inserting BookItem objects
 
@@ -288,14 +292,84 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         return requestedBookDTO;
     }
 
+    /**
+     * Using this method, you ADD and REMOVE likes from RequestedBook object.
+     * <hr>
+     * <p>
+     * Everything is implemented in a single method. It uses the List of User objects
+     * in RequestedBook to check if a User object already liked the RequestedBook
+     * or not and depending on that it adds/removes the User object from the List and
+     * changes the likeCounter.
+     * </p>
+     *
+     * @param requestedBookId Type: UUID
+     * @param userEmail       Type: String
+     * @return {@link RequestedBookDTO}
+     */
+    @Override
+    public RequestedBookDTO likeRequestedBook(UUID requestedBookId, String userEmail) {
+
+        RequestedBook requestedBook = getRequestedBook(requestedBookId);
+
+        User user = getUser(userEmail);
+
+        RequestedBook newVersionRequestedBook;
+        if (requestedBook.getUsers().contains(user)) {
+            newVersionRequestedBook = removeLike(requestedBook, user);
+        } else {
+            newVersionRequestedBook = addLike(requestedBook, user);
+        }
+
+        requestedBookRepository.save(newVersionRequestedBook);
+
+        return requestedBookConverter.toRequestedBookDTO(newVersionRequestedBook);
+    }
+
+    private boolean validateBookStatusTransition(BookStatus currentBookStatus, BookStatus newBookStatus) {
+        return (currentBookStatus == BookStatus.REQUESTED && (newBookStatus == BookStatus.REJECTED || newBookStatus == BookStatus.PENDING_PURCHASE)) || (currentBookStatus == BookStatus.REJECTED && newBookStatus == BookStatus.PENDING_PURCHASE) || (currentBookStatus == BookStatus.PENDING_PURCHASE && newBookStatus == BookStatus.REJECTED);
+    }
+
+    private RequestedBook addLike(RequestedBook requestedBook, User user) {
+
+        requestedBook.increaseLikeCounter();
+
+        Set<User> likedBy = requestedBook.getUsers();
+
+        likedBy.add(user);
+
+        return requestedBook;
+    }
+
+    private RequestedBook removeLike(RequestedBook requestedBook, User user) {
+
+        requestedBook.decreaseLikeCounter();
+
+        Set<User> likedBy = requestedBook.getUsers();
+
+        likedBy.remove(user);
+
+        return requestedBook;
+    }
+
     private RequestedBook getRequestedBook(UUID requestedBookId) {
 
-        Optional<RequestedBook> requestedBook = requestedBookRepository.findById(requestedBookId);
+        Optional<RequestedBook> optionalRequestedBook = requestedBookRepository.findById(requestedBookId);
 
-        if (requestedBook.isEmpty()) {
+        if (optionalRequestedBook.isEmpty()) {
             throw new RequestedBookNotFoundException(requestedBookId);
         }
 
-        return requestedBook.get();
+        return optionalRequestedBook.get();
+    }
+
+    private User getUser(String userEmail) {
+
+        Optional<User> optionalUser = userRepository.findByEmail(userEmail);
+
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException(userEmail);
+        }
+
+        return optionalUser.get();
     }
 }

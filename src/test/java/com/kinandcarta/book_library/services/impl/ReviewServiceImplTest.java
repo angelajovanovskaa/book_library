@@ -21,10 +21,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.list;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -72,14 +72,14 @@ class ReviewServiceImplTest {
         List<Review> reviews = getReviews();
         List<ReviewDTO> reviewDTOS = getReviewDTOs();
 
-        given(reviewRepository.findById(id)).willReturn(Optional.of(reviews.get(0)));
-        given(reviewConverter.toReviewDTO(reviews.get(0))).willReturn(reviewDTOS.get(0));
+        given(reviewRepository.findById(id)).willReturn(Optional.of(reviews.getFirst()));
+        given(reviewConverter.toReviewDTO(reviews.getFirst())).willReturn(reviewDTOS.getFirst());
 
         //act
         final ReviewDTO actualResult = reviewService.getReviewById(id);
 
         //assert
-        assertThat(actualResult).isEqualTo(reviewDTOS.get(0));
+        assertThat(actualResult).isEqualTo(reviewDTOS.getFirst());
     }
 
     @Test
@@ -113,7 +113,7 @@ class ReviewServiceImplTest {
         given(reviewConverter.toReviewDTO(reviews.get(1))).willReturn(reviewDTOS.get(1));
 
         //act
-        final List<ReviewDTO> actualResult = reviewService.getAllReviewsByBookId(book.getISBN());
+        final List<ReviewDTO> actualResult = reviewService.getAllReviewsByBookISBN(book.getISBN());
 
         //assert
         assertThat(actualResult).isEqualTo(reviewDTOS);
@@ -128,7 +128,7 @@ class ReviewServiceImplTest {
 
         //act & assert
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> reviewService.getAllReviewsByBookId(book.getISBN()))
+                .isThrownBy(() -> reviewService.getAllReviewsByBookISBN(book.getISBN()))
                 .withMessage("Book with ISBN: " + book.getISBN() + " not found");
 
         then(reviewRepository).shouldHaveNoInteractions();
@@ -145,7 +145,7 @@ class ReviewServiceImplTest {
 
         given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
         given(reviewRepository.findAllByUser(user)).willReturn(reviews);
-        given(reviewConverter.toReviewDTO(reviews.get(0))).willReturn(reviewDTOS.get(0));
+        given(reviewConverter.toReviewDTO(reviews.getFirst())).willReturn(reviewDTOS.getFirst());
 
         //act
         final List<ReviewDTO> actualResult = reviewService.getAllReviewsByUserId(user.getId());
@@ -172,21 +172,27 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    void save() {
+    void insertReview() {
+
+        //todo: implementation
 
         //need for approval of the service method before writing tests
 
     }
 
     @Test
-    void update() {
+    void updateReview() {
+
+        //todo: implementation
 
         //need for approval of the service method before writing tests
 
     }
 
     @Test
-    void delete() {
+    void deleteReviewById() {
+
+        //todo: implementation
 
         //need for approval of the service method before writing tests
 
@@ -199,32 +205,32 @@ class ReviewServiceImplTest {
         UUID reviewId3 = UUID.fromString("123e4567-e89b-12d3-a456-300000000000");
 
 
-        Review review1 = Review.builder()
-                .id(reviewId1)
-                .date(new Date())
-                .message("message1")
-                .rating(1)
-                .book(getBooks().getFirst())
-                .user(getUsers().getFirst())
-                .build();
+        Review review1 = new Review(
+                reviewId1,
+                LocalDate.now(),
+                "message1",
+                1,
+                getBooks().getFirst(),
+                getUsers().getFirst()
+        );
 
-        Review review2 = Review.builder()
-                .id(reviewId2)
-                .date(new Date())
-                .message("message2")
-                .rating(2)
-                .book(getBooks().getFirst())
-                .user(getUsers().getFirst())
-                .build();
+        Review review2 = new Review(
+                reviewId2,
+                LocalDate.now(),
+                "message2",
+                2,
+                getBooks().getFirst(),
+                getUsers().getFirst()
+        );
 
-        Review review3 = Review.builder()
-                .id(reviewId3)
-                .date(new Date())
-                .message("message3")
-                .rating(3)
-                .book(getBooks().getLast())
-                .user(getUsers().getLast())
-                .build();
+        Review review3 = new Review(
+                reviewId3,
+                LocalDate.now(),
+                "message3",
+                3,
+                getBooks().getLast(),
+                getUsers().getLast()
+        );
 
         return List.of(review1, review2, review3);
     }
@@ -238,7 +244,7 @@ class ReviewServiceImplTest {
 
         ReviewDTO review1 = new ReviewDTO(
                 reviewId1,
-                new Date(),
+                LocalDate.now(),
                 "message1",
                 1,
                 getBooks().getFirst().getISBN(),
@@ -247,7 +253,7 @@ class ReviewServiceImplTest {
 
         ReviewDTO review2 = new ReviewDTO(
                 reviewId2,
-                new Date(),
+                LocalDate.now(),
                 "message2",
                 2,
                 getBooks().getFirst().getISBN(),
@@ -256,7 +262,7 @@ class ReviewServiceImplTest {
 
         ReviewDTO review3 = new ReviewDTO(
                 reviewId3,
-                new Date(),
+                LocalDate.now(),
                 "message3",
                 3,
                 getBooks().getLast().getISBN(),
@@ -272,37 +278,37 @@ class ReviewServiceImplTest {
         genres[0] = "genre1";
         genres[1] = "genre2";
 
-        Book book1 = Book.builder()
-                .ISBN("isbn1")
-                .title("title1")
-                .description("description1")
-                .summary("summary1")
-                .totalPages(0)
-                .language("MK")
-                .ratingFromFirm(0.0)
-                .ratingFromWeb(0.0)
-                .image("image1")
-                .bookStatus(BookStatus.REQUESTED)
-                .genres(genres)
-                .authors(new HashSet<>())
-                .bookItems(new ArrayList<>())
-                .build();
+        Book book1 = new Book(
+                "isbn1",
+                "title1",
+                "description1",
+                "summary1",
+                0,
+                "MK",
+                0.0,
+                0.0,
+                "image1",
+                BookStatus.REQUESTED,
+                genres,
+                new HashSet<>(),
+                new ArrayList<>()
+        );
 
-        Book book2 = Book.builder()
-                .ISBN("isbn2")
-                .title("title2")
-                .description("description2")
-                .summary("summary2")
-                .totalPages(0)
-                .language("MK")
-                .ratingFromFirm(0.0)
-                .ratingFromWeb(0.0)
-                .image("image2")
-                .bookStatus(BookStatus.REQUESTED)
-                .genres(genres)
-                .authors(new HashSet<>())
-                .bookItems(new ArrayList<>())
-                .build();
+        Book book2 = new Book(
+                "isbn2",
+                "title2",
+                "description2",
+                "summary2",
+                0,
+                "MK",
+                0.0,
+                0.0,
+                "image2",
+                BookStatus.REQUESTED,
+                genres,
+                new HashSet<>(),
+                new ArrayList<>()
+        );
 
         return List.of(book1, book2);
     }

@@ -5,20 +5,18 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Column;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
