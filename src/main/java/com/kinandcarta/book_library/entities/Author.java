@@ -26,7 +26,7 @@ public class Author {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_isbn"))
+            inverseJoinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")})
     @EqualsAndHashCode.Exclude
     private Set<Book> books;
 

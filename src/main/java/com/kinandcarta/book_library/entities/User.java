@@ -30,4 +30,8 @@ public class User {
 
     private String password;
 
+    @ManyToOne
+    @JoinColumn(name = "office_name")
+    private Office office;
+
 }

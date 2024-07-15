@@ -29,6 +29,10 @@ public class BookCheckout {
     @JoinColumn(name = "book_item_id")
     private BookItem bookItem;
 
+    @ManyToOne
+    @JoinColumn(name = "office_name")
+    private Office office;
+
     private LocalDate dateBorrowed;
 
     private LocalDate dateReturned;

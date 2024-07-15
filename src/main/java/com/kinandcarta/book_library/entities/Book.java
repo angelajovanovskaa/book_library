@@ -1,24 +1,12 @@
 package com.kinandcarta.book_library.entities;
 
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Genre;
-import com.kinandcarta.book_library.enums.Language;
-
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
-
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Column;
-import jakarta.persistence.CascadeType;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;
@@ -34,10 +22,16 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@IdClass(BookId.class)
 public class Book {
 
     @Id
-    private String ISBN;
+    private String isbn;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "office_name")
+    private Office office;
 
     private String title;
 

@@ -27,6 +27,7 @@ public class BookItem {
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
     public void addBook(Book book) {

@@ -29,6 +29,8 @@ public class RequestedBook {
     private Long likeCounter = 1L;
 
     @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
