@@ -16,8 +16,6 @@ public record RequestedBookDTO(
 
         String title,
 
-        String language,
-
         String image
 ) {
 
@@ -39,7 +37,6 @@ public record RequestedBookDTO(
                 Objects.equals(likeCounter, that.likeCounter) &&
                 Objects.equals(bookISBN, that.bookISBN) &&
                 Objects.equals(title, that.title) &&
-                Objects.equals(language, that.language) &&
                 Objects.equals(image, that.image);
     }
 
@@ -57,7 +54,6 @@ public record RequestedBookDTO(
                 ", likeCounter=" + likeCounter +
                 ", bookISBN='" + bookISBN + '\'' +
                 ", title='" + title + '\'' +
-                ", language='" + language + '\'' +
                 ", image='" + image + '\'' +
                 ')';
     }

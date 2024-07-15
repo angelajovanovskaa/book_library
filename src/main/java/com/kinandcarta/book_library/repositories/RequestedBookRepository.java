@@ -12,9 +12,7 @@ public interface RequestedBookRepository extends JpaRepository<RequestedBook, UU
 
     Optional<RequestedBook> findByBookISBN(String isbn);
 
-    List<RequestedBook> findAllByBookBookStatusAndBookTitleContainingIgnoreCase(BookStatus status, String title);
-
-    List<RequestedBook> findAllByBookBookStatusAndBookISBNContainingIgnoreCase(BookStatus status, String title);
+    List<RequestedBook> findAllByBookBookStatusAndBookTitleContainingIgnoreCaseOrderByLikeCounterDescBookTitleAsc(BookStatus status, String title);
 
     List<RequestedBook> findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus status);
 

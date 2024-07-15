@@ -37,7 +37,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final CalculateAverageRatingOnBookImpl calculateAverageReviewRatingOnBook;
 
     /**
-     * This method, retrieves all reviews in our system.
+     * Retrieves all reviews in our system.
      * <hr>
      *
      * @return List of {@link ReviewDTO}
@@ -50,7 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * Using this method, you can get ReviewDTO object by its id.
+     * Retrieves ReviewDTO object by its id.
      * <hr>
      *
      * @param id Type: UUID
@@ -64,7 +64,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * Using this method, you can get all ReviewDTO objects for Book with isbn = param.
+     * Retrieves ReviewDTO objects for Book with isbn = param.
      * <hr>
      *
      * @param isbn Type: String
@@ -80,7 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * This method, retrieves the reviews related to User with the provided user id.
+     * Retrieves Review objects related to User with the provided user id.
      * <hr>
      *
      * @param id Type: UUID
@@ -88,7 +88,13 @@ public class ReviewServiceImpl implements ReviewService {
      */
     public List<ReviewDTO> getAllReviewsByUserId(UUID id) {
 
-        User user = getUser(id);
+        Optional<User> optionalUser = this.userRepository.findById(id);
+
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException(id);
+        }
+
+        User user = optionalUser.get();
 
         List<Review> reviews = reviewRepository.findAllByUser(user);
 
@@ -96,8 +102,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * This method, retrieves the top n reviews (descending order) for Book object with isbn
-     * used in the Book object view.
+     * Retrieves the top 5 reviews of a Book by provided ISBN in descending order.
      * <hr>
      *
      * @param isbn Type: String
@@ -117,7 +122,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * Using this method, you can save new Review.
+     * Saves new Review object.
      * <hr>
      * Method also updates the ratingFromFirm attribute in the Book object.
      *
@@ -136,7 +141,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.save(review);
 
-        Double rating = calculateBookRating(book);
+        double rating = calculateBookRating(book);
         book.setRatingFromFirm(rating);
 
         bookRepository.save(book);
@@ -145,8 +150,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * Using this method, you can update an existing Review object by passing
-     * updated/modified ReviewDTO object.
+     * Updates an existing Review in our db using the data from {@link ReviewDTO}.
      * <hr>
      *
      * @param reviewDTO Type: ReviewDTO
@@ -180,7 +184,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     /**
-     * Using this method, you can delete Review by id.
+     * Deletes Review by its id.
      * <hr>
      *
      * @param id Type: UUID
@@ -200,7 +204,7 @@ public class ReviewServiceImpl implements ReviewService {
         return reviewConverter.toReviewDTO(review);
     }
 
-    private Double calculateBookRating(Book book) {
+    private double calculateBookRating(Book book) {
 
         List<Review> reviews = reviewRepository.findAllByBook(book);
 
@@ -252,17 +256,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException(email);
-        }
-
-        return optionalUser.get();
-    }
-
-    private User getUser(UUID id) {
-
-        Optional<User> optionalUser = this.userRepository.findById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException(id);
         }
 
         return optionalUser.get();

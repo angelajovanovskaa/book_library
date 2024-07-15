@@ -6,17 +6,20 @@ import org.apache.commons.collections4.CollectionUtils;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class RequestedBook {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -43,12 +46,6 @@ public class RequestedBook {
         this.likeCounter = this.likeCounter - 1;
     }
 
-    public void addBook(Book book) {
-        if (nonNull(book)) {
-            this.book = book;
-        }
-    }
-
     public void addUsers(Set<User> users) {
         if (isNull(this.users)) {
             this.users = new HashSet<>();
@@ -63,5 +60,23 @@ public class RequestedBook {
         if (nonNull(user)) {
             this.users.add(user);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RequestedBook that = (RequestedBook) o;
+
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hashCode(id);
     }
 }

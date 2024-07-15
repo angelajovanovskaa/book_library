@@ -9,15 +9,16 @@ import jakarta.persistence.GenerationType;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
-
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -37,15 +38,21 @@ public class Review {
     @ToString.Exclude
     private User user;
 
-    public void addBook(Book book) {
-        if (nonNull(book)) {
-            this.book = book;
-        }
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Review review = (Review) o;
+
+        return Objects.equals(id, review.id);
     }
 
-    public void addUser(User user) {
-        if (nonNull(user)) {
-            this.user = user;
-        }
+    @Override
+    public int hashCode() {
+
+        return Objects.hashCode(id);
     }
 }

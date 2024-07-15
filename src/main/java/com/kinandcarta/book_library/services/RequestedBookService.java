@@ -8,17 +8,13 @@ import java.util.UUID;
 
 public interface RequestedBookService {
 
-    List<RequestedBookDTO> getAll();
+    List<RequestedBookDTO> getAllRequestedBooks();
 
-    List<RequestedBookDTO> getAllRequestedBooksWithStatus(BookStatus status);
-
-    List<RequestedBookDTO> filterRequestedBooks(String type, String input, BookStatus status);
+    List<RequestedBookDTO> filterRequestedBooks(String input, BookStatus status);
 
     RequestedBookDTO getRequestedBookById(UUID id);
 
-    RequestedBookDTO getRequestedBookByISBN(String ISBN);
-
-    List<RequestedBookDTO> getTop3FavouriteRequestedBooks();
+    RequestedBookDTO getRequestedBookByISBN(String isbn);
 
     RequestedBookDTO saveRequestedBook(String bookISBN);
 
@@ -28,5 +24,5 @@ public interface RequestedBookService {
 
     RequestedBookDTO enterRequestedBookInStock(UUID requestedBookId);
 
-    RequestedBookDTO likeRequestedBook(UUID requestedBookId, String userEmail);
+    RequestedBookDTO handleRequestedBookLike(UUID requestedBookId, String userEmail);
 }

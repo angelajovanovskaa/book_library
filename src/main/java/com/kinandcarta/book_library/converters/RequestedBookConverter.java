@@ -20,10 +20,9 @@ public class RequestedBookConverter {
         Book book = requestedBook.getBook();
         String bookISBN = book.getISBN();
         String title = book.getTitle();
-        String language = book.getLanguage();
         String image = book.getImage();
 
 
-        return new RequestedBookDTO(id, requestedDate, likeCounter, bookISBN, title, language, image);
+        return new RequestedBookDTO(id, requestedDate, likeCounter, bookISBN, title, image);
     }
 }
