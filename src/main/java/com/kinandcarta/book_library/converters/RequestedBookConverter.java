@@ -18,7 +18,7 @@ public class RequestedBookConverter {
         Long likeCounter = requestedBook.getLikeCounter();
 
         Book book = requestedBook.getBook();
-        String bookISBN = book.getISBN();
+        String bookISBN = book.getIsbn();
         String title = book.getTitle();
         String image = book.getImage();
 

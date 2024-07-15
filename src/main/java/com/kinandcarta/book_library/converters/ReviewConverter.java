@@ -20,7 +20,7 @@ public class ReviewConverter {
         Integer rating = review.getRating();
 
         Book book = review.getBook();
-        String bookISBN = book.getISBN();
+        String bookISBN = book.getIsbn();
 
         User user = review.getUser();
         String userEmail = user.getEmail();

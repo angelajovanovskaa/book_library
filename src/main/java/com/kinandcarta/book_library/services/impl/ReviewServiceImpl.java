@@ -163,7 +163,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         User user = getUser(reviewDTO.userEmail());
 
-        Review review = getReview(user.getEmail(), book.getISBN());
+        Review review = getReview(user.getEmail(), book.getIsbn());
 
         LocalDate newReviewDate = LocalDate.now();
         review.setDate(newReviewDate);
@@ -230,7 +230,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Review getReview(String email, String isbn){
 
-        Optional<Review> optionalReview = reviewRepository.findByUserEmailAndBookISBN(email, isbn);
+        Optional<Review> optionalReview = reviewRepository.findByUserEmailAndBookIsbn(email, isbn);
 
         if (optionalReview.isEmpty()) {
             throw new ReviewNotFoundException(email, isbn);

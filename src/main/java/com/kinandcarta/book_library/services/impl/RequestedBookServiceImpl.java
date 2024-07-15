@@ -100,7 +100,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public RequestedBookDTO getRequestedBookByISBN(String isbn) {
 
-        Optional<RequestedBook> requestedBookOptional = requestedBookRepository.findByBookISBN(isbn);
+        Optional<RequestedBook> requestedBookOptional = requestedBookRepository.findByBookIsbn(isbn);
 
         if (requestedBookOptional.isEmpty()){
             throw new RequestedBookNotFoundException(isbn);

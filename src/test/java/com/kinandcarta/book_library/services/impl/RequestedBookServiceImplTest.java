@@ -146,7 +146,7 @@ class RequestedBookServiceImplTest {
         final RequestedBook requestedBook = getRequestedBook();
         final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
 
-        given(requestedBookRepository.findByBookISBN(isbn)).willReturn(Optional.of(requestedBook));
+        given(requestedBookRepository.findByBookIsbn(isbn)).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
 
         //act
@@ -162,7 +162,7 @@ class RequestedBookServiceImplTest {
         //arrange
         String isbn = "isbn1";
 
-        given(requestedBookRepository.findByBookISBN(isbn)).willReturn(Optional.empty());
+        given(requestedBookRepository.findByBookIsbn(isbn)).willReturn(Optional.empty());
 
         //act & assert
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
