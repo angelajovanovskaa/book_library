@@ -22,7 +22,7 @@ public class BookCheckoutConverter {
      * This detailed response will only be accessible by the admin on the admin panel page.
      *
      * @param bookCheckout The {@link BookCheckout} entity to convert
-     * @return A {@link BookCheckoutWithUserAndBookItemInfoResponseDTO} containing detailed information about the checkout
+     * @return a {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     public BookCheckoutWithUserAndBookItemInfoResponseDTO toBookCheckoutWithUserAndBookItemInfoResponseDTO(
             BookCheckout bookCheckout) {
@@ -46,7 +46,7 @@ public class BookCheckoutConverter {
      * This response with less information will be used on the users profile.
      *
      * @param bookCheckout The {@link BookCheckout} entity to convert
-     * @return A {@link BookCheckoutResponseDTO} containing simplified information about the checkout
+     * @return a {@link BookCheckoutResponseDTO}
      */
     public BookCheckoutResponseDTO toBookCheckoutResponseDTO(
             BookCheckout bookCheckout) {
@@ -63,11 +63,10 @@ public class BookCheckoutConverter {
     }
 
     /**
-     * Converts a {@link BookCheckout} entity to a checkout reminder response DTO containing
-     * information for notifications which need to be sent to the users.
+     * Converts a {@link BookCheckout} entity to a checkout reminder response DTO.
      *
-     * @param bookCheckout The {@link BookCheckout} entity to convert
-     * @return A {@link BookCheckoutReturnReminderResponseDTO} containing scheduler information about the checkout
+     * @param bookCheckout The {@link BookCheckout} entity to convert.
+     * @return a {@link BookCheckoutReturnReminderResponseDTO}
      */
     public BookCheckoutReturnReminderResponseDTO toBookCheckoutReturnReminderResponseDTO(BookCheckout bookCheckout) {
         User user = bookCheckout.getUser();

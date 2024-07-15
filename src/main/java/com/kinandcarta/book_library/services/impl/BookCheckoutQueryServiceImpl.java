@@ -175,10 +175,9 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAll();
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNull();
 
         return bookCheckouts.stream()
-                .filter(x -> x.getDateReturned() == null)
                 .filter(x -> isBookCheckoutNearingReturnDate(x.getScheduledReturnDate()))
                 .map(bookCheckoutConverter::toBookCheckoutReturnReminderResponseDTO)
                 .toList();

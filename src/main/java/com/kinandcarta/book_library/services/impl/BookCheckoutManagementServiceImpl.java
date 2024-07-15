@@ -62,8 +62,6 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     @Override
     @Transactional
     public String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
-        BookCheckout bookCheckout = new BookCheckout();
-
         UUID userId = bookCheckoutDTO.userId();
         if (isBorrowedBooksLimitReached(userId)) {
             throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
@@ -85,6 +83,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
 
         LocalDate scheduledReturnDate = calculatorService.calculateReturnDateOfBookItem(bookItem);
 
+        BookCheckout bookCheckout = new BookCheckout();
         bookCheckout.setUser(user);
         bookCheckout.setBookItem(bookItem);
         bookCheckout.setDateBorrowed(LocalDate.now());

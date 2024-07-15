@@ -19,7 +19,7 @@ public class UserConverter {
      * This response will only be accessible by the admin on the admin panel page.
      *
      * @param user The {@link User} entity to convert
-     * @return A {@link UserWithRoleFieldResponseDTO} containing information about the user with its role.
+     * @return a {@link UserWithRoleFieldResponseDTO}
      */
     public UserWithRoleFieldResponseDTO toUserWithRoleDTO(User user) {
         return new UserWithRoleFieldResponseDTO(
@@ -35,7 +35,7 @@ public class UserConverter {
      * This response will be accessible by all the users when they look at their profile.
      *
      * @param user The {@link User} entity to convert
-     * @return A {@link UserWithoutRoleFieldResponseDTO} containing information about the user with its profilePicture.
+     * @return a {@link UserWithoutRoleFieldResponseDTO}
      */
     public UserWithoutRoleFieldResponseDTO toUserWithoutRoleDTO(User user) {
         return new UserWithoutRoleFieldResponseDTO(
@@ -48,10 +48,9 @@ public class UserConverter {
 
     /**
      * Converts a {@link UserRegistrationRequestDTO} DTO to a {@link User} entity.
-     * This will be used for the service logic when saving into the db.
      *
      * @param userDTO The {@link UserRegistrationRequestDTO} DTO to convert
-     * @return A {@link User} entity.
+     * @return a {@link User} entity.
      */
     public User toUserEntity(UserRegistrationRequestDTO userDTO) {
         User user = new User();
