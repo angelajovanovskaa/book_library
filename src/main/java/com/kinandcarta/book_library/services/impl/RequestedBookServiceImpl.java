@@ -28,7 +28,6 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     private final RequestedBookRepository requestedBookRepository;
     private final RequestedBookConverter requestedBookConverter;
 
-    private final static List<BookStatus> validStatuses = new ArrayList<>(List.of(BookStatus.REQUESTED, BookStatus.PENDING_PURCHASE, BookStatus.REJECTED));
     private final UserRepository userRepository;
 
     /**
