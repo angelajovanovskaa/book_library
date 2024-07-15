@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,6 +95,27 @@ public class ReviewServiceImpl implements ReviewService {
         User user = getUser(id);
 
         List<Review> reviews = reviewRepository.findAllByUser(user);
+
+        return reviews.stream().map(reviewConverter::toReviewDTO).toList();
+    }
+
+    /**
+     * This method, retrieves the top n reviews (descending order) for Book object with isbn
+     * used in the Book object view.
+     * <hr>
+     *
+     * @param isbn Type: String
+     * @return List of {@link ReviewDTO}
+     */
+    @Override
+    public List<ReviewDTO> getTopReviewsForDisplayInBookView(String isbn) {
+
+        Book book = getBook(isbn);
+
+        List<Review> reviews = reviewRepository.findAllByBook(book).stream()
+                .limit(5)
+                .sorted(Comparator.comparing(Review::getRating).reversed())
+                .toList();
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }

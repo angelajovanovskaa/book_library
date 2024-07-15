@@ -84,16 +84,24 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatus(filterStatus);
 
         if (input == null || input.isEmpty()) {
-            return requestedBooks.stream().map(requestedBookConverter::toRequestedBookDTO).toList();
+            return requestedBooks.stream()
+                    .map(requestedBookConverter::toRequestedBookDTO)
+                    .toList();
         }
 
         if (type.equals("title")) {
-            requestedBooks = requestedBookRepository.findAllByBookBookStatusAndBookTitleContainingIgnoreCase(filterStatus, input);
+            return requestedBookRepository.findAllByBookBookStatusAndBookTitleContainingIgnoreCase(filterStatus, input).stream()
+                    .map(requestedBookConverter::toRequestedBookDTO)
+                    .toList();
         } else if (type.equals("isbn")) {
-            requestedBooks = requestedBookRepository.findAllByBookBookStatusAndBookISBNContainingIgnoreCase(filterStatus, input);
+            return requestedBookRepository.findAllByBookBookStatusAndBookISBNContainingIgnoreCase(filterStatus, input).stream()
+                    .map(requestedBookConverter::toRequestedBookDTO)
+                    .toList();
         }
 
-        return requestedBooks.stream().map(requestedBookConverter::toRequestedBookDTO).toList();
+        return requestedBooks.stream()
+                .map(requestedBookConverter::toRequestedBookDTO)
+                .toList();
     }
 
     /**
@@ -137,16 +145,6 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * Using this method, you can get the favourite RequestedBook among all RequestedBooks that
      * are with status REQUESTED.
      * <hr>
-     * <p>
-     * The purpose of this is to enable us to obtain Requested Books that are not in PENDING_PURCHASE
-     * state for the purpose of adding them for purchasing.
-     * </p>
-     * Explanation:
-     * <p>
-     * Books with status PENDING_PURCHASE may have a larger like counter than all other Requested Books,
-     * therefore if we don't filter the books based on their REQUESTED status, it could happen that we only
-     * ever retrieve books from PENDING_PURCHASE.
-     * </p>
      *
      * @return {@link RequestedBookDTO}
      */
@@ -204,7 +202,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     }
 
     /**
-     * Using this method, you can the book status of a RequestedBook object with the provided ISBN.
+     * Using this method, you can change the book status of a RequestedBook object with the provided ISBN.
      * <hr>
      * Constraints:
      * <ol>
@@ -260,9 +258,9 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * </ol>
      *
      * @param requestedBookId Type: UUID
-     * @throws RequestedBookNotFoundException if RequestedBook object for given UUID doesn't exist
-     * @throws RequestedBookStatusException if the current Book status is not PENDING_PURCHASE
      * @return {@link RequestedBookDTO}
+     * @throws RequestedBookNotFoundException if RequestedBook object for given UUID doesn't exist
+     * @throws RequestedBookStatusException   if the current Book status is not PENDING_PURCHASE
      */
     @Override
     public RequestedBookDTO enterRequestedBookInStock(UUID requestedBookId) {

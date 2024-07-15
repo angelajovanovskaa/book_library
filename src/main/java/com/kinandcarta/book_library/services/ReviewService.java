@@ -15,6 +15,8 @@ public interface ReviewService {
 
     List<ReviewDTO> getAllReviewsByUserId(UUID userId);
 
+    List<ReviewDTO> getTopReviewsForDisplayInBookView(String isbn);
+
     ReviewDTO insertReview(ReviewDTO reviewDTO);
 
     ReviewDTO updateReview(ReviewDTO reviewDTO);
