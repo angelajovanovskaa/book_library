@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;

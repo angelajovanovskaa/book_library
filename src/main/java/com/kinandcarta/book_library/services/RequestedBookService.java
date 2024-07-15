@@ -18,11 +18,11 @@ public interface RequestedBookService {
 
     RequestedBookDTO getRequestedBookByISBN(String ISBN);
 
-    RequestedBookDTO getFavoriteRequestedBook();
+    List<RequestedBookDTO> getTop3FavouriteRequestedBooks();
 
     RequestedBookDTO saveRequestedBook(String bookISBN);
 
-    UUID deleteRequestedBook(UUID requestedBookId);
+    UUID deleteRequestedBookById(UUID requestedBookId);
 
     RequestedBookDTO changeBookStatus(UUID requestedBookId, BookStatus to);
 

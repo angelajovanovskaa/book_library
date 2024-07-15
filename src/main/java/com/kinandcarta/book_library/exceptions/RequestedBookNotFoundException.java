@@ -11,8 +11,4 @@ public class RequestedBookNotFoundException extends CustomNotFoundException {
     public RequestedBookNotFoundException(String isbn) {
         super("RequestedBook with ISBN " + isbn + " not found");
     }
-
-    public RequestedBookNotFoundException() {
-        super("RequestedBook not found");
-    }
 }

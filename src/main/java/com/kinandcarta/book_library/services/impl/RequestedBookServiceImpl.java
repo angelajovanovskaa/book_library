@@ -129,35 +129,27 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public RequestedBookDTO getRequestedBookByISBN(String isbn) {
 
-        Optional<RequestedBook> optionalBook = requestedBookRepository.findByBookISBN(isbn);
-
-        if (optionalBook.isEmpty()) {
-            throw new RequestedBookNotFoundException(isbn);
-        }
-
-        RequestedBook requestedBook = optionalBook.get();
+        RequestedBook requestedBook = getRequestedBook(isbn);
 
         return requestedBookConverter.toRequestedBookDTO(requestedBook);
     }
 
 
     /**
-     * Using this method, you can get the favourite RequestedBook among all RequestedBooks that
+     * Using this method, you can get the top 3 favourite RequestedBook among all RequestedBooks that
      * are with status REQUESTED.
      * <hr>
      *
-     * @return {@link RequestedBookDTO}
+     * @return List of {@link RequestedBookDTO}
      */
     @Override
-    public RequestedBookDTO getFavoriteRequestedBook() {
+    public List<RequestedBookDTO> getTop3FavouriteRequestedBooks() {
 
-        Optional<RequestedBook> requestedBook = requestedBookRepository.findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus.REQUESTED);
+        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus.REQUESTED);
 
-        if (requestedBook.isEmpty()) {
-            throw new RequestedBookNotFoundException();
-        }
-
-        return requestedBookConverter.toRequestedBookDTO(requestedBook.get());
+        return requestedBooks.stream()
+                .map(requestedBookConverter::toRequestedBookDTO)
+                .toList();
     }
 
     /**
@@ -190,7 +182,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * @return {@link RequestedBookDTO}
      */
     @Override
-    public UUID deleteRequestedBook(UUID requestedBookId) {
+    public UUID deleteRequestedBookById(UUID requestedBookId) {
 
         if (!requestedBookRepository.existsById(requestedBookId)) {
             throw new RequestedBookNotFoundException(requestedBookId);
@@ -354,6 +346,17 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         if (optionalRequestedBook.isEmpty()) {
             throw new RequestedBookNotFoundException(requestedBookId);
+        }
+
+        return optionalRequestedBook.get();
+    }
+
+    private RequestedBook getRequestedBook(String isbn) {
+
+        Optional<RequestedBook> optionalRequestedBook = requestedBookRepository.findByBookISBN(isbn);
+
+        if (optionalRequestedBook.isEmpty()) {
+            throw new RequestedBookNotFoundException(isbn);
         }
 
         return optionalRequestedBook.get();

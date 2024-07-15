@@ -58,13 +58,9 @@ public class ReviewServiceImpl implements ReviewService {
      */
     public ReviewDTO getReviewById(UUID id) {
 
-        Optional<Review> review = reviewRepository.findById(id);
+        Review review = getReview(id);
 
-        if (review.isEmpty()) {
-            throw new ReviewNotFoundException(id);
-        }
-
-        return reviewConverter.toReviewDTO(review.get());
+        return reviewConverter.toReviewDTO(review);
     }
 
     /**
@@ -163,13 +159,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         User user = getUser(reviewDTO.userEmail());
 
-        Optional<Review> existingReviewOptional = reviewRepository.findByUserEmailAndBookISBN(user.getEmail(), book.getISBN());
-
-        if (existingReviewOptional.isEmpty()) {
-            throw new ReviewNotFoundException(user.getEmail(), book.getISBN());
-        }
-
-        Review review = existingReviewOptional.get();
+        Review review = getReview(user.getEmail(), book.getISBN());
 
         LocalDate newReviewDate = LocalDate.now();
         review.setDate(newReviewDate);
@@ -198,22 +188,16 @@ public class ReviewServiceImpl implements ReviewService {
      */
     public ReviewDTO deleteReviewById(UUID id) {
 
-        Optional<Review> review = reviewRepository.findById(id);
+        Review review = getReview(id);
 
-        if (review.isEmpty()) {
-            throw new ReviewNotFoundException(id);
-        }
+        Book book = review.getBook();
 
-        ReviewDTO reviewDTO = reviewConverter.toReviewDTO(review.get());
-
-        Book book = review.get().getBook();
-
-        reviewRepository.delete(review.get());
+        reviewRepository.deleteById(review.getId());
 
         book.setRatingFromFirm(calculateBookRating(book));
         bookRepository.save(book);
 
-        return reviewDTO;
+        return reviewConverter.toReviewDTO(review);
     }
 
     private Double calculateBookRating(Book book) {
@@ -227,6 +211,28 @@ public class ReviewServiceImpl implements ReviewService {
         List<Integer> reviewRatings = reviews.stream().map(Review::getRating).toList();
 
         return calculateAverageReviewRatingOnBook.getAverageRatingOnBook(reviewRatings);
+    }
+
+    private Review getReview(UUID id){
+
+        Optional<Review> optionalReview = reviewRepository.findById(id);
+
+        if (optionalReview.isEmpty()) {
+            throw new ReviewNotFoundException(id);
+        }
+
+        return optionalReview.get();
+    }
+
+    private Review getReview(String email, String isbn){
+
+        Optional<Review> optionalReview = reviewRepository.findByUserEmailAndBookISBN(email, isbn);
+
+        if (optionalReview.isEmpty()) {
+            throw new ReviewNotFoundException(email, isbn);
+        }
+
+        return optionalReview.get();
     }
 
     private Book getBook(String isbn) {

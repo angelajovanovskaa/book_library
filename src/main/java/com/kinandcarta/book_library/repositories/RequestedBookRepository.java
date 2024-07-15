@@ -16,7 +16,7 @@ public interface RequestedBookRepository extends JpaRepository<RequestedBook, UU
 
     List<RequestedBook> findAllByBookBookStatusAndBookISBNContainingIgnoreCase(BookStatus status, String title);
 
-    Optional<RequestedBook> findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus status);
+    List<RequestedBook> findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus status);
 
     List<RequestedBook> findAllByBookBookStatus(BookStatus status);
 }
