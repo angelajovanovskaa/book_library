@@ -335,7 +335,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getFirst(), getBookCheckouts().get(1));
         List<BookCheckoutReturnReminderResponseDTO> expectedResult = new ArrayList<>();
 
-        given(bookCheckoutRepository.findAll()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNull()).willReturn(bookCheckouts);
 
         List<BookCheckoutReturnReminderResponseDTO> actualResult =
                 bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate();
@@ -349,7 +349,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckoutReturnReminderResponseDTO> expectedResult =
                 Collections.singletonList(getBookCheckoutReturnReminderResponseDTODTOs().getLast());
 
-        given(bookCheckoutRepository.findAll()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNull()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(bookCheckouts.getFirst())).willReturn(
                 expectedResult.getFirst());
 
