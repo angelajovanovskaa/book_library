@@ -17,6 +17,13 @@ public final class BookStatusTransitionValidator {
         validTransitions.put(BookStatus.PENDING_PURCHASE, List.of(BookStatus.REJECTED, BookStatus.IN_STOCK));
     }
 
+    /**
+     * Validates if the transition from current status to new status is valid.
+     *
+     * @param currentBookStatus the current status of the book
+     * @param newBookStatus the new status to transition to
+     * @return true if the transition is valid, false otherwise
+     */
     public boolean isValid(BookStatus currentBookStatus, BookStatus newBookStatus) {
 
         List<BookStatus> allowedStatuses = validTransitions.get(currentBookStatus);
