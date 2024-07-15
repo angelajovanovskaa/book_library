@@ -103,7 +103,7 @@ class ReviewServiceImplTest {
     void getAllReviewsByBookId_getAllReviewsForGivenBookISBNExists_returnListOfReviewDTO() {
         //arrange
         final Book book = getBooks().getFirst();
-        String isbn = book.getISBN();
+        String isbn = book.getIsbn();
         final List<Review> reviews = getReviews().stream().filter(obj -> obj.getBook().equals(book)).toList();
         final List<ReviewDTO> reviewDTOS = getReviewDTOs().stream().filter(obj -> obj.bookISBN().equals(isbn)).toList();
 
@@ -113,7 +113,7 @@ class ReviewServiceImplTest {
         given(reviewConverter.toReviewDTO(reviews.get(1))).willReturn(reviewDTOS.get(1));
 
         //act
-        final List<ReviewDTO> actualResult = reviewService.getAllReviewsByBookISBN(book.getISBN());
+        final List<ReviewDTO> actualResult = reviewService.getAllReviewsByBookISBN(book.getIsbn());
 
         //assert
         assertThat(actualResult).isEqualTo(reviewDTOS);
@@ -124,12 +124,12 @@ class ReviewServiceImplTest {
         //arrange
         final Book book = getBooks().getFirst();
 
-        given(bookRepository.findById(book.getISBN())).willReturn(Optional.empty());
+        given(bookRepository.findById(book.getIsbn())).willReturn(Optional.empty());
 
         //act & assert
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> reviewService.getAllReviewsByBookISBN(book.getISBN()))
-                .withMessage("Book with ISBN: " + book.getISBN() + " not found");
+                .isThrownBy(() -> reviewService.getAllReviewsByBookISBN(book.getIsbn()))
+                .withMessage("Book with ISBN: " + book.getIsbn() + " not found");
 
         then(reviewRepository).shouldHaveNoInteractions();
         then(reviewConverter).shouldHaveNoInteractions();
@@ -247,7 +247,7 @@ class ReviewServiceImplTest {
                 LocalDate.now(),
                 "message1",
                 1,
-                getBooks().getFirst().getISBN(),
+                getBooks().getFirst().getIsbn(),
                 getUsers().getFirst().getEmail()
         );
 
@@ -256,7 +256,7 @@ class ReviewServiceImplTest {
                 LocalDate.now(),
                 "message2",
                 2,
-                getBooks().getFirst().getISBN(),
+                getBooks().getFirst().getIsbn(),
                 getUsers().getFirst().getEmail()
         );
 
@@ -265,7 +265,7 @@ class ReviewServiceImplTest {
                 LocalDate.now(),
                 "message3",
                 3,
-                getBooks().getLast().getISBN(),
+                getBooks().getLast().getIsbn(),
                 getUsers().getLast().getEmail()
         );
 
