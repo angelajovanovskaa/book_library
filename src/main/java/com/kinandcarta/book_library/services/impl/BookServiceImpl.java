@@ -34,13 +34,13 @@ public class BookServiceImpl implements BookService {
     private final AuthorRepository authorRepository;
 
     /**
-     * <b>Retrieves all books.</b>
+     * Retrieves all books.
      *
      * @return A list of all books represented as {@link BookDTO}.
      */
 
     @Override
-    public List<BookDTO> findAll() {
+    public List<BookDTO> getAllBooks() {
         List<Book> books = bookRepository.findAll();
 
         return books.stream().map(bookConverter::toBookDTO).toList();
@@ -54,7 +54,7 @@ public class BookServiceImpl implements BookService {
      * @throws BookNotFoundException if no book with the given ISBN is found.
      */
     @Override
-    public BookDTO findBookByIsbn(String isbn) {
+    public BookDTO getBookByIsbn(String isbn) {
         Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
         return bookConverter.toBookDTO(book);
@@ -67,7 +67,7 @@ public class BookServiceImpl implements BookService {
      * @return List of books matching the title converted to BookDTOs.
      */
     @Override
-    public List<BookDTO> findBooksByTitle(String title) {
+    public List<BookDTO> getBooksByTitle(String title) {
         List<Book> books = bookRepository.findBooksByTitleContainingIgnoreCase(title);
 
         return books.stream()
@@ -111,7 +111,7 @@ public class BookServiceImpl implements BookService {
      * @return List of books in the specified language converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> findBooksByLanguage(String language) {
+    public List<BookDisplayDTO> getBooksByLanguage(String language) {
         List<Book> books = bookRepository.findByLanguage(language);
 
         return books.stream()
@@ -126,7 +126,7 @@ public class BookServiceImpl implements BookService {
      * @return List of books containing any of the specified genres converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> findBooksByGenresContaining(String[] genres) {
+    public List<BookDisplayDTO> getBooksByGenresContaining(String[] genres) {
         List<Book> books = bookRepository.findBooksByGenresContaining(genres);
 
         return books.stream()
@@ -188,11 +188,11 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDTO setBookStatusInStock(String isbn) {
-        Book foundBook  = bookRepository.findByIsbn(isbn)
+        Book foundBook = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
-
+        bookRepository.save(foundBook);
         return bookConverter.toBookDTO(foundBook);
     }
 }

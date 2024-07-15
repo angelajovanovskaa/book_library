@@ -5,7 +5,6 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
-import com.kinandcarta.book_library.exceptions.InvalidReportBookItemRequestException;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.dtos.BookItemDTO;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
@@ -31,7 +30,7 @@ public class BookItemServiceImpl implements BookItemService {
     private final BookItemConverter bookItemConverter;
 
     /**
-     * <b>Retrieves a list of BookItems associated with a specific book identified by ISBN.</b>
+     * Retrieves a list of BookItems associated with a specific book identified by ISBN.
      *
      * @param isbn The ISBN of the book.
      * @return A list of BookItemDTOs representing BookItems associated with the book.
@@ -87,7 +86,7 @@ public class BookItemServiceImpl implements BookItemService {
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
      * @return A message indicating that the book has been reported as damaged.
-     * @throws InvalidReportBookItemRequestException if bookItemId is {@code null}
+     * @throws BookItemNotFoundException if bookItemId is {@code null}
      */
     @Override
     public String reportBookItemAsDamaged(UUID bookItemId) {
@@ -106,7 +105,7 @@ public class BookItemServiceImpl implements BookItemService {
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
      * @return A message indicating that the book has been reported as lost.
-     * @throws InvalidReportBookItemRequestException if bookItemId is {@code null}
+     * @throws BookItemNotFoundException if bookItemId is {@code null}
      */
     @Override
     public String reportBookItemAsLost(UUID bookItemId) {
@@ -116,6 +115,6 @@ public class BookItemServiceImpl implements BookItemService {
         bookItem.setBookItemState(BookItemState.LOST);
         bookItemRepository.save(bookItem);
 
-        return "The book is reported as lost";
+        return "The book item is reported as lost";
     }
 }
