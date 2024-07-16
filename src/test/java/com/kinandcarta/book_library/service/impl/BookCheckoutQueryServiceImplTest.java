@@ -121,7 +121,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOS =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs();
 
-        given(bookCheckoutRepository.findAll()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findAllOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(0))).willReturn(
                 bookCheckoutDTOS.get(0));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(1))).willReturn(
