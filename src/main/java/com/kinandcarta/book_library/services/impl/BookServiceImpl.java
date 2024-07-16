@@ -13,9 +13,11 @@ import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.BookService;
 
-import lombok.AllArgsConstructor;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import lombok.AllArgsConstructor;
 
 import java.util.HashSet;
 import java.util.List;
@@ -55,8 +57,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDTO getBookByIsbn(String isbn) {
-        Book book = bookRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new BookNotFoundException(isbn));
+        Book book = bookRepository.findByIsbn(isbn).orElseThrow(() -> new BookNotFoundException(isbn));
         return bookConverter.toBookDTO(book);
     }
 
@@ -70,9 +71,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDTO> getBooksByTitle(String title) {
         List<Book> books = bookRepository.findBooksByTitleContainingIgnoreCase(title);
 
-        return books.stream()
-                .map(bookConverter::toBookDTO)
-                .toList();
+        return books.stream().map(bookConverter::toBookDTO).toList();
     }
 
     /**
@@ -85,9 +84,29 @@ public class BookServiceImpl implements BookService {
         List<Book> books = bookRepository.findBooksByStatusAndAvailableItems(BookStatus.IN_STOCK,
                 BookItemState.AVAILABLE);
 
-        return books.stream()
-                .map(bookConverter::bookDisplayDTO)
-                .toList();
+        return books.stream().map(bookConverter::bookDisplayDTO).toList();
+    }
+
+    /**
+     * Retrieves a paginated list of available books based on the specified criteria.
+     *
+     * @param bookStatus    The status of the books to filter by.
+     * @param bookItemState The state of the book items to filter by.
+     * @param page          The page number (zero-based) of the requested page.
+     * @param size          The size of the page to be returned.
+     * @return A {@link org.springframework.data.domain.Page} containing {@link BookDisplayDTO} objects
+     * representing the available books matching the given criteria.
+     * If no books are found, an empty Page will be returned.
+     */
+    @Override
+    public Page<BookDisplayDTO> pagingAvailableBooks(BookStatus bookStatus,
+                                                     BookItemState bookItemState,
+                                                     int page,
+                                                     int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Book> bookPage = bookRepository.pagingAvailableBooks(bookStatus, bookItemState, pageRequest);
+
+        return bookPage.map(bookConverter::bookDisplayDTO);
     }
 
     /**
@@ -99,9 +118,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDisplayDTO> filterRequestedBooks() {
         List<Book> books = bookRepository.findBookByBookStatus(BookStatus.REQUESTED);
 
-        return books.stream()
-                .map(bookConverter::bookDisplayDTO)
-                .toList();
+        return books.stream().map(bookConverter::bookDisplayDTO).toList();
     }
 
     /**
@@ -114,9 +131,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDisplayDTO> getBooksByLanguage(String language) {
         List<Book> books = bookRepository.findByLanguage(language);
 
-        return books.stream()
-                .map(bookConverter::bookDisplayDTO)
-                .toList();
+        return books.stream().map(bookConverter::bookDisplayDTO).toList();
     }
 
     /**
@@ -129,9 +144,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDisplayDTO> getBooksByGenresContaining(String[] genres) {
         List<Book> books = bookRepository.findBooksByGenresContaining(genres);
 
-        return books.stream()
-                .map(bookConverter::bookDisplayDTO)
-                .toList();
+        return books.stream().map(bookConverter::bookDisplayDTO).toList();
     }
 
     /**
@@ -188,8 +201,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDTO setBookStatusInStock(String isbn) {
-        Book foundBook = bookRepository.findByIsbn(isbn)
-                .orElseThrow(() -> new BookNotFoundException(isbn));
+        Book foundBook = bookRepository.findByIsbn(isbn).orElseThrow(() -> new BookNotFoundException(isbn));
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
         bookRepository.save(foundBook);

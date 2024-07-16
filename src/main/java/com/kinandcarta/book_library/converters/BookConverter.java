@@ -59,10 +59,7 @@ public class BookConverter {
                 book.getIsbn(),
                 book.getTitle(),
                 book.getLanguage(),
-                book.getImage(),
-                book.getAuthors().stream()
-                        .map(author -> new AuthorDTO(author.getFullName()))
-                        .collect(Collectors.toSet())
+                book.getImage()
         );
     }
 }
