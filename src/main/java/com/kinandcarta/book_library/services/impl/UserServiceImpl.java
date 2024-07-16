@@ -3,9 +3,12 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.*;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.exceptions.*;
+import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
+import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
+import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
+import com.kinandcarta.book_library.utils.UserServiceUtils;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -31,7 +34,7 @@ public class UserServiceImpl implements UserService {
     private final ResourceLoader resourceLoader;
 
     /**
-     * This method is used to get all of the registered users.<br>
+     * This method is used to get all the registered users.<br>
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
@@ -52,15 +55,15 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used to get all of the information ofr users profile<br>
-     * All the users will have access to this method so they can view their profile.
+     * This method is used to get all the information ofr users profile<br>
+     * All the users will have access to this method, so they can view their profile.
      *
      * @param userId the Id of the user that we are trying to get details for.
      * @return UserWithoutRoleFieldResponseDTO which will contain fullName, email and the profilePicture
      */
     @Override
     public UserWithoutRoleFieldResponseDTO getUserProfile(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow();
 
         return userConverter.toUserWithoutRoleDTO(user);
     }
@@ -75,7 +78,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public String registerUser(UserRegistrationRequestDTO userDTO) {
+    public String registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
         String userEmail = userDTO.email();
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
@@ -88,7 +91,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePicture(userProfilePicture);
 
         userRepository.save(user);
-        return "You have successfully created the account: " + userEmail;
+        return UserServiceUtils.USER_REGISTERED_RESPONSE;
     }
 
     /**
@@ -103,7 +106,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmailAndPassword(userDTO.userEmail(), userDTO.userPassword()).orElseThrow(
                 InvalidUserCredentialsException::new);
 
-        return "Welcome " + user.getFullName();
+        return user.getFullName();
     }
 
     /**
@@ -115,9 +118,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public void updateUserData(UserUpdateDataRequestDTO userDTO) {
+    public String updateUserData(UserUpdateDataRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow();
 
         if (StringUtils.isNotBlank(userDTO.fullName())) {
             user.setFullName(userDTO.fullName());
@@ -128,6 +131,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(user);
+        return UserServiceUtils.USER_DATA_UPDATED_RESPONSE;
     }
 
     /**
@@ -141,12 +145,12 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String updateUserRole(UserUpdateRoleRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow();
 
         user.setRole(userDTO.role());
         userRepository.save(user);
 
-        return "You have changed the role for user " + user.getFullName() + " to " + user.getRole();
+        return UserServiceUtils.USER_ROLE_UPDATED_RESPONSE;
     }
 
     /**
@@ -159,10 +163,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public String deleteAccount(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        userRepository.delete(user);
+        userRepository.deleteById(userId);
 
-        return "The account of the user: " + user.getFullName() + "has been successfully deleted";
+        return UserServiceUtils.USER_DELETED_RESPONSE;
     }
 
     /**
@@ -176,7 +179,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String changeUserPassword(UserChangePasswordRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow();
 
         if (!user.getPassword().equals(userDTO.oldPassword())) {
             throw new IncorrectPasswordException();
@@ -185,18 +188,15 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userDTO.newPassword());
         userRepository.save(user);
 
-        return "The password has been successfully updated.";
+        return UserServiceUtils.USER_PASSWORD_UPDATED_RESPONSE;
     }
 
-    private byte[] getDefaultProfilePicture() {
+    private byte[] getDefaultProfilePicture() throws IOException {
         byte[] imageData;
 
-        Resource resource = resourceLoader.getResource("classpath:image/profile-picture.png");
-        try {
-            imageData = resource.getContentAsByteArray();
-        } catch (IOException e) {
-            throw new InvalidDataForProfilePictureException();
-        }
+        String imagePath = "classpath:image/profile-picture.png";
+        Resource resource = resourceLoader.getResource(imagePath);
+        imageData = resource.getContentAsByteArray();
 
         return imageData;
     }

@@ -15,6 +15,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Implementation of {@link BookCheckoutQueryService} that includes methods for retrieving various views of
+ * book checkout history. <p>
+ * Access controls are specified for different operations.
+ */
 @Service
 @RequiredArgsConstructor
 public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
@@ -85,7 +90,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
     }
 
     /**
-     * This method is used to get all of the book checkouts for a given book by its titleSearchTerm.<br>
+     * This method is used to get all of the book checkouts for a given book by the provided titleSearchTerm.<br>
      * Only admin will have access.
      *
      * @param titleSearchTerm String value for the Title of the Book, cannot be {@code null}
@@ -103,25 +108,6 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
     }
 
     /**
-     * This method is used to get all of the book checkouts for a given user by its name and surname.<br>
-     * The name and surname is sent as a fullNameSearchTerm string with an empty space between the two.
-     * Only admin will have access to this method.
-     *
-     * @param fullNameSearchTerm String value for the name of the User, cannot be {@code null}
-     * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
-     */
-    @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsFromUserWithFullName(
-            String fullNameSearchTerm) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByUser_FullNameContainingIgnoreCaseOrderByDateBorrowed(
-                        fullNameSearchTerm);
-
-        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
-                .toList();
-    }
-
-    /**
      * This method is used to get all of the book checkouts for a given user.<br>
      * All users will have access to this method, but to only see their bookCheckouts.
      *
@@ -133,38 +119,6 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
         List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(userId);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
-    }
-
-    /**
-     * This method is used to get all of the book checkouts for a given book.<br>
-     * Only admin will have access to this method.
-     *
-     * @param bookISBN String value for the ISBN of the Book, cannot be {@code null}
-     * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
-     */
-    @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookISBN(String bookISBN) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByBookItem_Book_ISBNOrderByDateBorrowedDesc(bookISBN);
-
-        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
-                .toList();
-    }
-
-    /**
-     * This method is used to get all of the book checkouts for a given bookItem.<br>
-     * Only admin will have access to this method.
-     *
-     * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
-     * @return List of {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
-     */
-    @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookItem(UUID bookItemId) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId);
-
-        return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
-                .toList();
     }
 
     /**

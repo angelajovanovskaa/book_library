@@ -11,19 +11,17 @@ import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutManagementService;
-import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
+import com.kinandcarta.book_library.utils.BookCheckoutManagementServiceUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * Implementation of {@link BookCheckoutManagementService} that manages the borrowing, returning, and status tracking of book items.</br>
- * This service includes methods for retrieving various views of book checkout history and managing book item states.
+ * Implementation of {@link BookCheckoutManagementService} that manages the borrowing and returning<p>
  * Access controls are specified for different operations.
  */
 @Service
@@ -52,8 +50,6 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      *                        {@code null}.
      * @return A message indicating that the book was successfully borrowed.
      * @throws LimitReachedForBorrowedBooksException If the user has already borrowed the maximum number of books.
-     * @throws UserNotFoundException                 If the specified userId does not correspond to any user in the
-     *                                               repository.
      * @throws BookItemNotFoundException             If the specified bookItemId does not correspond to any book item
      *                                               in the repository.
      * @throws BookItemAlreadyBorrowedException      If the book item is already borrowed by another user.
@@ -66,7 +62,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         if (isBorrowedBooksLimitReached(userId)) {
             throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
         }
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userRepository.findById(userId).orElseThrow();
 
         UUID bookItemId = bookCheckoutDTO.bookItemId();
         BookItem bookItem = bookItemRepository.findById(bookItemId)
@@ -93,7 +89,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         bookItem.setBookItemState(BookItemState.BORROWED);
         bookItemRepository.save(bookItem);
 
-        return "You have successfully borrowed the book " + book.getTitle();
+        return BookCheckoutManagementServiceUtils.BOOK_ITEM_BORROWED_RESPONSE;
     }
 
     /**
@@ -164,14 +160,11 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
 
     private String resolveBookCheckoutResponseMessage(LocalDate scheduledReturnDate, LocalDate dateReturned) {
         if (scheduledReturnDate.isBefore(dateReturned)) {
-            int daysDifference = (int) ChronoUnit.DAYS.between(scheduledReturnDate, dateReturned);
-
-            return "The book return is overdue by "
-                    + daysDifference + " day(s), next time be more careful about the scheduled return date.";
+            return BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
         } else if (scheduledReturnDate.isEqual(dateReturned)) {
-            return "The book is returned on the scheduled return date.";
+            return BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
         } else {
-            return "The book is returned before the scheduled return date.";
+            return BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE;
         }
     }
 

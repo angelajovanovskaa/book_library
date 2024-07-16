@@ -2,13 +2,14 @@ package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.dtos.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
-    void updateUserData(UserUpdateDataRequestDTO userDTO);
+    String updateUserData(UserUpdateDataRequestDTO userDTO);
 
-    String registerUser(UserRegistrationRequestDTO userDTO);
+    String registerUser(UserRegistrationRequestDTO userDTO) throws IOException;
 
     String updateUserRole(UserUpdateRoleRequestDTO userDTO);
 

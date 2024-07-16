@@ -13,8 +13,9 @@ import com.kinandcarta.book_library.exceptions.LimitReachedForBorrowedBooksExcep
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
+import com.kinandcarta.book_library.services.impl.BookReturnDateCalculatorService;
+import com.kinandcarta.book_library.utils.BookCheckoutManagementServiceUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,24 +43,20 @@ class BookCheckoutManagementServiceImplTest {
     @Mock
     private BookReturnDateCalculatorService bookReturnDateCalculatorService;
 
+    @Mock
+    private BookCheckoutManagementServiceUtils bookCheckoutManagementServiceUtils;
+
     @InjectMocks
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
 
     @Test
     void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
-        List<BookCheckout> bookCheckouts = new ArrayList<>(getBookCheckouts());
-        BookItem bookItem = getBookItems().get(3);
+        List<BookCheckout> bookCheckouts = getBookCheckouts();
         User user = getUsers().getFirst();
+        BookItem bookItem = getBookItems().get(4);
         final int MAX_NUMBER_OF_BORROWED_BOOKS = 3;
 
-        BookCheckout bookCheckout1 =
-                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
-                        LocalDate.now(), null, LocalDate.now().plusDays(14));
-
-        bookCheckouts.add(bookCheckout1);
-
-        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(user.getId())).willReturn(
-                List.of(bookCheckouts.get(0), bookCheckouts.get(2), bookCheckouts.get(3)));
+        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(user.getId())).willReturn(bookCheckouts);
 
         BookCheckoutRequestDTO bookCheckoutDTO =
                 new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
@@ -85,7 +82,7 @@ class BookCheckoutManagementServiceImplTest {
 
         assertThatExceptionOfType(BookItemAlreadyBorrowedException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The bookItem with id:" + bookItem.getId() + " is already booked");
+                .withMessage("The bookItem with id: " + bookItem.getId() + " is already booked");
     }
 
     @Test
@@ -109,23 +106,6 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
-    void borrowBookItem_TheBorrowingIsSuccessful_returnsConfirmationMessage() {
-        User user = getUsers().getFirst();
-        BookItem bookItem = getBookItems().get(4);
-        Book book = bookItem.getBook();
-        String expectedResult = "You have successfully borrowed the book " + book.getTitle();
-
-        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
-
-        String actualResult = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
-
-        assertThat(actualResult).isEqualTo(expectedResult);
-    }
-
-    @Test
     void returnBookItem_BookItemIsNotBorrowed_throwsBookItemIsNotBorrowedException() {
         List<BookCheckout> bookCheckouts = new ArrayList<>();
         BookItem bookItem = getBookItems().get(5);
@@ -142,6 +122,22 @@ class BookCheckoutManagementServiceImplTest {
                 .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
                 .withMessage(
                         "The bookItem with id " + bookItem.getId() + " can't be returned because it is not borrowed.");
+    }
+
+    @Test
+    void borrowBookItem_TheBorrowingIsSuccessful_returnsConfirmationMessage() {
+        User user = getUsers().getFirst();
+        BookItem bookItem = getBookItems().get(4);
+        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_BORROWED_RESPONSE;
+
+        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
+        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
+
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+
+        String actualResult = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
+
+        assertThat(actualResult).isEqualTo(expectedResult);
     }
 
     @Test
@@ -162,8 +158,7 @@ class BookCheckoutManagementServiceImplTest {
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
-        String expectedResult =
-                "The book return is overdue by " + 5 + " day(s), next time be more careful about the scheduled return date.";
+        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
 
         String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
@@ -188,7 +183,7 @@ class BookCheckoutManagementServiceImplTest {
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
-        String expectedResult = "The book is returned on the scheduled return date.";
+        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
         String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
         assertThat(actualResult).isEqualTo(expectedResult);
@@ -196,23 +191,17 @@ class BookCheckoutManagementServiceImplTest {
 
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsBeforeSchedule() {
-        List<BookCheckout> bookCheckouts = new ArrayList<>(getBookCheckouts());
         BookItem bookItem = getBookItems().get(3);
         User user = getUsers().getFirst();
-
-        BookCheckout bookCheckout1 =
-                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
-                        LocalDate.now(), null, LocalDate.now().plusDays(3));
-
-        bookCheckouts.add(bookCheckout1);
+        BookCheckout bookCheckout = getBookCheckouts().getLast();
 
         given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItem.getId())).willReturn(
-                Collections.singletonList(bookCheckouts.getLast()));
+                Collections.singletonList(bookCheckout));
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
-        String expectedResult = "The book is returned before the scheduled return date.";
+        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE;
         String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
         assertThat(actualResult).isEqualTo(expectedResult);
@@ -304,9 +293,13 @@ class BookCheckoutManagementServiceImplTest {
                         bookItems.get(1), LocalDate.now(), LocalDate.now().plusDays(5), LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout3 =
-                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), users.get(0),
+                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), users.get(0),
                         bookItems.get(2), LocalDate.now(), null, LocalDate.now().plusDays(2));
 
-        return List.of(bookCheckout1, bookCheckout2, bookCheckout3);
+        BookCheckout bookCheckout4 =
+                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(0),
+                        getBookItems().get(3), LocalDate.now(), null, LocalDate.now().plusDays(3));
+
+        return List.of(bookCheckout1, bookCheckout2, bookCheckout3, bookCheckout4);
     }
 }

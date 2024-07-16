@@ -19,14 +19,7 @@ public interface BookCheckoutQueryService {
 
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(String title);
 
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsFromUserWithFullName(
-            String fullNameSearchTerm);
-
     List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
-
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookISBN(String bookISBN);
-
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookItem(UUID bookItemId);
 
     List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate();
 }
