@@ -47,7 +47,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckout> bookCheckouts = new ArrayList<>();
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> expectedResult = new ArrayList<>();
 
-        given(bookCheckoutRepository.findByDateReturnedIsNull()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
                 bookCheckoutQueryService.getAllActiveBookCheckouts();
@@ -61,7 +61,7 @@ class BookCheckoutQueryServiceImplTest {
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> expectedResult = new ArrayList<>();
 
-        given(bookCheckoutRepository.findByDateReturnedIsNotNull()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNotNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
                 bookCheckoutQueryService.getAllPastBookCheckouts();
@@ -107,7 +107,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getFirst(), getBookCheckouts().get(1));
         List<BookCheckoutReturnReminderResponseDTO> expectedResult = new ArrayList<>();
 
-        given(bookCheckoutRepository.findByDateReturnedIsNull()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
 
         List<BookCheckoutReturnReminderResponseDTO> actualResult =
                 bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate();
@@ -142,7 +142,7 @@ class BookCheckoutQueryServiceImplTest {
                 List.of(getBookCheckoutWithUserAndBookItemInfoResponseDTOs().get(0),
                         getBookCheckoutWithUserAndBookItemInfoResponseDTOs().get(2));
 
-        given(bookCheckoutRepository.findByDateReturnedIsNull()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(0))).willReturn(
                 expectedResult.get(0));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(1))).willReturn(
@@ -161,7 +161,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> expectedResult =
                 Collections.singletonList(getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst());
 
-        given(bookCheckoutRepository.findByDateReturnedIsNotNull()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNotNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
                 bookCheckouts.getFirst())).willReturn(
                 expectedResult.getFirst());
@@ -237,7 +237,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckoutReturnReminderResponseDTO> expectedResult =
                 Collections.singletonList(getBookCheckoutReturnReminderResponseDTODTOs().getLast());
 
-        given(bookCheckoutRepository.findByDateReturnedIsNull()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(bookCheckouts.getFirst())).willReturn(
                 expectedResult.getFirst());
 

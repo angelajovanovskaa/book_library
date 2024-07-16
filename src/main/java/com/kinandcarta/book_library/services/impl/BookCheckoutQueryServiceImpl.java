@@ -36,7 +36,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAll();
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllOrderByDateBorrowedDesc();
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -50,7 +50,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNull();
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc();
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -64,7 +64,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNotNull();
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNotNullOrderByDateBorrowedDesc();
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -129,7 +129,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNull();
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc();
 
         return bookCheckouts.stream()
                 .filter(x -> isBookCheckoutNearingReturnDate(x.getScheduledReturnDate()))
