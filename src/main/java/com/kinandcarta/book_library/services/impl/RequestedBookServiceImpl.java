@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookStatusTransitionValidator;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -9,7 +10,6 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookAlreadyPresentException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
@@ -18,7 +18,10 @@ import com.kinandcarta.book_library.services.RequestedBookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Implementation of {@link RequestedBook} that contains service
@@ -56,19 +59,16 @@ public class RequestedBookServiceImpl implements RequestedBookService {
      * an option to filter RequestedBook objects by title (enabled for everyone).
      * <hr>
      *
+     * @param status Type: {@link BookStatus}
      * @return List of {@link RequestedBookDTO}
      */
     @Override
-    public List<RequestedBookDTO> filterRequestedBooks(String titleInput, BookStatus status) {
+    public List<RequestedBookDTO> filterRequestedBooks(BookStatus status) {
 
         List<RequestedBook> requestedBooks;
 
-        if (titleInput.isEmpty()) {
-            requestedBooks = requestedBookRepository.findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
-        } else {
-            requestedBooks = requestedBookRepository
-                    .findAllByBookBookStatusAndBookTitleContainingIgnoreCaseOrderByLikeCounterDescBookTitleAsc(status, titleInput);
-        }
+        requestedBooks = requestedBookRepository
+                .findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
 
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookDTO)
@@ -102,7 +102,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         Optional<RequestedBook> requestedBookOptional = requestedBookRepository.findByBookIsbn(isbn);
 
-        if (requestedBookOptional.isEmpty()){
+        if (requestedBookOptional.isEmpty()) {
             throw new RequestedBookNotFoundException(isbn);
         }
 
@@ -128,7 +128,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         Optional<Book> book = bookRepository.findByIsbn(bookISBN);
 
-        if (book.isPresent()){
+        if (book.isPresent()) {
             throw new BookAlreadyPresentException(bookISBN);
         }
 
@@ -148,7 +148,9 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public UUID deleteRequestedBookById(UUID requestedBookId) {
 
-        if (!requestedBookRepository.existsById(requestedBookId)) {
+        boolean isPresent = requestedBookRepository.existsById(requestedBookId);
+
+        if (!isPresent) {
             throw new RequestedBookNotFoundException(requestedBookId);
         }
 

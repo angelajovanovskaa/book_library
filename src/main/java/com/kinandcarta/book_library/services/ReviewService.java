@@ -11,9 +11,7 @@ public interface ReviewService {
 
     ReviewDTO getReviewById(UUID id);
 
-    List<ReviewDTO> getAllReviewsByBookISBN(String isbn);
-
-    List<ReviewDTO> getAllReviewsByUserId(UUID userId);
+    List<ReviewDTO> getAllReviewsByBookIsbn(String isbn);
 
     List<ReviewDTO> getTopReviewsForDisplayInBookView(String isbn);
 

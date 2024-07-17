@@ -1,22 +1,11 @@
 package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
-
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Column;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.ManyToMany;
-
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import org.hibernate.annotations.Type;
 
 import java.util.ArrayList;

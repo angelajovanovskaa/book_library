@@ -3,7 +3,9 @@ package com.kinandcarta.book_library.entities;
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public final class BookStatusTransitionValidator {
@@ -21,7 +23,7 @@ public final class BookStatusTransitionValidator {
      * Validates if the transition from current status to new status is valid.
      *
      * @param currentBookStatus the current status of the book
-     * @param newBookStatus the new status to transition to
+     * @param newBookStatus     the new status to transition to
      * @return true if the transition is valid, false otherwise
      */
     public boolean isValid(BookStatus currentBookStatus, BookStatus newBookStatus) {

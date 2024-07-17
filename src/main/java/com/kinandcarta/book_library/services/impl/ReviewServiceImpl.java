@@ -1,12 +1,13 @@
 package com.kinandcarta.book_library.services.impl;
 
+import com.kinandcarta.book_library.converters.ReviewConverter;
+import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
-import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
@@ -15,12 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.kinandcarta.book_library.converters.*;
 
 /**
  * Implementation of {@link ReviewService} that contains service
@@ -70,39 +68,17 @@ public class ReviewServiceImpl implements ReviewService {
      * @param isbn Type: String
      * @return List of {@link ReviewDTO}
      */
-    public List<ReviewDTO> getAllReviewsByBookISBN(String isbn) {
+    public List<ReviewDTO> getAllReviewsByBookIsbn(String isbn) {
 
         Book book = getBook(isbn);
 
-        List<Review> reviews = reviewRepository.findAllByBook(book);
+        List<Review> reviews = reviewRepository.findAllByBookIsbn(book.getIsbn());
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
 
     /**
-     * Retrieves Review objects related to User with the provided user id.
-     * <hr>
-     *
-     * @param id Type: UUID
-     * @return List of {@link ReviewDTO}
-     */
-    public List<ReviewDTO> getAllReviewsByUserId(UUID id) {
-
-        Optional<User> optionalUser = this.userRepository.findById(id);
-
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException(id);
-        }
-
-        User user = optionalUser.get();
-
-        List<Review> reviews = reviewRepository.findAllByUser(user);
-
-        return reviews.stream().map(reviewConverter::toReviewDTO).toList();
-    }
-
-    /**
-     * Retrieves the top 5 reviews of a Book by provided ISBN in descending order.
+     * Retrieves the top 3 reviews of a Book by provided ISBN in descending order.
      * <hr>
      *
      * @param isbn Type: String
@@ -113,10 +89,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         Book book = getBook(isbn);
 
-        List<Review> reviews = reviewRepository.findAllByBook(book).stream()
-                .limit(5)
-                .sorted(Comparator.comparing(Review::getRating).reversed())
-                .toList();
+        List<Review> reviews = reviewRepository.findTop3ByBookIsbnOrderByRatingDesc(book.getIsbn());
 
         return reviews.stream().map(reviewConverter::toReviewDTO).toList();
     }
@@ -134,14 +107,15 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = reviewConverter.toReview(reviewDTO);
 
         Book book = getBook(reviewDTO.bookISBN());
-        review.setBook(book);
+        review.addBook(book);
 
         User user = getUser(reviewDTO.userEmail());
-        review.setUser(user);
+        review.addUser(user);
 
         reviewRepository.save(review);
 
-        double rating = calculateBookRating(book);
+        String isbn = book.getIsbn();
+        double rating = calculateBookRating(isbn);
         book.setRatingFromFirm(rating);
 
         bookRepository.save(book);
@@ -160,10 +134,12 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDTO updateReview(ReviewDTO reviewDTO) {
 
         Book book = getBook(reviewDTO.bookISBN());
+        String isbn = book.getIsbn();
 
         User user = getUser(reviewDTO.userEmail());
+        String email = user.getEmail();
 
-        Review review = getReview(user.getEmail(), book.getIsbn());
+        Review review = getReview(email, isbn);
 
         LocalDate newReviewDate = LocalDate.now();
         review.setDate(newReviewDate);
@@ -176,7 +152,7 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.save(review);
 
-        double newRatingOnBook = calculateBookRating(book);
+        double newRatingOnBook = calculateBookRating(isbn);
         book.setRatingFromFirm(newRatingOnBook);
         bookRepository.save(book);
 
@@ -196,17 +172,19 @@ public class ReviewServiceImpl implements ReviewService {
 
         Book book = review.getBook();
 
-        reviewRepository.deleteById(review.getId());
+        String isbn = book.getIsbn();
 
-        book.setRatingFromFirm(calculateBookRating(book));
+        reviewRepository.deleteById(id);
+
+        book.setRatingFromFirm(calculateBookRating(isbn));
         bookRepository.save(book);
 
         return reviewConverter.toReviewDTO(review);
     }
 
-    private double calculateBookRating(Book book) {
+    private double calculateBookRating(String isbn) {
 
-        List<Review> reviews = reviewRepository.findAllByBook(book);
+        List<Review> reviews = reviewRepository.findAllByBookIsbn(isbn);
 
         if (reviews.isEmpty()) {
             return 0.0;
@@ -217,7 +195,7 @@ public class ReviewServiceImpl implements ReviewService {
         return calculateAverageReviewRatingOnBook.getAverageRatingOnBook(reviewRatings);
     }
 
-    private Review getReview(UUID id){
+    private Review getReview(UUID id) {
 
         Optional<Review> optionalReview = reviewRepository.findById(id);
 
@@ -228,7 +206,7 @@ public class ReviewServiceImpl implements ReviewService {
         return optionalReview.get();
     }
 
-    private Review getReview(String email, String isbn){
+    private Review getReview(String email, String isbn) {
 
         Optional<Review> optionalReview = reviewRepository.findByUserEmailAndBookIsbn(email, isbn);
 
@@ -241,7 +219,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Book getBook(String isbn) {
 
-        Optional<Book> optionalBook = this.bookRepository.findById(isbn);
+        Optional<Book> optionalBook = this.bookRepository.findByIsbn(isbn);
 
         if (optionalBook.isEmpty()) {
             throw new BookNotFoundException(isbn);

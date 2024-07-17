@@ -1,13 +1,18 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.BookStatusTransitionValidator;
 import com.kinandcarta.book_library.entities.RequestedBook;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
+import com.kinandcarta.book_library.exceptions.UserNotFoundException;
+import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
+import com.kinandcarta.book_library.repositories.UserRepository;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +20,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+import java.util.*;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-
-import java.time.LocalDate;
-import java.util.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RequestedBookServiceImplTest {
@@ -30,107 +36,192 @@ class RequestedBookServiceImplTest {
     private RequestedBookRepository requestedBookRepository;
 
     @Mock
+    private BookRepository bookRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
     private RequestedBookConverter requestedBookConverter;
+
+    @Mock
+    private BookStatusTransitionValidator bookStatusTransitionValidator;
 
     @InjectMocks
     private RequestedBookServiceImpl requestedBookServiceImpl;
 
     @Test
-    void getAll_RequestedBooks_atLeastOneRequestedBookExists_returnListOfRequestedBook() {
-        //arrange
+    void getAllRequestedBooks_atLeastOneRequestedBookExists_returnsAllRequestedBooks() {
+
         final List<RequestedBook> requestedBooks = getRequestedBooks();
         final List<RequestedBookDTO> requestedBookDTOS = getRequestedBookDTOs();
 
         given(requestedBookRepository.findAll()).willReturn(requestedBooks);
-        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.get(0))).willReturn(requestedBookDTOS.get(0));
+        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(
+                requestedBookDTOS.getFirst());
         given(requestedBookConverter.toRequestedBookDTO(requestedBooks.get(1))).willReturn(requestedBookDTOS.get(1));
-        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.get(2))).willReturn(requestedBookDTOS.get(2));
+        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getLast())).willReturn(
+                requestedBookDTOS.getLast());
 
-        //act
         final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.getAllRequestedBooks();
 
-        //assert
+        verify(requestedBookRepository, times(1)).findAll();
+        for (RequestedBook obj : requestedBooks) {
+            verify(requestedBookConverter, times(1)).toRequestedBookDTO(obj);
+        }
+
         assertThat(actualResult).isEqualTo(requestedBookDTOS);
     }
 
-//    @Test
-//    void getAllRequestedBooksRequestedBooksWithStatus_atLeastOneRequestedBookExistsWithStatusREQUESTED_returnListOfRequestedBook() {
-//        //arrange
-//        final BookStatus status = BookStatus.REQUESTED;
-//        final List<RequestedBook> requestedBooks = getRequestedBooks().stream().filter(obj -> obj.getBook().getBookStatus().equals(status)).toList();
-//        final List<RequestedBookDTO> requestedBookDTOS = Collections.singletonList(getRequestedBookDTOs().getFirst());
-//
-//        given(requestedBookRepository.findAllByBookBookStatus(status)).willReturn(requestedBooks);
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(requestedBookDTOS.getFirst());
-//
-//        //act
-//        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.getAllRequestedBooksWithStatus(status);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTOS);
-//    }
-//
-//    @Test
-//    void getAllRequestedBooksRequestedBooksWithStatus_atLeastOneRequestedBookExistsWithStatusPENDING_returnListOfRequestedBook() {
-//        //arrange
-//        final BookStatus status = BookStatus.PENDING_PURCHASE;
-//        final List<RequestedBook> requestedBooks = getRequestedBooks().stream().filter(obj -> obj.getBook().getBookStatus().equals(status)).toList();
-//        final List<RequestedBookDTO> requestedBookDTOS = Collections.singletonList(getRequestedBookDTOs().getFirst());
-//
-//        given(requestedBookRepository.findAllByBookBookStatus(status)).willReturn(requestedBooks);
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(requestedBookDTOS.getFirst());
-//
-//        //act
-//        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.getAllRequestedBooksWithStatus(status);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTOS);
-//    }
+    @Test
+    void getAllRequestedBooks_requestedBookNotExists_returnsAllRequestedBooks() {
 
-//    @Test
-//    void getAllRequestedBooksRequestedBooksWithStatus_atLeastOneRequestedBookExistsWithStatusREJECTED_returnListOfRequestedBook() {
-//        //arrange
-//        final BookStatus status = BookStatus.REJECTED;
-//        final List<RequestedBook> requestedBooks = getRequestedBooks().stream().filter(obj -> obj.getBook().getBookStatus().equals(status)).toList();
-//        final List<RequestedBookDTO> requestedBookDTOS = Collections.singletonList(getRequestedBookDTOs().getFirst());
-//
-//        given(requestedBookRepository.findAllByBookBookStatus(status)).willReturn(requestedBooks);
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(requestedBookDTOS.getFirst());
-//
-//        //act
-//        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.getAllRequestedBooksWithStatus(status);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTOS);
-//    }
+        final List<RequestedBook> requestedBooks = new ArrayList<>();
+        final List<RequestedBookDTO> requestedBookDTOS = new ArrayList<>();
+
+        given(requestedBookRepository.findAll()).willReturn(requestedBooks);
+
+        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.getAllRequestedBooks();
+
+        verify(requestedBookRepository, times(1)).findAll();
+        for (RequestedBook obj : requestedBooks) {
+            verify(requestedBookConverter, times(0)).toRequestedBookDTO(obj);
+        }
+
+        assertThat(actualResult).isEqualTo(requestedBookDTOS);
+    }
+
+    @Test
+    void filterRequestedBooks_bookStatusRequested_returnsListOfRequestedBooks() {
+
+        final BookStatus status = BookStatus.REQUESTED;
+
+        final List<RequestedBook> requestedBooks = new ArrayList<>(getRequestedBooks());
+        requestedBooks.removeIf(obj -> !obj.getBook().getBookStatus().equals(status));
+
+
+        final List<RequestedBookDTO> requestedBookDTOS =
+                new ArrayList<>(getRequestedBookDTOs());
+
+        requestedBookDTOS.removeIf(dto ->
+                requestedBooks.stream()
+                        .noneMatch(book -> book.getId().equals(dto.id()))
+        );
+
+        given(requestedBookRepository.findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status)).willReturn(
+                requestedBooks);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(
+                requestedBookDTOS.getFirst());
+
+        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.filterRequestedBooks(status);
+
+        actualResult.forEach(obj -> System.out.println(obj.bookISBN()));
+
+        verify(requestedBookRepository, times(1)).findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
+        for (RequestedBook obj : requestedBooks) {
+            verify(requestedBookConverter, times(1)).toRequestedBookDTO(obj);
+        }
+
+        assertThat(actualResult).isEqualTo(requestedBookDTOS);
+    }
+
+    @Test
+    void filterRequestedBooks_bookStatusPendingPurchase_returnsListOfRequestedBooks() {
+
+        final BookStatus status = BookStatus.PENDING_PURCHASE;
+
+        final List<RequestedBook> requestedBooks = new ArrayList<>(getRequestedBooks());
+        requestedBooks.removeIf(obj -> !obj.getBook().getBookStatus().equals(status));
+
+
+        final List<RequestedBookDTO> requestedBookDTOS =
+                new ArrayList<>(getRequestedBookDTOs());
+
+        requestedBookDTOS.removeIf(dto ->
+                requestedBooks.stream()
+                        .noneMatch(book -> book.getId().equals(dto.id()))
+        );
+
+        given(requestedBookRepository.findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status)).willReturn(
+                requestedBooks);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(
+                requestedBookDTOS.getFirst());
+
+        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.filterRequestedBooks(status);
+
+        actualResult.forEach(obj -> System.out.println(obj.bookISBN()));
+
+        verify(requestedBookRepository, times(1)).findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
+        for (RequestedBook obj : requestedBooks) {
+            verify(requestedBookConverter, times(1)).toRequestedBookDTO(obj);
+        }
+
+        assertThat(actualResult).isEqualTo(requestedBookDTOS);
+    }
+
+    @Test
+    void filterRequestedBooks_bookStatusRejected_returnsListOfRequestedBooks() {
+
+        final BookStatus status = BookStatus.REJECTED;
+
+        final List<RequestedBook> requestedBooks = new ArrayList<>(getRequestedBooks());
+        requestedBooks.removeIf(obj -> !obj.getBook().getBookStatus().equals(status));
+
+
+        final List<RequestedBookDTO> requestedBookDTOS =
+                new ArrayList<>(getRequestedBookDTOs());
+
+        requestedBookDTOS.removeIf(dto ->
+                requestedBooks.stream()
+                        .noneMatch(book -> book.getId().equals(dto.id()))
+        );
+
+        given(requestedBookRepository.findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status)).willReturn(
+                requestedBooks);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBooks.getFirst())).willReturn(
+                requestedBookDTOS.getFirst());
+
+        final List<RequestedBookDTO> actualResult = requestedBookServiceImpl.filterRequestedBooks(status);
+
+        actualResult.forEach(obj -> System.out.println(obj.bookISBN()));
+
+        verify(requestedBookRepository, times(1)).findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
+        for (RequestedBook obj : requestedBooks) {
+            verify(requestedBookConverter, times(1)).toRequestedBookDTO(obj);
+        }
+
+        assertThat(actualResult).isEqualTo(requestedBookDTOS);
+    }
 
     @Test
     @SneakyThrows
-    void getRequestedBookById_recommendedBookForGivenIdExists_returnRequestedBook() {
-        //arrange
-        final UUID RequestedBookID1 = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+    void getRequestedBookById_requestedBookForGivenIdExists_returnRequestedBook() {
+
+        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         final RequestedBook requestedBook = getRequestedBook();
         final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
 
-        given(requestedBookRepository.findById(RequestedBookID1)).willReturn(Optional.of(requestedBook));
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
 
-        //act
-        final RequestedBookDTO actualResult = requestedBookServiceImpl.getRequestedBookById(RequestedBookID1);
+        final RequestedBookDTO actualResult = requestedBookServiceImpl.getRequestedBookById(id);
 
-        //assert
+        verify(requestedBookRepository, times(1)).findById(id);
+        verify(requestedBookConverter, times(1)).toRequestedBookDTO(requestedBook);
+
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
     @Test
     @SneakyThrows
-    void getRequestedBookById_recommendedBookForGivenIdNotExists_returnRequestedBook() {
-        //arrange
+    void getRequestedBookById_requestedBookForGivenIdNotExists_throwsException() {
+
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
         given(requestedBookRepository.findById(id)).willReturn(Optional.empty());
 
-        //act & assert
+        verify(requestedBookRepository, times(0)).findById(id);
+
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.getRequestedBookById(id))
                 .withMessage("RequestedBook with id " + id + " not found");
@@ -140,8 +231,8 @@ class RequestedBookServiceImplTest {
 
     @Test
     @SneakyThrows
-    void getRequestedBookByISBN_recommendedBookForGivenISBNExists_returnRequestedBook() {
-        //arrange
+    void getRequestedBookByISBN_requestedBookForGivenIsbnExists_returnRequestedBook() {
+
         final String isbn = "isbn1";
         final RequestedBook requestedBook = getRequestedBook();
         final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
@@ -149,56 +240,30 @@ class RequestedBookServiceImplTest {
         given(requestedBookRepository.findByBookIsbn(isbn)).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
 
-        //act
         final RequestedBookDTO actualResult = requestedBookServiceImpl.getRequestedBookByISBN(isbn);
 
-        //assert
+        verify(requestedBookRepository, times(1)).findByBookIsbn(isbn);
+        verify(requestedBookConverter, times(1)).toRequestedBookDTO(requestedBook);
+
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
     @Test
     @SneakyThrows
-    void getRequestedBookByISBN_recommendedBookForGivenISBNNotExists_returnRequestedBook() {
-        //arrange
+    void getRequestedBookByISBN_requestedBookForGivenIsbnNotExists_throwsException() {
+
         String isbn = "isbn1";
 
         given(requestedBookRepository.findByBookIsbn(isbn)).willReturn(Optional.empty());
 
-        //act & assert
+        verify(requestedBookRepository, times(0)).findByBookIsbn(isbn);
+
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.getRequestedBookByISBN(isbn))
                 .withMessage("RequestedBook with ISBN " + isbn + " not found");
+
+        then(requestedBookConverter).shouldHaveNoInteractions();
     }
-
-
-//    @Test
-//    @SneakyThrows
-//    void getTop3FavouriteRequestedBook_recommendedBookExists_returnRequestedBooks() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//
-//        given(requestedBookRepository.findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus.REQUESTED)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.getTop3FavouriteRequestedBooks();
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
-//
-//    @Test
-//    @SneakyThrows
-//    void getTop3FavouriteRequestedBook_recommendedBookNotExists_returnRequestedBooks() {
-//        //arrange
-//        given(requestedBookRepository.findTopByBookBookStatusOrderByLikeCounterDescBookTitleAsc(BookStatus.REQUESTED)).willReturn(Optional.empty());
-//
-//        //act & assert
-//        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-//                .isThrownBy(() -> requestedBookServiceImpl.getTop3FavouriteRequestedBooks())
-//                .withMessage("RequestedBook not found");
-//    }
 
     @Test
     void saveRequestedBook() {
@@ -209,117 +274,139 @@ class RequestedBookServiceImplTest {
 
     @Test
     @SneakyThrows
-    void deleteRequestedBook_RequestedBookValidDelete_returnRequestedBookByIdDTO() {
-        //todo: fix this using UUID
-//        //arrange
-//        final RequestedBook requestedBook = getRequestedBook();
-//        final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.deleteRequestedBook(requestedBook.getId());
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    void deleteRequestedBook_requestedBookIsPresent_returnRequestedBookByIdDTO() {
+
+        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.existsById(id)).willReturn(true);
+
+        requestedBookServiceImpl.deleteRequestedBookById(id);
+
+        verify(requestedBookRepository, times(1)).existsById(id);
+        verify(requestedBookRepository, times(1)).deleteById(id);
+
+        final UUID actualResult = requestedBookServiceImpl.deleteRequestedBookById(id);
+
+        assertThat(actualResult).isEqualTo(id);
     }
 
-//    @Test
-//    @SneakyThrows
-//    void deleteRequestedBook_RequestedBookNotValidDelete_returnRequestedBookDTO() {
-//        //arrange
-//        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.empty());
-//
-//        //act & assert
-//        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-//                .isThrownBy(() -> requestedBookServiceImpl.deleteRequestedBook(id))
-//                .withMessage("RequestedBook with id " + id + " not found");
-//    }
+    @Test
+    @SneakyThrows
+    void deleteRequestedBook_requestedBookIsNotPresent_throwsException() {
+
+        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.existsById(id)).willReturn(false);
+
+        verify(requestedBookRepository, times(0)).existsById(id);
+
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookServiceImpl.deleteRequestedBookById(id))
+                .withMessage("RequestedBook with id " + id + " not found");
+
+        then(requestedBookConverter).shouldHaveNoInteractions();
+    }
 
     @Test
     @SneakyThrows
     void changeStatus_changeBookStatusFromRequestedToRequestedValid_returnRequestedBook() {
-        //arrange
+
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
         UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-        requestedBook.getBook().setBookStatus(BookStatus.REQUESTED);
 
         given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
 
-        //act
-        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.REQUESTED);
+        final RequestedBookDTO actualResult =
+                requestedBookServiceImpl.changeBookStatus(id, BookStatus.REQUESTED);
 
-        //assert
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromRequestedToPendingValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.REQUESTED);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.PENDING_PURCHASE);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromRequestedToPendingValid_returnRequestedBook() {
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromRequestedToRejectedValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.REQUESTED);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.REJECTED);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.PENDING_PURCHASE;
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromPendingToRequestedValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.PENDING_PURCHASE);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.REQUESTED);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
+
+        requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        verify(requestedBookRepository, atLeastOnce()).findById(id);
+        verify(bookStatusTransitionValidator, times(1)).isValid(currentStatus, newStatus);
+        verify(bookRepository, times(1)).save(book);
+        verify(requestedBookRepository, times(1)).save(requestedBook);
+        verify(requestedBookConverter, times(1)).toRequestedBookDTO(requestedBook);
+
+        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
+
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromRequestedToRejectedValid_returnRequestedBook() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.REJECTED;
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
+
+        requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        verify(requestedBookRepository, atLeastOnce()).findById(id);
+        verify(bookStatusTransitionValidator, times(1)).isValid(currentStatus, newStatus);
+        verify(bookRepository, times(1)).save(book);
+        verify(requestedBookRepository, times(1)).save(requestedBook);
+        verify(requestedBookConverter, times(1)).toRequestedBookDTO(requestedBook);
+
+        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromRequestedToInStock_throwsException() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.IN_STOCK;
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(false);
+
+        assertThatExceptionOfType(RequestedBookStatusException.class)
+                .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, newStatus))
+                .withMessage("Transition from status " + currentStatus + " to status " + newStatus +
+                        " for requested book is not feasible");
+
+        then(bookRepository).shouldHaveNoInteractions();
+        then(requestedBookConverter).shouldHaveNoInteractions();
+    }
 
     @Test
     @SneakyThrows
     void changeStatus_changeBookStatusFromPendingToPendingValid_returnRequestedBook() {
-        //arrange
+
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
         UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
@@ -328,74 +415,68 @@ class RequestedBookServiceImplTest {
         given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
 
-        //act
-        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.PENDING_PURCHASE);
+        final RequestedBookDTO actualResult =
+                requestedBookServiceImpl.changeBookStatus(id, BookStatus.PENDING_PURCHASE);
 
-        //assert
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromPendingToRejectedValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.PENDING_PURCHASE);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.REJECTED);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromPendingToRejectedValid_returnRequestedBook() {
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromRejectedToRequestedValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.REJECTED);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.REQUESTED);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        book.setBookStatus(BookStatus.PENDING_PURCHASE);
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.REJECTED;
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromRejectedToPendingValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.REJECTED);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
-//
-//        //act
-//        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.PENDING_PURCHASE);
-//
-//        //assert
-//        assertThat(actualResult).isEqualTo(requestedBookDTO);
-//    }
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
+
+        requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        verify(requestedBookRepository, atLeastOnce()).findById(id);
+        verify(bookStatusTransitionValidator, times(1)).isValid(currentStatus, newStatus);
+        verify(bookRepository, times(1)).save(book);
+        verify(requestedBookRepository, times(1)).save(requestedBook);
+        verify(requestedBookConverter, times(1)).toRequestedBookDTO(requestedBook);
+
+        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromPendingToRequested_throwsException() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        book.setBookStatus(BookStatus.PENDING_PURCHASE);
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.REQUESTED;
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(false);
+
+        assertThatExceptionOfType(RequestedBookStatusException.class)
+                .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, newStatus))
+                .withMessage("Transition from status " + currentStatus + " to status " + newStatus +
+                        " for requested book is not feasible");
+
+        then(bookRepository).shouldHaveNoInteractions();
+        then(requestedBookConverter).shouldHaveNoInteractions();
+    }
 
     @Test
     @SneakyThrows
     void changeStatus_changeBookStatusFromRejectedToRejectedValid_returnRequestedBook() {
-        //arrange
+
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
         UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
@@ -404,64 +485,138 @@ class RequestedBookServiceImplTest {
         given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
 
-        //act
         final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, BookStatus.REJECTED);
 
-        //assert
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromInStockToRequestedValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.IN_STOCK);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//
-//        //act & assert
-//        assertThatExceptionOfType(RequestedBookStatusException.class)
-//                .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, BookStatus.REQUESTED))
-//                .withMessage("Cannot convert RecommendedBook from status " + requestedBook.getBook().getBookStatus().name() + " to status " + BookStatus.REQUESTED.name());
-//    }
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromRejectedToPendingValid_returnRequestedBook() {
 
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromInStockToPendingValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.IN_STOCK);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//
-//        //act & assert
-//        assertThatExceptionOfType(RequestedBookStatusException.class)
-//                .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, BookStatus.PENDING_PURCHASE))
-//                .withMessage("Cannot convert RecommendedBook from status " + requestedBook.getBook().getBookStatus().name() + " to status " + BookStatus.PENDING_PURCHASE.name());
-//    }
-//
-//    @Test
-//    @SneakyThrows
-//    void changeStatus_changeBookStatusFromInStockToRejectedValid_returnRequestedBook() {
-//        //arrange
-//        RequestedBook requestedBook = getRequestedBook();
-//        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-//        requestedBook.getBook().setBookStatus(BookStatus.IN_STOCK);
-//
-//        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
-//
-//        //act & assert
-//        assertThatExceptionOfType(RequestedBookStatusException.class)
-//                .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, BookStatus.REJECTED))
-//                .withMessage("Cannot convert RecommendedBook from status " + requestedBook.getBook().getBookStatus().name() + " to status " + BookStatus.REJECTED.name());
-//    }
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        book.setBookStatus(BookStatus.REJECTED);
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.PENDING_PURCHASE;
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
+        given(requestedBookConverter.toRequestedBookDTO(requestedBook)).willReturn(requestedBookDTO);
+
+        requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        verify(requestedBookRepository, atLeastOnce()).findById(id);
+        verify(bookStatusTransitionValidator, times(1)).isValid(currentStatus, newStatus);
+        verify(bookRepository, times(1)).save(book);
+        verify(requestedBookRepository, times(1)).save(requestedBook);
+        verify(requestedBookConverter, times(1)).toRequestedBookDTO(requestedBook);
+
+        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromRejectedToRequested_throwsException() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        book.setBookStatus(BookStatus.REJECTED);
+        BookStatus currentStatus = book.getBookStatus();
+        BookStatus newStatus = BookStatus.REQUESTED;
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(false);
+
+        assertThatExceptionOfType(RequestedBookStatusException.class)
+                .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, newStatus))
+                .withMessage("Transition from status " + currentStatus + " to status " + newStatus +
+                        " for requested book is not feasible");
+
+        then(bookRepository).shouldHaveNoInteractions();
+        then(requestedBookConverter).shouldHaveNoInteractions();
+    }
 
     @Test
     void enterRequestedBookInStock() {
     }
+
+    @Test
+    @SneakyThrows
+    void handleRequestedBookLike_requestedBookWithIdIsNotFound_throwsException() {
+
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000110000");
+        String email = "email1";
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.empty());
+
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookServiceImpl.handleRequestedBookLike(id, email))
+                .withMessage("RequestedBook with id " + id + " not found");
+    }
+
+    @Test
+    @SneakyThrows
+    void handleRequestedBookLike_userWithEmailIsNotFound_throwsException() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        UUID id = requestedBook.getId();
+        String email = "test";
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(userRepository.findByEmail(email)).willReturn(Optional.empty());
+
+        assertThatExceptionOfType(UserNotFoundException.class)
+                .isThrownBy(() -> requestedBookServiceImpl.handleRequestedBookLike(id, email))
+                .withMessage("User with email: " + email + " not found");
+    }
+
+    @Test
+    @SneakyThrows
+    void handleRequestedBookLike_userLikesRequestedBook_returnRequestedBookDto() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = requestedBook.getId();
+        User user = getUser();
+        String email = user.getEmail();
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+        given(requestedBookConverter.toRequestedBookDTO(any(RequestedBook.class))).willReturn(requestedBookDTO);
+
+        RequestedBookDTO actualResult = requestedBookServiceImpl.handleRequestedBookLike(id, email);
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
+    @Test
+    @SneakyThrows
+    void handleRequestedBookLike_userUnlikesRequestedBook_returnRequestedBookDto() {
+
+        RequestedBook requestedBook = getRequestedBook();
+        Set<User> likedBy = requestedBook.getUsers();
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = requestedBook.getId();
+        User user = getUser();
+        String email = user.getEmail();
+        likedBy.add(user);
+        requestedBook.addUsers(likedBy);
+
+        given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
+        given(userRepository.findByEmail(email)).willReturn(Optional.of(user));
+        given(requestedBookConverter.toRequestedBookDTO(any(RequestedBook.class))).willReturn(requestedBookDTO);
+
+        RequestedBookDTO actualResult = requestedBookServiceImpl.handleRequestedBookLike(id, email);
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
 
     private List<RequestedBook> getRequestedBooks() {
         UUID requestedBookID1 = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
@@ -470,9 +625,12 @@ class RequestedBookServiceImplTest {
 
         String[] genres = new String[]{"genre1", "genre2"};
 
-        Book book1 = new Book("isbn1", "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1", BookStatus.REQUESTED, genres, new HashSet<>(), new ArrayList<>());
-        Book book2 = new Book("isbn2", "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2", BookStatus.PENDING_PURCHASE, genres, new HashSet<>(), new ArrayList<>());
-        Book book3 = new Book("isbn3", "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3", BookStatus.REJECTED, genres, new HashSet<>(), new ArrayList<>());
+        Book book1 = new Book("isbn1", "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
+                BookStatus.REQUESTED, genres, new HashSet<>(), new ArrayList<>());
+        Book book2 = new Book("isbn2", "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2",
+                BookStatus.PENDING_PURCHASE, genres, new HashSet<>(), new ArrayList<>());
+        Book book3 = new Book("isbn3", "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3",
+                BookStatus.REJECTED, genres, new HashSet<>(), new ArrayList<>());
 
         RequestedBook requestedBook1 = new RequestedBook(requestedBookID1, LocalDate.now(), 3L, book1, new HashSet<>());
         RequestedBook requestedBook2 = new RequestedBook(requestedBookID2, LocalDate.now(), 2L, book2, new HashSet<>());
@@ -485,7 +643,7 @@ class RequestedBookServiceImplTest {
     private List<RequestedBookDTO> getRequestedBookDTOs() {
         UUID RequestedBookID1 = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         UUID RequestedBookID2 = UUID.fromString("123e4567-e89b-12d3-a456-200000000000");
-        UUID RequestedBookID3 = UUID.fromString("123e4567-e89b-12d3-a456-200000000000");
+        UUID RequestedBookID3 = UUID.fromString("123e4567-e89b-12d3-a456-300000000000");
 
         RequestedBookDTO requestedBookDTO1 = new RequestedBookDTO(
                 RequestedBookID1,
@@ -525,5 +683,21 @@ class RequestedBookServiceImplTest {
     private RequestedBookDTO getRequestedBookDTO() {
 
         return getRequestedBookDTOs().getFirst();
+    }
+
+    private List<User> getUsers() {
+
+        UUID id1 = UUID.fromString("123e4567-e89b-12d3-a456-010000000000");
+        UUID id2 = UUID.fromString("123e4567-e89b-12d3-a456-020000000000");
+
+        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1");
+        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2");
+
+        return List.of(user1, user2);
+    }
+
+    private User getUser() {
+
+        return getUsers().getFirst();
     }
 }
