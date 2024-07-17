@@ -16,6 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -103,6 +107,20 @@ class BookCheckoutQueryServiceImplTest {
     }
 
     @Test
+    void getAllBookCheckoutsPaginated_noBookCheckoutsOnThePage_returnsEmptyPage() {
+        Pageable pageable = PageRequest.of(0, 1);
+
+        given(bookCheckoutRepository.findAllByOrderByDateBorrowedDesc(pageable))
+                .willReturn(Page.empty(pageable));
+
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(),
+                        pageable.getPageSize());
+
+        assertThat(actualResult).isEqualTo(Page.empty(pageable));
+    }
+
+    @Test
     void getAllBookCheckoutsNearingReturnDate_noEntitiesMatching_returnsEmptyList() {
         List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getFirst(), getBookCheckouts().get(1));
         List<BookCheckoutReturnReminderResponseDTO> expectedResult = new ArrayList<>();
@@ -121,7 +139,7 @@ class BookCheckoutQueryServiceImplTest {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOS =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs();
 
-        given(bookCheckoutRepository.findAllOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findAllByOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(0))).willReturn(
                 bookCheckoutDTOS.get(0));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(1))).willReturn(
@@ -245,6 +263,28 @@ class BookCheckoutQueryServiceImplTest {
                 bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate();
 
         assertThat(actualResult).isEqualTo(expectedResult);
+    }
+
+    @Test
+    void getAllBookCheckoutsPaginated_bookCheckoutsArePresent_returnsAPageWithBookCheckoutWithUserAndBookItemInfoResponseDTO() {
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<BookCheckout> bookCheckoutsPages = new PageImpl<>(getBookCheckouts());
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
+                new PageImpl<>(getBookCheckoutWithUserAndBookItemInfoResponseDTOs());
+
+        given(bookCheckoutRepository.findAllByOrderByDateBorrowedDesc(pageable)).willReturn(bookCheckoutsPages);
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
+                bookCheckoutsPages.getContent().get(0))).willReturn(bookCheckoutDTOsPages.getContent().get(0));
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
+                bookCheckoutsPages.getContent().get(1))).willReturn(bookCheckoutDTOsPages.getContent().get(1));
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
+                bookCheckoutsPages.getContent().get(2))).willReturn(bookCheckoutDTOsPages.getContent().get(2));
+
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(),
+                        pageable.getPageSize());
+
+        assertThat(actualResult).isEqualTo(bookCheckoutDTOsPages);
     }
 
 
