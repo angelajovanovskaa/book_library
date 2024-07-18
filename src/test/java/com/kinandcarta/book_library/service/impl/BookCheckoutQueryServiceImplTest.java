@@ -258,7 +258,7 @@ class BookCheckoutQueryServiceImplTest {
         book3.getAuthors().add(author);
         book4.getAuthors().add(author);
 
-        BookItem bookItem =
+        BookItem bookItem1 =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book1);
 
         BookItem bookItem2 =
@@ -267,7 +267,7 @@ class BookCheckoutQueryServiceImplTest {
         BookItem bookItem3 =
                 new BookItem(UUID.fromString("9f97a183-84dc-412c-8b66-fe71ce52ae2d"), BookItemState.BORROWED, book2);
 
-        return List.of(bookItem, bookItem2, bookItem3);
+        return List.of(bookItem1, bookItem2, bookItem3);
     }
 
     public List<User> getUsers() {

@@ -40,19 +40,18 @@ class BookReturnDateCalculatorServiceTest {
     }
 
     private BookItem getBookItem() {
-        String[] genres1 = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
+        String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
-        Author author1 = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
+        Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
 
-        Book book =
-                new Book("1111", "Homo sapiens2", "book description", "some summary", 123,
-                        String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
-                        genres1, new HashSet<>(), new ArrayList<>());
+        Book book = new Book("1111", "Homo sapiens2", "book description", "some summary", 123,
+                String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
+                genres, new HashSet<>(), new ArrayList<>());
 
-        author1.addBook(book);
+        author.addBook(book);
 
-        book.getAuthors().add(author1);
+        book.getAuthors().add(author);
 
         return new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book);
     }

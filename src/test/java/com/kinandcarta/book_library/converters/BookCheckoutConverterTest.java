@@ -8,7 +8,6 @@ import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
-import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -18,9 +17,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@NoArgsConstructor
 class BookCheckoutConverterTest {
-
     private final BookCheckoutConverter bookCheckoutConverter = new BookCheckoutConverter();
 
     @Test

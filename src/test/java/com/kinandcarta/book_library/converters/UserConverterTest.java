@@ -4,16 +4,13 @@ import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserResponseDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
-import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@NoArgsConstructor
 class UserConverterTest {
-
     UserConverter userConverter = new UserConverter();
 
     @Test
