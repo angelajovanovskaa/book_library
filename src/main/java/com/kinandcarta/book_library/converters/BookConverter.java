@@ -22,13 +22,13 @@ public class BookConverter {
                 book.getIsbn(),
                 book.getTitle(),
                 book.getDescription(),
-                book.getImage(),
+                book.getLanguage(),
                 book.getGenres(),
                 book.getTotalPages(),
                 book.getBookStatus(),
-                book.getLanguage(),
-                book.getRatingFromFirm(),
+                book.getImage(),
                 book.getRatingFromWeb(),
+                book.getRatingFromFirm(),
                 book.getAuthors().stream()
                         .map(author -> new AuthorDTO(author.getFullName()))
                         .collect(Collectors.toSet())
@@ -42,13 +42,13 @@ public class BookConverter {
         book.setIsbn(bookDTO.ISBN());
         book.setTitle(bookDTO.title());
         book.setDescription(bookDTO.description());
+        book.setLanguage(bookDTO.language());
         book.setImage(bookDTO.image());
         book.setGenres(bookDTO.genres());
-        book.setLanguage(bookDTO.language());
         book.setTotalPages(bookDTO.totalPages());
         book.setBookStatus(bookDTO.bookStatus());
-        book.setRatingFromFirm(bookDTO.ratingFromFirm());
         book.setRatingFromWeb(bookDTO.ratingFromWeb());
+        book.setRatingFromFirm(bookDTO.ratingFromFirm());
         book.setAuthors(authors);
 
         return book;
