@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
-public record UserWithoutRoleFieldResponseDTO(
+public record UserResponseDTO(
         UUID userId,
         String fullName,
         byte[] profilePicture,
@@ -14,7 +14,7 @@ public record UserWithoutRoleFieldResponseDTO(
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserWithoutRoleFieldResponseDTO that = (UserWithoutRoleFieldResponseDTO) o;
+        UserResponseDTO that = (UserResponseDTO) o;
         return Objects.equals(email,
                 that.email) && Objects.equals(userId, that.userId) && Objects.equals(fullName,
                 that.fullName) && Objects.deepEquals(profilePicture, that.profilePicture);

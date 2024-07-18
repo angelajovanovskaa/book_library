@@ -61,10 +61,10 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method, so they can view their profile.
      *
      * @param userId the Id of the user that we are trying to get details for.
-     * @return UserWithoutRoleFieldResponseDTO which will contain fullName, email and the profilePicture
+     * @return UserResponseDTO which will contain fullName, email and the profilePicture
      */
     @Override
-    public UserWithoutRoleFieldResponseDTO getUserProfile(UUID userId) {
+    public UserResponseDTO getUserProfile(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow();
 
         return userConverter.toUserWithoutRoleDTO(user);

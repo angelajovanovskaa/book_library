@@ -23,5 +23,5 @@ public interface UserService {
 
     List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String fullNameSearchTerm);
 
-    UserWithoutRoleFieldResponseDTO getUserProfile(UUID userId);
+    UserResponseDTO getUserProfile(UUID userId);
 }
