@@ -11,7 +11,7 @@ import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutManagementService;
-import com.kinandcarta.book_library.utils.BookCheckoutManagementServiceUtils;
+import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Implementation of {@link BookCheckoutManagementService} that manages the borrowing and returning<p>
+ * Implementation of {@link BookCheckoutManagementService} that manages the borrowing and returning of a book<br>
  * Access controls are specified for different operations.
  */
 @Service
@@ -89,7 +89,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         bookItem.setBookItemState(BookItemState.BORROWED);
         bookItemRepository.save(bookItem);
 
-        return BookCheckoutManagementServiceUtils.BOOK_ITEM_BORROWED_RESPONSE;
+        return BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE;
     }
 
     /**
@@ -160,11 +160,11 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
 
     private String resolveBookCheckoutResponseMessage(LocalDate scheduledReturnDate, LocalDate dateReturned) {
         if (scheduledReturnDate.isBefore(dateReturned)) {
-            return BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
+            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
         } else if (scheduledReturnDate.isEqual(dateReturned)) {
-            return BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
+            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
         } else {
-            return BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE;
+            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE;
         }
     }
 

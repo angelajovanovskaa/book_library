@@ -15,7 +15,7 @@ import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookReturnDateCalculatorService;
-import com.kinandcarta.book_library.utils.BookCheckoutManagementServiceUtils;
+import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,168 +43,185 @@ class BookCheckoutManagementServiceImplTest {
     @Mock
     private BookReturnDateCalculatorService bookReturnDateCalculatorService;
 
-    @Mock
-    private BookCheckoutManagementServiceUtils bookCheckoutManagementServiceUtils;
-
     @InjectMocks
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
 
     @Test
     void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
+        // given
         List<BookCheckout> bookCheckouts = getBookCheckouts();
         User user = getUsers().getFirst();
+        UUID userId = user.getId();
         BookItem bookItem = getBookItems().get(4);
-        final int MAX_NUMBER_OF_BORROWED_BOOKS = 3;
-
-        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(user.getId())).willReturn(bookCheckouts);
 
         BookCheckoutRequestDTO bookCheckoutDTO =
-                new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+                new BookCheckoutRequestDTO(userId, bookItem.getId());
 
+        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(userId)).willReturn(bookCheckouts);
+
+        // when && then
         assertThatExceptionOfType(LimitReachedForBorrowedBooksException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
                 .withMessage(
-                        "You have reached the maximum number of borrowed books. " + MAX_NUMBER_OF_BORROWED_BOOKS + " books borrowed already.");
+                        "You have reached the maximum number of borrowed books. 3 books borrowed already.");
 
     }
 
     @Test
     void borrowBookItem_BookItemAlreadyBorrowed_throwsBookItemAlreadyBorrowedException() {
+        // given
         BookItem bookItem = getBookItems().getFirst();
+        UUID bookItemId = bookItem.getId();
         User user = getUsers().getFirst();
+        UUID userId = user.getId();
 
-        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(bookItemRepository.findById(bookItemId)).willReturn(
                 Optional.of(bookItem));
 
         BookCheckoutRequestDTO bookCheckoutDTO =
-                new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+                new BookCheckoutRequestDTO(userId, bookItemId);
 
+        // when && then
         assertThatExceptionOfType(BookItemAlreadyBorrowedException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The bookItem with id: " + bookItem.getId() + " is already booked");
+                .withMessage("The bookItem with id: " + bookItemId + " is already booked");
     }
 
     @Test
     void borrowBookItem_BookAlreadyBorrowedByUser_throwsBookAlreadyBorrowedByUserException() {
+        // given
         List<BookCheckout> bookCheckouts = getBookCheckouts();
         User user = getUsers().getFirst();
+        UUID userId = user.getId();
         BookItem bookItem = getBookItems().get(5);
+        UUID bookItemId = bookItem.getId();
         Book book = bookItem.getBook();
+        String bookISBN = book.getISBN();
 
         given(bookCheckoutRepository.findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(
-                book.getISBN(), user.getId())).willReturn(Collections.singletonList(bookCheckouts.get(2)));
-        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
+                bookISBN, userId)).willReturn(bookCheckouts);
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(bookItemRepository.findById(bookItemId)).willReturn(Optional.of(bookItem));
 
         BookCheckoutRequestDTO bookCheckoutDTO =
-                new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+                new BookCheckoutRequestDTO(userId, bookItemId);
 
+        // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The user already has an instance borrowed from the book with ISBN: " + book.getISBN());
+                .withMessage("The user already has an instance borrowed from the book with ISBN: " + bookISBN);
     }
 
     @Test
     void returnBookItem_BookItemIsNotBorrowed_throwsBookItemIsNotBorrowedException() {
+        // given
         List<BookCheckout> bookCheckouts = new ArrayList<>();
         BookItem bookItem = getBookItems().get(5);
+        UUID bookItemId = bookItem.getId();
         User user = getUsers().getFirst();
 
-        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItem.getId())).willReturn(
+        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId)).willReturn(
                 bookCheckouts);
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
+        given(bookItemRepository.findById(bookItemId)).willReturn(Optional.of(bookItem));
 
         BookCheckoutRequestDTO bookCheckoutDTO =
-                new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+                new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
+        // when && then
         assertThatExceptionOfType(BookItemIsNotBorrowedException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
                 .withMessage(
-                        "The bookItem with id " + bookItem.getId() + " can't be returned because it is not borrowed.");
+                        "The bookItem with id " + bookItemId + " can't be returned because it is not borrowed.");
     }
 
     @Test
     void borrowBookItem_TheBorrowingIsSuccessful_returnsConfirmationMessage() {
+        // given
         User user = getUsers().getFirst();
+        UUID userId = user.getId();
         BookItem bookItem = getBookItems().get(4);
-        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_BORROWED_RESPONSE;
+        UUID bookItemId = bookItem.getId();
 
-        given(userRepository.findById(user.getId())).willReturn(Optional.of(user));
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
+        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(bookItemRepository.findById(bookItemId)).willReturn(Optional.of(bookItem));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(userId, bookItemId);
 
+        // when
         String actualResult = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
 
-        assertThat(actualResult).isEqualTo(expectedResult);
+        // then
+        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE);
     }
 
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOverdue() {
-        List<BookCheckout> bookCheckouts = new ArrayList<>(getBookCheckouts());
+        // given
         BookItem bookItem = getBookItems().get(3);
         User user = getUsers().getFirst();
+        UUID bookItemId = bookItem.getId();
 
-        BookCheckout bookCheckout1 =
+        BookCheckout bookCheckout =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
                         LocalDate.now(), null, LocalDate.now().minusDays(5));
 
-        bookCheckouts.add(bookCheckout1);
+        given(bookItemRepository.findById(bookItemId)).willReturn(Optional.of(bookItem));
+        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId)).willReturn(
+                List.of(bookCheckout));
 
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
-        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItem.getId())).willReturn(
-                Collections.singletonList(bookCheckouts.getLast()));
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
-
-        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
-
+        // when
         String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
-        assertThat(actualResult).isEqualTo(expectedResult);
+        // then
+        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE);
     }
 
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOnTime() {
-        List<BookCheckout> bookCheckouts = new ArrayList<>(getBookCheckouts());
+        // given
         BookItem bookItem = getBookItems().get(3);
+        UUID bookItemId = bookItem.getId();
         User user = getUsers().getFirst();
 
-        BookCheckout bookCheckout1 =
+        BookCheckout bookCheckout =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), user, bookItem,
                         LocalDate.now(), null, LocalDate.now());
 
-        bookCheckouts.add(bookCheckout1);
+        given(bookItemRepository.findById(bookItemId)).willReturn(Optional.of(bookItem));
+        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId)).willReturn(
+                List.of(bookCheckout));
 
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
-        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItem.getId())).willReturn(
-                Collections.singletonList(bookCheckouts.getLast()));
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
-
-        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
+        // when
         String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
-        assertThat(actualResult).isEqualTo(expectedResult);
+        // then
+        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE);
     }
 
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsBeforeSchedule() {
+        // given
         BookItem bookItem = getBookItems().get(3);
+        UUID bookItemId = bookItem.getId();
         User user = getUsers().getFirst();
         BookCheckout bookCheckout = getBookCheckouts().getLast();
 
-        given(bookItemRepository.findById(bookItem.getId())).willReturn(Optional.of(bookItem));
-        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItem.getId())).willReturn(
-                Collections.singletonList(bookCheckout));
+        given(bookItemRepository.findById(bookItemId)).willReturn(Optional.of(bookItem));
+        given(bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId)).willReturn(
+                List.of(bookCheckout));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
-        String expectedResult = BookCheckoutManagementServiceUtils.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE;
+        // when
         String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
-        assertThat(actualResult).isEqualTo(expectedResult);
+        // then
+        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE);
     }
 
     private List<BookItem> getBookItems() {

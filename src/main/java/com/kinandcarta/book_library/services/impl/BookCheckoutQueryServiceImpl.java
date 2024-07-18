@@ -20,7 +20,7 @@ import java.util.UUID;
 
 /**
  * Implementation of {@link BookCheckoutQueryService} that includes methods for retrieving various views of
- * book checkout history. <p>
+ * book checkout history. <br>
  * Access controls are specified for different operations.
  */
 @Service

@@ -8,7 +8,7 @@ import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
-import com.kinandcarta.book_library.utils.UserServiceUtils;
+import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Implementation of {@link UserService} that manages the registration and login of user.
+ * Implementation of {@link UserService} that manages the registration and login of user.<br>
  * This service includes methods for operations with users account, like updating and deleting users account.
  * Access controls are specified for different operations.
  */
@@ -32,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
+
+    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     /**
      * This method is used to get all the registered users.<br>
@@ -91,7 +93,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePicture(userProfilePicture);
 
         userRepository.save(user);
-        return UserServiceUtils.USER_REGISTERED_RESPONSE;
+        return UserResponseMessages.USER_REGISTERED_RESPONSE;
     }
 
     /**
@@ -131,7 +133,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(user);
-        return UserServiceUtils.USER_DATA_UPDATED_RESPONSE;
+        return UserResponseMessages.USER_DATA_UPDATED_RESPONSE;
     }
 
     /**
@@ -150,7 +152,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(userDTO.role());
         userRepository.save(user);
 
-        return UserServiceUtils.USER_ROLE_UPDATED_RESPONSE;
+        return UserResponseMessages.USER_ROLE_UPDATED_RESPONSE;
     }
 
     /**
@@ -165,7 +167,7 @@ public class UserServiceImpl implements UserService {
     public String deleteAccount(UUID userId) {
         userRepository.deleteById(userId);
 
-        return UserServiceUtils.USER_DELETED_RESPONSE;
+        return UserResponseMessages.USER_DELETED_RESPONSE;
     }
 
     /**
@@ -188,16 +190,12 @@ public class UserServiceImpl implements UserService {
         user.setPassword(userDTO.newPassword());
         userRepository.save(user);
 
-        return UserServiceUtils.USER_PASSWORD_UPDATED_RESPONSE;
+        return UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE;
     }
 
     private byte[] getDefaultProfilePicture() throws IOException {
-        byte[] imageData;
+        Resource resource = resourceLoader.getResource(IMAGE_PATH);
 
-        String imagePath = "classpath:image/profile-picture.png";
-        Resource resource = resourceLoader.getResource(imagePath);
-        imageData = resource.getContentAsByteArray();
-
-        return imageData;
+        return resource.getContentAsByteArray();
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
 /**
- * Implementation of {@link BookReturnDateCalculatorService}. <p>
+ * Implementation of {@link BookReturnDateCalculatorService}.<br>
  * It contains logic for calculating the anticipated time for reading book and based on that it provides the scheduled return date.
  */
 

@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.utils;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class BookCheckoutManagementServiceUtils {
+public class BookCheckoutResponseMessages {
     public static final String BOOK_ITEM_BORROWED_RESPONSE = "You have successfully borrowed the book";
 
     public static final String BOOK_ITEM_RETURN_OVERDUE_RESPONSE =
