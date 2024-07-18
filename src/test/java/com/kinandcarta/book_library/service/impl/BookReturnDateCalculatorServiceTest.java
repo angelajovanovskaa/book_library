@@ -33,10 +33,10 @@ class BookReturnDateCalculatorServiceTest {
         BookItem bookItem = getBookItem();
 
         // when
-        LocalDate actualResult = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem);
+        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem);
 
         // then
-        assertThat(actualResult).isEqualTo(LocalDate.now().plusDays(5));
+        assertThat(result).isEqualTo(LocalDate.now().plusDays(5));
     }
 
     private BookItem getBookItem() {

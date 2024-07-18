@@ -52,12 +52,11 @@ class BookCheckoutQueryServiceImplTest {
                 .willReturn(Page.empty(pageable));
 
         // when
-        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(),
-                        pageable.getPageSize());
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(), pageable.getPageSize());
 
         // then
-        assertThat(actualResult).isEqualTo(Page.empty(pageable));
+        assertThat(result).isEqualTo(Page.empty(pageable));
     }
 
     @Test
@@ -72,11 +71,10 @@ class BookCheckoutQueryServiceImplTest {
                 bookCheckoutDTOS.get(0), bookCheckoutDTOS.get(1), bookCheckoutDTOS.get(2));
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckouts();
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result = bookCheckoutQueryService.getAllBookCheckouts();
 
         // then
-        assertThat(actualResult).isEqualTo(bookCheckoutDTOS);
+        assertThat(result).isEqualTo(bookCheckoutDTOS);
     }
 
     @Test
@@ -92,11 +90,11 @@ class BookCheckoutQueryServiceImplTest {
                 expectedResult.get(0), expectedResult.get(1));
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllActiveBookCheckouts();
 
         // then
-        assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
@@ -111,11 +109,11 @@ class BookCheckoutQueryServiceImplTest {
                 expectedResult.getFirst());
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllPastBookCheckouts();
 
         // then
-        assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
@@ -133,11 +131,11 @@ class BookCheckoutQueryServiceImplTest {
                 expectedResult.getFirst());
 
         // when
-        List<BookCheckoutResponseDTO> actualResult =
+        List<BookCheckoutResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId, bookTitle);
 
         // then
-        assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
@@ -155,11 +153,11 @@ class BookCheckoutQueryServiceImplTest {
                 bookCheckoutDTOS.get(0), bookCheckoutDTOS.get(1), bookCheckoutDTOS.get(2));
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(bookTitleSearchTerm);
 
         // then
-        assertThat(actualResult).isEqualTo(bookCheckoutDTOS);
+        assertThat(result).isEqualTo(bookCheckoutDTOS);
     }
 
     @Test
@@ -178,10 +176,10 @@ class BookCheckoutQueryServiceImplTest {
                 , expectedResult.get(1));
 
         // when
-        List<BookCheckoutResponseDTO> actualResult = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
+        List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
 
         // then
-        assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
@@ -196,11 +194,11 @@ class BookCheckoutQueryServiceImplTest {
                 expectedResult.getFirst());
 
         // when
-        List<BookCheckoutReturnReminderResponseDTO> actualResult =
+        List<BookCheckoutReturnReminderResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate();
 
         // then
-        assertThat(actualResult).isEqualTo(expectedResult);
+        assertThat(result).isEqualTo(expectedResult);
     }
 
     @Test
@@ -217,48 +215,48 @@ class BookCheckoutQueryServiceImplTest {
                 bookCheckoutDTOsPages.getContent().get(2));
 
         // when
-        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(), pageable.getPageSize());
 
         // then
-        assertThat(actualResult).isEqualTo(bookCheckoutDTOsPages);
+        assertThat(result).isEqualTo(bookCheckoutDTOsPages);
     }
 
     private List<BookItem> getBookItems() {
-        String[] genres1 = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
+        String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
-        Author author1 = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
+        Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
         Book book1 =
                 new Book("1111", "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
         Book book2 =
                 new Book("2222", "Homo sapiens11", "book description", "some summary", 555,
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
         Book book3 =
                 new Book("3333", "Batman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
         Book book4 =
                 new Book("4444", "Spiderman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
-        author1.addBook(book1);
-        author1.addBook(book2);
-        author1.addBook(book3);
-        author1.addBook(book4);
+        author.addBook(book1);
+        author.addBook(book2);
+        author.addBook(book3);
+        author.addBook(book4);
 
 
-        book1.getAuthors().add(author1);
-        book2.getAuthors().add(author1);
-        book3.getAuthors().add(author1);
-        book4.getAuthors().add(author1);
+        book1.getAuthors().add(author);
+        book2.getAuthors().add(author);
+        book3.getAuthors().add(author);
+        book4.getAuthors().add(author);
 
         BookItem bookItem =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book1);

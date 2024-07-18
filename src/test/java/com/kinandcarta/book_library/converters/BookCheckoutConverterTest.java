@@ -8,10 +8,8 @@ import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
+import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,11 +18,10 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
+@NoArgsConstructor
 class BookCheckoutConverterTest {
 
-    @InjectMocks
-    BookCheckoutConverter bookCheckoutConverter;
+    private final BookCheckoutConverter bookCheckoutConverter = new BookCheckoutConverter();
 
     @Test
     void toBookCheckoutWithUserAndBookItemInfoResponseDTO_conversionIsDone_returnsBookCheckoutWithUserAndBookItemInfoResponseDTO() {
@@ -34,11 +31,11 @@ class BookCheckoutConverterTest {
                 getBookCheckoutWithUserAndBookItemInfoResponseDTO();
 
         // when
-        BookCheckoutWithUserAndBookItemInfoResponseDTO actualResult =
+        BookCheckoutWithUserAndBookItemInfoResponseDTO result =
                 bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckout);
 
         // then
-        assertThat(bookCheckoutDTO).isEqualTo(actualResult);
+        assertThat(result).isEqualTo(bookCheckoutDTO);
     }
 
     @Test
@@ -48,9 +45,9 @@ class BookCheckoutConverterTest {
         BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         // when
-        BookCheckoutResponseDTO actualResult = bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckout);
+        BookCheckoutResponseDTO result = bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckout);
         // then
-        assertThat(bookCheckoutDTO).isEqualTo(actualResult);
+        assertThat(result).isEqualTo(bookCheckoutDTO);
     }
 
     @Test
@@ -61,11 +58,11 @@ class BookCheckoutConverterTest {
                 getBookCheckoutReturnReminderResponseDTO();
 
         // when
-        BookCheckoutReturnReminderResponseDTO actualResult =
+        BookCheckoutReturnReminderResponseDTO result =
                 bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(bookCheckout);
 
         // then
-        assertThat(bookCheckoutDTO).isEqualTo(actualResult);
+        assertThat(result).isEqualTo(bookCheckoutDTO);
     }
 
     private BookItem getBookItem() {
@@ -85,7 +82,7 @@ class BookCheckoutConverterTest {
         return new BookItem(UUID.fromString("93dc9a03-aa8f-45b2-80a4-8355fd98fd04"), BookItemState.AVAILABLE, book);
     }
 
-    public User getUser() {
+    private User getUser() {
         return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
                 "martin" + "@gmail.com", "pw", "USER");
     }

@@ -139,10 +139,10 @@ class BookCheckoutManagementServiceImplTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
         // when
-        String actualResult = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
+        String result = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE);
+        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE);
     }
 
     @Test
@@ -159,10 +159,10 @@ class BookCheckoutManagementServiceImplTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
         // when
-        String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
+        String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE);
+        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE);
     }
 
     @Test
@@ -179,10 +179,10 @@ class BookCheckoutManagementServiceImplTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
         // when
-        String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
+        String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE);
+        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE);
     }
 
     @Test
@@ -199,48 +199,48 @@ class BookCheckoutManagementServiceImplTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
         // when
-        String actualResult = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
+        String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE);
+        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE);
     }
 
     private List<BookItem> getBookItems() {
-        String[] genres1 = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
+        String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
-        Author author1 = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
+        Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
         Book book1 =
                 new Book("1111", "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
         Book book2 =
                 new Book("2222", "Homo sapiens11", "book description", "some summary", 555,
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
         Book book3 =
                 new Book("3333", "Batman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
         Book book4 =
                 new Book("4444", "Spiderman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres1, new HashSet<>(), new ArrayList<>());
+                        genres, new HashSet<>(), new ArrayList<>());
 
 
-        author1.addBook(book1);
-        author1.addBook(book2);
-        author1.addBook(book3);
-        author1.addBook(book4);
+        author.addBook(book1);
+        author.addBook(book2);
+        author.addBook(book3);
+        author.addBook(book4);
 
 
-        book1.getAuthors().add(author1);
-        book2.getAuthors().add(author1);
-        book3.getAuthors().add(author1);
-        book4.getAuthors().add(author1);
+        book1.getAuthors().add(author);
+        book2.getAuthors().add(author);
+        book3.getAuthors().add(author);
+        book4.getAuthors().add(author);
 
 
         BookItem bookItem =

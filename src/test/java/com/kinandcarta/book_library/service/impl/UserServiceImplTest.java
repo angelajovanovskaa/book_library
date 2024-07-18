@@ -120,10 +120,10 @@ class UserServiceImplTest {
                 userWithRoleFieldResponseDTOS.get(1), userWithRoleFieldResponseDTOS.get(2));
 
         // when
-        List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsers();
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers();
 
         // then
-        assertThat(actualResult).isEqualTo(userWithRoleFieldResponseDTOS);
+        assertThat(result).isEqualTo(userWithRoleFieldResponseDTOS);
     }
 
     @Test
@@ -139,10 +139,10 @@ class UserServiceImplTest {
         given(userConverter.toUserWithRoleDTO(users.getFirst())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
 
         // when
-        List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsersWithFullName(fullNameSearchTerm);
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsersWithFullName(fullNameSearchTerm);
 
         // then
-        assertThat(actualResult).isEqualTo(userWithRoleFieldResponseDTOS);
+        assertThat(result).isEqualTo(userWithRoleFieldResponseDTOS);
     }
 
     @Test
@@ -157,10 +157,10 @@ class UserServiceImplTest {
         given(userConverter.toUserResponseDTO(any())).willReturn(userWithoutRoleDTOs);
 
         // when
-        UserResponseDTO actualResult = userService.getUserProfile(userId);
+        UserResponseDTO result = userService.getUserProfile(userId);
 
         // then
-        assertThat(actualResult).isEqualTo(userWithoutRoleDTOs);
+        assertThat(result).isEqualTo(userWithoutRoleDTOs);
     }
 
     @Test
@@ -180,10 +180,10 @@ class UserServiceImplTest {
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
         // when
-        String actualResult = userService.registerUser(registrationRequestDTO);
+        String result = userService.registerUser(registrationRequestDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(UserResponseMessages.USER_REGISTERED_RESPONSE);
+        assertThat(result).isEqualTo(UserResponseMessages.USER_REGISTERED_RESPONSE);
     }
 
     @Test
@@ -201,10 +201,10 @@ class UserServiceImplTest {
         given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(Optional.of(user));
 
         // when
-        String actualResult = userService.loginUser(userLoginRequestDTO);
+        String result = userService.loginUser(userLoginRequestDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(user.getFullName());
+        assertThat(result).isEqualTo(user.getFullName());
     }
 
     @Test
@@ -223,10 +223,10 @@ class UserServiceImplTest {
         given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
 
         // when
-        String actualResult = userService.updateUserData(userDTO);
+        String result = userService.updateUserData(userDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(UserResponseMessages.USER_DATA_UPDATED_RESPONSE);
+        assertThat(result).isEqualTo(UserResponseMessages.USER_DATA_UPDATED_RESPONSE);
     }
 
     @Test
@@ -243,10 +243,10 @@ class UserServiceImplTest {
         given(userRepository.findById(any())).willReturn(Optional.of(user));
 
         // when
-        String actualResult = userService.updateUserRole(userDTO);
+        String result = userService.updateUserRole(userDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
+        assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
     }
 
     @Test
@@ -255,10 +255,10 @@ class UserServiceImplTest {
         UUID userId = UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2");
 
         // when
-        String actualResult = userService.deleteAccount(userId);
+        String result = userService.deleteAccount(userId);
 
         // then
-        assertThat(actualResult).isEqualTo(UserResponseMessages.USER_DELETED_RESPONSE);
+        assertThat(result).isEqualTo(UserResponseMessages.USER_DELETED_RESPONSE);
     }
 
     @Test
@@ -278,10 +278,10 @@ class UserServiceImplTest {
         given(userRepository.findById(any())).willReturn(Optional.of(user));
 
         // when
-        String actualResult = userService.changeUserPassword(userDTO);
+        String result = userService.changeUserPassword(userDTO);
 
         // then
-        assertThat(actualResult).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
+        assertThat(result).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
     }
 
     private List<User> getUsers() {
