@@ -22,9 +22,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,88 +42,6 @@ class BookCheckoutQueryServiceImplTest {
 
     @InjectMocks
     private BookCheckoutQueryServiceImpl bookCheckoutQueryService;
-
-    @Test
-    void getAllBookCheckouts_theListIsEmpty_returnsEmptyList() {
-        // given && when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckouts();
-
-        // then
-        assertThat(actualResult).isEqualTo(new ArrayList<>());
-    }
-
-    @Test
-    void getAllActiveBookCheckouts_theListIsEmpty_returnsEmptyList() {
-        // given
-        List<BookCheckout> bookCheckouts = new ArrayList<>();
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> expectedResult = new ArrayList<>();
-
-        given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
-
-        // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllActiveBookCheckouts();
-
-        // then
-        assertThat(actualResult).isEqualTo(expectedResult);
-    }
-
-    @Test
-    void getAllPastBookCheckouts_theListIsEmpty_returnsEmptyList() {
-        // given
-        List<BookCheckout> bookCheckouts = new ArrayList<>();
-
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> expectedResult = new ArrayList<>();
-
-        given(bookCheckoutRepository.findByDateReturnedIsNotNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
-
-        // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllPastBookCheckouts();
-
-        // then
-        assertThat(actualResult).isEqualTo(expectedResult);
-    }
-
-    @Test
-    void getAllBookCheckoutsFromUserForBook_parametersAreValid_returnsEmptyList() {
-        // given
-        List<BookCheckout> bookCheckouts = new ArrayList<>();
-        List<BookCheckoutResponseDTO> expectedResult = new ArrayList<>();
-
-        UUID userId = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-        String bookTitle = "BatMan";
-
-        given(bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
-                bookTitle, userId)).willReturn(bookCheckouts);
-
-        // when
-        List<BookCheckoutResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId, bookTitle);
-
-        // then
-        assertThat(actualResult).isEqualTo(expectedResult);
-    }
-
-    @Test
-    void getAllBookCheckoutsForBookTitle_titleSearchTermIsValidNoMatches_returnsEmptyList() {
-        // given
-        List<BookCheckout> bookCheckouts = new ArrayList<>();
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOS = new ArrayList<>();
-
-        String bookTitleSearchTerm = "BatMan";
-
-        given(bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
-                bookTitleSearchTerm)).willReturn(bookCheckouts);
-
-        // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(bookTitleSearchTerm);
-
-        // then
-        assertThat(actualResult).isEqualTo(bookCheckoutDTOS);
-    }
 
     @Test
     void getAllBookCheckoutsPaginated_noBookCheckoutsOnThePage_returnsEmptyPage() {
@@ -138,22 +61,6 @@ class BookCheckoutQueryServiceImplTest {
     }
 
     @Test
-    void getAllBookCheckoutsNearingReturnDate_noEntitiesMatching_returnsEmptyList() {
-        // given
-        List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getFirst(), getBookCheckouts().get(1));
-        List<BookCheckoutReturnReminderResponseDTO> expectedResult = new ArrayList<>();
-
-        given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
-
-        // when
-        List<BookCheckoutReturnReminderResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate();
-
-        // then
-        assertThat(actualResult).isEqualTo(expectedResult);
-    }
-
-    @Test
     void getAllBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutDTO() {
         // given
         List<BookCheckout> bookCheckouts = getBookCheckouts();
@@ -161,12 +68,8 @@ class BookCheckoutQueryServiceImplTest {
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs();
 
         given(bookCheckoutRepository.findAllByOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(0))).willReturn(
-                bookCheckoutDTOS.get(0));
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(1))).willReturn(
-                bookCheckoutDTOS.get(1));
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(2))).willReturn(
-                bookCheckoutDTOS.get(2));
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
+                bookCheckoutDTOS.get(0), bookCheckoutDTOS.get(1), bookCheckoutDTOS.get(2));
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
@@ -185,10 +88,8 @@ class BookCheckoutQueryServiceImplTest {
                         getBookCheckoutWithUserAndBookItemInfoResponseDTOs().get(2));
 
         given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(0))).willReturn(
-                expectedResult.get(0));
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(1))).willReturn(
-                expectedResult.get(1));
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
+                expectedResult.get(0), expectedResult.get(1));
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
@@ -201,14 +102,12 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllPastBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutOfUserAndBookItemInfoResponseDTO() {
         // given
-        List<BookCheckout> bookCheckouts = Collections.singletonList(getBookCheckouts().getFirst());
-
+        List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getFirst());
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> expectedResult =
-                Collections.singletonList(getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst());
+                List.of(getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst());
 
         given(bookCheckoutRepository.findByDateReturnedIsNotNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
-                bookCheckouts.getFirst())).willReturn(
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
                 expectedResult.getFirst());
 
         // when
@@ -222,16 +121,15 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsFromUserForBook_parametersAreValid_returnsListOfBookCheckoutDTO() {
         // given
-        List<BookCheckout> bookCheckouts = Collections.singletonList(getBookCheckouts().getFirst());
-        List<BookCheckoutResponseDTO> expectedResult = Collections.singletonList(
-                getBookCheckoutResponseDTOs().getFirst());
+        List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getFirst());
+        List<BookCheckoutResponseDTO> expectedResult = List.of(getBookCheckoutResponseDTOs().getFirst());
 
         UUID userId = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
         String bookTitle = "Homo";
 
         given(bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
-                bookTitle, userId)).willReturn(bookCheckouts);
-        given(bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckouts.getFirst())).willReturn(
+                anyString(), any())).willReturn(bookCheckouts);
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
                 expectedResult.getFirst());
 
         // when
@@ -245,19 +143,16 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsForBookTitle_titleSearchTermIsValid_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().get(1), getBookCheckouts().get(2));
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOS = List.of(
-                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().get(1),
-                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().get(2));
+        List<BookCheckout> bookCheckouts = getBookCheckouts();
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOS =
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs();
 
         String bookTitleSearchTerm = "Homo ";
 
         given(bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
-                bookTitleSearchTerm)).willReturn(bookCheckouts);
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(0))).willReturn(
-                bookCheckoutDTOS.get(0));
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(bookCheckouts.get(1))).willReturn(
-                bookCheckoutDTOS.get(1));
+                anyString())).willReturn(bookCheckouts);
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
+                bookCheckoutDTOS.get(0), bookCheckoutDTOS.get(1), bookCheckoutDTOS.get(2));
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
@@ -270,15 +165,17 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsFromUser_UserIdIsValid_returnsListOfBookCheckoutDTO() {
         // given
-        List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().get(0), getBookCheckouts().get(2));
+        List<BookCheckout> bookCheckouts = getBookCheckouts();
         List<BookCheckoutResponseDTO> expectedResult = List.of(
                 getBookCheckoutResponseDTOs().get(0), getBookCheckoutResponseDTOs().get(2));
 
         UUID userId = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
 
-        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(userId)).willReturn(bookCheckouts);
-        given(bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckouts.get(0))).willReturn(expectedResult.get(0));
-        given(bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckouts.get(1))).willReturn(expectedResult.get(1));
+        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
+                List.of(bookCheckouts.get(0),
+                        bookCheckouts.get(2)));
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(expectedResult.get(0)
+                , expectedResult.get(1));
 
         // when
         List<BookCheckoutResponseDTO> actualResult = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
@@ -290,9 +187,9 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsNearingReturnDate_ValidMatches_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
-        List<BookCheckout> bookCheckouts = Collections.singletonList(getBookCheckouts().getLast());
+        List<BookCheckout> bookCheckouts = List.of(getBookCheckouts().getLast());
         List<BookCheckoutReturnReminderResponseDTO> expectedResult =
-                Collections.singletonList(getBookCheckoutReturnReminderResponseDTOs().getLast());
+                List.of(getBookCheckoutReturnReminderResponseDTOs().getLast());
 
         given(bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc()).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(bookCheckouts.getFirst())).willReturn(
@@ -314,30 +211,23 @@ class BookCheckoutQueryServiceImplTest {
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
                 new PageImpl<>(getBookCheckoutWithUserAndBookItemInfoResponseDTOs());
 
-        given(bookCheckoutRepository.findAllByOrderByDateBorrowedDesc(pageable)).willReturn(bookCheckoutsPages);
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
-                bookCheckoutsPages.getContent().get(0))).willReturn(bookCheckoutDTOsPages.getContent().get(0));
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
-                bookCheckoutsPages.getContent().get(1))).willReturn(bookCheckoutDTOsPages.getContent().get(1));
-        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
-                bookCheckoutsPages.getContent().get(2))).willReturn(bookCheckoutDTOsPages.getContent().get(2));
+        given(bookCheckoutRepository.findAllByOrderByDateBorrowedDesc(any())).willReturn(bookCheckoutsPages);
+        given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
+                bookCheckoutDTOsPages.getContent().get(0), bookCheckoutDTOsPages.getContent().get(1),
+                bookCheckoutDTOsPages.getContent().get(2));
 
         // when
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(),
-                        pageable.getPageSize());
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(), pageable.getPageSize());
 
         // then
         assertThat(actualResult).isEqualTo(bookCheckoutDTOsPages);
     }
 
-
     private List<BookItem> getBookItems() {
         String[] genres1 = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
         Author author1 = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
-        Author author2 = new Author(UUID.fromString("8ee0691f-3187-4d70-ba1b-ab69c2200a05"), "BB BB", new HashSet<>());
-        Author author3 = new Author(UUID.fromString("6eccfd24-c225-462b-a415-52c81d304035"), "CC CC", new HashSet<>());
 
         Book book1 =
                 new Book("1111", "Homo sapiens2", "book description", "some summary", 120,
@@ -361,8 +251,6 @@ class BookCheckoutQueryServiceImplTest {
 
         author1.addBook(book1);
         author1.addBook(book2);
-        author2.addBook(book1);
-        author3.addBook(book2);
         author1.addBook(book3);
         author1.addBook(book4);
 

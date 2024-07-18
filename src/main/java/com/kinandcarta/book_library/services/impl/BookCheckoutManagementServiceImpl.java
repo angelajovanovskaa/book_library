@@ -105,7 +105,6 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      *     <li>If the book is returned before the scheduled return date, it returns a message indicating this.
      *     </li>
      * </ul>
-     * @throws InvalidReturnBookItemRequestException If the bookItemId in the provided DTO is {@code null}.
      * @throws BookItemNotFoundException             If the specified bookItemId does not correspond to any book item in the
      *                                               repository.
      * @throws BookItemIsNotBorrowedException        If the book item identified by bookItemId is not currently borrowed.

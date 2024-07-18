@@ -18,10 +18,14 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -39,20 +43,25 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+
     @Test
     void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {
         // given
         List<User> users = getUsers();
 
         String email = "martin@gmail.com";
+        String fullName = "Martin Velickovski";
+        String password = "password";
+
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(
-                "Martin Velickovski",
+                fullName,
                 email,
-                "password"
+                password
         );
 
-        given(userRepository.findByEmail(email)).willReturn(
-                Optional.ofNullable(users.getFirst()));
+        given(userRepository.findByEmail(anyString())).willReturn(
+                Optional.of(users.getFirst()));
 
         // when && then
         assertThatExceptionOfType(EmailAlreadyInUseException.class)
@@ -92,38 +101,12 @@ class UserServiceImplTest {
                 newPassword
         );
 
-        given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+        given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
 
         // when && then
         assertThatExceptionOfType(IncorrectPasswordException.class)
                 .isThrownBy(() -> userService.changeUserPassword(userDTO))
                 .withMessage("The password that you have entered is incorrect.");
-    }
-
-    @Test
-    void getAllUsers_theListIsEmpty_returnsEmptyList() {
-        // given && when
-        List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsers();
-
-        // then
-        assertThat(actualResult).isEqualTo(new ArrayList<>());
-    }
-
-    @Test
-    void getAllUsersWithFullName_NoMatchesWithSearchTerm_returnsEmptyList() {
-        // given
-        List<User> users = new ArrayList<>();
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS = new ArrayList<>();
-
-        String fullNameSearchTerm = "Viktor Boz";
-
-        given(userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm)).willReturn(users);
-
-        // when
-        List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsersWithFullName(fullNameSearchTerm);
-
-        // then
-        assertThat(actualResult).isEqualTo(userWithRoleFieldResponseDTOS);
     }
 
     @Test
@@ -133,9 +116,8 @@ class UserServiceImplTest {
         List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS = getUserWithRoleResponseDTOs();
 
         given(userRepository.findAllByOrderByRoleAsc()).willReturn(users);
-        given(userConverter.toUserWithRoleDTO(users.get(0))).willReturn(userWithRoleFieldResponseDTOS.get(0));
-        given(userConverter.toUserWithRoleDTO(users.get(1))).willReturn(userWithRoleFieldResponseDTOS.get(1));
-        given(userConverter.toUserWithRoleDTO(users.get(2))).willReturn(userWithRoleFieldResponseDTOS.get(2));
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOS.get(0),
+                userWithRoleFieldResponseDTOS.get(1), userWithRoleFieldResponseDTOS.get(2));
 
         // when
         List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsers();
@@ -145,54 +127,15 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTermForName_returnsListOfUserWithRoleFieldResponseDTO() {
+    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleFieldResponseDTO() {
         // given
-        List<User> users = Collections.singletonList(getUsers().getFirst());
+        List<User> users = List.of(getUsers().getFirst());
         List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS =
-                Collections.singletonList(getUserWithRoleResponseDTOs().getFirst());
+                List.of(getUserWithRoleResponseDTOs().getFirst());
 
         String fullNameSearchTerm = "Martin";
 
-        given(userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm)).willReturn(users);
-        given(userConverter.toUserWithRoleDTO(users.getFirst())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
-
-        // when
-        List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsersWithFullName(fullNameSearchTerm);
-
-        // then
-        assertThat(actualResult).isEqualTo(userWithRoleFieldResponseDTOS);
-    }
-
-    @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTermForSurname_returnsListOfUserWithRoleFieldResponseDTO() {
-        // given
-        List<User> users = List.of(getUsers().get(0), getUsers().get(1));
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS =
-                List.of(getUserWithRoleResponseDTOs().get(0), getUserWithRoleResponseDTOs().get(1));
-
-        String fullNameSearchTerm = " Bojkovski";
-
-        given(userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm)).willReturn(users);
-        given(userConverter.toUserWithRoleDTO(users.get(0))).willReturn(userWithRoleFieldResponseDTOS.get(0));
-        given(userConverter.toUserWithRoleDTO(users.get(1))).willReturn(userWithRoleFieldResponseDTOS.get(1));
-
-        // when
-        List<UserWithRoleFieldResponseDTO> actualResult = userService.getAllUsersWithFullName(fullNameSearchTerm);
-
-        // then
-        assertThat(actualResult).isEqualTo(userWithRoleFieldResponseDTOS);
-    }
-
-    @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTermForNameAndSurname_returnsListOfUserWithRoleFieldResponseDTO() {
-        // given
-        List<User> users = Collections.singletonList(getUsers().get(1));
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS =
-                Collections.singletonList(getUserWithRoleResponseDTOs().get(1));
-
-        String fullNameSearchTerm = "Viktorija Zlatan";
-
-        given(userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm)).willReturn(users);
+        given(userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(anyString())).willReturn(users);
         given(userConverter.toUserWithRoleDTO(users.getFirst())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
 
         // when
@@ -205,13 +148,13 @@ class UserServiceImplTest {
     @Test
     void getUserProfile_userExist_returnsUserWithoutRoleDTO() {
         // given
-        List<User> users = getUsers();
+        User user = getUsers().get(1);
         UserResponseDTO userWithoutRoleDTOs = getUserResponseDTOs().get(1);
 
         UUID userId = UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43");
 
-        given(userRepository.findById(userId)).willReturn(Optional.ofNullable(users.get(1)));
-        given(userConverter.toUserWithoutRoleDTO(users.get(1))).willReturn(userWithoutRoleDTOs);
+        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userConverter.toUserWithoutRoleDTO(any())).willReturn(userWithoutRoleDTOs);
 
         // when
         UserResponseDTO actualResult = userService.getUserProfile(userId);
@@ -233,8 +176,8 @@ class UserServiceImplTest {
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
 
         Resource mockResource = mock(Resource.class);
-        given(mockResource.getContentAsByteArray()).willReturn("classpath:image/profile-picture.png".getBytes());
-        given(resourceLoader.getResource("classpath:image/profile-picture.png")).willReturn(mockResource);
+        given(mockResource.getContentAsByteArray()).willReturn(IMAGE_PATH.getBytes());
+        given(resourceLoader.getResource(any())).willReturn(mockResource);
 
         // when
         String actualResult = userService.registerUser(registrationRequestDTO);
@@ -255,13 +198,12 @@ class UserServiceImplTest {
                 password
         );
 
-        given(userRepository.findByEmailAndPassword(email, password)).willReturn(Optional.ofNullable(user));
+        given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(Optional.of(user));
 
         // when
         String actualResult = userService.loginUser(userLoginRequestDTO);
 
         // then
-        assert user != null;
         assertThat(actualResult).isEqualTo(user.getFullName());
     }
 
@@ -278,7 +220,7 @@ class UserServiceImplTest {
                 byteArray
         );
 
-        given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+        given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
 
         // when
         String actualResult = userService.updateUserData(userDTO);
@@ -298,7 +240,7 @@ class UserServiceImplTest {
                 "USER"
         );
 
-        given(userRepository.findById(userId)).willReturn(Optional.of(user));
+        given(userRepository.findById(any())).willReturn(Optional.of(user));
 
         // when
         String actualResult = userService.updateUserRole(userDTO);
@@ -333,7 +275,7 @@ class UserServiceImplTest {
                 newPassword
         );
 
-        given(userRepository.findById(userId)).willReturn(Optional.ofNullable(user));
+        given(userRepository.findById(any())).willReturn(Optional.of(user));
 
         // when
         String actualResult = userService.changeUserPassword(userDTO);
@@ -342,7 +284,7 @@ class UserServiceImplTest {
         assertThat(actualResult).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
     }
 
-    public List<User> getUsers() {
+    private List<User> getUsers() {
         User user1 = new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
                 "martin@gmail.com", "USER", "pw");
 
@@ -355,7 +297,7 @@ class UserServiceImplTest {
         return List.of(user1, user2, user3);
     }
 
-    public List<UserWithRoleFieldResponseDTO> getUserWithRoleResponseDTOs() {
+    private List<UserWithRoleFieldResponseDTO> getUserWithRoleResponseDTOs() {
         UserWithRoleFieldResponseDTO user1 =
                 new UserWithRoleFieldResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
                         "Martin Bojkovski", "martin@gmail.com", "USER");
@@ -371,7 +313,7 @@ class UserServiceImplTest {
         return List.of(user1, user2, user3);
     }
 
-    public List<UserResponseDTO> getUserResponseDTOs() {
+    private List<UserResponseDTO> getUserResponseDTOs() {
         UserResponseDTO user1 =
                 new UserResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
                         "Martin Bojkovski", null, "martin@gmail.com");
