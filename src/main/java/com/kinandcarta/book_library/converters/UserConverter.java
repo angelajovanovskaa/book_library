@@ -37,7 +37,7 @@ public class UserConverter {
      * @param user The {@link User} entity to convert
      * @return a {@link UserResponseDTO}
      */
-    public UserResponseDTO toUserWithoutRoleDTO(User user) {
+    public UserResponseDTO toUserResponseDTO(User user) {
         return new UserResponseDTO(
                 user.getId(),
                 user.getFullName(),

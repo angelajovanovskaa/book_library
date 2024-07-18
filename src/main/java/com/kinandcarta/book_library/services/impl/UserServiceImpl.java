@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO getUserProfile(UUID userId) {
         User user = userRepository.findById(userId).orElseThrow();
 
-        return userConverter.toUserWithoutRoleDTO(user);
+        return userConverter.toUserResponseDTO(user);
     }
 
     /**

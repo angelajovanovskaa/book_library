@@ -154,7 +154,7 @@ class UserServiceImplTest {
         UUID userId = UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43");
 
         given(userRepository.findById(any())).willReturn(Optional.of(user));
-        given(userConverter.toUserWithoutRoleDTO(any())).willReturn(userWithoutRoleDTOs);
+        given(userConverter.toUserResponseDTO(any())).willReturn(userWithoutRoleDTOs);
 
         // when
         UserResponseDTO actualResult = userService.getUserProfile(userId);

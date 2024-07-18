@@ -48,8 +48,7 @@ public class BookCheckoutConverter {
      * @param bookCheckout The {@link BookCheckout} entity to convert
      * @return a {@link BookCheckoutResponseDTO}
      */
-    public BookCheckoutResponseDTO toBookCheckoutResponseDTO(
-            BookCheckout bookCheckout) {
+    public BookCheckoutResponseDTO toBookCheckoutResponseDTO(BookCheckout bookCheckout) {
         BookItem bookItem = bookCheckout.getBookItem();
         Book book = bookItem.getBook();
 
