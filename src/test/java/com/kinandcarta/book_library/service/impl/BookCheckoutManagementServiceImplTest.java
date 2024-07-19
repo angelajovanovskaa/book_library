@@ -59,6 +59,7 @@ class BookCheckoutManagementServiceImplTest {
 
         given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
                 List.of(bookCheckouts.get(0), bookCheckouts.get(2), bookCheckouts.get(3)));
+        given(userRepository.findById(any())).willReturn(Optional.of(user));
 
         // when && then
         assertThatExceptionOfType(LimitReachedForBorrowedBooksException.class)
