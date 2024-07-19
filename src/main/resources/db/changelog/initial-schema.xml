@@ -23,8 +23,8 @@
             </not>
         </preConditions>
         <createTable tableName="book">
-            <column name="ISBN" type="VARCHAR(255)"/>
-            <column name="office_name" type="VARCHAR(255)"/>
+            <column name="ISBN" type="VARCHAR(255) NOT NULL"/>
+            <column name="office_name" type="VARCHAR(255) NOT NULL"/>
             <column name="title" type="VARCHAR(255) NOT NULL"/>
             <column name="book_status" type="VARCHAR(255) NOT NULL"/>
             <column name="description" type="VARCHAR(512) NOT NULL"/>
