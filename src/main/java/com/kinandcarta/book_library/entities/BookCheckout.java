@@ -9,9 +9,9 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
 
 @Entity
 @Table(name = "book_checkout")

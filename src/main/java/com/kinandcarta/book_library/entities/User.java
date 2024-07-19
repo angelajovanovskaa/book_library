@@ -8,9 +8,9 @@ import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
 
 @Entity
 @Table(name = "user_table")
