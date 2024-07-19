@@ -313,8 +313,8 @@ class BookServiceImplTest {
 
         List<BookDisplayDTO> actualDTOs = bookService.filterAvailableBooks();
 
-        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size()).isNotNull();
-        assertThat(actualDTOs).containsExactlyElementsOf(bookDisplayDTOS);
+        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size()).isNotNull()
+                .containsExactlyElementsOf(bookDisplayDTOS);
     }
 
     @Test
@@ -338,8 +338,9 @@ class BookServiceImplTest {
 
         List<BookDisplayDTO> actualDTOs = bookService.filterRequestedBooks();
 
-        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size()).isNotNull();
-        assertThat(actualDTOs).containsExactlyElementsOf(bookDisplayDTOS);
+        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size()).isNotNull()
+                .containsExactlyElementsOf(bookDisplayDTOS);
+
     }
 
     @Test
@@ -561,6 +562,7 @@ class BookServiceImplTest {
                 "https://google.com/images",
                 0.0,
                 10.0, Set.of(authorDTO1));
+
         BookDTO bookDTO2 = new BookDTO(
                 "9780545414654",
                 "Mumbai of Us",
@@ -596,6 +598,7 @@ class BookServiceImplTest {
                 "The Doors of Eden",
                 Language.ENGLISH.toString(),
                 "https://google.com/images");
+
         BookDisplayDTO bookDisplayDTO2 = new BookDisplayDTO(
                 "9780545414654",
                 "Mumbai of Us",
