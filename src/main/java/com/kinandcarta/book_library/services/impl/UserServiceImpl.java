@@ -40,7 +40,8 @@ public class UserServiceImpl implements UserService {
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
-     * @return UserWithRoleFieldResponseDTO which will contain fullName, email, profilePicture and role.
+     * @return A list of{@link UserWithRoleFieldResponseDTO} which will contain fullName, email, profilePicture and
+     * role.
      */
     @Override
     public List<UserWithRoleFieldResponseDTO> getAllUsers() {
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method, so they can view their profile.
      *
      * @param userId the Id of the user that we are trying to get details for.
-     * @return UserResponseDTO which will contain fullName, email and the profilePicture
+     * @return {@link UserResponseDTO} which will contain fullName, email and the profilePicture
      */
     @Override
     public UserResponseDTO getUserProfile(UUID userId) {

@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.service.impl;
+package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.entities.*;
@@ -13,8 +13,6 @@ import com.kinandcarta.book_library.exceptions.LimitReachedForBorrowedBooksExcep
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
-import com.kinandcarta.book_library.services.impl.BookReturnDateCalculatorServiceImpl;
 import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +45,8 @@ class BookCheckoutManagementServiceImplTest {
 
     @InjectMocks
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
+
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Test
     void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
@@ -212,22 +212,22 @@ class BookCheckoutManagementServiceImplTest {
         Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
         Book book1 =
-                new Book("1111", new Office("Skopje"), "Homo sapiens2", "book description", "some summary", 120,
+                new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
                         genres, new HashSet<>(), new ArrayList<>());
 
         Book book2 =
-                new Book("2222", new Office("Skopje"), "Homo sapiens11", "book description", "some summary", 555,
+                new Book("2222", SKOPJE_OFFICE, "Homo sapiens11", "book description", "some summary", 555,
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
         Book book3 =
-                new Book("3333", new Office("Skopje"), "Batman", "book description", "some summary", 555,
+                new Book("3333", SKOPJE_OFFICE, "Batman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
         Book book4 =
-                new Book("4444", new Office("Skopje"), "Spiderman", "book description", "some summary", 555,
+                new Book("4444", SKOPJE_OFFICE, "Spiderman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
@@ -267,10 +267,10 @@ class BookCheckoutManagementServiceImplTest {
 
     public List<User> getUsers() {
         User user1 = new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "USER", "pw", new Office("Skopje"));
+                "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
 
         User user2 = new User(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"), "David Bojkovski", null,
-                "david@gmail.com", "ADMIN", "Pw", new Office("Skopje"));
+                "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
 
         return List.of(user1, user2);
     }
@@ -281,30 +281,30 @@ class BookCheckoutManagementServiceImplTest {
 
         BookCheckout bookCheckout1 =
                 new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), users.get(0),
-                        bookItems.get(0), new Office("Skopje"), LocalDate.now(), null, LocalDate.now().plusDays(14));
+                        bookItems.get(0), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout2 =
                 new BookCheckout(UUID.fromString("84b341db-23d9-4fe5-90d2-fd216376e3d1"), users.get(1),
-                        bookItems.get(1), new Office("Skopje"), LocalDate.now(), LocalDate.now().plusDays(5),
+                        bookItems.get(1), SKOPJE_OFFICE, LocalDate.now(), LocalDate.now().plusDays(5),
                         LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout3 =
                 new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), users.get(0),
-                        bookItems.get(2), new Office("Skopje"), LocalDate.now(), null, LocalDate.now().plusDays(2));
+                        bookItems.get(2), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(2));
 
         BookCheckout bookCheckout4 =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(0),
-                        getBookItems().get(3), new Office("Skopje"), LocalDate.now(), null,
+                        getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null,
                         LocalDate.now().plusDays(3));
 
         BookCheckout bookCheckout5 =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(1),
-                        getBookItems().get(3), new Office("Skopje"), LocalDate.now(), null,
+                        getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null,
                         LocalDate.now().minusDays(5));
 
         BookCheckout bookCheckout6 =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(1),
-                        getBookItems().get(3), new Office("Skopje"), LocalDate.now(), null, LocalDate.now());
+                        getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now());
 
         return List.of(bookCheckout1, bookCheckout2, bookCheckout3, bookCheckout4, bookCheckout5, bookCheckout6);
     }

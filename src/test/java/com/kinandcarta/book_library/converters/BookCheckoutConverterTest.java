@@ -20,6 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class BookCheckoutConverterTest {
     private final BookCheckoutConverter bookCheckoutConverter = new BookCheckoutConverter();
 
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
+
     @Test
     void toBookCheckoutWithUserAndBookItemInfoResponseDTO_conversionIsDone_returnsBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
@@ -68,7 +71,7 @@ class BookCheckoutConverterTest {
         Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
         Book book =
-                new Book("2222", new Office("Skopje"), "Homo sapiens11", "book description", "some summary", 555,
+                new Book("2222", SKOPJE_OFFICE, "Homo sapiens11", "book description", "some summary", 555,
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
@@ -81,7 +84,7 @@ class BookCheckoutConverterTest {
 
     private User getUser() {
         return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "USER", "password", new Office("Skopje"));
+                "martin@gmail.com", "USER", "password", SKOPJE_OFFICE);
     }
 
     private BookCheckoutWithUserAndBookItemInfoResponseDTO getBookCheckoutWithUserAndBookItemInfoResponseDTO() {
@@ -106,7 +109,7 @@ class BookCheckoutConverterTest {
         User user = getUser();
 
         return new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem,
-                new Office("Skopje"), LocalDate.now(), null, LocalDate.now().plusDays(14));
+                SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(14));
     }
 
     private BookCheckoutReturnReminderResponseDTO getBookCheckoutReturnReminderResponseDTO() {

@@ -14,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UserConverterTest {
     private final UserConverter userConverter = new UserConverter();
 
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @Test
     void toUserWithRoleDTO_conversionIsDone_returnsUserWithRoleDTO() {
         // given
@@ -50,13 +52,13 @@ class UserConverterTest {
         User result = userConverter.toUserEntity(userRegistrationRequestDTO);
 
         // then
-        assertThat(result).usingRecursiveComparison().ignoringFields("id","office").isEqualTo(user);
+        assertThat(result).usingRecursiveComparison().ignoringFields("id", "office").isEqualTo(user);
 
     }
 
     private User getUser() {
         return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "USER", "pw", new Office("Skopje"));
+                "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
     }
 
     private UserWithRoleFieldResponseDTO getUserWithRoleResponseDTO() {
