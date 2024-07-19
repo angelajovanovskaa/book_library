@@ -36,7 +36,7 @@ public class BookItemServiceImpl implements BookItemService {
      * @return A list of BookItemDTOs representing BookItems associated with the book.
      */
     @Override
-    public List<BookItemDTO> findByBookIsbn(String isbn) {
+    public List<BookItemDTO> getBookItemsByBookIsbn(String isbn) {
         List<BookItem> bookItems = bookItemRepository.findByBookIsbn(isbn);
         return bookItems.stream().map(bookItemConverter::toBookItemDTO).toList();
     }
@@ -115,6 +115,6 @@ public class BookItemServiceImpl implements BookItemService {
         bookItem.setBookItemState(BookItemState.LOST);
         bookItemRepository.save(bookItem);
 
-        return "The book item is reported as lost";
+        return "The book item is reported as lost.";
     }
 }

@@ -253,8 +253,8 @@ class BookServiceImplTest {
         List<Book> books = getBooks();
         List<BookDTO> bookDTOS = getBookDTOs();
 
-        Book book = books.get(0);
-        BookDTO bookDTO = bookDTOS.get(0);
+        Book book = books.getFirst();
+        BookDTO bookDTO = bookDTOS.getFirst();
 
         given(bookRepository.findByIsbn(isbn)).willReturn(Optional.of(book));
         given(bookConverter.toBookDTO(book)).willReturn(bookDTO);
@@ -282,7 +282,6 @@ class BookServiceImplTest {
         assertEquals(BookStatus.IN_STOCK, book.getBookStatus());
 
         verify(bookRepository, times(1)).findByIsbn(isbn);
-//        verify(bookRepository, never()).save(book);
         verify(bookConverter, times(1)).toBookDTO(book);
 
     }
@@ -306,8 +305,7 @@ class BookServiceImplTest {
     void filterAvailableBooks_thereAreAvailableBooks_returnsListOfBookDTOs() {
         List<Book> books = getBooksForAvailableFilter();
         List<BookDisplayDTO> bookDisplayDTOS =
-                getBooksForAvailableFilter().stream().map(bookConverter::bookDisplayDTO) // Assuming bookConverter
-                        // has a method to convert Book to BookDTO
+                getBooksForAvailableFilter().stream().map(bookConverter::bookDisplayDTO)
                         .toList();
 
         given(bookRepository.findBooksByStatusAndAvailableItems(BookStatus.IN_STOCK, BookItemState.AVAILABLE))
@@ -315,8 +313,7 @@ class BookServiceImplTest {
 
         List<BookDisplayDTO> actualDTOs = bookService.filterAvailableBooks();
 
-        assertThat(actualDTOs).isNotNull();
-        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size());
+        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size()).isNotNull();
         assertThat(actualDTOs).containsExactlyElementsOf(bookDisplayDTOS);
     }
 
@@ -337,12 +334,11 @@ class BookServiceImplTest {
                 getBooksForAvailableFilter().stream().map(bookConverter::bookDisplayDTO).toList();
 
         given(bookRepository.findBookByBookStatus(BookStatus.REQUESTED)).willReturn(books);
-        given(bookConverter.bookDisplayDTO(books.get(0))).willReturn(bookDisplayDTOS.get(0));
+        given(bookConverter.bookDisplayDTO(books.getFirst())).willReturn(bookDisplayDTOS.getFirst());
 
         List<BookDisplayDTO> actualDTOs = bookService.filterRequestedBooks();
 
-        assertThat(actualDTOs).isNotNull();
-        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size());
+        assertThat(actualDTOs).hasSize(bookDisplayDTOS.size()).isNotNull();
         assertThat(actualDTOs).containsExactlyElementsOf(bookDisplayDTOS);
     }
 
@@ -363,7 +359,6 @@ class BookServiceImplTest {
         BookItemState bookItemState = BookItemState.AVAILABLE;
 
         List<Book> books = getBooks();
-
 
         given(bookRepository.pagingAvailableBooks(bookStatus, bookItemState, PageRequest.of(page, size)))
                 .willReturn(new PageImpl<>(books));
