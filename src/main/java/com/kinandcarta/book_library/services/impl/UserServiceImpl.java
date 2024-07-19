@@ -29,11 +29,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
-
-    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     /**
      * This method is used to get all the registered users.<br>

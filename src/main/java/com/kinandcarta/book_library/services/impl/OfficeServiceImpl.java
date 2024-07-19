@@ -12,7 +12,6 @@ import java.util.List;
 /**
  * Implementation of {@link OfficeService}.<br>
  * This service provides operations related to accessing office information
- * with specified access controls.
  */
 @Service
 @RequiredArgsConstructor

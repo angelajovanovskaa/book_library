@@ -33,6 +33,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutQueryServiceImplTest {
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
 
@@ -41,8 +43,6 @@ class BookCheckoutQueryServiceImplTest {
 
     @InjectMocks
     private BookCheckoutQueryServiceImpl bookCheckoutQueryService;
-
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Test
     void getAllBookCheckoutsPaginated_noBookCheckoutsOnThePage_returnsEmptyPage() {

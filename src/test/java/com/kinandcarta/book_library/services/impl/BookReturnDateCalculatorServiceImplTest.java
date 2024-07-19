@@ -23,10 +23,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class BookReturnDateCalculatorServiceImplTest {
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @InjectMocks
     private BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
-
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Test
     void calculateReturnDateOfBookItem_theCalculationIsDone_returnsLocalDate() {

@@ -16,7 +16,6 @@ import java.time.LocalDate;
 @Service
 @RequiredArgsConstructor
 public class BookReturnDateCalculatorServiceImpl implements BookReturnDateCalculatorService {
-
     private static final int AVERAGE_PAGES_READ_PER_DAY = 25;
 
     /**

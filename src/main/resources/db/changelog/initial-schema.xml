@@ -40,6 +40,14 @@
         <addPrimaryKey tableName="book"
                        columnNames="ISBN, office_name"
                        constraintName="book_pk"/>
+
+        <addForeignKeyConstraint baseTableName="book"
+                                 baseColumnNames="office_name"
+                                 constraintName="fk_office_name"
+                                 referencedTableName="office"
+                                 referencedColumnNames="name"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"/>
     </changeSet>
 
     <changeSet id="create-book-item-table" author="ajovanovska">

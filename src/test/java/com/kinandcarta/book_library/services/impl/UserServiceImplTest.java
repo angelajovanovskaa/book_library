@@ -31,6 +31,9 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
+    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @Mock
     private UserRepository userRepository;
 
@@ -42,9 +45,6 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
-
-    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Test
     void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {

@@ -31,6 +31,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
 
@@ -45,8 +47,6 @@ class BookCheckoutManagementServiceImplTest {
 
     @InjectMocks
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
-
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Test
     void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
