@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.converters;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserResponseDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import org.junit.jupiter.api.Test;
 
@@ -49,13 +50,13 @@ class UserConverterTest {
         User result = userConverter.toUserEntity(userRegistrationRequestDTO);
 
         // then
-        assertThat(result).usingRecursiveComparison().ignoringFields("id").isEqualTo(user);
+        assertThat(result).usingRecursiveComparison().ignoringFields("id","office").isEqualTo(user);
 
     }
 
     private User getUser() {
         return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "USER", "pw");
+                "martin@gmail.com", "USER", "pw", new Office("Skopje"));
     }
 
     private UserWithRoleFieldResponseDTO getUserWithRoleResponseDTO() {
