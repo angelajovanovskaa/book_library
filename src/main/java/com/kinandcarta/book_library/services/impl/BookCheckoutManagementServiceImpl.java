@@ -59,10 +59,11 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     @Transactional
     public String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
         UUID userId = bookCheckoutDTO.userId();
+        User user = userRepository.findById(userId).orElseThrow();
+
         if (isBorrowedBooksLimitReached(userId)) {
             throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
         }
-        User user = userRepository.findById(userId).orElseThrow();
 
         UUID bookItemId = bookCheckoutDTO.bookItemId();
         BookItem bookItem = bookItemRepository.findById(bookItemId)
@@ -73,7 +74,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         }
 
         Book book = bookItem.getBook();
-        if (hasInstanceOfBookBorrowed(userId, bookItem)) {
+        if (hasInstanceOfBookBorrowed(userId, book)) {
             throw new BookAlreadyBorrowedByUserException(book.getISBN());
         }
 
@@ -105,9 +106,9 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      *     <li>If the book is returned before the scheduled return date, it returns a message indicating this.
      *     </li>
      * </ul>
-     * @throws BookItemNotFoundException             If the specified bookItemId does not correspond to any book item in the
-     *                                               repository.
-     * @throws BookItemIsNotBorrowedException        If the book item identified by bookItemId is not currently borrowed.
+     * @throws BookItemNotFoundException      If the specified bookItemId does not correspond to any book item in the
+     *                                        repository.
+     * @throws BookItemIsNotBorrowedException If the book item identified by bookItemId is not currently borrowed.
      */
     @Override
     @Transactional
@@ -146,9 +147,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         return countInstancesOfUser == MAX_NUMBER_OF_BORROWED_BOOKS;
     }
 
-    private boolean hasInstanceOfBookBorrowed(UUID userId, BookItem bookItem) {
-        Book book = bookItem.getBook();
-
+    private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
         List<BookCheckout> bookCheckoutsForUserAndBook =
                 bookCheckoutRepository.findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(
                         book.getISBN(), userId);
