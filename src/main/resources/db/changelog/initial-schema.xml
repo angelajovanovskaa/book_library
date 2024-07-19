@@ -128,7 +128,7 @@
             <column name="book_item_id" type="UUID NOT NULL"/>
             <column name="date_borrowed" type="DATE NOT NULL"/>
             <column name="date_returned" type="DATE"/>
-            <column name="scheduled_return" type="DATE"/>
+            <column name="scheduled_return_date" type="DATE"/>
         </createTable>
 
         <addForeignKeyConstraint
