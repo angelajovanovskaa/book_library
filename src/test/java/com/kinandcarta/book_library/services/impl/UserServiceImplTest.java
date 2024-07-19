@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.service.impl;
+package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.*;
@@ -7,7 +7,6 @@ import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.impl.UserServiceImpl;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

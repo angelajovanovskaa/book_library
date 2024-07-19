@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.service.impl;
+package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookCheckoutConverter;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
@@ -10,7 +10,6 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
-import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,10 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -247,16 +243,11 @@ class BookCheckoutQueryServiceImplTest {
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
-        author.addBook(book1);
-        author.addBook(book2);
-        author.addBook(book3);
-        author.addBook(book4);
+        book1.setAuthors(Set.of(author));
+        book2.setAuthors(Set.of(author));
+        book3.setAuthors(Set.of(author));
+        book4.setAuthors(Set.of(author));
 
-
-        book1.getAuthors().add(author);
-        book2.getAuthors().add(author);
-        book3.getAuthors().add(author);
-        book4.getAuthors().add(author);
 
         BookItem bookItem1 =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book1);
@@ -286,17 +277,17 @@ class BookCheckoutQueryServiceImplTest {
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO1 =
                 new BookCheckoutWithUserAndBookItemInfoResponseDTO(users.get(0).getFullName(), bookItems.get(0).getId(),
-                        bookItems.get(0).getBook().getTitle(), bookItems.get(0).getBook().getISBN(), LocalDate.now(),
+                        bookItems.get(0).getBook().getTitle(), bookItems.get(0).getBook().getIsbn(), LocalDate.now(),
                         null, LocalDate.now().plusDays(14));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO2 =
                 new BookCheckoutWithUserAndBookItemInfoResponseDTO(users.get(1).getFullName(), bookItems.get(1).getId(),
-                        bookItems.get(1).getBook().getTitle(), bookItems.get(1).getBook().getISBN(), LocalDate.now(),
+                        bookItems.get(1).getBook().getTitle(), bookItems.get(1).getBook().getIsbn(), LocalDate.now(),
                         LocalDate.now().plusDays(5), LocalDate.now().plusDays(14));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO3 =
                 new BookCheckoutWithUserAndBookItemInfoResponseDTO(users.get(0).getFullName(), bookItems.get(2).getId(),
-                        bookItems.get(2).getBook().getTitle(), bookItems.get(2).getBook().getISBN(), LocalDate.now(),
+                        bookItems.get(2).getBook().getTitle(), bookItems.get(2).getBook().getIsbn(), LocalDate.now(),
                         null, LocalDate.now().plusDays(2));
 
         return List.of(bookCheckoutDTO1, bookCheckoutDTO2, bookCheckoutDTO3);
@@ -306,15 +297,15 @@ class BookCheckoutQueryServiceImplTest {
         List<BookItem> bookItems = getBookItems();
 
         BookCheckoutResponseDTO bookCheckoutDTO1 =
-                new BookCheckoutResponseDTO(bookItems.get(0).getBook().getTitle(), bookItems.get(0).getBook().getISBN(),
+                new BookCheckoutResponseDTO(bookItems.get(0).getBook().getTitle(), bookItems.get(0).getBook().getIsbn(),
                         LocalDate.now(), null, LocalDate.now().plusDays(14));
 
         BookCheckoutResponseDTO bookCheckoutDTO2 =
-                new BookCheckoutResponseDTO(bookItems.get(1).getBook().getTitle(), bookItems.get(1).getBook().getISBN(),
+                new BookCheckoutResponseDTO(bookItems.get(1).getBook().getTitle(), bookItems.get(1).getBook().getIsbn(),
                         LocalDate.now(), LocalDate.now().plusDays(5), LocalDate.now().plusDays(14));
 
         BookCheckoutResponseDTO bookCheckoutDTO3 = new BookCheckoutResponseDTO(bookItems.get(2).getBook().getTitle(),
-                bookItems.get(2).getBook().getISBN(), LocalDate.now(), null, LocalDate.now().plusDays(2));
+                bookItems.get(2).getBook().getIsbn(), LocalDate.now(), null, LocalDate.now().plusDays(2));
 
         return List.of(bookCheckoutDTO1, bookCheckoutDTO2, bookCheckoutDTO3);
     }

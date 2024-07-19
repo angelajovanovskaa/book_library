@@ -71,11 +71,11 @@ class BookItemServiceImplTest {
 
         List<BookItemDTO> actualResult = bookItemService.getBookItemsByBookIsbn(isbn);
 
-         assertEquals(bookItemDTOs, actualResult);
+        assertEquals(bookItemDTOs, actualResult);
     }
 
     @Test
-    void getBookItemsByBookIsbn_validIsbn_noBookItemsYetCreated(){
+    void getBookItemsByBookIsbn_validIsbn_noBookItemsYetCreated() {
         String isbn = "9780545414651";
 
         given(bookItemRepository.findByBookIsbn(isbn)).willReturn(Collections.emptyList());
@@ -106,24 +106,24 @@ class BookItemServiceImplTest {
     }
 
     @Test
-    void deleteBookItemById_bookItemExists_shouldDeleteSuccesfully() {
+    void deleteBookItemById_bookItemExists_shouldDeleteSuccessfully() {
         final UUID id = UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061");
         given(bookItemRepository.existsById(id)).willReturn(true);
         UUID deletedBookIsbn = bookItemService.deleteById(id);
 
         assertThat(deletedBookIsbn).isEqualTo(id);
         then(bookItemRepository).should().deleteById(deletedBookIsbn);
-
     }
+
     @SneakyThrows
     @Test
-    void deleteItemBook_bookItemExists_shouldThrowException() {
+    void deleteItemBook_bookItemDoesNotExists_shouldThrowException() {
         final UUID id = UUID.fromString("058edb04-c933-43b7-b58d-d48054507061");
         given(bookItemRepository.existsById(id)).willReturn(false);
 
         assertThatExceptionOfType(BookItemNotFoundException.class)
                 .isThrownBy(() -> bookItemService.deleteById(id))
-                .withMessage("The bookItem with barcode: " + id + " doesn't exist");
+                .withMessage("The bookItem with id: " + id + " doesn't exist");
         then(bookItemRepository).should().existsById(id);
         then(bookItemRepository).shouldHaveNoMoreInteractions();
     }
@@ -140,7 +140,6 @@ class BookItemServiceImplTest {
 
         assertThat(message).isEqualTo("The book item is reported as damaged.");
         assertEquals(BookItemState.DAMAGED, bookItem.getBookItemState());
-
     }
 
     @Test
@@ -159,6 +158,7 @@ class BookItemServiceImplTest {
 
         verify(bookItemRepository, times(1)).findById(id);
     }
+
     @Test
     void reportBookItemAsDamaged_bookItemNotFound_throwException() {
         UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
@@ -166,7 +166,7 @@ class BookItemServiceImplTest {
         given(bookItemRepository.findById(id)).willReturn(Optional.empty());
         assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id))
                 .isInstanceOf(BookItemNotFoundException.class)
-                .hasMessageContaining("The bookItem with barcode: " + id + " doesn't exist");
+                .hasMessageContaining("The bookItem with id: " + id + " doesn't exist");
 
         verify(bookItemRepository, times(1)).findById(id);
         verify(bookItemRepository, never()).save(any());
@@ -184,7 +184,6 @@ class BookItemServiceImplTest {
 
         assertThat(message).isEqualTo("The book item is reported as lost.");
         assertEquals(BookItemState.LOST, bookItem.getBookItemState());
-
     }
 
     @Test
@@ -203,6 +202,7 @@ class BookItemServiceImplTest {
 
         verify(bookItemRepository, times(1)).findById(id);
     }
+
     @Test
     void reportBookItemAsLost_bookItemNotFound_throwException() {
         UUID id = UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11");
@@ -210,19 +210,16 @@ class BookItemServiceImplTest {
         given(bookItemRepository.findById(id)).willReturn(Optional.empty());
         assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id))
                 .isInstanceOf(BookItemNotFoundException.class)
-                .hasMessageContaining("The bookItem with barcode: " + id + " doesn't exist");
+                .hasMessageContaining("The bookItem with id: " + id + " doesn't exist");
 
         verify(bookItemRepository, times(1)).findById(id);
         verify(bookItemRepository, never()).save(any());
     }
 
-    private BookItem getBookItem(){
+    private BookItem getBookItem() {
         return getBookItems().getFirst();
     }
 
-    private BookItemDTO getBookItemDTO(){
-        return getBookItemDTOs().getFirst();
-    }
 
     private List<BookItem> getBookItems() {
         Book book2 = new Book();

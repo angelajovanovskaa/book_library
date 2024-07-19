@@ -34,7 +34,7 @@ public class BookCheckoutConverter {
                 user.getFullName(),
                 bookItem.getId(),
                 book.getTitle(),
-                book.getISBN(),
+                book.getIsbn(),
                 bookCheckout.getDateBorrowed(),
                 bookCheckout.getDateReturned(),
                 bookCheckout.getScheduledReturnDate()
@@ -54,7 +54,7 @@ public class BookCheckoutConverter {
 
         return new BookCheckoutResponseDTO(
                 book.getTitle(),
-                book.getISBN(),
+                book.getIsbn(),
                 bookCheckout.getDateBorrowed(),
                 bookCheckout.getDateReturned(),
                 bookCheckout.getScheduledReturnDate()

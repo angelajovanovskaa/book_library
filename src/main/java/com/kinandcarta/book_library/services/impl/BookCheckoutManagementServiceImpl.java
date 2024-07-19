@@ -75,7 +75,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
 
         Book book = bookItem.getBook();
         if (hasInstanceOfBookBorrowed(userId, book)) {
-            throw new BookAlreadyBorrowedByUserException(book.getISBN());
+            throw new BookAlreadyBorrowedByUserException(book.getIsbn());
         }
 
         LocalDate scheduledReturnDate = calculatorService.calculateReturnDateOfBookItem(bookItem);
@@ -150,7 +150,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
         List<BookCheckout> bookCheckoutsForUserAndBook =
                 bookCheckoutRepository.findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(
-                        book.getISBN(), userId);
+                        book.getIsbn(), userId);
 
         return bookCheckoutsForUserAndBook.stream()
                 .anyMatch(x -> x.getDateReturned() == null);
