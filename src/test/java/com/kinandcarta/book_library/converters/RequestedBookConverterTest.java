@@ -32,10 +32,12 @@ class RequestedBookConverterTest {
 
         UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
-        return new RequestedBook(id, LocalDate.now(), 1L, getBook(), new HashSet<>());
+        Book book = getBook();
+
+        return new RequestedBook(id, LocalDate.now(), 1L, book, new HashSet<>());
     }
 
-    private Book getBook(){
+    private Book getBook() {
 
         return new Book("isbn1", "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, null, new HashSet<>(), new ArrayList<>());

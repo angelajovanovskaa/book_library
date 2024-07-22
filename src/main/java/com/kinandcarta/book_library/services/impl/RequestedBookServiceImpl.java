@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -15,6 +14,7 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.RequestedBookService;
+import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

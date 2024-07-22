@@ -119,7 +119,7 @@ class ReviewServiceImplTest {
 
     @Test
     @SneakyThrows
-    void getAllReviewsByBookId_getAllReviewsForGivenBookIsbnExists_returnListOfReviewDTO() {
+    void getAllReviewsByBookIsbn_getAllReviewsForGivenBookIsbnExists_returnListOfReviewDTO() {
 
         final Book book = getBook();
         final String isbn = book.getIsbn();
@@ -141,7 +141,7 @@ class ReviewServiceImplTest {
 
     @Test
     @SneakyThrows
-    void getAllReviewsByBookId_getAllReviewsForGivenBookIsbnNotExists_returnListOfReviewDTO() {
+    void getAllReviewsByBookIsbn_getAllReviewsForGivenBookIsbnNotExists_returnListOfReviewDTO() {
 
         final Book book = getBooks().getFirst();
 
