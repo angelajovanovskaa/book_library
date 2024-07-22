@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.BookStatusTransitionValidator;
+import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -138,9 +138,8 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     }
 
     /**
-     * Deletes a RequestedBook object.
+     * Deletes a requested book by provided id.
      * <hr>
-     * Delete RequestedBook object after insert of Book object (if RequestedBook object of that Book exists).
      *
      * @param requestedBookId Type: UUID
      * @return {@link RequestedBookDTO}
@@ -148,9 +147,9 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     @Override
     public UUID deleteRequestedBookById(UUID requestedBookId) {
 
-        boolean isPresent = requestedBookRepository.existsById(requestedBookId);
+        boolean isRequestedBookPresent = requestedBookRepository.existsById(requestedBookId);
 
-        if (!isPresent) {
+        if (!isRequestedBookPresent) {
             throw new RequestedBookNotFoundException(requestedBookId);
         }
 
@@ -195,7 +194,6 @@ public class RequestedBookServiceImpl implements RequestedBookService {
         book.setBookStatus(newBookStatus);
 
         bookRepository.save(book);
-        requestedBookRepository.save(requestedBook);
 
         return requestedBookConverter.toRequestedBookDTO(requestedBook);
     }
@@ -237,11 +235,9 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         //todo: call method for inserting BookItem objects
 
-        RequestedBookDTO requestedBookDTO = requestedBookConverter.toRequestedBookDTO(requestedBook);
-
         requestedBookRepository.delete(requestedBook);
 
-        return requestedBookDTO;
+        return requestedBookConverter.toRequestedBookDTO(requestedBook);
     }
 
     /**

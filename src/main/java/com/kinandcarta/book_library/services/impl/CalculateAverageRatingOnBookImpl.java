@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * Performs calculation to provide a Book object with its average rating.
+ * Performs calculation to provide a average rating (of type double) for given Book object.
  */
 @Component
 public class CalculateAverageRatingOnBookImpl implements CalculateAverageRatingOnBook {
-
+    
     public double getAverageRatingOnBook(List<Integer> reviews) {
 
         double sumReviews = 0;

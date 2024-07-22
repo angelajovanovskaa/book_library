@@ -1,16 +1,22 @@
 package com.kinandcarta.book_library.converters;
 
+import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.UUID;
 
 @Component
 public class RequestedBookConverter {
 
+    /**
+     * Converts a {@link RequestedBook} entity to a {@link RequestedBookDTO} object.
+     *
+     * @param requestedBook The {@link RequestedBook} entity to convert
+     * @return a {@link RequestedBookDTO}
+     */
     public RequestedBookDTO toRequestedBookDTO(RequestedBook requestedBook) {
 
         UUID id = requestedBook.getId();

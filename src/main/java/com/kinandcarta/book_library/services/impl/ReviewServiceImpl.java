@@ -176,7 +176,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         reviewRepository.deleteById(id);
 
-        book.setRatingFromFirm(calculateBookRating(isbn));
+        double bookRatingFromFirm = calculateBookRating(isbn);
+
+        book.setRatingFromFirm(bookRatingFromFirm);
         bookRepository.save(book);
 
         return reviewConverter.toReviewDTO(review);

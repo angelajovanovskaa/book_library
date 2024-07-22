@@ -89,14 +89,14 @@ class BookCheckoutConverterTest {
         User user = getUser();
 
         return new BookCheckoutWithUserAndBookItemInfoResponseDTO(user.getFullName(), bookItem.getId(),
-                bookItem.getBook().getTitle(), bookItem.getBook().getISBN(), LocalDate.now(), null,
+                bookItem.getBook().getTitle(), bookItem.getBook().getIsbn(), LocalDate.now(), null,
                 LocalDate.now().plusDays(14));
     }
 
     private BookCheckoutResponseDTO getBookCheckoutResponseDTO() {
         BookItem bookItem = getBookItem();
 
-        return new BookCheckoutResponseDTO(bookItem.getBook().getTitle(), bookItem.getBook().getISBN(), LocalDate.now(),
+        return new BookCheckoutResponseDTO(bookItem.getBook().getTitle(), bookItem.getBook().getIsbn(), LocalDate.now(),
                 null, LocalDate.now().plusDays(14));
     }
 

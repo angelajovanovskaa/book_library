@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.entities;
+package com.kinandcarta.book_library.validators;
 
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.springframework.stereotype.Component;

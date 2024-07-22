@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.service.impl;
+package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.entities.*;
@@ -13,8 +13,6 @@ import com.kinandcarta.book_library.exceptions.LimitReachedForBorrowedBooksExcep
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
-import com.kinandcarta.book_library.services.impl.BookReturnDateCalculatorService;
 import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -95,7 +93,7 @@ class BookCheckoutManagementServiceImplTest {
         BookItem bookItem = getBookItems().get(5);
         Book book = bookItem.getBook();
 
-        given(bookCheckoutRepository.findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(
+        given(bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(
                 anyString(), any())).willReturn(bookCheckouts);
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
@@ -105,7 +103,7 @@ class BookCheckoutManagementServiceImplTest {
         // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The user already has an instance borrowed from the book with ISBN: " + book.getISBN());
+                .withMessage("The user already has an instance borrowed from the book with ISBN: " + book.getIsbn());
     }
 
     @Test
