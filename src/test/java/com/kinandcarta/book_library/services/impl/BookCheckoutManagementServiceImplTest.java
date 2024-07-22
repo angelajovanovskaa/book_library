@@ -105,7 +105,7 @@ class BookCheckoutManagementServiceImplTest {
         // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The user already has an instance borrowed from the book with ISBN: " + book.getIsbn());
+                .withMessage("The user already has an instance borrowed from the book with isbn: " + book.getIsbn());
     }
 
     @Test
