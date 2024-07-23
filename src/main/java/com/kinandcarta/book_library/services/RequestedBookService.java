@@ -10,7 +10,7 @@ public interface RequestedBookService {
 
     List<RequestedBookDTO> getAllRequestedBooks();
 
-    List<RequestedBookDTO> filterRequestedBooks(BookStatus status);
+    List<RequestedBookDTO> filterRequestedBooksByBookStatus(BookStatus status);
 
     RequestedBookDTO getRequestedBookById(UUID id);
 

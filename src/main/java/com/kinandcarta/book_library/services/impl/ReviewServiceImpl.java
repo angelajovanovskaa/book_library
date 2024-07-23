@@ -29,10 +29,14 @@ import java.util.UUID;
 public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewConverter reviewConverter;
+
     private final BookRepository bookRepository;
+
     private final UserRepository userRepository;
-    private final CalculateAverageRatingOnBookImpl calculateAverageReviewRatingOnBook;
+
+    private final ReviewConverter reviewConverter;
+
+    private final BookAverageRatingCalculatorImpl calculateAverageReviewRatingOnBook;
 
     /**
      * Retrieves all reviews in our system.
@@ -166,22 +170,22 @@ public class ReviewServiceImpl implements ReviewService {
      * @param id Type: UUID
      * @return {@link ReviewDTO}
      */
-    public ReviewDTO deleteReviewById(UUID id) {
+    public UUID deleteReviewById(UUID id) {
 
         Review review = getReview(id);
 
         Book book = review.getBook();
 
-        String isbn = book.getIsbn();
-
         reviewRepository.deleteById(id);
+
+        String isbn = book.getIsbn();
 
         double bookRatingFromFirm = calculateBookRating(isbn);
 
         book.setRatingFromFirm(bookRatingFromFirm);
         bookRepository.save(book);
 
-        return reviewConverter.toReviewDTO(review);
+        return id;
     }
 
     private double calculateBookRating(String isbn) {

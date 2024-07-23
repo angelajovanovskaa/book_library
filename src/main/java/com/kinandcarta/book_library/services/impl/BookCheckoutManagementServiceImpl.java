@@ -37,8 +37,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
 
     /**
      * This method is used to borrow a book from the library.<br>
-     * For this method to perform a successful borrowing of a book, the following constraints must be satisfied by
-     * the user:
+     * For this method to perform a successful borrowing of a book, the following constraints must be satisfied by the user:
      * <ul>
      *     <li>Check if the user has reached the limit for borrowed books.</li>
      *     <li>Check if the book item being borrowed is available.</li>
@@ -150,9 +149,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     }
 
     private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
-        List<BookCheckout> bookCheckoutsForUserAndBook =
-                bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(
-                        book.getIsbn(), userId);
+        List<BookCheckout> bookCheckoutsForUserAndBook = bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(book.getIsbn(), userId);
 
         return bookCheckoutsForUserAndBook.stream()
                 .anyMatch(x -> x.getDateReturned() == null);

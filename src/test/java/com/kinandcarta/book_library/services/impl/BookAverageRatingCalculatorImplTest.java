@@ -10,13 +10,13 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class CalculateAverageRatingOnBookImplTest {
+class BookAverageRatingCalculatorImplTest {
 
     @InjectMocks
-    private CalculateAverageRatingOnBookImpl calculateAverageRatingOnBookImpl;
+    private BookAverageRatingCalculatorImpl calculateAverageRatingOnBookImpl;
 
     @Test
-    void getAverageRatingOnBook() {
+    void getAverageRatingOnBook_methodIsValid_returnsDouble() {
 
         List<Integer> reviews = List.of(1, 2, 3);
 

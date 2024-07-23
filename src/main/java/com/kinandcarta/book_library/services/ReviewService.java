@@ -19,5 +19,5 @@ public interface ReviewService {
 
     ReviewDTO updateReview(ReviewDTO reviewDTO);
 
-    ReviewDTO deleteReviewById(UUID id);
+    UUID deleteReviewById(UUID id);
 }

@@ -1,16 +1,15 @@
-package com.kinandcarta.book_library.services.impl;
+package com.kinandcarta.book_library.validators;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
-import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
-import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
+import com.kinandcarta.book_library.services.impl.RequestedBookServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,10 +45,13 @@ class BookStatusTransitionValidatorTests {
     @InjectMocks
     private RequestedBookServiceImpl requestedBookServiceImpl;
 
+    private final static Office OFFICE = new Office("Skopje kancelarija");
+
     @Test
     @SneakyThrows
-    void changeStatus_changeBookStatusFromRequestedToRequestedValid_returnRequestedBook() {
+    void changeStatus_changeBookStatusFromRequestedToRequestedValid_returnRequestedBookDTO() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.REQUESTED;
@@ -61,10 +63,41 @@ class BookStatusTransitionValidatorTests {
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
 
+        //when
         final RequestedBookDTO actualResult =
                 requestedBookServiceImpl.changeBookStatus(id, newStatus);
 
+        //then
         verify(requestedBookRepository).findById(any());
+        verify(requestedBookConverter).toRequestedBookDTO(any());
+
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
+    }
+
+    @Test
+    @SneakyThrows
+    void changeStatus_changeBookStatusFromRequestedToRejectedValid_returnRequestedBookDTO() {
+
+        //given
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        BookStatus currentStatus = BookStatus.REQUESTED;
+        book.setBookStatus(currentStatus);
+        BookStatus newStatus = BookStatus.REJECTED;
+        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+
+        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
+        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
+
+        //when
+        final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
+
+        //then
+        verify(requestedBookRepository).findById(any());
+        verify(bookStatusTransitionValidator).isValid(any(), any());
+        verify(bookRepository).save(any());
         verify(requestedBookConverter).toRequestedBookDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookDTO);
@@ -74,6 +107,7 @@ class BookStatusTransitionValidatorTests {
     @SneakyThrows
     void changeStatus_changeBookStatusFromRequestedToInStock_throwsException() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.REJECTED;
@@ -84,6 +118,7 @@ class BookStatusTransitionValidatorTests {
         given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(false);
 
+        //when & then
         assertThatExceptionOfType(RequestedBookStatusException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, newStatus))
                 .withMessage("Transition from status " + currentStatus + " to status " + newStatus +
@@ -98,8 +133,9 @@ class BookStatusTransitionValidatorTests {
 
     @Test
     @SneakyThrows
-    void changeStatus_changeBookStatusFromPendingToPendingValid_returnRequestedBook() {
+    void changeStatus_changeBookStatusFromPendingToPendingValid_returnRequestedBookDTO() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.PENDING_PURCHASE;
@@ -111,9 +147,11 @@ class BookStatusTransitionValidatorTests {
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
 
+        //when
         final RequestedBookDTO actualResult =
                 requestedBookServiceImpl.changeBookStatus(id, newStatus);
 
+        //then
         verify(requestedBookRepository).findById(any());
         verify(requestedBookConverter).toRequestedBookDTO(any());
 
@@ -122,8 +160,9 @@ class BookStatusTransitionValidatorTests {
 
     @Test
     @SneakyThrows
-    void changeStatus_changeBookStatusFromPendingToRejectedValid_returnRequestedBook() {
+    void changeStatus_changeBookStatusFromPendingToRejectedValid_returnRequestedBookDTO() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.PENDING_PURCHASE;
@@ -136,8 +175,10 @@ class BookStatusTransitionValidatorTests {
         given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
 
+        //when
         final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
 
+        //then
         verify(requestedBookRepository).findById(any());
         verify(bookStatusTransitionValidator).isValid(any(), any());
         verify(bookRepository).save(any());
@@ -150,6 +191,7 @@ class BookStatusTransitionValidatorTests {
     @SneakyThrows
     void changeStatus_changeBookStatusFromPendingToRequested_throwsException() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.PENDING_PURCHASE;
@@ -160,6 +202,7 @@ class BookStatusTransitionValidatorTests {
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(false);
 
+        //when & then
         assertThatExceptionOfType(RequestedBookStatusException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, newStatus))
                 .withMessage("Transition from status " + currentStatus + " to status " + newStatus +
@@ -174,8 +217,9 @@ class BookStatusTransitionValidatorTests {
 
     @Test
     @SneakyThrows
-    void changeStatus_changeBookStatusFromRejectedToRejectedValid_returnRequestedBook() {
+    void changeStatus_changeBookStatusFromRejectedToRejectedValid_returnRequestedBookDTO() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.REJECTED;
@@ -187,8 +231,10 @@ class BookStatusTransitionValidatorTests {
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
 
+        //when
         final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
 
+        //then
         verify(requestedBookRepository).findById(any());
         verify(requestedBookConverter).toRequestedBookDTO(any());
 
@@ -197,8 +243,9 @@ class BookStatusTransitionValidatorTests {
 
     @Test
     @SneakyThrows
-    void changeStatus_changeBookStatusFromRejectedToPendingValid_returnRequestedBook() {
+    void changeStatus_changeBookStatusFromRejectedToPendingValid_returnRequestedBookDTO() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.REJECTED;
@@ -211,8 +258,10 @@ class BookStatusTransitionValidatorTests {
         given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(true);
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
 
+        //when
         final RequestedBookDTO actualResult = requestedBookServiceImpl.changeBookStatus(id, newStatus);
 
+        //then
         verify(requestedBookRepository).findById(any());
         verify(bookStatusTransitionValidator).isValid(any(), any());
         verify(bookRepository).save(any());
@@ -225,6 +274,7 @@ class BookStatusTransitionValidatorTests {
     @SneakyThrows
     void changeStatus_changeBookStatusFromRejectedToRequested_throwsException() {
 
+        //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         BookStatus currentStatus = BookStatus.REJECTED;
@@ -235,6 +285,7 @@ class BookStatusTransitionValidatorTests {
         given(requestedBookRepository.findById(id)).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(currentStatus, newStatus)).willReturn(false);
 
+        //when & then
         assertThatExceptionOfType(RequestedBookStatusException.class)
                 .isThrownBy(() -> requestedBookServiceImpl.changeBookStatus(id, newStatus))
                 .withMessage("Transition from status " + currentStatus + " to status " + newStatus +
@@ -254,11 +305,11 @@ class BookStatusTransitionValidatorTests {
 
         String[] genres = new String[]{"genre1", "genre2"};
 
-        Book book1 = new Book("isbn1", getOffice(), "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
+        Book book1 = new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, genres, new HashSet<>(), new ArrayList<>());
-        Book book2 = new Book("isbn2", getOffice(), "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2",
+        Book book2 = new Book("isbn2", OFFICE, "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2",
                 BookStatus.PENDING_PURCHASE, genres, new HashSet<>(), new ArrayList<>());
-        Book book3 = new Book("isbn3", getOffice(), "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3",
+        Book book3 = new Book("isbn3", OFFICE, "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3",
                 BookStatus.REJECTED, genres, new HashSet<>(), new ArrayList<>());
 
         RequestedBook requestedBook1 = new RequestedBook(requestedBookID1, LocalDate.now(), 3L, book1, new HashSet<>());
@@ -311,26 +362,5 @@ class BookStatusTransitionValidatorTests {
     private RequestedBookDTO getRequestedBookDTO() {
 
         return getRequestedBookDTOs().getFirst();
-    }
-
-    private List<User> getUsers() {
-
-        UUID id1 = UUID.fromString("123e4567-e89b-12d3-a456-010000000000");
-        UUID id2 = UUID.fromString("123e4567-e89b-12d3-a456-020000000000");
-
-        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1", getOffice());
-        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2", getOffice());
-
-        return List.of(user1, user2);
-    }
-
-    private User getUser() {
-
-        return getUsers().getFirst();
-    }
-
-    private Office getOffice() {
-
-        return new Office("Skopje kancelarija");
     }
 }

@@ -33,12 +33,13 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
     private final RequestedBookRepository requestedBookRepository;
 
-    private final RequestedBookConverter requestedBookConverter;
-
     private final UserRepository userRepository;
 
-    private final BookStatusTransitionValidator bookStatusTransitionValidator;
     private final BookRepository bookRepository;
+
+    private final RequestedBookConverter requestedBookConverter;
+
+    private final BookStatusTransitionValidator bookStatusTransitionValidator;
 
     /**
      * Retrieves all entries for requested books in our system without taking in consideration their current status.
@@ -55,19 +56,16 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     }
 
     /**
-     * Retrieves all the RequestedBook object with given Book status, only changed by the admin and
-     * an option to filter RequestedBook objects by title (enabled for everyone).
+     * Retrieves all the {@link RequestedBook} object with given {@link Book} status, only changed by the admin.
      * <hr>
      *
      * @param status Type: {@link BookStatus}
      * @return List of {@link RequestedBookDTO}
      */
     @Override
-    public List<RequestedBookDTO> filterRequestedBooks(BookStatus status) {
+    public List<RequestedBookDTO> filterRequestedBooksByBookStatus(BookStatus status) {
 
-        List<RequestedBook> requestedBooks;
-
-        requestedBooks = requestedBookRepository
+        List<RequestedBook> requestedBooks = requestedBookRepository
                 .findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
 
         return requestedBooks.stream()
@@ -259,7 +257,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 
-        Optional<User> optionalUser = this.userRepository.findByEmail(userEmail);
+        Optional<User> optionalUser =  this.userRepository.findByEmail(userEmail);
 
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException(userEmail);
@@ -267,10 +265,9 @@ public class RequestedBookServiceImpl implements RequestedBookService {
 
         User user = optionalUser.get();
 
-        RequestedBook newVersionRequestedBook;
-
         Set<User> users = requestedBook.getUsers();
 
+        RequestedBook newVersionRequestedBook;
         if (users.contains(user)) {
             newVersionRequestedBook = removeLike(requestedBook, user);
         } else {

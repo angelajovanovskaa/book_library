@@ -1,23 +1,22 @@
 package com.kinandcarta.book_library.validators;
 
 import com.kinandcarta.book_library.enums.BookStatus;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Map.entry;
 
 @Component
 public final class BookStatusTransitionValidator {
 
-    private static final Map<BookStatus, List<BookStatus>> validTransitions = new HashMap<>();
-
-    static {
-
-        validTransitions.put(BookStatus.REQUESTED, List.of(BookStatus.REJECTED, BookStatus.PENDING_PURCHASE));
-        validTransitions.put(BookStatus.REJECTED, List.of(BookStatus.PENDING_PURCHASE));
-        validTransitions.put(BookStatus.PENDING_PURCHASE, List.of(BookStatus.REJECTED, BookStatus.IN_STOCK));
-    }
+    private static final Map<BookStatus, List<BookStatus>> VALID_STATUS_TRANSITIONS = Map.ofEntries(
+            entry(BookStatus.REQUESTED, List.of(BookStatus.REJECTED, BookStatus.PENDING_PURCHASE)),
+            entry(BookStatus.REJECTED, List.of(BookStatus.PENDING_PURCHASE)),
+            entry(BookStatus.PENDING_PURCHASE, List.of(BookStatus.REJECTED, BookStatus.IN_STOCK))
+    );
 
     /**
      * Validates if the transition from current status to new status is valid.
@@ -28,9 +27,9 @@ public final class BookStatusTransitionValidator {
      */
     public boolean isValid(BookStatus currentBookStatus, BookStatus newBookStatus) {
 
-        List<BookStatus> allowedStatuses = validTransitions.get(currentBookStatus);
+        List<BookStatus> allowedStatuses = VALID_STATUS_TRANSITIONS.get(currentBookStatus);
 
-        if (allowedStatuses == null || allowedStatuses.isEmpty()) {
+        if (CollectionUtils.isEmpty(allowedStatuses)) {
             return false;
         }
 
