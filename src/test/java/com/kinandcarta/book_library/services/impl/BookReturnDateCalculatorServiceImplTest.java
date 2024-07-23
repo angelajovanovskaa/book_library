@@ -1,13 +1,13 @@
-package com.kinandcarta.book_library.service.impl;
+package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
-import com.kinandcarta.book_library.services.impl.BookReturnDateCalculatorService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,10 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
-class BookReturnDateCalculatorServiceTest {
+class BookReturnDateCalculatorServiceImplTest {
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @InjectMocks
-    private BookReturnDateCalculatorService bookReturnDateCalculatorService;
+    private BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
 
     @Test
     void calculateReturnDateOfBookItem_theCalculationIsDone_returnsLocalDate() {
@@ -45,7 +46,7 @@ class BookReturnDateCalculatorServiceTest {
         Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
 
-        Book book = new Book("1111", "Homo sapiens2", "book description", "some summary", 123,
+        Book book = new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 123,
                 String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
                 genres, new HashSet<>(), new ArrayList<>());
 

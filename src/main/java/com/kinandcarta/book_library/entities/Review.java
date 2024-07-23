@@ -1,19 +1,19 @@
 package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Getter
+@Setter
 
 @Entity
 public class Review {
@@ -30,6 +30,7 @@ public class Review {
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
     @ManyToOne
@@ -46,5 +47,18 @@ public class Review {
         if (nonNull(user)) {
             this.user = user;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return Objects.equals(id, review.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

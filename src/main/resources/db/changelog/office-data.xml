@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="data-for-office-table" author="mbojkovski">
+        <preConditions onFail="MARK_RAN">
+            <tableIsEmpty tableName="office"/>
+        </preConditions>
+
+        <insert tableName="office">
+            <column name="name" value="Skopje"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Pristina"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Sofia"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Veliko Tarnovo"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Edinburgh"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Bristol"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Wrocław"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Liverpool"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Manchester"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Bogotá"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Buenos Aires"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Portland"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="Denver"/>
+        </insert>
+
+        <insert tableName="office">
+            <column name="name" value="New York"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

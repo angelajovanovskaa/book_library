@@ -9,9 +9,9 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
 
 @Entity
 @Table(name = "book_checkout")
@@ -28,6 +28,10 @@ public class BookCheckout {
     @ManyToOne()
     @JoinColumn(name = "book_item_id")
     private BookItem bookItem;
+
+    @ManyToOne
+    @JoinColumn(name = "office_name")
+    private Office office;
 
     private LocalDate dateBorrowed;
 

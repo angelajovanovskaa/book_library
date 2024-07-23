@@ -3,18 +3,17 @@ package com.kinandcarta.book_library.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
-@Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@ToString
+@Getter
+@Setter
+
+@Entity
 public class Author {
 
     @Id
@@ -26,7 +25,7 @@ public class Author {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_author",
             joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = @JoinColumn(name = "book_isbn"))
+            inverseJoinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")})
     @EqualsAndHashCode.Exclude
     private Set<Book> books;
 
@@ -48,4 +47,16 @@ public class Author {
         book.setAuthors(authors);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return Objects.equals(id, author.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }
