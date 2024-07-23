@@ -13,6 +13,8 @@ import static java.util.Objects.nonNull;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+
 @Entity
 public class Review {
 

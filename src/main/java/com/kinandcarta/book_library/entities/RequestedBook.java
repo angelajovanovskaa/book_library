@@ -13,11 +13,12 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@ToString
+
 @Entity
 public class RequestedBook {
 
