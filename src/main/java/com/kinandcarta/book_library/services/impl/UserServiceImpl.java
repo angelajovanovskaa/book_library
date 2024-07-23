@@ -29,18 +29,18 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
-
-    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     /**
      * This method is used to get all the registered users.<br>
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
-     * @return UserWithRoleFieldResponseDTO which will contain fullName, email, profilePicture and role.
+     * @return A list of {@link UserWithRoleFieldResponseDTO}
      */
     @Override
     public List<UserWithRoleFieldResponseDTO> getAllUsers() {
@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method, so they can view their profile.
      *
      * @param userId the Id of the user that we are trying to get details for.
-     * @return UserResponseDTO which will contain fullName, email and the profilePicture
+     * @return {@link UserResponseDTO}
      */
     @Override
     public UserResponseDTO getUserProfile(UUID userId) {

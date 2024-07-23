@@ -9,8 +9,8 @@ import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity
@@ -29,6 +29,7 @@ public class Review {
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
     @ManyToOne

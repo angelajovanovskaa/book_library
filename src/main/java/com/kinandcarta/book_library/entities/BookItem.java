@@ -5,15 +5,18 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@ToString
+@Getter
+@Setter
+
 @Entity
 public class BookItem {
 
@@ -27,6 +30,7 @@ public class BookItem {
     @ManyToOne
     @ToString.Exclude
     @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
     public void addBook(Book book) {
@@ -40,4 +44,16 @@ public class BookItem {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookItem bookItem = (BookItem) o;
+        return Objects.equals(id, bookItem.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

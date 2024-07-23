@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.*;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
@@ -30,6 +31,9 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
+    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @Mock
     private UserRepository userRepository;
 
@@ -41,8 +45,6 @@ class UserServiceImplTest {
 
     @InjectMocks
     private UserServiceImpl userService;
-
-    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     @Test
     void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {
@@ -285,13 +287,13 @@ class UserServiceImplTest {
 
     private List<User> getUsers() {
         User user1 = new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "USER", "pw");
+                "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
 
         User user2 = new User(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"), "David Bojkovski", null,
-                "david@gmail.com", "ADMIN", "Pw");
+                "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
 
         User user3 = new User(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"), "Viktorija Zlatanovska", null,
-                "viktorija@gmail.com", "Admin", "password");
+                "viktorija@gmail.com", "Admin", "password", SKOPJE_OFFICE);
 
         return List.of(user1, user2, user3);
     }

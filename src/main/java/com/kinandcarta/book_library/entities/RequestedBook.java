@@ -13,6 +13,7 @@ import java.util.UUID;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -30,6 +31,8 @@ public class RequestedBook {
 
     @ToString.Exclude
     @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
     @ManyToMany(cascade = CascadeType.PERSIST)

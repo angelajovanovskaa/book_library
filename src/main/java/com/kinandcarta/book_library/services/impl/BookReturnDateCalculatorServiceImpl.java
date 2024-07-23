@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,7 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class BookReturnDateCalculatorService {
-
+public class BookReturnDateCalculatorServiceImpl implements BookReturnDateCalculatorService {
     private static final int AVERAGE_PAGES_READ_PER_DAY = 25;
 
     /**

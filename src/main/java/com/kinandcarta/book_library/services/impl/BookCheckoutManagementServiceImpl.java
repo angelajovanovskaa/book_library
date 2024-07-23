@@ -11,6 +11,7 @@ import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutManagementService;
+import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
 import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     private final BookCheckoutRepository bookCheckoutRepository;
     private final BookItemRepository bookItemRepository;
     private final UserRepository userRepository;
-    private final BookReturnDateCalculatorService calculatorService;
+    private final BookReturnDateCalculatorService bookReturnDateCalculatorService;
 
     /**
      * This method is used to borrow a book from the library.<br>
@@ -79,7 +80,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
             throw new BookAlreadyBorrowedByUserException(book.getIsbn());
         }
 
-        LocalDate scheduledReturnDate = calculatorService.calculateReturnDateOfBookItem(bookItem);
+        LocalDate scheduledReturnDate = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem);
 
         BookCheckout bookCheckout = new BookCheckout();
         bookCheckout.setUser(user);
