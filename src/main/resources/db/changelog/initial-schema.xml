@@ -46,7 +46,7 @@
                                  constraintName="fk_office_name"
                                  referencedTableName="office"
                                  referencedColumnNames="name"
-                                 onDelete="CASCADE"
+                                 onDelete="RESTRICT"
                                  onUpdate="CASCADE"/>
     </changeSet>
 
@@ -145,7 +145,7 @@
                                  constraintName="fk_office"
                                  referencedTableName="office"
                                  referencedColumnNames="name"
-                                 onDelete="CASCADE"
+                                 onDelete="RESTRICT"
                                  onUpdate="CASCADE"/>
     </changeSet>
 
@@ -188,7 +188,7 @@
                                  constraintName="fk_office"
                                  referencedTableName="office"
                                  referencedColumnNames="name"
-                                 onDelete="CASCADE"
+                                 onDelete="RESTRICT"
                                  onUpdate="CASCADE"/>
     </changeSet>
 
