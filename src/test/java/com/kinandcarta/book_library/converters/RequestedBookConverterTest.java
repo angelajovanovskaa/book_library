@@ -16,11 +16,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class RequestedBookConverterTest {
 
+    private final static Office OFFICE = new Office("Skopje kancelarija");
+
     private final RequestedBookConverter requestedBookConverter = new RequestedBookConverter();
 
     @Test
     void toRequestedBookDTO() {
-
         //given
         final RequestedBook requestedBook = getRequestedBook();
         final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
@@ -43,7 +44,7 @@ class RequestedBookConverterTest {
 
     private Book getBook() {
 
-        return new Book("isbn1", getOffice(), "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
+        return new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, null, new HashSet<>(), new ArrayList<>());
     }
 
@@ -59,10 +60,5 @@ class RequestedBookConverterTest {
                 "title1",
                 "image1"
         );
-    }
-
-    private Office getOffice() {
-
-        return new Office("Skopje kancelarija");
     }
 }

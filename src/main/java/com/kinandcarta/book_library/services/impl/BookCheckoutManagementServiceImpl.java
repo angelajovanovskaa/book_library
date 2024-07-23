@@ -149,7 +149,9 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     }
 
     private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
-        List<BookCheckout> bookCheckoutsForUserAndBook = bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(book.getIsbn(), userId);
+        List<BookCheckout> bookCheckoutsForUserAndBook =
+                bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(
+                        book.getIsbn(), userId);
 
         return bookCheckoutsForUserAndBook.stream()
                 .anyMatch(x -> x.getDateReturned() == null);

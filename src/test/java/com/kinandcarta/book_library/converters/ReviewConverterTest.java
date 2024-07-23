@@ -22,7 +22,6 @@ class ReviewConverterTest {
 
     @Test
     void toReviewDTO() {
-
         //given
         final Review review = getReview();
         final ReviewDTO reviewDTO = getReviewDTO();
@@ -36,7 +35,6 @@ class ReviewConverterTest {
 
     @Test
     void toReview() {
-
         //given
         final Review review = getReview();
         final ReviewDTO reviewDTO = getReviewDTO();

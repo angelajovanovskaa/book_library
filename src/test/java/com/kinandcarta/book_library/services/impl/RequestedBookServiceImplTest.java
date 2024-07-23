@@ -32,6 +32,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class RequestedBookServiceImplTest {
 
+    private final static Office OFFICE = new Office("Skopje kancelarija");
+
     @Mock
     private RequestedBookRepository requestedBookRepository;
 
@@ -49,8 +51,6 @@ class RequestedBookServiceImplTest {
 
     @InjectMocks
     private RequestedBookServiceImpl requestedBookServiceImpl;
-
-    private final static Office OFFICE = new Office("Skopje kancelarija");
 
     @Test
     void getAllRequestedBooks_atLeastOneRequestedBookExists_returnsAllRequestedBookDTOs() {
@@ -78,7 +78,6 @@ class RequestedBookServiceImplTest {
 
     @Test
     void filterRequestedBooksByBookStatus_filterByBookStatusRequested_returnsListOfRequestedBookDTOs() {
-
         //given
         final List<RequestedBook> requestedBooks = getRequestedBooks();
         final List<RequestedBookDTO> requestedBookDTOS = getRequestedBookDTOs();
@@ -102,7 +101,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void getRequestedBookById_requestedBookForGivenIdExists_returnRequestedBookDTO() {
-
         //given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         final RequestedBook requestedBook = getRequestedBook();
@@ -124,7 +122,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void getRequestedBookById_requestedBookForGivenIdNotExists_throwsException() {
-
         //given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
@@ -143,7 +140,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void getRequestedBookByISBN_requestedBookForGivenIsbnExists_returnRequestedBookDTO() {
-
         //given
         final String isbn = "isbn1";
         final RequestedBook requestedBook = getRequestedBook();
@@ -165,7 +161,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void getRequestedBookByISBN_requestedBookForGivenIsbnNotExists_throwsException() {
-
         //given
         String isbn = "isbn1";
 
@@ -186,7 +181,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void deleteRequestedBook_requestedBookIsPresent_returnRequestedBookDTO() {
-
         //given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
@@ -205,7 +199,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void deleteRequestedBook_requestedBookIsNotPresent_throwsException() {
-
         //given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
@@ -224,7 +217,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void changeStatus_changeBookStatusFromRequestedToPendingValid_returnRequestedBookDTO() {
-
         //given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
@@ -254,7 +246,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void handleRequestedBookLike_userLikesRequestedBook_returnRequestedBookDTO() {
-
         //given
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
@@ -276,7 +267,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void handleRequestedBookLike_requestedBookWithIdIsNotFound_throwsException() {
-
         //given
         UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000110000");
         String email = "email1";
@@ -295,7 +285,6 @@ class RequestedBookServiceImplTest {
     @Test
     @SneakyThrows
     void handleRequestedBookLike_userWithEmailIsNotFound_throwsException() {
-
         //given
         RequestedBook requestedBook = getRequestedBook();
         UUID id = requestedBook.getId();

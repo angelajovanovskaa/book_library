@@ -1,5 +1,6 @@
 package com.kinandcarta.book_library.validators;
 
+import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,10 @@ import java.util.Map;
 
 import static java.util.Map.entry;
 
+/**
+ * Class provides validation for {@link Book} objects and their book status transitions (from their current book status
+ * to new book status).
+ */
 @Component
 public final class BookStatusTransitionValidator {
 

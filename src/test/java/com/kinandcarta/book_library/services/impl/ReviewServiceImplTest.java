@@ -34,6 +34,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceImplTest {
 
+    private final static Office OFFICE = new Office("Skopje kancelarija");
+
     @Mock
     private ReviewRepository reviewRepository;
 
@@ -52,11 +54,8 @@ class ReviewServiceImplTest {
     @InjectMocks
     private ReviewServiceImpl reviewService;
 
-    private final static Office OFFICE = new Office("Skopje kancelarija");
-
     @Test
     void getAllReviews_atLeastOneReviewExists_returnOfReviewDTO() {
-
         //given
         final List<Review> reviews = getReviews();
         final List<ReviewDTO> reviewDTOS = getReviewDTOs();
@@ -77,7 +76,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void getReviewById_reviewForGivenIdExists_returnReviewDTO() {
-
         //given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         Review review = getReview();
@@ -99,7 +97,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void getReviewById_reviewForGivenIdNotExists_throwsException() {
-
         //given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
@@ -115,8 +112,7 @@ class ReviewServiceImplTest {
 
     @Test
     @SneakyThrows
-    void getAllReviewsByBookIsbn_getAllReviewsForGivenBookIsbnExists_returnListOfReviewDTO() {
-
+    void getAllReviewsByBookIsbn_getAllReviewsForGivenBookIsbnExists_returnListOfReviewDTOs() {
         //given
         final Book book = getBook();
         final String isbn = book.getIsbn();
@@ -141,7 +137,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void getAllReviewsByBookIsbn_getAllReviewsForGivenBookIsbnNotExists_throwsException() {
-
         //given
         final Book book = getBooks().getFirst();
 
@@ -158,8 +153,7 @@ class ReviewServiceImplTest {
 
     @Test
     @SneakyThrows
-    void getTopReviewsForDisplayInBookView_getTop3ReviewsForGivenBook_returnListOfReviewDTO() {
-
+    void getTopReviewsForDisplayInBookView_getTop3ReviewsForGivenBook_returnListOfReviewDTOs() {
         //given
         final Book book = getBook();
         final String isbn = book.getIsbn();
@@ -184,7 +178,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void getTopReviewsForDisplayInBookView_isbnNotExists_throwsException() {
-
         //given
         final Book book = getBook();
         final String isbn = book.getIsbn();
@@ -199,8 +192,7 @@ class ReviewServiceImplTest {
 
     @Test
     @SneakyThrows
-    void insertReview_averageRatingOnBookIsValid_returnReviewDTO() {
-
+    void insertReview_reviewInsertIsValid_returnReviewDTO() {
         //given
         Review review = getNewReview();
         ReviewDTO reviewDTO = getNewReviewDTO();
@@ -236,7 +228,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void insertReview_bookWithIsbnDoesNotExist_throwsException() {
-
         //given
         ReviewDTO reviewDTO = getNewReviewDTO();
 
@@ -252,7 +243,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void insertReview_userWithEmailDoesNotExist_throwsException() {
-
         //given
         ReviewDTO reviewDTO = getNewReviewDTO();
         Review review = getNewReview();
@@ -271,7 +261,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void updateReview_reviewUpdateValid_returnReviewDTO() {
-
         //given
         final ReviewDTO reviewDTO = getReviewDTO();
         final Review review = getReview();
@@ -309,7 +298,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void updateReview_bookWithIsbnDoesNotExist_throwsException() {
-
         //given
         ReviewDTO reviewDTO = getNewReviewDTO();
         String isbn = reviewDTO.bookISBN();
@@ -325,7 +313,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void updateReview_userWithEmailDoesNotExist_throwsException() {
-
         //given
         ReviewDTO reviewDTO = getNewReviewDTO();
         Book book = getBook();
@@ -343,7 +330,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void deleteReviewById_reviewDeleteValid_returnUUID() {
-
         //given
         Review review = getReview();
         UUID id = review.getId();
@@ -372,7 +358,6 @@ class ReviewServiceImplTest {
     @Test
     @SneakyThrows
     void deleteReviewById_reviewWithIdNotFound_throwsException() {
-
         //given
         Review review = getReview();
         UUID id = review.getId();
