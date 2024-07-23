@@ -34,6 +34,7 @@ import static org.mockito.Mockito.mock;
 class UserServiceImplTest {
     private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
+    private static final Office SOFIJA_OFFICE = new Office("Sofija");
 
     @Mock
     private UserRepository userRepository;
@@ -118,15 +119,15 @@ class UserServiceImplTest {
     @Test
     void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleFieldResponseDTO() {
         // given
-        List<User> users = getUsers();
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS = getUserWithRoleResponseDTOs();
+        List<User> users = List.of(getUsers().get(2));
+        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS =
+                List.of(getUserWithRoleResponseDTOs().get(2));
 
         given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(users);
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOS.get(0),
-                userWithRoleFieldResponseDTOS.get(1), userWithRoleFieldResponseDTOS.get(2));
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SKOPJE_OFFICE.getName());
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SOFIJA_OFFICE.getName());
 
         // then
         assertThat(result).isEqualTo(userWithRoleFieldResponseDTOS);
@@ -303,7 +304,7 @@ class UserServiceImplTest {
                 "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
 
         User user3 = new User(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"), "Viktorija Zlatanovska", null,
-                "viktorija@gmail.com", "Admin", "password", SKOPJE_OFFICE);
+                "viktorija@gmail.com", "Admin", "password", SOFIJA_OFFICE);
 
         return List.of(user1, user2, user3);
     }
@@ -319,7 +320,7 @@ class UserServiceImplTest {
 
         UserWithRoleFieldResponseDTO user3 =
                 new UserWithRoleFieldResponseDTO(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"),
-                        "Viktorija Zlatanovska", "viktorija@gmail.com", SKOPJE_OFFICE.getName(), "ADMIN");
+                        "Viktorija Zlatanovska", "viktorija@gmail.com", SOFIJA_OFFICE.getName(), "ADMIN");
 
         return List.of(user1, user2, user3);
     }
@@ -335,7 +336,7 @@ class UserServiceImplTest {
 
         UserResponseDTO user3 =
                 new UserResponseDTO(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"),
-                        "Viktorija Zlatanovska", "viktorija@gmail.com", SKOPJE_OFFICE.getName(), null);
+                        "Viktorija Zlatanovska", "viktorija@gmail.com", SOFIJA_OFFICE.getName(), null);
 
         return List.of(user1, user2, user3);
     }
