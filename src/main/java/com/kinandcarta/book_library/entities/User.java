@@ -8,9 +8,9 @@ import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
 
 @Entity
 @Table(name = "user_table")
@@ -29,6 +29,10 @@ public class User {
     private String role = "USER";
 
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "office_name")
+    private Office office;
 
     @Override
     public boolean equals(Object o) {

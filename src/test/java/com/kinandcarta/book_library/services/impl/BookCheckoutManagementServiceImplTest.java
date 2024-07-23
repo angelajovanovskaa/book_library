@@ -31,6 +31,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
 
@@ -41,7 +43,7 @@ class BookCheckoutManagementServiceImplTest {
     private UserRepository userRepository;
 
     @Mock
-    private BookReturnDateCalculatorService bookReturnDateCalculatorService;
+    private BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
 
     @InjectMocks
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
@@ -93,7 +95,7 @@ class BookCheckoutManagementServiceImplTest {
         BookItem bookItem = getBookItems().get(5);
         Book book = bookItem.getBook();
 
-        given(bookCheckoutRepository.findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(
+        given(bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(
                 anyString(), any())).willReturn(bookCheckouts);
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
@@ -103,7 +105,7 @@ class BookCheckoutManagementServiceImplTest {
         // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The user already has an instance borrowed from the book with ISBN: " + book.getIsbn());
+                .withMessage("The user already has an instance borrowed from the book with isbn: " + book.getIsbn());
     }
 
     @Test
@@ -210,30 +212,36 @@ class BookCheckoutManagementServiceImplTest {
         Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
 
         Book book1 =
-                new Book("1111", "Homo sapiens2", "book description", "some summary", 120,
+                new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
                         genres, new HashSet<>(), new ArrayList<>());
 
         Book book2 =
-                new Book("2222", "Homo sapiens11", "book description", "some summary", 555,
+                new Book("2222", SKOPJE_OFFICE, "Homo sapiens11", "book description", "some summary", 555,
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
         Book book3 =
-                new Book("3333", "Batman", "book description", "some summary", 555,
+                new Book("3333", SKOPJE_OFFICE, "Batman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
         Book book4 =
-                new Book("4444", "Spiderman", "book description", "some summary", 555,
+                new Book("4444", SKOPJE_OFFICE, "Spiderman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
 
-        book1.setAuthors(Set.of(author));
-        book2.setAuthors(Set.of(author));
-        book3.setAuthors(Set.of(author));
-        book4.setAuthors(Set.of(author));
+        author.addBook(book1);
+        author.addBook(book2);
+        author.addBook(book3);
+        author.addBook(book4);
+
+
+        book1.getAuthors().add(author);
+        book2.getAuthors().add(author);
+        book3.getAuthors().add(author);
+        book4.getAuthors().add(author);
 
 
         BookItem bookItem1 =
@@ -259,10 +267,10 @@ class BookCheckoutManagementServiceImplTest {
 
     public List<User> getUsers() {
         User user1 = new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "pw", "USER");
+                "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
 
         User user2 = new User(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"), "David Bojkovski", null,
-                "david@gmail.com", "Pw", "ADMIN");
+                "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
 
         return List.of(user1, user2);
     }
@@ -273,28 +281,30 @@ class BookCheckoutManagementServiceImplTest {
 
         BookCheckout bookCheckout1 =
                 new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), users.get(0),
-                        bookItems.get(0), LocalDate.now(), null, LocalDate.now().plusDays(14));
+                        bookItems.get(0), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout2 =
                 new BookCheckout(UUID.fromString("84b341db-23d9-4fe5-90d2-fd216376e3d1"), users.get(1),
-                        bookItems.get(1), LocalDate.now(), LocalDate.now().plusDays(5), LocalDate.now().plusDays(14));
+                        bookItems.get(1), SKOPJE_OFFICE, LocalDate.now(), LocalDate.now().plusDays(5),
+                        LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout3 =
                 new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), users.get(0),
-                        bookItems.get(2), LocalDate.now(), null, LocalDate.now().plusDays(2));
+                        bookItems.get(2), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(2));
 
         BookCheckout bookCheckout4 =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(0),
-                        getBookItems().get(3), LocalDate.now(), null, LocalDate.now().plusDays(3));
+                        getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null,
+                        LocalDate.now().plusDays(3));
 
         BookCheckout bookCheckout5 =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(1),
-                        getBookItems().get(3), LocalDate.now(), null, LocalDate.now().minusDays(5));
+                        getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null,
+                        LocalDate.now().minusDays(5));
 
         BookCheckout bookCheckout6 =
                 new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(1),
-                        getBookItems().get(3),
-                        LocalDate.now(), null, LocalDate.now());
+                        getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now());
 
         return List.of(bookCheckout1, bookCheckout2, bookCheckout3, bookCheckout4, bookCheckout5, bookCheckout6);
     }

@@ -22,7 +22,7 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
     List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
             String titleSearchTerm, UUID userId);
 
-    List<BookCheckout> findByBookItem_Book_ISBNAndUserIdOrderByDateBorrowedDesc(String bookISBN, UUID userId);
+    List<BookCheckout> findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(String bookISBN, UUID userId);
 
     List<BookCheckout> findByDateReturnedIsNullOrderByDateBorrowedDesc();
 

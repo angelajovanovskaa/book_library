@@ -1,49 +1,34 @@
 package com.kinandcarta.book_library.entities;
 
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
-
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Column;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.FetchType;
-
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.Type;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
-
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Getter
 @Setter
-@ToString
-@RequiredArgsConstructor
-@AllArgsConstructor
+
 @Entity
+@IdClass(BookId.class)
 public class Book {
 
     @Id
     private String isbn;
+
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "office_name")
+    private Office office;
 
     private String title;
 
@@ -97,11 +82,11 @@ public class Book {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Book book = (Book) o;
-        return Objects.equals(isbn, book.isbn);
+        return Objects.equals(isbn, book.isbn) && Objects.equals(office, book.office);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(isbn);
+        return Objects.hash(isbn, office);
     }
 }
