@@ -2,9 +2,7 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.Office;
-import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
@@ -31,16 +29,16 @@ class BookReturnDateCalculatorServiceImplTest {
     @Test
     void calculateReturnDateOfBookItem_theCalculationIsDone_returnsLocalDate() {
         // given
-        BookItem bookItem = getBookItem();
+        Book book = getBook();
 
         // when
-        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem);
+        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book);
 
         // then
         assertThat(result).isEqualTo(LocalDate.now().plusDays(5));
     }
 
-    private BookItem getBookItem() {
+    private Book getBook() {
         String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
         Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
@@ -51,9 +49,8 @@ class BookReturnDateCalculatorServiceImplTest {
                 genres, new HashSet<>(), new ArrayList<>());
 
         author.addBook(book);
-
         book.getAuthors().add(author);
 
-        return new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book);
+        return book;
     }
 }

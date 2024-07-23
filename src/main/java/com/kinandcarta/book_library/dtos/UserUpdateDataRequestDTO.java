@@ -10,6 +10,7 @@ public record UserUpdateDataRequestDTO(
         @NotBlank
         UUID userId,
         String fullName,
+        String officeName,
         byte[] image
 ) {
     @Override

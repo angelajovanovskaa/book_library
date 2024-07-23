@@ -63,15 +63,15 @@ class UserConverterTest {
 
     private UserWithRoleFieldResponseDTO getUserWithRoleResponseDTO() {
         return new UserWithRoleFieldResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                "Martin Bojkovski", "martin@gmail.com", "USER");
+                "Martin Bojkovski", "martin@gmail.com", SKOPJE_OFFICE.getName(),"USER");
     }
 
     private UserResponseDTO getUserResponseDTO() {
         return new UserResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                "Martin Bojkovski", null, "martin@gmail.com");
+                "Martin Bojkovski", "martin@gmail.com", SKOPJE_OFFICE.getName(), null);
     }
 
     private UserRegistrationRequestDTO getUserRegistrationRequestDTO() {
-        return new UserRegistrationRequestDTO("Martin Bojkovski", "martin@gmail.com", "pw");
+        return new UserRegistrationRequestDTO("Martin Bojkovski", "martin@gmail.com", SKOPJE_OFFICE.getName(), "pw");
     }
 }

@@ -35,11 +35,13 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of the book checkouts ordered by date borrowed in descending order.<br>
      * Only admin will have access to this method.
      *
+     * @param officeName    the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllByOrderByDateBorrowedDesc();
+    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts(String officeName) {
+        List<BookCheckout> bookCheckouts =
+                bookCheckoutRepository.findByOffice_NameOrderByDateBorrowedDesc(officeName);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -51,13 +53,16 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      *
      * @param numberOfPages the page number of the results to retrieve
      * @param pageSize      the maximum number of items per page
+     * @param officeName    the name of the office where the user searching belongs.
      * @return A page containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
     public Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int numberOfPages,
-                                                                                             int pageSize) {
+                                                                                             int pageSize,
+                                                                                             String officeName) {
         Pageable pageable = PageRequest.of(numberOfPages, pageSize);
-        Page<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllByOrderByDateBorrowedDesc(pageable);
+        Page<BookCheckout> bookCheckouts =
+                bookCheckoutRepository.findByOffice_NameOrderByDateBorrowedDesc(officeName, pageable);
 
         return bookCheckouts.map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO);
     }
@@ -66,11 +71,13 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all active book checkouts.<br>
      * Only admin will have access to this method.
      *
+     * @param officeName    the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc();
+    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts(String officeName) {
+        List<BookCheckout> bookCheckouts =
+                bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNullOrderByDateBorrowedDesc(officeName);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -80,11 +87,13 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all past book checkouts.<br>
      * Only admin will have access to this method.
      *
+     * @param officeName    the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
-    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNotNullOrderByDateBorrowedDesc();
+    public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts(String officeName) {
+        List<BookCheckout> bookCheckouts =
+                bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNotNullOrderByDateBorrowedDesc(officeName);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -114,14 +123,15 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * Only admin will have access.
      *
      * @param titleSearchTerm String value for the Title of the Book, cannot be {@code null}
+     * @param officeName      the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(
-            String titleSearchTerm) {
+            String officeName, String titleSearchTerm) {
         List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
-                        titleSearchTerm);
+                bookCheckoutRepository.findByOffice_NameAndBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
+                        officeName ,titleSearchTerm);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -145,11 +155,13 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to filter a list of all active bookCheckouts which return date is nearing.<br>
      * This will be accessed by the application for sending out notifications.
      *
+     * @param officeName    the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutReturnReminderResponseDTO}
      */
     @Override
-    public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate() {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByDateReturnedIsNullOrderByDateBorrowedDesc();
+    public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate(String officeName) {
+        List<BookCheckout> bookCheckouts =
+                bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNullOrderByDateBorrowedDesc(officeName);
 
         return bookCheckouts.stream()
                 .filter(x -> isBookCheckoutNearingReturnDate(x.getScheduledReturnDate()))

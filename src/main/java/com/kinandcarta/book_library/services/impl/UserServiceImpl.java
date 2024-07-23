@@ -2,10 +2,12 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.*;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
+import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
@@ -34,24 +36,37 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
+    private final OfficeRepository officeRepository;
 
     /**
      * This method is used to get all the registered users.<br>
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
+     * @param officeName    the name of the office where the user searching belongs.
      * @return A list of {@link UserWithRoleFieldResponseDTO}
      */
     @Override
-    public List<UserWithRoleFieldResponseDTO> getAllUsers() {
-        List<User> users = userRepository.findAllByOrderByRoleAsc();
+    public List<UserWithRoleFieldResponseDTO> getAllUsers(String officeName) {
+        List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
 
+    /**
+     * This method is used to filter the registered users by their fullName
+     * This method will only be accessible by the admin.
+     * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
+     *
+     * @param officeName          the name of the office where the user searching belongs.
+     * @param fullNameSearchTerm  String value for the fullName of User, cannot be {@code null}
+     * @return A list of {@link UserWithRoleFieldResponseDTO}
+     */
     @Override
-    public List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String fullNameSearchTerm) {
-        List<User> users = userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(fullNameSearchTerm);
+    public List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
+        List<User> users =
+                userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
+                        fullNameSearchTerm);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
@@ -89,6 +104,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userConverter.toUserEntity(userDTO);
+
+        Office office = officeRepository.findById(userDTO.officeName()).orElseThrow();
+        user.setOffice(office);
+
         byte[] userProfilePicture = getDefaultProfilePicture();
         user.setProfilePicture(userProfilePicture);
 
@@ -130,6 +149,11 @@ public class UserServiceImpl implements UserService {
 
         if (userDTO.image().length != 0) {
             user.setProfilePicture(userDTO.image());
+        }
+
+        if(StringUtils.isNotBlank(userDTO.officeName())){
+            Office office = officeRepository.findById(userDTO.officeName()).orElseThrow();
+            user.setOffice(office);
         }
 
         userRepository.save(user);

@@ -6,6 +6,7 @@ public record UserWithRoleFieldResponseDTO(
         UUID userId,
         String fullName,
         String email,
+        String officeName,
         String role
 ) {
 

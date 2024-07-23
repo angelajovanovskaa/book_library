@@ -26,6 +26,7 @@ public class UserConverter {
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
+                user.getOffice().getName(),
                 user.getRole()
         );
     }
@@ -41,8 +42,9 @@ public class UserConverter {
         return new UserResponseDTO(
                 user.getId(),
                 user.getFullName(),
-                user.getProfilePicture(),
-                user.getEmail()
+                user.getEmail(),
+                user.getOffice().getName(),
+                user.getProfilePicture()
         );
     }
 

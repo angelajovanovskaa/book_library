@@ -8,6 +8,7 @@ public record BookCheckoutWithUserAndBookItemInfoResponseDTO(
         UUID bookItemId,
         String bookTitle,
         String bookISBN,
+        String officeName,
         LocalDate dateBorrowed,
         LocalDate dateReturned,
         LocalDate scheduledReturnDate

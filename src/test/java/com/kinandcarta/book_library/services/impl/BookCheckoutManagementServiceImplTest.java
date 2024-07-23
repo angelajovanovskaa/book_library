@@ -6,12 +6,10 @@ import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
-import com.kinandcarta.book_library.exceptions.BookAlreadyBorrowedByUserException;
-import com.kinandcarta.book_library.exceptions.BookItemAlreadyBorrowedException;
-import com.kinandcarta.book_library.exceptions.BookItemIsNotBorrowedException;
-import com.kinandcarta.book_library.exceptions.LimitReachedForBorrowedBooksException;
+import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
+import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import org.junit.jupiter.api.Test;
@@ -32,6 +30,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
+    private static final Office SOFIJA_OFFICE = new Office("Sofija");
+
 
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
@@ -41,6 +41,9 @@ class BookCheckoutManagementServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private OfficeRepository officeRepository;
 
     @Mock
     private BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
@@ -109,6 +112,25 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
+    void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException(){
+        // given
+        BookItem bookItem = getBookItems().get(5);
+        UUID bookItemId = bookItem.getId();
+        User user = getUsers().getFirst();
+
+        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(SOFIJA_OFFICE));
+
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+
+        // when && then
+        assertThatExceptionOfType(EntitiesInDifferentOfficesException.class)
+                .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
+                .withMessage("You can't borrow a book from a different office!");
+    }
+
+    @Test
     void returnBookItem_BookItemIsNotBorrowed_throwsBookItemIsNotBorrowedException() {
         // given
         List<BookCheckout> bookCheckouts = new ArrayList<>();
@@ -136,6 +158,7 @@ class BookCheckoutManagementServiceImplTest {
 
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
@@ -298,12 +321,12 @@ class BookCheckoutManagementServiceImplTest {
                         LocalDate.now().plusDays(3));
 
         BookCheckout bookCheckout5 =
-                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(1),
+                new BookCheckout(UUID.fromString("e994f33a-c681-485b-9565-a9cda9cce201"), getUsers().get(1),
                         getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null,
                         LocalDate.now().minusDays(5));
 
         BookCheckout bookCheckout6 =
-                new BookCheckout(UUID.fromString("e38d2d3d-5512-4409-be33-5c115cd1d4f1"), getUsers().get(1),
+                new BookCheckout(UUID.fromString("204aea2d-2f4d-49a8-95b0-548cee91ca4a"), getUsers().get(1),
                         getBookItems().get(3), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now());
 
         return List.of(bookCheckout1, bookCheckout2, bookCheckout3, bookCheckout4, bookCheckout5, bookCheckout6);

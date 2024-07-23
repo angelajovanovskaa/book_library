@@ -1,14 +1,12 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.BookCheckout;
-import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.entities.*;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
+import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutManagementService;
 import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
@@ -34,6 +32,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     private final BookItemRepository bookItemRepository;
     private final UserRepository userRepository;
     private final BookReturnDateCalculatorService bookReturnDateCalculatorService;
+    private final OfficeRepository officeRepository;
 
     /**
      * This method is used to borrow a book from the library.<br>
@@ -55,6 +54,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      *                                               in the repository.
      * @throws BookItemAlreadyBorrowedException      If the book item is already borrowed by another user.
      * @throws BookAlreadyBorrowedByUserException    If the user already has an instance of the same book borrowed.
+     * @throws EntitiesInDifferentOfficesException   if the user tries to borrow a book from a different office.
      */
     @Override
     @Transactional
@@ -79,11 +79,18 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
             throw new BookAlreadyBorrowedByUserException(book.getIsbn());
         }
 
-        LocalDate scheduledReturnDate = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem);
+        String officeName = user.getOffice().getName();
+        Office userOffice = officeRepository.findById(officeName).orElseThrow();
+        if(userOffice != book.getOffice()){
+            throw new EntitiesInDifferentOfficesException();
+        }
+
+        LocalDate scheduledReturnDate = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book);
 
         BookCheckout bookCheckout = new BookCheckout();
         bookCheckout.setUser(user);
         bookCheckout.setBookItem(bookItem);
+        bookCheckout.setOffice(userOffice);
         bookCheckout.setDateBorrowed(LocalDate.now());
         bookCheckout.setScheduledReturnDate(scheduledReturnDate);
         bookCheckoutRepository.save(bookCheckout);

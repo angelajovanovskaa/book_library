@@ -1,9 +1,9 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.Book;
 
 import java.time.LocalDate;
 
 public interface BookReturnDateCalculatorService {
-    LocalDate calculateReturnDateOfBookItem(BookItem bookItem);
+    LocalDate calculateReturnDateOfBookItem(Book book);
 }
