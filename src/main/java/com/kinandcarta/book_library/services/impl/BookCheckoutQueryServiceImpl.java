@@ -35,7 +35,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of the book checkouts ordered by date borrowed in descending order.<br>
      * Only admin will have access to this method.
      *
-     * @param officeName    the name of the office where the user searching belongs.
+     * @param officeName the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
@@ -71,7 +71,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all active book checkouts.<br>
      * Only admin will have access to this method.
      *
-     * @param officeName    the name of the office where the user searching belongs.
+     * @param officeName the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
@@ -87,7 +87,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all past book checkouts.<br>
      * Only admin will have access to this method.
      *
-     * @param officeName    the name of the office where the user searching belongs.
+     * @param officeName the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
@@ -131,7 +131,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
             String officeName, String titleSearchTerm) {
         List<BookCheckout> bookCheckouts =
                 bookCheckoutRepository.findByOffice_NameAndBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
-                        officeName ,titleSearchTerm);
+                        officeName, titleSearchTerm);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -155,7 +155,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to filter a list of all active bookCheckouts which return date is nearing.<br>
      * This will be accessed by the application for sending out notifications.
      *
-     * @param officeName    the name of the office where the user searching belongs.
+     * @param officeName the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutReturnReminderResponseDTO}
      */
     @Override

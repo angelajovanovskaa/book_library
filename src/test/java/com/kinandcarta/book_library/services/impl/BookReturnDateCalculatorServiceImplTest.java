@@ -32,7 +32,7 @@ class BookReturnDateCalculatorServiceImplTest {
         Book book = getBook();
 
         // when
-        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book);
+        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book.getTotalPages());
 
         // then
         assertThat(result).isEqualTo(LocalDate.now().plusDays(5));

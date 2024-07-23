@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
-     * @param officeName    the name of the office where the user searching belongs.
+     * @param officeName the name of the office where the user searching belongs.
      * @return A list of {@link UserWithRoleFieldResponseDTO}
      */
     @Override
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
-     * @param officeName          the name of the office where the user searching belongs.
-     * @param fullNameSearchTerm  String value for the fullName of User, cannot be {@code null}
+     * @param officeName         the name of the office where the user searching belongs.
+     * @param fullNameSearchTerm String value for the fullName of User, cannot be {@code null}
      * @return A list of {@link UserWithRoleFieldResponseDTO}
      */
     @Override
@@ -151,7 +151,7 @@ public class UserServiceImpl implements UserService {
             user.setProfilePicture(userDTO.image());
         }
 
-        if(StringUtils.isNotBlank(userDTO.officeName())){
+        if (StringUtils.isNotBlank(userDTO.officeName())) {
             Office office = officeRepository.findById(userDTO.officeName()).orElseThrow();
             user.setOffice(office);
         }

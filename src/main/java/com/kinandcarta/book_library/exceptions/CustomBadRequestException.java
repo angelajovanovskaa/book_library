@@ -5,6 +5,6 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class CustomBadRequestException extends RuntimeException{
+public class CustomBadRequestException extends RuntimeException {
     private final String message;
 }

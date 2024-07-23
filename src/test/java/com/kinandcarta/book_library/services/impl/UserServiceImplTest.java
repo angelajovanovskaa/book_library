@@ -34,7 +34,6 @@ import static org.mockito.Mockito.mock;
 class UserServiceImplTest {
     private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
-    private static final Office SOFIJA_OFFICE = new Office("Sofija");
 
     @Mock
     private UserRepository userRepository;
@@ -119,15 +118,15 @@ class UserServiceImplTest {
     @Test
     void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleFieldResponseDTO() {
         // given
-        List<User> users = List.of(getUsers().get(2));
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS =
-                List.of(getUserWithRoleResponseDTOs().get(2));
+        List<User> users = getUsers();
+        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS = getUserWithRoleResponseDTOs();
 
         given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(users);
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOS.get(0),
+                userWithRoleFieldResponseDTOS.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SOFIJA_OFFICE.getName());
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).isEqualTo(userWithRoleFieldResponseDTOS);
@@ -142,7 +141,8 @@ class UserServiceImplTest {
 
         String fullNameSearchTerm = "Martin";
 
-        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(anyString(), anyString())).willReturn(users);
+        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(anyString(),
+                anyString())).willReturn(users);
         given(userConverter.toUserWithRoleDTO(users.getFirst())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
 
         // when
@@ -264,7 +264,7 @@ class UserServiceImplTest {
     @Test
     void deleteAccount_accountIsDeleted_returnsConfirmationMessage() {
         // given
-        UUID userId = UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2");
+        UUID userId = UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43");
 
         // when
         String result = userService.deleteAccount(userId);
@@ -303,26 +303,19 @@ class UserServiceImplTest {
         User user2 = new User(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"), "David Bojkovski", null,
                 "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
 
-        User user3 = new User(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"), "Viktorija Zlatanovska", null,
-                "viktorija@gmail.com", "Admin", "password", SOFIJA_OFFICE);
-
-        return List.of(user1, user2, user3);
+        return List.of(user1, user2);
     }
 
     private List<UserWithRoleFieldResponseDTO> getUserWithRoleResponseDTOs() {
         UserWithRoleFieldResponseDTO user1 =
                 new UserWithRoleFieldResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                        "Martin Bojkovski", "martin@gmail.com", SKOPJE_OFFICE.getName(), "USER");
+                        "Martin Bojkovski", "martin@gmail.com", "USER");
 
         UserWithRoleFieldResponseDTO user2 =
                 new UserWithRoleFieldResponseDTO(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"),
-                        "David Bojkovski", "david@gmail.com", SKOPJE_OFFICE.getName(), "ADMIN");
+                        "David Bojkovski", "david@gmail.com", "ADMIN");
 
-        UserWithRoleFieldResponseDTO user3 =
-                new UserWithRoleFieldResponseDTO(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"),
-                        "Viktorija Zlatanovska", "viktorija@gmail.com", SOFIJA_OFFICE.getName(), "ADMIN");
-
-        return List.of(user1, user2, user3);
+        return List.of(user1, user2);
     }
 
     private List<UserResponseDTO> getUserResponseDTOs() {
@@ -334,11 +327,7 @@ class UserServiceImplTest {
                 new UserResponseDTO(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"),
                         "David Bojkovski", "david@gmail.com", SKOPJE_OFFICE.getName(), null);
 
-        UserResponseDTO user3 =
-                new UserResponseDTO(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"),
-                        "Viktorija Zlatanovska", "viktorija@gmail.com", SOFIJA_OFFICE.getName(), null);
-
-        return List.of(user1, user2, user3);
+        return List.of(user1, user2);
     }
 
 

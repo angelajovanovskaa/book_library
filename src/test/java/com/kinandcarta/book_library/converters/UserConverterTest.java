@@ -63,7 +63,7 @@ class UserConverterTest {
 
     private UserWithRoleFieldResponseDTO getUserWithRoleResponseDTO() {
         return new UserWithRoleFieldResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                "Martin Bojkovski", "martin@gmail.com", SKOPJE_OFFICE.getName(),"USER");
+                "Martin Bojkovski", "martin@gmail.com", "USER");
     }
 
     private UserResponseDTO getUserResponseDTO() {

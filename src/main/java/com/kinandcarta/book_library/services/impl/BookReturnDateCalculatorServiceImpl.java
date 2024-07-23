@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,11 @@ public class BookReturnDateCalculatorServiceImpl implements BookReturnDateCalcul
      * This method is used to calculate the scheduledReturnDate for a BookItem when it's borrowed<br>
      * The algorithm get the books totalPages and divides it by the {@code AVERAGE_PAGES_READ_PER_DAY}.
      *
-     * @param book Object of the whole Book, cannot be {@code null}
+     * @param totalPages number of pages of the Book, cannot be {@code null}
      * @return LocalDate for the {@code scheduledReturnDate}.
      */
-    public LocalDate calculateReturnDateOfBookItem(Book book) {
-        int daysNeededToReadABook = Math.ceilDiv(book.getTotalPages(), AVERAGE_PAGES_READ_PER_DAY);
+    public LocalDate calculateReturnDateOfBookItem(int totalPages) {
+        int daysNeededToReadABook = Math.ceilDiv(totalPages, AVERAGE_PAGES_READ_PER_DAY);
 
         return LocalDate.now().plusDays(daysNeededToReadABook);
     }

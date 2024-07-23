@@ -1,13 +1,13 @@
 package com.kinandcarta.book_library.dtos;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
 public record UserUpdateDataRequestDTO(
-        @NotBlank
+        @NotNull
         UUID userId,
         String fullName,
         String officeName,

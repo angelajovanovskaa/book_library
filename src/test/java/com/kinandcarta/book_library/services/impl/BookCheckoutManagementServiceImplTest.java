@@ -30,8 +30,6 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
-    private static final Office SOFIJA_OFFICE = new Office("Sofija");
-
 
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
@@ -63,6 +61,8 @@ class BookCheckoutManagementServiceImplTest {
         given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
                 List.of(bookCheckouts.get(0), bookCheckouts.get(2), bookCheckouts.get(3)));
         given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
 
         // when && then
         assertThatExceptionOfType(LimitReachedForBorrowedBooksException.class)
@@ -81,6 +81,7 @@ class BookCheckoutManagementServiceImplTest {
 
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
@@ -102,6 +103,7 @@ class BookCheckoutManagementServiceImplTest {
                 anyString(), any())).willReturn(bookCheckouts);
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
@@ -112,15 +114,16 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
-    void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException(){
+    void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException() {
         // given
         BookItem bookItem = getBookItems().get(5);
         UUID bookItemId = bookItem.getId();
         User user = getUsers().getFirst();
+        Office officeSofija = new Office("Sofija");
 
         given(userRepository.findById(any())).willReturn(Optional.of(user));
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SOFIJA_OFFICE));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(officeSofija));
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 

@@ -59,33 +59,36 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     @Override
     @Transactional
     public String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
-        UUID userId = bookCheckoutDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow();
-
-        if (isBorrowedBooksLimitReached(userId)) {
-            throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
-        }
-
         UUID bookItemId = bookCheckoutDTO.bookItemId();
         BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
+
+        UUID userId = bookCheckoutDTO.userId();
+        User user = userRepository.findById(userId).orElseThrow();
+
+        String officeName = user.getOffice().getName();
+        Office userOffice = officeRepository.findById(officeName).orElseThrow();
+
+        Book book = bookItem.getBook();
+
+        if (userOffice != book.getOffice()) {
+            throw new EntitiesInDifferentOfficesException();
+        }
 
         if (bookItem.getBookItemState() == BookItemState.BORROWED) {
             throw new BookItemAlreadyBorrowedException(bookItemId);
         }
 
-        Book book = bookItem.getBook();
         if (hasInstanceOfBookBorrowed(userId, book)) {
             throw new BookAlreadyBorrowedByUserException(book.getIsbn());
         }
 
-        String officeName = user.getOffice().getName();
-        Office userOffice = officeRepository.findById(officeName).orElseThrow();
-        if(userOffice != book.getOffice()){
-            throw new EntitiesInDifferentOfficesException();
+        if (isBorrowedBooksLimitReached(userId)) {
+            throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
         }
 
-        LocalDate scheduledReturnDate = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book);
+        LocalDate scheduledReturnDate =
+                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book.getTotalPages());
 
         BookCheckout bookCheckout = new BookCheckout();
         bookCheckout.setUser(user);

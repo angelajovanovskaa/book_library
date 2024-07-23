@@ -35,7 +35,6 @@ public class BookCheckoutConverter {
                 bookItem.getId(),
                 book.getTitle(),
                 book.getIsbn(),
-                bookCheckout.getOffice().getName(),
                 bookCheckout.getDateBorrowed(),
                 bookCheckout.getDateReturned(),
                 bookCheckout.getScheduledReturnDate()
