@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookItemConverter;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
@@ -50,7 +51,8 @@ public class BookItemServiceImpl implements BookItemService {
      */
     @Override
     public BookItemDTO insertBookItem(String isbn) {
-        Optional<Book> bookOptional = bookRepository.findById(isbn);
+        BookId bookId = new BookId(isbn, "Sk");
+        Optional<Book> bookOptional = bookRepository.findById(bookId);
         if (bookOptional.isEmpty()) {
             throw new BookNotFoundException(isbn);
         }

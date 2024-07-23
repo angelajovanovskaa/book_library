@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface BookRepository extends JpaRepository<Book, String> {
+public interface BookRepository extends JpaRepository<Book, BookId> {
     @Query("SELECT DISTINCT b " +
             "FROM Book b " +
             "WHERE b.bookStatus = :bookStatus " +

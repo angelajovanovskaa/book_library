@@ -7,6 +7,7 @@ import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
@@ -170,24 +171,27 @@ class BookServiceImplTest {
     @SneakyThrows
     @Test
     void deleteBook_bookExists_shouldDeleteSuccessfully() {
-        final String isbn = "9780545414654";
-        given(bookRepository.existsById(isbn)).willReturn(true);
-        String deletedBookIsbn = bookService.deleteBook(isbn);
+        String isbn = "9780545414654";
+        BookId bookId = new BookId("9780545414654", "Sk");
+        given(bookRepository.existsById(bookId)).willReturn(true);
+        String deletedBookIsbn = bookService.deleteBook(bookId.getIsbn());
 
         assertThat(deletedBookIsbn).isEqualTo(isbn);
-        then(bookRepository).should().deleteById(isbn);
+        then(bookRepository).should().deleteById(bookId);
     }
 
     @SneakyThrows
     @Test
     void deleteBook_bookExists_shouldThrowException() {
-        final String isbn = "123456789123";
-        given(bookRepository.existsById(isbn)).willReturn(false);
+        String isbn = "123456789123";
+        BookId bookId = new BookId(isbn, "Sk");
+        given(bookRepository.existsById(bookId)).willReturn(false);
+
 
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> bookService.deleteBook(isbn))
                 .withMessage("Book with isbn: " + isbn + " not found");
-        then(bookRepository).should().existsById(isbn);
+        then(bookRepository).should().existsById(bookId);
         then(bookRepository).shouldHaveNoMoreInteractions();
     }
 

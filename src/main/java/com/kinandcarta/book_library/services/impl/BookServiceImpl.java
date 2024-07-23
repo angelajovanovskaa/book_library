@@ -4,6 +4,7 @@ import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
@@ -184,11 +185,12 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public String deleteBook(String isbn) {
-        if (!bookRepository.existsById(isbn)) {
+        BookId bookId = new BookId(isbn, "Sk");
+        if (!bookRepository.existsById(bookId)) {
             throw new BookNotFoundException(isbn);
         }
 
-        bookRepository.deleteById(isbn);
+        bookRepository.deleteById(bookId);
 
         return isbn;
     }
