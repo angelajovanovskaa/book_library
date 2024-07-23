@@ -56,7 +56,7 @@ public class RequestedBookServiceImpl implements RequestedBookService {
     }
 
     /**
-     * Retrieves all the {@link RequestedBook} object with given {@link Book} status..
+     * Retrieves all the {@link RequestedBook} object with given {@link Book} status.
      * <hr>
      *
      * @param status Type: {@link BookStatus}
