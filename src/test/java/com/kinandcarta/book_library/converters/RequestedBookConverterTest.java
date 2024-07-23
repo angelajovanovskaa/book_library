@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class RequestedBookConverterTest {
 
     private Book getBook() {
 
-        return new Book("isbn1", "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
+        return new Book("isbn1", getOffice(), "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, null, new HashSet<>(), new ArrayList<>());
     }
 
@@ -55,5 +56,10 @@ class RequestedBookConverterTest {
                 "title1",
                 "image1"
         );
+    }
+
+    private Office getOffice() {
+
+        return new Office("Skopje kancelarija");
     }
 }

@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -353,11 +354,11 @@ class RequestedBookServiceImplTest {
 
         String[] genres = new String[]{"genre1", "genre2"};
 
-        Book book1 = new Book("isbn1", "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
+        Book book1 = new Book("isbn1", getOffice(), "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, genres, new HashSet<>(), new ArrayList<>());
-        Book book2 = new Book("isbn2", "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2",
+        Book book2 = new Book("isbn2", getOffice(), "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2",
                 BookStatus.PENDING_PURCHASE, genres, new HashSet<>(), new ArrayList<>());
-        Book book3 = new Book("isbn3", "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3",
+        Book book3 = new Book("isbn3", getOffice(), "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3",
                 BookStatus.REJECTED, genres, new HashSet<>(), new ArrayList<>());
 
         RequestedBook requestedBook1 = new RequestedBook(requestedBookID1, LocalDate.now(), 3L, book1, new HashSet<>());
@@ -418,8 +419,8 @@ class RequestedBookServiceImplTest {
         UUID id1 = UUID.fromString("123e4567-e89b-12d3-a456-010000000000");
         UUID id2 = UUID.fromString("123e4567-e89b-12d3-a456-020000000000");
 
-        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1");
-        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2");
+        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1", getOffice());
+        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2", getOffice());
 
         return List.of(user1, user2);
     }
@@ -427,5 +428,10 @@ class RequestedBookServiceImplTest {
     private User getUser() {
 
         return getUsers().getFirst();
+    }
+
+    private Office getOffice() {
+
+        return new Office("Skopje kancelarija");
     }
 }

@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.ReviewConverter;
 import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -528,6 +529,7 @@ class ReviewServiceImplTest {
 
         Book book1 = new Book(
                 "isbn1",
+                getOffice(),
                 "title1",
                 "description1",
                 "summary1",
@@ -544,6 +546,7 @@ class ReviewServiceImplTest {
 
         Book book2 = new Book(
                 "isbn2",
+                getOffice(),
                 "title2",
                 "description2",
                 "summary2",
@@ -571,8 +574,8 @@ class ReviewServiceImplTest {
         UUID id1 = UUID.fromString("123e4567-e89b-12d3-a456-010000000000");
         UUID id2 = UUID.fromString("123e4567-e89b-12d3-a456-020000000000");
 
-        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1");
-        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2");
+        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1", getOffice());
+        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2", getOffice());
 
         return List.of(user1, user2);
     }
@@ -580,5 +583,10 @@ class ReviewServiceImplTest {
     private User getUser() {
 
         return getUsers().getFirst();
+    }
+
+    private Office getOffice() {
+
+        return new Office("Skopje kancelarija");
     }
 }

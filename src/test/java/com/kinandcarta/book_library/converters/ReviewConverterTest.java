@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.ReviewDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -78,6 +79,7 @@ class ReviewConverterTest {
 
         Book book1 = new Book(
                 "isbn1",
+                getOffice(),
                 "title1",
                 "description1",
                 "summary1",
@@ -94,6 +96,7 @@ class ReviewConverterTest {
 
         Book book2 = new Book(
                 "isbn2",
+                getOffice(),
                 "title2",
                 "description2",
                 "summary2",
@@ -122,7 +125,8 @@ class ReviewConverterTest {
                 null,
                 "email1",
                 "USER",
-                "password1"
+                "password1",
+                getOffice()
         );
 
         User user2 = new User(
@@ -131,9 +135,15 @@ class ReviewConverterTest {
                 null,
                 "email2",
                 "USER",
-                "password2"
+                "password2",
+                getOffice()
         );
 
         return List.of(user1, user2);
+    }
+
+    private Office getOffice() {
+
+        return new Office("Skopje kancelarija");
     }
 }
