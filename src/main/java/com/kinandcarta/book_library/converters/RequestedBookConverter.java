@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Performs conversion of object from type {@link RequestedBook} to {@link RequestedBookDTO} and vice versa.
+ */
 @Component
 public class RequestedBookConverter {
 

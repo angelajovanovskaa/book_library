@@ -177,13 +177,8 @@ class RequestedBookServiceImplTest {
         then(requestedBookConverter).shouldHaveNoInteractions();
     }
 
-    @Test
-    void saveRequestedBook() {
-
-        //todo: implementation
-
-    }
-
+    //todo: create test for method saveRequestedBook()
+    
     @Test
     @SneakyThrows
     void deleteRequestedBook_requestedBookIsPresent_returnRequestedBookByIdDTO() {
@@ -267,9 +262,7 @@ class RequestedBookServiceImplTest {
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
-    @Test
-    void enterRequestedBookInStock() {
-    }
+    //todo: create test for method enterRequestedBookInStock()
 
     @Test
     @SneakyThrows

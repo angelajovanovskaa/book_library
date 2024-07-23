@@ -9,6 +9,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Performs conversion of object from type {@link Review} to {@link ReviewDTO} and vice versa.
+ */
 @Component
 public class ReviewConverter {
 
