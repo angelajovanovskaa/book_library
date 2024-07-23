@@ -23,22 +23,28 @@ class ReviewConverterTest {
     @Test
     void toReviewDTO() {
 
+        //given
         final Review review = getReview();
         final ReviewDTO reviewDTO = getReviewDTO();
 
+        //when
         final ReviewDTO actualResult = reviewConverter.toReviewDTO(review);
 
+        //then
         assertThat(actualResult).isEqualTo(reviewDTO);
     }
 
     @Test
     void toReview() {
 
+        //given
         final Review review = getReview();
         final ReviewDTO reviewDTO = getReviewDTO();
 
+        //when
         final Review actualResult = reviewConverter.toReview(reviewDTO);
 
+        //then
         assertThat(actualResult).isEqualTo(review);
     }
 

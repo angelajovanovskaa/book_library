@@ -21,11 +21,14 @@ class RequestedBookConverterTest {
     @Test
     void toRequestedBookDTO() {
 
+        //given
         final RequestedBook requestedBook = getRequestedBook();
         final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
 
+        //when
         RequestedBookDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
 
+        //then
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 
