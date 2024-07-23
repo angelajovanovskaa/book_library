@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookItemConverter;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
@@ -12,6 +11,7 @@ import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.BookItemService;
 
+import com.kinandcarta.book_library.utils.BookItemResponseMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Service layer for managing book items in the library.
+ * Class that contains the service logic for managing the book items in the library.
  */
 @RequiredArgsConstructor
 @Service
@@ -43,16 +43,15 @@ public class BookItemServiceImpl implements BookItemService {
     }
 
     /**
-     * Inserts a new book item with the state set to AVAILABLE for the specified book ISBN.
+     * Inserts a new book item with the state set to AVAILABLE for the specified book isbn.
      *
-     * @param isbn The ISBN of the book for which a new item is to be inserted.
+     * @param isbn The isbn of the book for which a new item is to be inserted.
      * @return A DTO representation of the newly inserted book item.
-     * @throws BookNotFoundException If no book with the specified ISBN is found.
+     * @throws BookNotFoundException If no book with the specified isbn is found.
      */
     @Override
     public BookItemDTO insertBookItem(String isbn) {
-        BookId bookId = new BookId(isbn, "Sk");
-        Optional<Book> bookOptional = bookRepository.findById(bookId);
+        Optional<Book> bookOptional = bookRepository.findByIsbn(isbn);
         if (bookOptional.isEmpty()) {
             throw new BookNotFoundException(isbn);
         }
@@ -67,11 +66,11 @@ public class BookItemServiceImpl implements BookItemService {
     }
 
     /**
-     * Deletes a BookItem identified by its ID.
+     * Deletes a BookItem identified by its id.
      *
-     * @param id The ID of the BookItem to delete.
-     * @return The ID of the deleted BookItem.
-     * @throws BookItemNotFoundException If no BookItem exists with the given ID.
+     * @param id The id of the BookItem to delete.
+     * @return The id of the deleted BookItem.
+     * @throws BookItemNotFoundException If no BookItem exists with the given id.
      */
     @Override
     public UUID deleteById(UUID id) {
@@ -83,7 +82,7 @@ public class BookItemServiceImpl implements BookItemService {
     }
 
     /**
-     * This method is used to report a book as damaged after a return.<br>
+     * This method is used to report a book as damaged after a return.
      * All users will have access to this method. Only accessible after a successful return
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
@@ -98,11 +97,11 @@ public class BookItemServiceImpl implements BookItemService {
         bookItem.setBookItemState(BookItemState.DAMAGED);
         bookItemRepository.save(bookItem);
 
-        return "The book item is reported as damaged.";
+        return BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED;
     }
 
     /**
-     * This method is used to report a book as lost.<br>
+     * This method is used to report a book as lost.
      * All users will have access to this method.
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
@@ -117,6 +116,6 @@ public class BookItemServiceImpl implements BookItemService {
         bookItem.setBookItemState(BookItemState.LOST);
         bookItemRepository.save(bookItem);
 
-        return "The book item is reported as lost.";
+        return BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST;
     }
 }

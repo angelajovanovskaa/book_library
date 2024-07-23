@@ -12,8 +12,8 @@ public interface BookService {
     List<BookDTO> getAllBooks();
     BookDTO getBookByIsbn(String isbn);
     List<BookDTO> getBooksByTitle(String title);
-    List<BookDisplayDTO> filterAvailableBooks();
-    List<BookDisplayDTO> filterRequestedBooks();
+    List<BookDisplayDTO> getAvailableBooks();
+    List<BookDisplayDTO> getRequestedBooks();
     List<BookDisplayDTO> getBooksByLanguage(String language);
     List<BookDisplayDTO> getBooksByGenresContaining(String[] genres);
     BookDTO createBookWithAuthors(BookDTO bookDTO);

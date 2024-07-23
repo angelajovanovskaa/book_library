@@ -6,17 +6,23 @@ import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+/**
+ * This class is responsible for providing conversion methods from {@link Book} entity to
+ * Data Transfer Objects and vice versa.
+ */
 @Component
 public class BookConverter {
-
+    /**
+     * Converts a {@link Book} entity to a response DTO
+     *
+     * @param book The {@link Book} entity to convert.
+     * @return a {@link BookDTO}
+     */
     public BookDTO toBookDTO(Book book) {
         return new BookDTO(
                 book.getIsbn(),
@@ -36,6 +42,13 @@ public class BookConverter {
 
     }
 
+    /**
+     * Converts a {@link BookDTO} object into a Book entity.
+     *
+     * @param bookDTO The {@link BookDTO} object containing data to be  mapped to the Book entity.
+     * @param authors The set of {@link Author} entities associated with the book.
+     * @return a new instance of Book entity.
+     */
     public Book toBookEntity(BookDTO bookDTO, Set<Author> authors) {
         Book book = new Book();
 
@@ -54,7 +67,13 @@ public class BookConverter {
         return book;
     }
 
-    public BookDisplayDTO bookDisplayDTO(Book book) {
+    /**
+     * Converts a {@link Book} entity to a display response DTO
+     *
+     * @param book The {@link Book} entity to convert.
+     * @return a {@link BookDisplayDTO}
+     */
+    public BookDisplayDTO toBookDisplayDTO(Book book) {
         return new BookDisplayDTO(
                 book.getIsbn(),
                 book.getTitle(),

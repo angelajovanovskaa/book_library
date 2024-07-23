@@ -54,7 +54,8 @@ public class Book {
     private String[] genres;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_isbn"), inverseJoinColumns =
+    @JoinTable(name = "book_author", joinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")},
+            inverseJoinColumns =
     @JoinColumn(name = "author_id"))
     @ToString.Exclude
     private Set<Author> authors;

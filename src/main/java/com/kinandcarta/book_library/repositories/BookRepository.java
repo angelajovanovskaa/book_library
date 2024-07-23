@@ -45,7 +45,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
 
     List<Book> findBooksByTitleContainingIgnoreCase(String title);
 
-    @Query("SELECT DISTINCT b " +
+    @Query("SELECT b " +
             "FROM Book b " +
             "WHERE b.language = :language")
     List<Book> findByLanguage(@Param("language") String language);

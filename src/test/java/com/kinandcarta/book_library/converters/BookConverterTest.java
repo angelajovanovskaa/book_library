@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class BookConverterTest {
 
-    private final BookConverter bookConverter= new BookConverter();
+    private final BookConverter bookConverter = new BookConverter();
 
     @Test
     void toBookDTO_conversionIsDone_returnsBookDTO() {
@@ -46,11 +46,11 @@ class BookConverterTest {
     }
 
     @Test
-    void bookDisplayDTO_conversionIsDone_returnsBookDisplay() {
+    void bookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
         Book book = getBooks().getFirst();
-        BookDisplayDTO bookDisplayDTO = getBookDisplayDTOS().getFirst();
+        BookDisplayDTO bookDisplayDTO = getToBookDisplayDTOS().getFirst();
 
-        BookDisplayDTO result = bookConverter.bookDisplayDTO(book);
+        BookDisplayDTO result = bookConverter.toBookDisplayDTO(book);
 
         assertThat(result).isEqualTo(bookDisplayDTO);
     }
@@ -187,7 +187,7 @@ class BookConverterTest {
         return List.of(bookDTO1, bookDTO2, bookDTO3);
     }
 
-    private List<BookDisplayDTO> getBookDisplayDTOS() {
+    private List<BookDisplayDTO> getToBookDisplayDTOS() {
         BookDisplayDTO bookDisplayDTO1 = new BookDisplayDTO(
                 "765612382412",
                 "The Doors of Eden",

@@ -63,14 +63,14 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Retrieves books by their title.
+     * Retrieves books with title that contains the provided search term.
      *
-     * @param title Title of the books to find (case-insensitive).
-     * @return List of books matching the title converted to BookDTOs.
+     * @param titleSearchTerm a search term that will be used in searching the books by title
+     * @return List of books matching the titleSearchTerm converted to BookDTOs.
      */
     @Override
-    public List<BookDTO> getBooksByTitle(String title) {
-        List<Book> books = bookRepository.findBooksByTitleContainingIgnoreCase(title);
+    public List<BookDTO> getBooksByTitle(String titleSearchTerm) {
+        List<Book> books = bookRepository.findBooksByTitleContainingIgnoreCase(titleSearchTerm);
 
         return books.stream().map(bookConverter::toBookDTO).toList();
     }
@@ -81,11 +81,11 @@ public class BookServiceImpl implements BookService {
      * @return List of available books converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> filterAvailableBooks() {
+    public List<BookDisplayDTO> getAvailableBooks() {
         List<Book> books = bookRepository.findBooksByStatusAndAvailableItems(BookStatus.IN_STOCK,
                 BookItemState.AVAILABLE);
 
-        return books.stream().map(bookConverter::bookDisplayDTO).toList();
+        return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
 
     /**
@@ -107,7 +107,7 @@ public class BookServiceImpl implements BookService {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Book> bookPage = bookRepository.pagingAvailableBooks(bookStatus, bookItemState, pageRequest);
 
-        return bookPage.map(bookConverter::bookDisplayDTO);
+        return bookPage.map(bookConverter::toBookDisplayDTO);
     }
 
     /**
@@ -116,10 +116,10 @@ public class BookServiceImpl implements BookService {
      * @return List of recommended books converted to BookDisplayDTOs
      */
     @Override
-    public List<BookDisplayDTO> filterRequestedBooks() {
+    public List<BookDisplayDTO> getRequestedBooks() {
         List<Book> books = bookRepository.findBookByBookStatus(BookStatus.REQUESTED);
 
-        return books.stream().map(bookConverter::bookDisplayDTO).toList();
+        return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
 
     /**
@@ -132,7 +132,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDisplayDTO> getBooksByLanguage(String language) {
         List<Book> books = bookRepository.findByLanguage(language);
 
-        return books.stream().map(bookConverter::bookDisplayDTO).toList();
+        return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
 
     /**
@@ -145,7 +145,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDisplayDTO> getBooksByGenresContaining(String[] genres) {
         List<Book> books = bookRepository.findBooksByGenresContaining(genres);
 
-        return books.stream().map(bookConverter::bookDisplayDTO).toList();
+        return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
 
     /**
