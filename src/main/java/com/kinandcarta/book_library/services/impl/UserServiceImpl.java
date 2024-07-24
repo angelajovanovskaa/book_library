@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserResponseDTO getUserProfile(UUID userId) {
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.getReferenceById(userId);
 
         return userConverter.toUserResponseDTO(user);
     }
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userConverter.toUserEntity(userDTO);
 
-        Office office = officeRepository.findById(userDTO.officeName()).orElseThrow();
+        Office office = officeRepository.getReferenceById(userDTO.officeName());
         user.setOffice(office);
 
         byte[] userProfilePicture = getDefaultProfilePicture();
@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String updateUserData(UserUpdateDataRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.getReferenceById(userId);
 
         if (StringUtils.isNotBlank(userDTO.fullName())) {
             user.setFullName(userDTO.fullName());
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if (StringUtils.isNotBlank(userDTO.officeName())) {
-            Office office = officeRepository.findById(userDTO.officeName()).orElseThrow();
+            Office office = officeRepository.getReferenceById(userDTO.officeName());
             user.setOffice(office);
         }
 
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String updateUserRole(UserUpdateRoleRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.getReferenceById(userId);
 
         user.setRole(userDTO.role());
         userRepository.save(user);
@@ -208,7 +208,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public String changeUserPassword(UserChangePasswordRequestDTO userDTO) {
         UUID userId = userDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.getReferenceById(userId);
 
         if (!user.getPassword().equals(userDTO.oldPassword())) {
             throw new IncorrectPasswordException();

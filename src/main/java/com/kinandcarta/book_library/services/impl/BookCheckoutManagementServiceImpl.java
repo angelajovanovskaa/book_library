@@ -65,10 +65,10 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         UUID userId = bookCheckoutDTO.userId();
-        User user = userRepository.findById(userId).orElseThrow();
+        User user = userRepository.getReferenceById(userId);
 
         String officeName = user.getOffice().getName();
-        Office userOffice = officeRepository.findById(officeName).orElseThrow();
+        Office userOffice = officeRepository.getReferenceById(officeName);
 
         Book book = bookItem.getBook();
 
