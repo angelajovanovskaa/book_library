@@ -60,9 +60,9 @@ class BookCheckoutManagementServiceImplTest {
 
         given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
                 List.of(bookCheckouts.get(0), bookCheckouts.get(2), bookCheckouts.get(3)));
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
+        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
 
         // when && then
         assertThatExceptionOfType(LimitReachedForBorrowedBooksException.class)
@@ -79,9 +79,9 @@ class BookCheckoutManagementServiceImplTest {
         UUID bookItemId = bookItem.getId();
         User user = getUsers().getFirst();
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
+        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
@@ -101,9 +101,9 @@ class BookCheckoutManagementServiceImplTest {
 
         given(bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(
                 anyString(), any())).willReturn(bookCheckouts);
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
+        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 
@@ -121,9 +121,9 @@ class BookCheckoutManagementServiceImplTest {
         User user = getUsers().getFirst();
         Office officeSofija = new Office("Sofija");
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(officeSofija));
+        given(officeRepository.getReferenceById(anyString())).willReturn(officeSofija);
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
@@ -159,9 +159,9 @@ class BookCheckoutManagementServiceImplTest {
         User user = getUsers().getFirst();
         BookItem bookItem = getBookItems().get(4);
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
+        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
 

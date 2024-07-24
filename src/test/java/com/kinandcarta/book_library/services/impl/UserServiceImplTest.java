@@ -107,7 +107,7 @@ class UserServiceImplTest {
                 newPassword
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when && then
         assertThatExceptionOfType(IncorrectPasswordException.class)
@@ -161,7 +161,7 @@ class UserServiceImplTest {
 
         UUID userId = UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43");
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(userConverter.toUserResponseDTO(any())).willReturn(userWithoutRoleDTOs);
 
         // when
@@ -184,7 +184,7 @@ class UserServiceImplTest {
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
 
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SKOPJE_OFFICE));
+        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
 
         Resource mockResource = mock(Resource.class);
         given(mockResource.getContentAsByteArray()).willReturn(IMAGE_PATH.getBytes());
@@ -232,7 +232,7 @@ class UserServiceImplTest {
                 byteArray
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
         String result = userService.updateUserData(userDTO);
@@ -252,7 +252,7 @@ class UserServiceImplTest {
                 "USER"
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
         String result = userService.updateUserRole(userDTO);
@@ -287,7 +287,7 @@ class UserServiceImplTest {
                 newPassword
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
         String result = userService.changeUserPassword(userDTO);
