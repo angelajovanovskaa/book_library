@@ -2,12 +2,9 @@ package com.kinandcarta.book_library.validators;
 
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
 class BookStatusTransitionValidatorTest {
 
     private final BookStatusTransitionValidator bookStatusTransitionValidator = new BookStatusTransitionValidator();
