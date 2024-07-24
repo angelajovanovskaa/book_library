@@ -52,7 +52,7 @@ public class BookConverter {
     public Book toBookEntity(BookDTO bookDTO, Set<Author> authors) {
         Book book = new Book();
 
-        book.setIsbn(bookDTO.ISBN());
+        book.setIsbn(bookDTO.isbn());
         book.setTitle(bookDTO.title());
         book.setDescription(bookDTO.description());
         book.setLanguage(bookDTO.language());

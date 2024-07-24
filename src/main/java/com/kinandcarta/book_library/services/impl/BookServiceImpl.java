@@ -41,7 +41,6 @@ public class BookServiceImpl implements BookService {
      *
      * @return A list of all books represented as {@link BookDTO}.
      */
-
     @Override
     public List<BookDTO> getAllBooks() {
         List<Book> books = bookRepository.findAll();
@@ -100,7 +99,7 @@ public class BookServiceImpl implements BookService {
      * If no books are found, an empty Page will be returned.
      */
     @Override
-    public Page<BookDisplayDTO> pagingAvailableBooks(BookStatus bookStatus,
+    public Page<BookDisplayDTO> getPaginatedAvailableBooks(BookStatus bookStatus,
                                                      BookItemState bookItemState,
                                                      int page,
                                                      int size) {
@@ -113,7 +112,7 @@ public class BookServiceImpl implements BookService {
     /**
      * Filters books that are currently requested and converts them into BookDisplayDTO objects.
      *
-     * @return List of recommended books converted to BookDisplayDTOs
+     * @return List of requested books converted to BookDisplayDTOs
      */
     @Override
     public List<BookDisplayDTO> getRequestedBooks() {
@@ -207,6 +206,7 @@ public class BookServiceImpl implements BookService {
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
         bookRepository.save(foundBook);
+
         return bookConverter.toBookDTO(foundBook);
     }
 }

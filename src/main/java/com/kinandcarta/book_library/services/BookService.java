@@ -19,5 +19,6 @@ public interface BookService {
     BookDTO createBookWithAuthors(BookDTO bookDTO);
     String deleteBook(String isbn);
     BookDTO setBookStatusInStock(String isbn);
-    Page<BookDisplayDTO> pagingAvailableBooks(BookStatus bookStatus, BookItemState bookItemState, int page, int size);
+    Page<BookDisplayDTO> getPaginatedAvailableBooks(BookStatus bookStatus, BookItemState bookItemState,
+                                                    int page, int size);
 }

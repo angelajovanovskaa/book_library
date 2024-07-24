@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public record BookDTO(
-        String ISBN,
+        String isbn,
         @NotBlank
         String title,
         @NotBlank
@@ -32,19 +32,19 @@ public record BookDTO(
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookDTO bookDTO = (BookDTO) o;
-        return totalPages == bookDTO.totalPages && Double.compare(ratingFromWeb, bookDTO.ratingFromWeb) == 0 && Double.compare(ratingFromFirm, bookDTO.ratingFromFirm) == 0 && Objects.equals(ISBN, bookDTO.ISBN) && Objects.equals(title, bookDTO.title) && Objects.equals(image, bookDTO.image) && Objects.equals(language, bookDTO.language) && Objects.deepEquals(genres, bookDTO.genres) && Objects.equals(description, bookDTO.description) && bookStatus == bookDTO.bookStatus && Objects.equals(authorDTOS, bookDTO.authorDTOS);
+        return totalPages == bookDTO.totalPages && Double.compare(ratingFromWeb, bookDTO.ratingFromWeb) == 0 && Double.compare(ratingFromFirm, bookDTO.ratingFromFirm) == 0 && Objects.equals(isbn, bookDTO.isbn) && Objects.equals(title, bookDTO.title) && Objects.equals(image, bookDTO.image) && Objects.equals(language, bookDTO.language) && Objects.deepEquals(genres, bookDTO.genres) && Objects.equals(description, bookDTO.description) && bookStatus == bookDTO.bookStatus && Objects.equals(authorDTOS, bookDTO.authorDTOS);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ISBN, title, description, language, Arrays.hashCode(genres), totalPages, bookStatus,
+        return Objects.hash(isbn, title, description, language, Arrays.hashCode(genres), totalPages, bookStatus,
                 image, ratingFromWeb, ratingFromFirm, authorDTOS);
     }
 
     @Override
     public String toString() {
         return "BookDTO{" +
-                "ISBN='" + ISBN + '\'' +
+                "isbn='" + isbn + '\'' +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", language='" + language + '\'' +

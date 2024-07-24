@@ -12,7 +12,6 @@ import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -25,38 +24,46 @@ class BookConverterTest {
 
     @Test
     void toBookDTO_conversionIsDone_returnsBookDTO() {
-        Book book = getBooks().getFirst();
-        BookDTO bookDTO = getBookDTOs().getFirst();
+        //  given
+        Book book = getBook();
+        BookDTO bookDTO = getBookDTO();
 
+        //when
         BookDTO result = bookConverter.toBookDTO(book);
 
+        //then
         assertThat(result).isEqualTo(bookDTO);
     }
 
     @Test
     void toBookEntity_conversionIsDone_returnsBookEntity() {
-        BookDTO bookDTO = getBookDTOs().getFirst();
-        Book book = getBooks().getFirst();
-
+        //  given
+        BookDTO bookDTO = getBookDTO();
+        Book book = getBook();
         Set<Author> authors = book.getAuthors();
 
+        //  when
         Book result = bookConverter.toBookEntity(bookDTO, authors);
 
+        //  then
         assertThat(result).isEqualTo(book);
     }
 
     @Test
     void bookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
-        Book book = getBooks().getFirst();
-        BookDisplayDTO bookDisplayDTO = getToBookDisplayDTOS().getFirst();
+        //  given
+        Book book = getBook();
+        BookDisplayDTO bookDisplayDTO = getToBookDisplayDTO();
 
+        //  when
         BookDisplayDTO result = bookConverter.toBookDisplayDTO(book);
 
+        //  then
         assertThat(result).isEqualTo(bookDisplayDTO);
     }
 
 
-    private List<Book> getBooks() {
+    private Book getBook() {
         String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
 
         Book book1 = new Book();
@@ -65,7 +72,7 @@ class BookConverterTest {
         book1.setDescription("book description");
         book1.setLanguage(Language.ENGLISH.toString());
         book1.setSummary("something");
-        book1.setBookStatus(BookStatus.REQUESTED);
+        book1.setBookStatus(BookStatus.IN_STOCK);
         book1.setTotalPages(120);
         book1.setImage("https://google.com/images");
         book1.setRatingFromFirm(10.0);
@@ -77,134 +84,38 @@ class BookConverterTest {
 
         book1.setAuthors(Set.of(author2));
 
-
-        Book book2 = new Book();
-        book2.setIsbn("9780545414654");
-        book2.setTitle("Mumbai of Us");
-        book2.setDescription("book description");
-        book2.setLanguage(Language.ENGLISH.toString());
-        book2.setSummary("something");
-        book2.setBookStatus(BookStatus.IN_STOCK);
-        book2.setTotalPages(120);
-        book2.setImage("https://google.com/images");
-        book2.setRatingFromFirm(10.0);
-        book2.setGenres(genres);
-
-        Author author1 = new Author();
-        author1.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author1.setFullName("Leah Thomas");
-
-        book2.setAuthors(Set.of(author1));
-
-        Book book3 = new Book();
-        book3.setIsbn("143023240711654");
-        book3.setTitle("Last of us");
-        book3.setDescription("book description");
-        book3.setLanguage(Language.ENGLISH.toString());
-        book3.setSummary("something");
-        book3.setBookStatus(BookStatus.IN_STOCK);
-        book3.setTotalPages(120);
-        book3.setImage("https://google.com/images");
-        book3.setRatingFromFirm(10.0);
-
-        book3.setGenres(genres);
-
-        Author author3 = new Author();
-        author3.setId(UUID.fromString("c909d9e4-9e3a-46e2-b2f9-3b7420a44023"));
-        author3.setFullName("Valery Johnson");
-
-        book3.setAuthors(Set.of(author3));
-
-        List<BookItem> bookItems = new ArrayList<>();
         BookItem bookItem1 = new BookItem();
         bookItem1.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
         bookItem1.setBookItemState(BookItemState.AVAILABLE);
-        bookItem1.setBook(book2);
+        bookItem1.setBook(book1);
 
-        BookItem bookItem2 = new BookItem();
-        bookItem2.setId(UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11"));
-        bookItem2.setBookItemState(BookItemState.BORROWED);
-        bookItem2.setBook(book3);
+        book1.setBookItems(List.of(bookItem1));
 
-        BookItem bookItem3 = new BookItem();
-        bookItem3.setId(UUID.fromString("081284c7-54d3-4660-8974-0640d6f154ab"));
-        bookItem3.setBookItemState(BookItemState.BORROWED);
-        bookItem3.setBook(book3);
-
-        bookItems.add(bookItem1);
-        bookItems.add(bookItem2);
-        bookItems.add(bookItem3);
-
-        book2.setBookItems(bookItems);
-        book3.setBookItems(bookItems);
-
-        return List.of(book1, book2, book3);
+        return book1;
     }
 
-    public List<BookDTO> getBookDTOs() {
+    public BookDTO getBookDTO() {
         String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
 
         AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
 
-        AuthorDTO authorDTO2 = new AuthorDTO("Valery Johnson");
-
-        BookDTO bookDTO1 = new BookDTO(
+        return new BookDTO(
                 "765612382412",
                 "The Doors of Eden",
                 "book description",
                 Language.ENGLISH.toString(), genres,
-                120, BookStatus.REQUESTED,
+                120, BookStatus.IN_STOCK,
                 "https://google.com/images",
                 0.0,
                 10.0, Set.of(authorDTO1));
-
-        BookDTO bookDTO2 = new BookDTO(
-                "9780545414654",
-                "Mumbai of Us",
-                "book description",
-                Language.ENGLISH.toString(),
-                genres,
-                120,
-                BookStatus.IN_STOCK,
-                "https://google.com/images",
-                0.0,
-                10.0,
-                Set.of(authorDTO1));
-
-        BookDTO bookDTO3 = new BookDTO(
-                "143023240711654",
-                "Last of us",
-                "book description",
-                Language.ENGLISH.toString(),
-                genres,
-                120,
-                BookStatus.IN_STOCK,
-                "https://google.com/images",
-                0.0,
-                10.0,
-                Set.of(authorDTO2));
-
-        return List.of(bookDTO1, bookDTO2, bookDTO3);
     }
 
-    private List<BookDisplayDTO> getToBookDisplayDTOS() {
-        BookDisplayDTO bookDisplayDTO1 = new BookDisplayDTO(
+    private BookDisplayDTO getToBookDisplayDTO() {
+
+        return new BookDisplayDTO(
                 "765612382412",
                 "The Doors of Eden",
                 Language.ENGLISH.toString(),
                 "https://google.com/images");
-        BookDisplayDTO bookDisplayDTO2 = new BookDisplayDTO(
-                "9780545414654",
-                "Mumbai of Us",
-                Language.ENGLISH.toString(),
-                "https://google.com/images");
-
-        BookDisplayDTO bookDisplayDTO3 = new BookDisplayDTO(
-                "143023240711654",
-                "Last of us",
-                Language.ENGLISH.toString(),
-                "https://google.com/images");
-
-        return List.of(bookDisplayDTO1, bookDisplayDTO2, bookDisplayDTO3);
     }
 }
