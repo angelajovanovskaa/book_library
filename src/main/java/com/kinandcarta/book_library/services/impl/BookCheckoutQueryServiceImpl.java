@@ -103,7 +103,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all the book checkouts for a given user and book.<br>
      * All users will have access to this method, but to only see their book checkouts.
      *
-     * @param userId              UUID value for the id of the User, cannot be {@code null}
+     * @param userId              UUID for the id of the User, cannot be {@code null}
      * @param bookTitleSearchTerm String value for the Title of the Book, cannot be {@code null}
      * @return A list containing {@link BookCheckoutResponseDTO}
      */
@@ -112,8 +112,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
                                                                             String bookTitleSearchTerm) {
         List<BookCheckout> bookCheckouts =
                 bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
-                        bookTitleSearchTerm,
-                        userId);
+                        bookTitleSearchTerm, userId);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
     }
@@ -164,7 +163,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
                 bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNullOrderByDateBorrowedDesc(officeName);
 
         return bookCheckouts.stream()
-                .filter(x -> isBookCheckoutNearingReturnDate(x.getScheduledReturnDate()))
+                .filter(bookCheckout -> isBookCheckoutNearingReturnDate(bookCheckout.getScheduledReturnDate()))
                 .map(bookCheckoutConverter::toBookCheckoutReturnReminderResponseDTO)
                 .toList();
     }

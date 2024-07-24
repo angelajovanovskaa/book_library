@@ -7,7 +7,6 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
  * Data Transfer Objects and vice versa.
  */
 @Component
-@RequiredArgsConstructor
 public class BookCheckoutConverter {
     /**
      * Converts a {@link BookCheckout} entity to a more detailed response DTO containing user and book item related data.

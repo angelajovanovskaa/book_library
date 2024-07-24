@@ -29,25 +29,25 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+    static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Mock
-    private BookCheckoutRepository bookCheckoutRepository;
+    BookCheckoutRepository bookCheckoutRepository;
 
     @Mock
-    private BookItemRepository bookItemRepository;
+    BookItemRepository bookItemRepository;
 
     @Mock
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Mock
-    private OfficeRepository officeRepository;
+    OfficeRepository officeRepository;
 
     @Mock
-    private BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
+    BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
 
     @InjectMocks
-    private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
+    BookCheckoutManagementServiceImpl bookCheckoutManagementService;
 
     @Test
     void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
@@ -170,6 +170,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE);
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.BORROWED);
     }
 
     @Test
@@ -190,6 +191,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE);
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
     @Test
@@ -210,6 +212,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE);
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
     @Test
@@ -230,6 +233,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE);
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
     private List<BookItem> getBookItems() {

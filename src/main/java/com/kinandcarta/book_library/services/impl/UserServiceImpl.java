@@ -26,6 +26,7 @@ import java.util.UUID;
 /**
  * Implementation of {@link UserService} that manages the registration and login of user.<br>
  * This service includes methods for operations with users account, like updating and deleting users account.
+ * Includes methods for retrieving views of all users and their filtering.
  * Access controls are specified for different operations.
  */
 @Service
@@ -72,10 +73,10 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used to get all the information ofr users profile<br>
+     * This method is used to get all the information for users profile<br>
      * All the users will have access to this method, so they can view their profile.
      *
-     * @param userId the Id of the user that we are trying to get details for.
+     * @param userId UUID for the id of the user that we are trying to get details for.
      * @return {@link UserResponseDTO}
      */
     @Override
@@ -89,8 +90,8 @@ public class UserServiceImpl implements UserService {
      * This method is used for registering a new user<br>
      * All the users will have access to this method.
      *
-     * @param userDTO the DTO will contain fullName, email and password, cannot be {@code null}
-     * @return A message that the user with the given email is successfully created.
+     * @param userDTO the DTO where we have data needed for registering new account, cannot be {@code null}
+     * @return A message for the user that he account is successfully created.
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
@@ -119,8 +120,8 @@ public class UserServiceImpl implements UserService {
      * This method is used for login in the user in the application<br>
      * All the users will have access to this method.
      *
-     * @param userDTO the DTO contains userEmail and Password, cannot be {@code null}
-     * @return A message welcoming the user.
+     * @param userDTO the DTO where we have data needed for login, cannot be {@code null}
+     * @return {@code fullName} of the logged in {@link User}.
      */
     @Override
     public String loginUser(UserLoginRequestDTO userDTO) {
@@ -131,11 +132,13 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used for updating users {@code fullName(name and surname)} and {@code profilePicture}<br>
-     * At least one of the two attributes needs to not be {@code null} so the method can pass.
+     * This method is used for updating {@link User} information<br>
+     * At least one attributes needs to not be {@code null} in the {@link UserUpdateDataRequestDTO}so the method can
+     * pass.
      * All the users have access to this method for their account.
      *
-     * @param userDTO will contain fullName and profilePicture
+     * @param userDTO the DTO where we have data needed for updating the {@link User} information.
+     * @return A message for the user that the update was successful.
      */
     @Override
     @Transactional
@@ -164,8 +167,8 @@ public class UserServiceImpl implements UserService {
      * This method is used for updating users role<br>
      * This method will only be accessible by the admin.
      *
-     * @param userDTO the DTO contains userId and Role, cannot be {@code null}
-     * @return A message that the role for a given user is changed.
+     * @param userDTO the DTO where we have data needed for updating {@link User} role, cannot be {@code null}
+     * @return A message for the user that the role is successfully changed.
      */
     @Override
     @Transactional
@@ -183,7 +186,7 @@ public class UserServiceImpl implements UserService {
      * This method is used to delete the account of an unused user<br>
      * This method will only be accessible by the admin.
      *
-     * @param userId the Id of the user that we are trying to delete.
+     * @param userId UUID for the id of the user that we are trying to delete.
      * @return A message confirming that the delete operation is successful.
      */
     @Override
@@ -198,7 +201,7 @@ public class UserServiceImpl implements UserService {
      * This method is used to change the password for the users account<br>
      * All the users have access to this method for their account.
      *
-     * @param userDTO the DTO contains userId, oldPassword and newPassword cannot be {@code null}
+     * @param userDTO the DTO where we have data needed for changing the {@link User} password, cannot be {@code null}
      * @return A string message confirming that the password has been successfully changed.
      */
     @Override

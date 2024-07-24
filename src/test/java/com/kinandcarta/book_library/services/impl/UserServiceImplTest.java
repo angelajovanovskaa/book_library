@@ -32,23 +32,23 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
-    private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+    static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+    static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Mock
-    private UserRepository userRepository;
+    UserRepository userRepository;
 
     @Mock
-    private UserConverter userConverter;
+    UserConverter userConverter;
 
     @Mock
-    private ResourceLoader resourceLoader;
+    ResourceLoader resourceLoader;
 
     @Mock
-    private OfficeRepository officeRepository;
+    OfficeRepository officeRepository;
 
     @InjectMocks
-    private UserServiceImpl userService;
+    UserServiceImpl userService;
 
     @Test
     void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {
