@@ -35,7 +35,6 @@ public class ReviewConverter {
         String userEmail = user.getEmail();
 
         return new ReviewDTO(id, date, message, rating, bookISBN, userEmail);
-
     }
 
     /**

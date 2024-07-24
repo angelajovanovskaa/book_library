@@ -21,38 +21,13 @@ class RequestedBookConverterTest {
     private final RequestedBookConverter requestedBookConverter = new RequestedBookConverter();
 
     @Test
-    void toRequestedBookDTO() {
+    void toRequestedBookDTO_convertsRequestedBookToRequestedBookDTOActionIsValid_returnsRequestedBookDTO() {
         //given
-        final RequestedBook requestedBook = getRequestedBook();
-        final RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
-
-        //when
-        RequestedBookDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
-
-        //then
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
-    }
-
-    private RequestedBook getRequestedBook() {
-
-        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-
-        Book book = getBook();
-
-        return new RequestedBook(id, LocalDate.now(), 1L, book, new HashSet<>());
-    }
-
-    private Book getBook() {
-
-        return new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
+        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+        final Book book = new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, null, new HashSet<>(), new ArrayList<>());
-    }
-
-    private RequestedBookDTO getRequestedBookDTO() {
-
-        UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-
-        return new RequestedBookDTO(
+        final RequestedBook requestedBook = new RequestedBook(id, LocalDate.now(), 1L, book, new HashSet<>());
+        final RequestedBookDTO requestedBookDTO = new RequestedBookDTO(
                 id,
                 LocalDate.now(),
                 1L,
@@ -60,5 +35,11 @@ class RequestedBookConverterTest {
                 "title1",
                 "image1"
         );
+
+        //when
+        RequestedBookDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
+
+        //then
+        assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 }

@@ -252,7 +252,9 @@ class RequestedBookServiceImplTest {
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
         UUID id = requestedBook.getId();
-        User user = getUser();
+        User user =
+                new User(UUID.fromString("123e4567-e89b-12d3-a456-010000000000"), "fullname1", null, "email1", "USER",
+                        "password1", OFFICE);
         String email = user.getEmail();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
@@ -368,21 +370,5 @@ class RequestedBookServiceImplTest {
     private RequestedBookDTO getRequestedBookDTO() {
 
         return getRequestedBookDTOs().getFirst();
-    }
-
-    private List<User> getUsers() {
-
-        UUID id1 = UUID.fromString("123e4567-e89b-12d3-a456-010000000000");
-        UUID id2 = UUID.fromString("123e4567-e89b-12d3-a456-020000000000");
-
-        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1", OFFICE);
-        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2", OFFICE);
-
-        return List.of(user1, user2);
-    }
-
-    private User getUser() {
-
-        return getUsers().getFirst();
     }
 }
