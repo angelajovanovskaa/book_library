@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
-import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutManagementService;
 import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
@@ -32,7 +31,6 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     private final BookItemRepository bookItemRepository;
     private final UserRepository userRepository;
     private final BookReturnDateCalculatorService bookReturnDateCalculatorService;
-    private final OfficeRepository officeRepository;
 
     /**
      * This method is used to borrow a bookItem from the library.<br>
@@ -47,8 +45,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      * If all constraints are met, the book is borrowed and the {@code dateBorrowed} and {@code scheduledReturnDate}
      * dates are set, also the {@code bookItemState} is set to BORROWED.
      *
-     * @param bookCheckoutDTO The DTO containing userId and bookItemId for the bookItem to be borrowed, cannot be
-     *                        {@code null}.
+     * @param bookCheckoutDTO The DTO containing userId and bookItemId for the bookItem to be borrowed.
      * @return A message indicating that the book was successfully borrowed.
      * @throws BookItemNotFoundException             If the specified bookItemId does not correspond to any book item
      *                                               in the repository.
@@ -67,9 +64,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         UUID userId = bookCheckoutDTO.userId();
         User user = userRepository.getReferenceById(userId);
 
-        String officeName = user.getOffice().getName();
-        Office userOffice = officeRepository.getReferenceById(officeName);
-
+        Office userOffice = user.getOffice();
         Book book = bookItem.getBook();
 
         if (userOffice != book.getOffice()) {
@@ -88,14 +83,15 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
             throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
         }
 
-        LocalDate scheduledReturnDate =
-                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book.getTotalPages());
-
         BookCheckout bookCheckout = new BookCheckout();
         bookCheckout.setUser(user);
         bookCheckout.setBookItem(bookItem);
         bookCheckout.setOffice(userOffice);
         bookCheckout.setDateBorrowed(LocalDate.now());
+
+        LocalDate scheduledReturnDate =
+                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book.getTotalPages());
+
         bookCheckout.setScheduledReturnDate(scheduledReturnDate);
         bookCheckoutRepository.save(bookCheckout);
 
@@ -110,14 +106,12 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      * This method handles the process of returning a book item by marking it as returned in the system
      * and updating its state to AVAILABLE. It also checks if the return was on time or overdue.
      *
-     * @param bookCheckoutDTO The DTO containing userId and bookItemId for the bookItem to be returned, cannot be {@code
-     *                        null}.
+     * @param bookCheckoutDTO The DTO containing userId and bookItemId for the bookItem to be returned.
      * @return A message indicating the status of the book return:
      * <ul>
-     *     <li>If the book return is overdue, it returns a message specifying how many days it is overdue.</li>
-     *     <li>If the book is returned on the scheduled return date, it returns a message indicating this.</li>
-     *     <li>If the book is returned before the scheduled return date, it returns a message indicating this.
-     *     </li>
+     *     <li>If the book return is overdue, it returns a message that the book return is overdue.</li>
+     *     <li>If the book is returned on the same date or before the scheduled return date, it returns a message
+     *     that the book is returned on time</li>
      * </ul>
      * @throws BookItemNotFoundException      If the specified bookItemId does not correspond to any book item in the
      *                                        repository.
@@ -130,12 +124,8 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
-        BookCheckout bookCheckout =
-                bookCheckoutRepository.findByBookItemIdOrderByDateBorrowedDesc(bookItemId)
-                        .stream()
-                        .filter(bookcheckout -> bookcheckout.getDateReturned() == null)
-                        .findFirst()
-                        .orElseThrow(() -> new BookItemIsNotBorrowedException(bookItemId));
+        BookCheckout bookCheckout = bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(bookItemId)
+                .orElseThrow(() -> new BookItemIsNotBorrowedException(bookItemId));
 
         LocalDate dateReturned = LocalDate.now();
         bookCheckout.setDateReturned(dateReturned);
@@ -161,22 +151,15 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     }
 
     private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
-        List<BookCheckout> bookCheckoutsForUserAndBook =
-                bookCheckoutRepository.findByBookItem_Book_IsbnAndUserIdOrderByDateBorrowedDesc(
-                        book.getIsbn(), userId);
-
-        return bookCheckoutsForUserAndBook.stream()
-                .anyMatch(bookCheckout -> bookCheckout.getDateReturned() == null);
+        return bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
+                book.getIsbn(), userId).isPresent();
     }
 
     private String resolveBookCheckoutResponseMessage(LocalDate scheduledReturnDate, LocalDate dateReturned) {
-        if (scheduledReturnDate.isBefore(dateReturned)) {
+        if (scheduledReturnDate.isBefore(dateReturned) || scheduledReturnDate.isEqual(dateReturned)) {
             return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
-        } else if (scheduledReturnDate.isEqual(dateReturned)) {
-            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
         } else {
-            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_BEFORE_SCHEDULE_RESPONSE;
+            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
         }
     }
-
 }

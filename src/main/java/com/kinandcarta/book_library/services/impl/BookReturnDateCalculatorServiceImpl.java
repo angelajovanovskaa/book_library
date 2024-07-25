@@ -10,7 +10,6 @@ import java.time.LocalDate;
  * It contains logic for calculating the anticipated time for reading book and based on that it provides the scheduled
  * return date.
  */
-
 @Service
 public class BookReturnDateCalculatorServiceImpl implements BookReturnDateCalculatorService {
     private static final int AVERAGE_PAGES_READ_PER_DAY = 25;

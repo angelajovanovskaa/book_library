@@ -103,8 +103,8 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all the book checkouts for a given user and book.<br>
      * All users will have access to this method, but to only see their book checkouts.
      *
-     * @param userId              UUID for the id of the User, cannot be {@code null}
-     * @param bookTitleSearchTerm String value for the Title of the Book, cannot be {@code null}
+     * @param userId              UUID for the id of the User.
+     * @param bookTitleSearchTerm String value for the Title of the Book.
      * @return A list containing {@link BookCheckoutResponseDTO}
      */
     @Override
@@ -121,7 +121,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all the book checkouts for a given book by the provided titleSearchTerm.<br>
      * Only admin will have access.
      *
-     * @param titleSearchTerm String value for the Title of the Book, cannot be {@code null}
+     * @param titleSearchTerm String value for the Title of the Book.
      * @param officeName      the name of the office where the user searching belongs.
      * @return A list containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
@@ -140,7 +140,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a list of all the book checkouts for a given user.<br>
      * All users will have access to this method, but to only see their bookCheckouts.
      *
-     * @param userId UUID value for the id of the User, cannot be {@code null}
+     * @param userId UUID value for the id of the User.
      * @return A list containing {@link BookCheckoutResponseDTO}
      */
     @Override

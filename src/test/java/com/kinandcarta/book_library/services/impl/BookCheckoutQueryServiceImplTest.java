@@ -33,16 +33,16 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutQueryServiceImplTest {
-    static final Office SKOPJE_OFFICE = new Office("Skopje");
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Mock
-    BookCheckoutRepository bookCheckoutRepository;
+    private BookCheckoutRepository bookCheckoutRepository;
 
     @Mock
-    BookCheckoutConverter bookCheckoutConverter;
+    private BookCheckoutConverter bookCheckoutConverter;
 
     @InjectMocks
-    BookCheckoutQueryServiceImpl bookCheckoutQueryService;
+    private BookCheckoutQueryServiceImpl bookCheckoutQueryService;
 
     @Test
     void getAllBookCheckoutsPaginated_noBookCheckoutsOnThePage_returnsEmptyPage() {
@@ -277,32 +277,27 @@ class BookCheckoutQueryServiceImplTest {
         return List.of(bookItem1, bookItem2, bookItem3, bookItem4);
     }
 
-    public List<User> getUsers() {
-        User user1 = new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
+    public User getUser() {
+        return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
                 "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
-
-        User user2 = new User(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"), "David Bojkovski", null,
-                "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
-
-        return List.of(user1, user2);
     }
 
     private List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getBookCheckoutWithUserAndBookItemInfoResponseDTOs() {
         List<BookItem> bookItems = getBookItems();
-        List<User> users = getUsers();
+        User user = getUser();
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO1 =
-                new BookCheckoutWithUserAndBookItemInfoResponseDTO(users.get(0).getFullName(), bookItems.get(0).getId(),
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO(user.getFullName(), bookItems.get(0).getId(),
                         bookItems.get(0).getBook().getTitle(), bookItems.get(0).getBook().getIsbn(),
                         LocalDate.now(), null, LocalDate.now().plusDays(14));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO2 =
-                new BookCheckoutWithUserAndBookItemInfoResponseDTO(users.get(0).getFullName(), bookItems.get(1).getId(),
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO(user.getFullName(), bookItems.get(1).getId(),
                         bookItems.get(1).getBook().getTitle(), bookItems.get(1).getBook().getIsbn(), LocalDate.now(),
                         LocalDate.now().plusDays(5), LocalDate.now().plusDays(14));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO3 =
-                new BookCheckoutWithUserAndBookItemInfoResponseDTO(users.get(0).getFullName(), bookItems.get(2).getId(),
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO(user.getFullName(), bookItems.get(2).getId(),
                         bookItems.get(2).getBook().getTitle(), bookItems.get(2).getBook().getIsbn(), LocalDate.now(),
                         null, LocalDate.now().plusDays(2));
 
@@ -329,19 +324,19 @@ class BookCheckoutQueryServiceImplTest {
 
     private List<BookCheckout> getBookCheckouts() {
         List<BookItem> bookItems = getBookItems();
-        List<User> users = getUsers();
+        User user = getUser();
 
         BookCheckout bookCheckout1 =
-                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), users.get(0),
+                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user,
                         bookItems.get(0), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout2 =
-                new BookCheckout(UUID.fromString("84b341db-23d9-4fe5-90d2-fd216376e3d1"), users.get(0),
+                new BookCheckout(UUID.fromString("84b341db-23d9-4fe5-90d2-fd216376e3d1"), user,
                         bookItems.get(1), SKOPJE_OFFICE, LocalDate.now(), LocalDate.now().plusDays(5),
                         LocalDate.now().plusDays(14));
 
         BookCheckout bookCheckout3 =
-                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), users.get(0),
+                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), user,
                         bookItems.get(2), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(2));
 
 
@@ -350,18 +345,18 @@ class BookCheckoutQueryServiceImplTest {
 
     private List<BookCheckoutReturnReminderResponseDTO> getBookCheckoutReturnReminderResponseDTOs() {
         List<BookItem> bookItems = getBookItems();
-        List<User> users = getUsers();
+        User user = getUser();
 
         BookCheckoutReturnReminderResponseDTO bookCheckoutDTO1 =
-                new BookCheckoutReturnReminderResponseDTO(users.get(0).getId(), bookItems.get(0).getBook().getTitle(),
+                new BookCheckoutReturnReminderResponseDTO(user.getId(), bookItems.get(0).getBook().getTitle(),
                         LocalDate.now().plusDays(14));
 
         BookCheckoutReturnReminderResponseDTO bookCheckoutDTO2 =
-                new BookCheckoutReturnReminderResponseDTO(users.get(1).getId(), bookItems.get(1).getBook().getTitle(),
+                new BookCheckoutReturnReminderResponseDTO(user.getId(), bookItems.get(1).getBook().getTitle(),
                         LocalDate.now().plusDays(14));
 
         BookCheckoutReturnReminderResponseDTO bookCheckoutDTO3 =
-                new BookCheckoutReturnReminderResponseDTO(users.get(0).getId(), bookItems.get(2).getBook().getTitle(),
+                new BookCheckoutReturnReminderResponseDTO(user.getId(), bookItems.get(2).getBook().getTitle(),
                         LocalDate.now().plusDays(2));
 
         return List.of(bookCheckoutDTO1, bookCheckoutDTO2, bookCheckoutDTO3);

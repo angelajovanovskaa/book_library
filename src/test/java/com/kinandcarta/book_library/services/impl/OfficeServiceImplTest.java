@@ -17,10 +17,10 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OfficeServiceImplTest {
     @Mock
-    OfficeRepository officeRepository;
+    private OfficeRepository officeRepository;
 
     @InjectMocks
-    OfficeServiceImpl officeService;
+    private OfficeServiceImpl officeService;
 
     @Test
     void getAllOffices_theListHasAtLeastOne_returnsListOfOfficeResponseDTO() {

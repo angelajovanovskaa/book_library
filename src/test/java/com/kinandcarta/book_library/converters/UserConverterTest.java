@@ -12,9 +12,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserConverterTest {
-    static final Office SKOPJE_OFFICE = new Office("Skopje");
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
-    final UserConverter userConverter = new UserConverter();
+    private final UserConverter userConverter = new UserConverter();
 
     @Test
     void toUserWithRoleDTO_conversionIsDone_returnsUserWithRoleDTO() {

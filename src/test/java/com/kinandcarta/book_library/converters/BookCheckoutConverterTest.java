@@ -18,9 +18,9 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookCheckoutConverterTest {
-    static final Office SKOPJE_OFFICE = new Office("Skopje");
+    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
-    final BookCheckoutConverter bookCheckoutConverter = new BookCheckoutConverter();
+    private final BookCheckoutConverter bookCheckoutConverter = new BookCheckoutConverter();
 
     @Test
     void toBookCheckoutWithUserAndBookItemInfoResponseDTO_conversionIsDone_returnsBookCheckoutWithUserAndBookItemInfoResponseDTO() {

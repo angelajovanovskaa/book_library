@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
      * @param officeName         the name of the office where the user searching belongs.
-     * @param fullNameSearchTerm String value for the fullName of User, cannot be {@code null}
+     * @param fullNameSearchTerm String value for the fullName of User.
      * @return A list of {@link UserWithRoleFieldResponseDTO}
      */
     @Override
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
      * This method is used for registering a new user<br>
      * All the users will have access to this method.
      *
-     * @param userDTO the DTO where we have data needed for registering new account, cannot be {@code null}
+     * @param userDTO the DTO where we have data needed for registering new account.
      * @return A message for the user that he account is successfully created.
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
      * This method is used for login in the user in the application<br>
      * All the users will have access to this method.
      *
-     * @param userDTO the DTO where we have data needed for login, cannot be {@code null}
+     * @param userDTO the DTO where we have data needed for login.
      * @return {@code fullName} of the logged in {@link User}.
      */
     @Override
@@ -167,7 +167,7 @@ public class UserServiceImpl implements UserService {
      * This method is used for updating users role<br>
      * This method will only be accessible by the admin.
      *
-     * @param userDTO the DTO where we have data needed for updating {@link User} role, cannot be {@code null}
+     * @param userDTO the DTO where we have data needed for updating {@link User} role.
      * @return A message for the user that the role is successfully changed.
      */
     @Override
@@ -201,7 +201,7 @@ public class UserServiceImpl implements UserService {
      * This method is used to change the password for the users account<br>
      * All the users have access to this method for their account.
      *
-     * @param userDTO the DTO where we have data needed for changing the {@link User} password, cannot be {@code null}
+     * @param userDTO the DTO where we have data needed for changing the {@link User} password.
      * @return A string message confirming that the password has been successfully changed.
      */
     @Override
