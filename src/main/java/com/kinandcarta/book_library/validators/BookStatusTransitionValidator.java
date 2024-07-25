@@ -31,7 +31,6 @@ public final class BookStatusTransitionValidator {
      * @return true if the transition is valid, false otherwise
      */
     public boolean isValid(BookStatus currentBookStatus, BookStatus newBookStatus) {
-
         List<BookStatus> allowedStatuses = VALID_STATUS_TRANSITIONS.get(currentBookStatus);
 
         if (CollectionUtils.isEmpty(allowedStatuses)) {

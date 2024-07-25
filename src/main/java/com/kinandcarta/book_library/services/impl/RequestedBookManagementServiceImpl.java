@@ -155,7 +155,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
             likedByUsers.add(user);
             requestedBook.increaseLikeCounter();
         }
-
         requestedBookRepository.save(requestedBook);
 
         return requestedBookConverter.toRequestedBookDTO(requestedBook);

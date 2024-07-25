@@ -156,60 +156,53 @@ class RequestedBookQueryServiceImplTest {
         then(requestedBookConverter).shouldHaveNoInteractions();
     }
 
-    private List<Book> getBooks() {
-        String[] genres = new String[0];
-
-        Book book1 = new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
-                BookStatus.REQUESTED, genres, new HashSet<>(), new ArrayList<>());
-        Book book2 = new Book("isbn2", OFFICE, "title2", "description2", "summary2", 0, "MK", 0.0, 0.0, "image2",
-                BookStatus.PENDING_PURCHASE, genres, new HashSet<>(), new ArrayList<>());
-        Book book3 = new Book("isbn3", OFFICE, "title3", "description3", "summary3", 0, "MK", 0.0, 0.0, "image3",
-                BookStatus.REJECTED, genres, new HashSet<>(), new ArrayList<>());
-
-        return List.of(book1, book2, book3);
-    }
-
     private List<RequestedBook> getRequestedBooks() {
-        UUID requestedBookID1 = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-        UUID requestedBookID2 = UUID.fromString("123e4567-e89b-12d3-a456-200000000000");
-        UUID requestedBookID3 = UUID.fromString("123e4567-e89b-12d3-a456-300000000000");
-
-        RequestedBook requestedBook1 = new RequestedBook(requestedBookID1, LocalDate.now(), 3L, getBooks().getFirst(),
-                new HashSet<>());
-        RequestedBook requestedBook2 =
-                new RequestedBook(requestedBookID2, LocalDate.now(), 2L, getBooks().getFirst(), new HashSet<>());
-        RequestedBook requestedBook3 = new RequestedBook(requestedBookID3, LocalDate.now(), 1L, getBooks().getLast(),
-                new HashSet<>());
+        RequestedBook requestedBook1 = new RequestedBook(
+                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
+                LocalDate.now(),
+                1L,
+                null,
+                new HashSet<>()
+        );
+        RequestedBook requestedBook2 = new RequestedBook(
+                UUID.fromString("123e4567-e89b-12d3-a456-200000000000"),
+                LocalDate.now(),
+                2L,
+                null,
+                new HashSet<>()
+        );
+        RequestedBook requestedBook3 = new RequestedBook(
+                UUID.fromString("123e4567-e89b-12d3-a456-300000000000"),
+                LocalDate.now(),
+                3L,
+                null,
+                new HashSet<>()
+        );
 
         return List.of(requestedBook1, requestedBook2, requestedBook3);
     }
 
 
     private List<RequestedBookDTO> getRequestedBookDTOs() {
-        UUID RequestedBookID1 = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-        UUID RequestedBookID2 = UUID.fromString("123e4567-e89b-12d3-a456-200000000000");
-        UUID RequestedBookID3 = UUID.fromString("123e4567-e89b-12d3-a456-300000000000");
-
         RequestedBookDTO requestedBookDTO1 = new RequestedBookDTO(
-                RequestedBookID1,
+                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 1L,
                 "isbn1",
                 "title1",
                 "image1"
         );
-
         RequestedBookDTO requestedBookDTO2 = new RequestedBookDTO(
-                RequestedBookID2,
+                UUID.fromString("123e4567-e89b-12d3-a456-2" +
+                        "00000000000"),
                 LocalDate.now(),
                 3L,
                 "isbn2",
                 "title2",
                 "image2"
         );
-
         RequestedBookDTO requestedBookDTO3 = new RequestedBookDTO(
-                RequestedBookID3,
+                UUID.fromString("123e4567-e89b-12d3-a456-300000000000"),
                 LocalDate.now(),
                 1L,
                 "isbn3",
@@ -221,12 +214,10 @@ class RequestedBookQueryServiceImplTest {
     }
 
     private RequestedBook getRequestedBook() {
-
         return getRequestedBooks().getFirst();
     }
 
     private RequestedBookDTO getRequestedBookDTO() {
-
         return getRequestedBookDTOs().getFirst();
     }
 }

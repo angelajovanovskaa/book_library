@@ -46,7 +46,8 @@ class ReviewQueryServiceImplTest {
         List<ReviewResponseDTO> reviewResponseDTOS = getReviewResponseDTOs();
 
         given(reviewRepository.findAll()).willReturn(reviews);
-        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOS.get(0), reviewResponseDTOS.get(1),
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOS.get(0),
+                reviewResponseDTOS.get(1),
                 reviewResponseDTOS.get(2));
 
         // when
@@ -106,7 +107,8 @@ class ReviewQueryServiceImplTest {
                 getReviewResponseDTOs().stream().filter(obj -> obj.bookISBN().equals(isbn)).toList();
 
         given(reviewRepository.findAllByBookIsbn(isbn)).willReturn(reviews);
-        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOS.get(0), reviewResponseDTOS.get(1));
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOS.get(0),
+                reviewResponseDTOS.get(1));
 
         // when
         List<ReviewResponseDTO> actualResult = reviewQueryService.getAllReviewsByBookIsbn(isbn);
@@ -126,7 +128,8 @@ class ReviewQueryServiceImplTest {
         List<ReviewResponseDTO> reviewDTOs = getReviewResponseDTOs();
 
         given(reviewRepository.findTop3ByBookIsbnOrderByRatingDesc(isbn)).willReturn(reviews);
-        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewDTOs.get(0), reviewDTOs.get(1), reviewDTOs.get(2));
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewDTOs.get(0), reviewDTOs.get(1),
+                reviewDTOs.get(2));
 
         // when
         List<ReviewResponseDTO> actualResult = reviewQueryService.getTopReviewsForDisplayInBookView(isbn);
@@ -139,8 +142,6 @@ class ReviewQueryServiceImplTest {
     }
 
     private List<Book> getBooks() {
-        String[] genres = new String[]{"genre1", "genre2"};
-
         Book book1 = new Book(
                 "isbn1",
                 OFFICE,
@@ -153,11 +154,10 @@ class ReviewQueryServiceImplTest {
                 0.0,
                 "image1",
                 BookStatus.REQUESTED,
-                genres,
+                new String[0],
                 new HashSet<>(),
                 new ArrayList<>()
         );
-
         Book book2 = new Book(
                 "isbn2",
                 OFFICE,
@@ -170,7 +170,7 @@ class ReviewQueryServiceImplTest {
                 0.0,
                 "image2",
                 BookStatus.REQUESTED,
-                genres,
+                new String[0],
                 new HashSet<>(),
                 new ArrayList<>()
         );
@@ -183,11 +183,24 @@ class ReviewQueryServiceImplTest {
     }
 
     private List<User> getUsers() {
-        UUID id1 = UUID.fromString("123e4567-e89b-12d3-a456-010000000000");
-        UUID id2 = UUID.fromString("123e4567-e89b-12d3-a456-020000000000");
-
-        User user1 = new User(id1, "fullname1", null, "email1", "USER", "password1", OFFICE);
-        User user2 = new User(id2, "fullname2", null, "email2", "USER", "password2", OFFICE);
+        User user1 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-010000000000"),
+                "fullname1",
+                null,
+                "email1",
+                "USER",
+                "password1",
+                OFFICE
+        );
+        User user2 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-020000000000"),
+                "fullname2",
+                null,
+                "email2",
+                "USER",
+                "password2",
+                OFFICE
+        );
 
         return List.of(user1, user2);
     }
@@ -197,30 +210,24 @@ class ReviewQueryServiceImplTest {
     }
 
     private List<Review> getReviews() {
-        UUID reviewId1 = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-        UUID reviewId2 = UUID.fromString("123e4567-e89b-12d3-a456-200000000000");
-        UUID reviewId3 = UUID.fromString("123e4567-e89b-12d3-a456-300000000000");
-
         Review review1 = new Review(
-                reviewId1,
+                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 "message1",
                 1,
                 getBook(),
                 getUser()
         );
-
         Review review2 = new Review(
-                reviewId2,
+                UUID.fromString("123e4567-e89b-12d3-a456-200000000000"),
                 LocalDate.now(),
                 "message2",
                 2,
                 getBook(),
                 getUser()
         );
-
         Review review3 = new Review(
-                reviewId3,
+                UUID.fromString("123e4567-e89b-12d3-a456-300000000000"),
                 LocalDate.now(),
                 "message3",
                 3,
@@ -240,7 +247,6 @@ class ReviewQueryServiceImplTest {
                 1
 
         );
-
         ReviewResponseDTO review2 = new ReviewResponseDTO(
                 getBook().getIsbn(),
                 getUser().getEmail(),
@@ -249,7 +255,6 @@ class ReviewQueryServiceImplTest {
                 2
 
         );
-
         ReviewResponseDTO review3 = new ReviewResponseDTO(
                 getBooks().getLast().getIsbn(),
                 getUser().getEmail(),
