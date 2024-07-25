@@ -9,19 +9,20 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 /**
- * Performs conversion of object from type {@link RequestedBook} to {@link RequestedBookDTO} and vice versa.
+ * <ul>
+ *     <li>Performs conversion of object from type {@link RequestedBook} to {@link RequestedBookDTO}.</li>
+ * </ul>
  */
 @Component
 public class RequestedBookConverter {
 
     /**
-     * Converts a {@link RequestedBook} entity to a {@link RequestedBookDTO} object.
+     * Converts a {@link RequestedBook} entity to a {@link RequestedBookDTO} entity.
      *
-     * @param requestedBook The {@link RequestedBook} entity to convert
-     * @return a {@link RequestedBookDTO}
+     * @param requestedBook {@link RequestedBook} entity to convert
+     * @return {@link RequestedBookDTO} converted entity
      */
     public RequestedBookDTO toRequestedBookDTO(RequestedBook requestedBook) {
-
         UUID id = requestedBook.getId();
         LocalDate requestedDate = requestedBook.getRequestedDate();
         Long likeCounter = requestedBook.getLikeCounter();
@@ -30,7 +31,6 @@ public class RequestedBookConverter {
         String bookISBN = book.getIsbn();
         String title = book.getTitle();
         String image = book.getImage();
-
 
         return new RequestedBookDTO(id, requestedDate, likeCounter, bookISBN, title, image);
     }

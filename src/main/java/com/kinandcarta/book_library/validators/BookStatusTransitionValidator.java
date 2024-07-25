@@ -15,11 +15,12 @@ import static java.util.Map.entry;
  */
 @Component
 public final class BookStatusTransitionValidator {
-
     private static final Map<BookStatus, List<BookStatus>> VALID_STATUS_TRANSITIONS = Map.ofEntries(
             entry(BookStatus.REQUESTED, List.of(BookStatus.REJECTED, BookStatus.PENDING_PURCHASE)),
             entry(BookStatus.REJECTED, List.of(BookStatus.PENDING_PURCHASE)),
-            entry(BookStatus.PENDING_PURCHASE, List.of(BookStatus.REJECTED, BookStatus.IN_STOCK))
+            entry(BookStatus.PENDING_PURCHASE, List.of(BookStatus.REJECTED, BookStatus.IN_STOCK)),
+            entry(BookStatus.IN_STOCK, List.of(BookStatus.CURRENTLY_UNAVAILABLE)),
+            entry(BookStatus.CURRENTLY_UNAVAILABLE, List.of(BookStatus.IN_STOCK))
     );
 
     /**

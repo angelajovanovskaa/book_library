@@ -11,105 +11,105 @@ class BookStatusTransitionValidatorTest {
 
     @Test
     void isValid_changeBookStatusFromRequestedToPendingPurchase_returnsTrue() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.REQUESTED;
         final BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(true);
+        // then
+        assertThat(actualResult).isTrue();
     }
 
     @Test
     void isValid_changeBookStatusFromRequestedToRejected_returnsTrue() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.REQUESTED;
         final BookStatus newBookStatus = BookStatus.REJECTED;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(true);
+        // then
+        assertThat(actualResult).isTrue();
     }
 
     @Test
     void isValid_changeBookStatusFromRequestedToInStock_returnsFalse() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.REQUESTED;
         final BookStatus newBookStatus = BookStatus.IN_STOCK;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(false);
+        // then
+        assertThat(actualResult).isFalse();
     }
 
     @Test
     void isValid_changeBookStatusFromRejectedToPendingPurchase_returnsTrue() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.REJECTED;
         final BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(true);
+        // then
+        assertThat(actualResult).isTrue();
     }
 
     @Test
     void isValid_changeBookStatusFromRejectedToInStock_returnsFalse() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.REJECTED;
         final BookStatus newBookStatus = BookStatus.IN_STOCK;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(false);
+        // then
+        assertThat(actualResult).isFalse();
     }
 
     @Test
     void isValid_changeBookStatusFromPendingPurchaseToRejected_returnsTrue() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.PENDING_PURCHASE;
         final BookStatus newBookStatus = BookStatus.REJECTED;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(true);
+        // then
+        assertThat(actualResult).isTrue();
     }
 
     @Test
     void isValid_changeBookStatusFromPendingPurchaseToInStock_returnsTrue() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.PENDING_PURCHASE;
         final BookStatus newBookStatus = BookStatus.IN_STOCK;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(true);
+        // then
+        assertThat(actualResult).isTrue();
     }
 
     @Test
     void isValid_changeBookStatusFromPendingPurchaseToRequested_returnsFalse() {
-        //given
+        // given
         final BookStatus currentBookStatus = BookStatus.PENDING_PURCHASE;
         final BookStatus newBookStatus = BookStatus.REQUESTED;
 
-        //when
+        // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
-        //then
-        assertThat(actualResult).isEqualTo(false);
+        // then
+        assertThat(actualResult).isFalse();
     }
 }

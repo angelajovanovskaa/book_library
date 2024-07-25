@@ -13,13 +13,13 @@ class BookAverageRatingCalculatorImplTest {
 
     @Test
     void getAverageRatingOnBook_methodIsValid_returnsDouble() {
-        //given
+        // given
         List<Integer> reviews = List.of(1, 2, 3);
 
-        //when
+        // when
         final double actualResult = calculateAverageRatingOnBookImpl.getAverageRatingOnBook(reviews);
 
-        //then
+        // then
         assertThat(actualResult).isEqualTo(2);
     }
 }

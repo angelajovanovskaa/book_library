@@ -52,19 +52,14 @@ public class Review {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
-
         if (o == null || getClass() != o.getClass()) return false;
-
         Review review = (Review) o;
-
         return Objects.equals(id, review.id);
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hashCode(id);
     }
 }

@@ -15,14 +15,13 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RequestedBookConverterTest {
-
     private final static Office OFFICE = new Office("Skopje kancelarija");
 
     private final RequestedBookConverter requestedBookConverter = new RequestedBookConverter();
 
     @Test
     void toRequestedBookDTO_convertsRequestedBookToRequestedBookDTOActionIsValid_returnsRequestedBookDTO() {
-        //given
+        // given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         final Book book = new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
                 BookStatus.REQUESTED, null, new HashSet<>(), new ArrayList<>());
@@ -36,10 +35,10 @@ class RequestedBookConverterTest {
                 "image1"
         );
 
-        //when
+        // when
         RequestedBookDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
 
-        //then
+        // then
         assertThat(actualResult).isEqualTo(requestedBookDTO);
     }
 }

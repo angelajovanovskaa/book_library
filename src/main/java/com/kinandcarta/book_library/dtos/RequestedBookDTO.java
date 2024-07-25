@@ -21,17 +21,13 @@ public record RequestedBookDTO(
 
     @Override
     public boolean equals(Object obj) {
-
         if (this == obj) {
             return true;
         }
-
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-
         RequestedBookDTO that = (RequestedBookDTO) obj;
-
         return Objects.equals(id, that.id) &&
                 Objects.equals(requestedDate, that.requestedDate) &&
                 Objects.equals(likeCounter, that.likeCounter) &&
@@ -47,7 +43,6 @@ public record RequestedBookDTO(
 
     @Override
     public String toString() {
-
         return "RequestedBookDTO(" +
                 "id=" + id +
                 ", requestedDate=" + requestedDate +
