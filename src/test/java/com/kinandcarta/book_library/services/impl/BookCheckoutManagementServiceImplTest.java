@@ -4,7 +4,6 @@ import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.entities.*;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
@@ -28,6 +27,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
+    private static final LocalDate DATE_NOW = LocalDate.now();
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
     private static final Office SOFIJA_OFFICE = new Office("Sofija");
 
@@ -93,7 +93,7 @@ class BookCheckoutManagementServiceImplTest {
         List<BookCheckout> bookCheckouts = getBookCheckouts();
         User user = getUser();
         BookItem bookItem = getBookItems().get(1);
-        Book book = bookItem.getBook();
+        Book book = getBooks().get(1);
 
         given(bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
                 anyString(), any())).willReturn(Optional.of(bookCheckouts.getFirst()));
@@ -185,7 +185,6 @@ class BookCheckoutManagementServiceImplTest {
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
-
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOnTime() {
         // given
@@ -207,53 +206,55 @@ class BookCheckoutManagementServiceImplTest {
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
-    private List<BookItem> getBookItems() {
-        String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
-
+    private List<Book> getBooks(){
         Book book1 =
                 new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
-                        genres, new HashSet<>(), new ArrayList<>());
+                        new String[5], new HashSet<>(), new ArrayList<>());
 
         Book book2 =
                 new Book("2222", SKOPJE_OFFICE, "Homo sapiens11", "book description", "some summary", 555,
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres, new HashSet<>(), new ArrayList<>());
+                        new String[5], new HashSet<>(), new ArrayList<>());
 
         Book book3 =
                 new Book("4444", SOFIJA_OFFICE, "Spiderman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres, new HashSet<>(), new ArrayList<>());
+                        new String[5], new HashSet<>(), new ArrayList<>());
 
-        BookItem bookItem1 =
-                new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.AVAILABLE, book1);
+        return List.of(book1, book2, book3);
+    }
 
-        BookItem bookItem2 =
-                new BookItem(UUID.fromString("93dc9a03-aa8f-45b2-80a4-8355fd98fd04"), BookItemState.AVAILABLE, book2);
+    private List<BookItem> getBookItems() {
+        BookItem bookItem1 = new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"),
+                BookItemState.AVAILABLE, getBooks().getFirst());
 
-        BookItem bookItem3 =
-                new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"), BookItemState.AVAILABLE, book3);
+        BookItem bookItem2 = new BookItem(UUID.fromString("93dc9a03-aa8f-45b2-80a4-8355fd98fd04"),
+                BookItemState.AVAILABLE, getBooks().get(1));
+
+        BookItem bookItem3 = new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"),
+                BookItemState.AVAILABLE, getBooks().getLast());
 
         return List.of(bookItem1, bookItem2, bookItem3);
     }
 
-    public User getUser() {
+    private User getUser() {
         return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
                 "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
     }
 
     private List<BookCheckout> getBookCheckouts() {
-        List<BookItem> bookItems = getBookItems();
         User user = getUser();
-        LocalDate date = LocalDate.now();
 
+        BookItem bookItem1 = getBookItems().getFirst();
         BookCheckout bookCheckout1 =
-                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user,
-                        bookItems.get(0), SKOPJE_OFFICE, date, null, date.minusDays(5));
+                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem1,
+                        SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.minusDays(5));
 
+        BookItem bookItem2 = getBookItems().get(1);
         BookCheckout bookCheckout3 =
-                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), user,
-                        bookItems.get(2), SKOPJE_OFFICE, date, null, date.plusDays(14));
+                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), user, bookItem2,
+                        SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
 
         return List.of(bookCheckout1, bookCheckout3);
     }
