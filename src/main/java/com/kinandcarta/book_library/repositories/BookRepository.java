@@ -1,12 +1,13 @@
 package com.kinandcarta.book_library.repositories;
 
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.kinandcarta.book_library.entities.keys.BookId;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -53,7 +54,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
 
     @Query(value = "SELECT * FROM book WHERE genres @> ARRAY[:genres]::text[]", nativeQuery = true)
     List<Book> findBooksByGenresContaining(@Param("genres") String[] genres);
-}
+
     void deleteByIsbn(String isbn);
 
     @Modifying
