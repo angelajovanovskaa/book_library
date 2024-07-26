@@ -54,37 +54,37 @@ class RequestedBookManagementServiceImplTest {
     private RequestedBookManagementServiceImpl requestedBookManagementService;
 
     @Test
-    void deleteRequestedBookById_requestedBookIsPresent_returnRequestedBookDTO() {
+    void deleteRequestedBookById_requestedBookDeleteValid_returnUUI() {
         // given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
+        final String isbn = "isbn1";
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
 
-        given(requestedBookRepository.existsById(any())).willReturn(true);
+        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
 
         // when
         final UUID actualResult = requestedBookManagementService.deleteRequestedBookById(id);
 
         // then
-        verify(requestedBookRepository).existsById(id);
-        verify(requestedBookRepository).deleteById(id);
+        verify(bookRepository).deleteByIsbn(isbn);
 
         assertThat(actualResult).isEqualTo(id);
     }
 
     @Test
-    void deleteRequestedBookById_requestedBookIsNotPresent_throwsException() {
+    void deleteRequestedBookById_requestedBookWithIdNotFound_throwsException() {
         // given
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
 
-        given(requestedBookRepository.existsById(any())).willReturn(false);
+        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
-        verify(requestedBookRepository, times(0)).existsById(id);
-
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookById(id))
                 .withMessage("RequestedBook with id " + id + " not found");
 
-        then(requestedBookConverter).shouldHaveNoInteractions();
+        then(bookRepository).shouldHaveNoInteractions();
     }
 
     @Test
