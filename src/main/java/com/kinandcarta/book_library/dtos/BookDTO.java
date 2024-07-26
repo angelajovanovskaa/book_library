@@ -32,7 +32,12 @@ public record BookDTO(
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookDTO bookDTO = (BookDTO) o;
-        return totalPages == bookDTO.totalPages && Double.compare(ratingFromWeb, bookDTO.ratingFromWeb) == 0 && Double.compare(ratingFromFirm, bookDTO.ratingFromFirm) == 0 && Objects.equals(isbn, bookDTO.isbn) && Objects.equals(title, bookDTO.title) && Objects.equals(image, bookDTO.image) && Objects.equals(language, bookDTO.language) && Objects.deepEquals(genres, bookDTO.genres) && Objects.equals(description, bookDTO.description) && bookStatus == bookDTO.bookStatus && Objects.equals(authorDTOS, bookDTO.authorDTOS);
+        return totalPages == bookDTO.totalPages && Double.compare(ratingFromWeb, bookDTO.ratingFromWeb) == 0
+                && Double.compare(ratingFromFirm, bookDTO.ratingFromFirm) == 0 && Objects.equals(isbn, bookDTO.isbn)
+                && Objects.equals(title, bookDTO.title) && Objects.equals(image, bookDTO.image)
+                && Objects.equals(language, bookDTO.language) && Objects.deepEquals(genres, bookDTO.genres)
+                && Objects.equals(description, bookDTO.description) && bookStatus == bookDTO.bookStatus
+                && Objects.equals(authorDTOS, bookDTO.authorDTOS);
     }
 
     @Override

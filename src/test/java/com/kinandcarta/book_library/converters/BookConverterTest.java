@@ -28,10 +28,10 @@ class BookConverterTest {
         Book book = getBook();
         BookDTO bookDTO = getBookDTO();
 
-        //when
+        //  when
         BookDTO result = bookConverter.toBookDTO(book);
 
-        //then
+        //  then
         assertThat(result).isEqualTo(bookDTO);
     }
 
@@ -62,42 +62,41 @@ class BookConverterTest {
         assertThat(result).isEqualTo(bookDisplayDTO);
     }
 
-
     private Book getBook() {
         String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
 
-        Book book1 = new Book();
-        book1.setIsbn("765612382412");
-        book1.setTitle("The Doors of Eden");
-        book1.setDescription("book description");
-        book1.setLanguage(Language.ENGLISH.toString());
-        book1.setSummary("something");
-        book1.setBookStatus(BookStatus.IN_STOCK);
-        book1.setTotalPages(120);
-        book1.setImage("https://google.com/images");
-        book1.setRatingFromFirm(10.0);
-        book1.setGenres(genres);
+        Book book = new Book();
+        book.setIsbn("765612382412");
+        book.setTitle("The Doors of Eden");
+        book.setDescription("book description");
+        book.setLanguage(Language.ENGLISH.toString());
+        book.setSummary("something");
+        book.setBookStatus(BookStatus.IN_STOCK);
+        book.setTotalPages(120);
+        book.setImage("https://google.com/images");
+        book.setRatingFromFirm(10.0);
+        book.setGenres(genres);
 
-        Author author2 = new Author();
-        author2.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author2.setFullName("Leah Thomas");
+        Author author = new Author();
+        author.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
+        author.setFullName("Leah Thomas");
 
-        book1.setAuthors(Set.of(author2));
+        book.setAuthors(Set.of(author));
 
-        BookItem bookItem1 = new BookItem();
-        bookItem1.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
-        bookItem1.setBookItemState(BookItemState.AVAILABLE);
-        bookItem1.setBook(book1);
+        BookItem bookItem = new BookItem();
+        bookItem.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
+        bookItem.setBookItemState(BookItemState.AVAILABLE);
+        bookItem.setBook(book);
 
-        book1.setBookItems(List.of(bookItem1));
+        book.setBookItems(List.of(bookItem));
 
-        return book1;
+        return book;
     }
 
     public BookDTO getBookDTO() {
         String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
 
-        AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
+        AuthorDTO authorDTO = new AuthorDTO("Leah Thomas");
 
         return new BookDTO(
                 "765612382412",
@@ -107,7 +106,7 @@ class BookConverterTest {
                 120, BookStatus.IN_STOCK,
                 "https://google.com/images",
                 0.0,
-                10.0, Set.of(authorDTO1));
+                10.0, Set.of(authorDTO));
     }
 
     private BookDisplayDTO getToBookDisplayDTO() {

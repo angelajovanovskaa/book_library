@@ -12,8 +12,6 @@ import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.utils.BookItemResponseMessages;
 
-import lombok.SneakyThrows;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,7 +22,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
 import java.util.Set;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -93,7 +90,6 @@ class BookItemServiceImplTest {
         assertThat(bookItemSaved.isbn()).isEqualTo(isbn);
     }
 
-    @SneakyThrows
     @Test
     void insertBookItem_isbnNotFound_throwsException() {
         //  given
@@ -112,15 +108,14 @@ class BookItemServiceImplTest {
         given(bookItemRepository.existsById(id)).willReturn(true);
 
         //  when
-        UUID deletedBook = bookItemService.deleteById(id);
+        UUID deleteBookId = bookItemService.deleteById(id);
 
         //  then
-        assertThat(deletedBook).isEqualTo(id);
+        assertThat(deleteBookId).isEqualTo(id);
 
-        verify(bookItemRepository).deleteById(deletedBook);
+        verify(bookItemRepository).deleteById(deleteBookId);
     }
 
-    @SneakyThrows
     @Test
     void deleteItemBook_bookItemDoesNotExists_shouldThrowException() {
         //  given
@@ -151,7 +146,6 @@ class BookItemServiceImplTest {
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.DAMAGED);
     }
 
-    @SneakyThrows
     @Test
     void reportBookItemAsDamaged_bookItemNotFound_throwException() {
         //  given
@@ -161,7 +155,7 @@ class BookItemServiceImplTest {
         //  when & then
         assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id))
                 .isInstanceOf(BookItemNotFoundException.class)
-                .hasMessageContaining("The bookItem with id: "+  id + " doesn't exist");
+                .hasMessageContaining("The bookItem with id: " + id + " doesn't exist");
 
         verify(bookItemRepository).findById(id);
         verify(bookItemRepository, never()).save(any());
@@ -183,7 +177,6 @@ class BookItemServiceImplTest {
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.LOST);
     }
 
-    @SneakyThrows
     @Test
     void reportBookItemAsLost_bookItemNotFound_throwException() {
         //  given
@@ -200,45 +193,31 @@ class BookItemServiceImplTest {
     }
 
     private List<BookItem> getBookItems() {
-        Book book2 = new Book();
-        book2.setIsbn("9780545414654");
+        Book book = new Book();
+        book.setIsbn("9780545414654");
 
-        Author author1 = new Author();
-        author1.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author1.setFullName("Leah Thomas");
+        Author author = new Author();
+        author.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
+        author.setFullName("Leah Thomas");
 
-        book2.setAuthors(Set.of(author1));
+        book.setAuthors(Set.of(author));
 
-        List<BookItem> bookItems = new ArrayList<>();
         BookItem bookItem1 = new BookItem();
         bookItem1.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
         bookItem1.setBookItemState(BookItemState.AVAILABLE);
-        bookItem1.setBook(book2);
+        bookItem1.setBook(book);
 
         BookItem bookItem2 = new BookItem();
         bookItem2.setId(UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11"));
         bookItem2.setBookItemState(BookItemState.LOST);
-        bookItem2.setBook(book2);
+        bookItem2.setBook(book);
 
-        bookItems.add(bookItem1);
-        bookItems.add(bookItem2);
-
-        book2.setBookItems(bookItems);
-
-        return bookItems;
+        return List.of(bookItem1, bookItem2);
     }
 
     private List<BookItemDTO> getBookItemDTOs() {
-        Book book2 = new Book();
-        book2.setIsbn("9780545414654");
-
-        Author author1 = new Author();
-        author1.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author1.setFullName("Leah Thomas");
-
-        book2.setAuthors(Set.of(author1));
-
-        List<BookItemDTO> bookItemDTOS = new ArrayList<>();
+        Book book = new Book();
+        book.setIsbn("9780545414654");
 
         BookItemDTO bookItemDTO1 = new BookItemDTO("9780545414654",
                 UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215")
@@ -247,9 +226,6 @@ class BookItemServiceImplTest {
         BookItemDTO bookItemDTO2 = new BookItemDTO("9780545414654",
                 UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11"));
 
-        bookItemDTOS.add(bookItemDTO1);
-        bookItemDTOS.add(bookItemDTO2);
-
-        return bookItemDTOS;
+        return List.of(bookItemDTO1, bookItemDTO2);
     }
 }

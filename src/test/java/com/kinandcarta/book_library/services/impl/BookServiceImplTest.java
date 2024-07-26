@@ -16,8 +16,6 @@ import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 
-import lombok.SneakyThrows;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -28,7 +26,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class BookServiceImplTest {
+    class BookServiceImplTest {
 
     @Mock
     private AuthorRepository authorRepository;
@@ -78,7 +75,7 @@ class BookServiceImplTest {
     }
 
     @Test
-    void getAvailableBooksWithPaging_shouldReturnPageOfBookDTOs() {
+    void getPaginatedAvailableBooks_shouldReturnPageOfBookDTOs() {
         //  given
         int page = 0;
         int size = 2;
@@ -118,13 +115,13 @@ class BookServiceImplTest {
         List<BookDisplayDTO> result = bookService.getAvailableBooks();
 
         //  then
-        assertThat(result).hasSize(bookDisplayDTOS.size());
         assertThat(result).isNotNull();
+        assertThat(result).hasSize(bookDisplayDTOS.size());
         assertThat(result).containsExactlyElementsOf(bookDisplayDTOS);
     }
 
     @Test
-    void getRequested_thereAreRequestedBooks_returnsListOfBookDTOs() {
+    void getRequestedBooks_thereAreRequestedBooks_returnsListOfBookDTOs() {
         //  given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
@@ -137,7 +134,6 @@ class BookServiceImplTest {
 
         //  then
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(bookDisplayDTOS.size());
         assertThat(result).containsExactlyElementsOf(bookDisplayDTOS);
     }
 
@@ -159,7 +155,6 @@ class BookServiceImplTest {
         assertThat(result).isEqualTo(expectedResult);
     }
 
-    @SneakyThrows
     @Test
     void getBookByIsbn_IsbnDoesNotExist_throwsException() {
         // given
@@ -258,7 +253,6 @@ class BookServiceImplTest {
         verify(bookRepository).save(bookToSave);
     }
 
-    @SneakyThrows
     @Test
     void deleteBook_bookExists_shouldDeleteSuccessfully() {
         //  given
@@ -275,7 +269,6 @@ class BookServiceImplTest {
         verify(bookRepository).deleteById(bookId);
     }
 
-    @SneakyThrows
     @Test
     void deleteBook_bookDoesNotExist_shouldThrowException() {
         //  given
@@ -333,6 +326,10 @@ class BookServiceImplTest {
     private List<Book> getBooks() {
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
 
+        Author author1 = new Author();
+        author1.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
+        author1.setFullName("Leah Thomas");
+
         Book book1 = new Book();
         book1.setIsbn("9412545414654");
         book1.setTitle("Last Summer of us being together");
@@ -344,11 +341,6 @@ class BookServiceImplTest {
         book1.setRatingFromFirm(10.0);
         book1.setRatingFromWeb(10.0);
         book1.setGenres(genres);
-
-        Author author1 = new Author();
-        author1.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author1.setFullName("Leah Thomas");
-
         book1.setAuthors(Set.of(author1));
 
         Book book2 = new Book();
@@ -363,27 +355,14 @@ class BookServiceImplTest {
         book2.setRatingFromFirm(10.0);
         book2.setRatingFromWeb(0.0);
         book2.setGenres(genres);
+        book2.setAuthors(Set.of(author1));
 
-        Author author2 = new Author();
-        author2.setId(UUID.fromString("c909d9e4-9e3a-46e2-b2f9-3b7420a44023"));
-        author2.setFullName("Valery Johnson");
-
-        book2.setAuthors(Set.of(author2));
-
-        List<BookItem> bookItems1 = new ArrayList<>();
         BookItem bookItem1 = new BookItem();
         bookItem1.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
         bookItem1.setBookItemState(BookItemState.AVAILABLE);
         bookItem1.setBook(book2);
 
-        BookItem bookItem2 = new BookItem();
-        bookItem2.setId(UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11"));
-        bookItem2.setBookItemState(BookItemState.BORROWED);
-
-        bookItems1.add(bookItem1);
-        bookItems1.add(bookItem2);
-
-        book1.setBookItems(bookItems1);
+        book2.setBookItems(List.of(bookItem1));
 
         return List.of(book1, book2);
     }
@@ -392,8 +371,6 @@ class BookServiceImplTest {
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
 
         AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
-
-        AuthorDTO authorDTO2 = new AuthorDTO("Valery Johnson");
 
         BookDTO bookDTO1 = new BookDTO(
                 "9412545414654",
@@ -417,7 +394,7 @@ class BookServiceImplTest {
                 "https://google.com/images",
                 0.0,
                 10.0,
-                Set.of(authorDTO2));
+                Set.of(authorDTO1));
 
         return List.of(bookDTO1, bookDTO2);
     }
