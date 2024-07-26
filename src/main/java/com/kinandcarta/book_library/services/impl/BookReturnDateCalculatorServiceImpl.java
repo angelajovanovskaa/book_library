@@ -1,20 +1,16 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 /**
  * Implementation of {@link BookReturnDateCalculatorService}.<br>
- * It contains logic for calculating the anticipated time for reading book and based on that it provides the scheduled return date.
+ * It contains logic for calculating the anticipated time for reading book and based on that it provides the scheduled
+ * return date.
  */
-
 @Service
-@RequiredArgsConstructor
 public class BookReturnDateCalculatorServiceImpl implements BookReturnDateCalculatorService {
     private static final int AVERAGE_PAGES_READ_PER_DAY = 25;
 
@@ -22,12 +18,11 @@ public class BookReturnDateCalculatorServiceImpl implements BookReturnDateCalcul
      * This method is used to calculate the scheduledReturnDate for a BookItem when it's borrowed<br>
      * The algorithm get the books totalPages and divides it by the {@code AVERAGE_PAGES_READ_PER_DAY}.
      *
-     * @param bookItem Object of the whole BookItem, cannot be {@code null}
+     * @param totalPages number of pages of the Book, cannot be {@code null}
      * @return LocalDate for the {@code scheduledReturnDate}.
      */
-    public LocalDate calculateReturnDateOfBookItem(BookItem bookItem) {
-        Book book = bookItem.getBook();
-        int daysNeededToReadABook = Math.ceilDiv(book.getTotalPages(), AVERAGE_PAGES_READ_PER_DAY);
+    public LocalDate calculateReturnDateOfBookItem(int totalPages) {
+        int daysNeededToReadABook = Math.ceilDiv(totalPages, AVERAGE_PAGES_READ_PER_DAY);
 
         return LocalDate.now().plusDays(daysNeededToReadABook);
     }

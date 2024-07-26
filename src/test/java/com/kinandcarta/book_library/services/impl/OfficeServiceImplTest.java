@@ -17,10 +17,10 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class OfficeServiceImplTest {
     @Mock
-    OfficeRepository officeRepository;
+    private OfficeRepository officeRepository;
 
     @InjectMocks
-    OfficeServiceImpl officeService;
+    private OfficeServiceImpl officeService;
 
     @Test
     void getAllOffices_theListHasAtLeastOne_returnsListOfOfficeResponseDTO() {
@@ -40,20 +40,14 @@ class OfficeServiceImplTest {
     List<Office> getOffices() {
         Office office1 = new Office("Skopje");
         Office office2 = new Office("Sofija");
-        Office office3 = new Office("Pristina");
-        Office office4 = new Office("Liverpool");
-        Office office5 = new Office("Bogota");
 
-        return List.of(office1, office2, office3, office4, office5);
+        return List.of(office1, office2);
     }
 
     List<OfficeResponseDTO> getOfficeResponseDTOs() {
         OfficeResponseDTO office1 = new OfficeResponseDTO("Skopje");
         OfficeResponseDTO office2 = new OfficeResponseDTO("Sofija");
-        OfficeResponseDTO office3 = new OfficeResponseDTO("Pristina");
-        OfficeResponseDTO office4 = new OfficeResponseDTO("Liverpool");
-        OfficeResponseDTO office5 = new OfficeResponseDTO("Bogota");
 
-        return List.of(office1, office2, office3, office4, office5);
+        return List.of(office1, office2);
     }
 }

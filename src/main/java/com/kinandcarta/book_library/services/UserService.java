@@ -19,9 +19,9 @@ public interface UserService {
 
     String changeUserPassword(UserChangePasswordRequestDTO userDTO);
 
-    List<UserWithRoleFieldResponseDTO> getAllUsers();
+    List<UserWithRoleFieldResponseDTO> getAllUsers(String officeName);
 
-    List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String fullNameSearchTerm);
+    List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm);
 
     UserResponseDTO getUserProfile(UUID userId);
 }

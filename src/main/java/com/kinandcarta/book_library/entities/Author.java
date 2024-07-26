@@ -1,19 +1,28 @@
 package com.kinandcarta.book_library.entities;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Entity;
 
-import java.util.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
-import static java.util.Objects.isNull;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 @Getter
 @Setter
-
+@ToString
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class Author {
 
     @Id
@@ -22,30 +31,10 @@ public class Author {
 
     private String fullName;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
-    @JoinTable(name = "book_author",
-            joinColumns = @JoinColumn(name = "author_id"),
-            inverseJoinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")})
+    @ManyToMany(mappedBy = "authors")
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     private Set<Book> books;
-
-    public void addBooks(Collection<Book> books) {
-        books.forEach(this::addBook);
-    }
-
-    public void addBook(Book book) {
-        if (isNull(books)) {
-            books = new HashSet<>();
-        }
-        books.add(book);
-
-        Set<Author> authors = book.getAuthors();
-        if (isNull(authors)) {
-            authors = new HashSet<>();
-        }
-        authors.add(this);
-        book.setAuthors(authors);
-    }
 
     @Override
     public boolean equals(Object o) {
