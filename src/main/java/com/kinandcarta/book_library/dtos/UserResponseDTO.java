@@ -7,8 +7,8 @@ import java.util.UUID;
 public record UserResponseDTO(
         UUID userId,
         String fullName,
-        byte[] profilePicture,
-        String email
+        String email,
+        byte[] profilePicture
 ) {
     @Override
     public boolean equals(Object o) {

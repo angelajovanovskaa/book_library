@@ -9,7 +9,8 @@ public record UserRegistrationRequestDTO(
         @Email(regexp = "\\w+@(kinandcarta|valtech)\\.com")
         String email,
         @NotBlank
+        String officeName,
+        @NotBlank
         String password
-
 ) {
 }

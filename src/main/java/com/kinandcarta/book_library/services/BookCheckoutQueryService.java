@@ -9,20 +9,21 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BookCheckoutQueryService {
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts();
+    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts(String officeName);
 
-    Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int numberOfPages, int pageSize);
+    Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int numberOfPages, int pageSize
+            , String officeName);
 
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts();
+    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts(String officeName);
 
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts();
+    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts(String officeName);
 
-    List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
-                                                                     String bookTitle);
+    List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId, String bookTitleSearchTerm);
 
-    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(String title);
+    List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(String officeName,
+                                                                                         String titleSearchTerm);
 
     List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
 
-    List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate();
+    List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate(String officeName);
 }

@@ -1,10 +1,9 @@
 package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Component;
  * Data Transfer Objects and vice versa.
  */
 @Component
-@RequiredArgsConstructor
 public class UserConverter {
+
     /**
      * Converts a {@link User} entity to a response DTO containing the role, and excluding the profilePicture.
      * This response will only be accessible by the admin on the admin panel page.
@@ -38,11 +37,12 @@ public class UserConverter {
      * @return a {@link UserResponseDTO}
      */
     public UserResponseDTO toUserResponseDTO(User user) {
+
         return new UserResponseDTO(
                 user.getId(),
                 user.getFullName(),
-                user.getProfilePicture(),
-                user.getEmail()
+                user.getEmail(),
+                user.getProfilePicture()
         );
     }
 

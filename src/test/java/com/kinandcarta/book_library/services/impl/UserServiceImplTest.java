@@ -7,6 +7,7 @@ import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
+import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,9 @@ class UserServiceImplTest {
     @Mock
     private ResourceLoader resourceLoader;
 
+    @Mock
+    private OfficeRepository officeRepository;
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -58,7 +62,8 @@ class UserServiceImplTest {
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(
                 fullName,
                 email,
-                password
+                password,
+                SKOPJE_OFFICE.getName()
         );
 
         given(userRepository.findByEmail(anyString())).willReturn(
@@ -87,7 +92,6 @@ class UserServiceImplTest {
                 .withMessage("The credentials that you have entered don't match.");
     }
 
-
     @Test
     void changeUserPassword_oldPasswordDoesNotMatch_throwsIncorrectPasswordException() {
         // given
@@ -102,7 +106,7 @@ class UserServiceImplTest {
                 newPassword
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when && then
         assertThatExceptionOfType(IncorrectPasswordException.class)
@@ -116,12 +120,12 @@ class UserServiceImplTest {
         List<User> users = getUsers();
         List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOS = getUserWithRoleResponseDTOs();
 
-        given(userRepository.findAllByOrderByRoleAsc()).willReturn(users);
+        given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(users);
         given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOS.get(0),
-                userWithRoleFieldResponseDTOS.get(1), userWithRoleFieldResponseDTOS.get(2));
+                userWithRoleFieldResponseDTOS.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers();
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).isEqualTo(userWithRoleFieldResponseDTOS);
@@ -136,11 +140,13 @@ class UserServiceImplTest {
 
         String fullNameSearchTerm = "Martin";
 
-        given(userRepository.findByFullNameContainingIgnoreCaseOrderByRoleAsc(anyString())).willReturn(users);
+        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(anyString(),
+                anyString())).willReturn(users);
         given(userConverter.toUserWithRoleDTO(users.getFirst())).willReturn(userWithRoleFieldResponseDTOS.getFirst());
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsersWithFullName(fullNameSearchTerm);
+        List<UserWithRoleFieldResponseDTO> result =
+                userService.getAllUsersWithFullName(SKOPJE_OFFICE.getName(), fullNameSearchTerm);
 
         // then
         assertThat(result).isEqualTo(userWithRoleFieldResponseDTOS);
@@ -154,7 +160,7 @@ class UserServiceImplTest {
 
         UUID userId = UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43");
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
         given(userConverter.toUserResponseDTO(any())).willReturn(userWithoutRoleDTOs);
 
         // when
@@ -171,10 +177,13 @@ class UserServiceImplTest {
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(
                 "Aleks Velickovski",
                 email,
+                SKOPJE_OFFICE.getName(),
                 "password"
         );
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
+
+        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
 
         Resource mockResource = mock(Resource.class);
         given(mockResource.getContentAsByteArray()).willReturn(IMAGE_PATH.getBytes());
@@ -221,7 +230,7 @@ class UserServiceImplTest {
                 byteArray
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.ofNullable(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
         String result = userService.updateUserData(userDTO);
@@ -241,7 +250,7 @@ class UserServiceImplTest {
                 "USER"
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
         String result = userService.updateUserRole(userDTO);
@@ -253,7 +262,7 @@ class UserServiceImplTest {
     @Test
     void deleteAccount_accountIsDeleted_returnsConfirmationMessage() {
         // given
-        UUID userId = UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2");
+        UUID userId = UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43");
 
         // when
         String result = userService.deleteAccount(userId);
@@ -276,7 +285,7 @@ class UserServiceImplTest {
                 newPassword
         );
 
-        given(userRepository.findById(any())).willReturn(Optional.of(user));
+        given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
         String result = userService.changeUserPassword(userDTO);
@@ -292,10 +301,7 @@ class UserServiceImplTest {
         User user2 = new User(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"), "David Bojkovski", null,
                 "david@gmail.com", "ADMIN", "Pw", SKOPJE_OFFICE);
 
-        User user3 = new User(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"), "Viktorija Zlatanovska", null,
-                "viktorija@gmail.com", "Admin", "password", SKOPJE_OFFICE);
-
-        return List.of(user1, user2, user3);
+        return List.of(user1, user2);
     }
 
     private List<UserWithRoleFieldResponseDTO> getUserWithRoleResponseDTOs() {
@@ -307,28 +313,18 @@ class UserServiceImplTest {
                 new UserWithRoleFieldResponseDTO(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"),
                         "David Bojkovski", "david@gmail.com", "ADMIN");
 
-        UserWithRoleFieldResponseDTO user3 =
-                new UserWithRoleFieldResponseDTO(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"),
-                        "Viktorija Zlatanovska", "viktorija@gmail.com", "ADMIN");
-
-        return List.of(user1, user2, user3);
+        return List.of(user1, user2);
     }
 
     private List<UserResponseDTO> getUserResponseDTOs() {
         UserResponseDTO user1 =
                 new UserResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                        "Martin Bojkovski", null, "martin@gmail.com");
+                        "Martin Bojkovski", "martin@gmail.com", null);
 
         UserResponseDTO user2 =
                 new UserResponseDTO(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"),
-                        "David Bojkovski", null, "david@gmail.com");
+                        "David Bojkovski", "david@gmail.com", null);
 
-        UserResponseDTO user3 =
-                new UserResponseDTO(UUID.fromString("80707649-1be3-43db-ae7e-f374fe09fcb2"),
-                        "Viktorija Zlatanovska", null, "viktorija@gmail.com");
-
-        return List.of(user1, user2, user3);
+        return List.of(user1, user2);
     }
-
-
 }
