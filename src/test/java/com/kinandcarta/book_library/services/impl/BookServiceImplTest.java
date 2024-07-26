@@ -68,7 +68,7 @@ import static org.mockito.Mockito.times;
         given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
 
         //when
-        List<BookDTO> actualResult = this.bookService.getAllBooks();
+        List<BookDTO> actualResult = bookService.getAllBooks();
 
         //then
         assertThat(actualResult).isEqualTo(bookDTOS);
@@ -116,7 +116,6 @@ import static org.mockito.Mockito.times;
 
         //  then
         assertThat(result).isNotNull();
-        assertThat(result).hasSize(bookDisplayDTOS.size());
         assertThat(result).containsExactlyElementsOf(bookDisplayDTOS);
     }
 
@@ -138,7 +137,7 @@ import static org.mockito.Mockito.times;
     }
 
     @Test
-    void getBookByIsbn_IsbnIsValid_bookIsFound() {
+    void getBookByIsbn_isbnIsValid_bookIsFound() {
         // given
         Book book = getBooks().getFirst();
         BookDTO expectedResult = getBookDTOs().getFirst();
@@ -156,13 +155,13 @@ import static org.mockito.Mockito.times;
     }
 
     @Test
-    void getBookByIsbn_IsbnDoesNotExist_throwsException() {
+    void getBookByIsbn_isbnDoesNotExist_throwsException() {
         // given
         String isbn = "1234567891234";
 
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> this.bookService.getBookByIsbn(isbn))
+                .isThrownBy(() -> bookService.getBookByIsbn(isbn))
                 .withMessage("Book with isbn: " + isbn + " not found");
     }
 
@@ -254,7 +253,7 @@ import static org.mockito.Mockito.times;
     }
 
     @Test
-    void deleteBook_bookExists_shouldDeleteSuccessfully() {
+    void deleteBook_bookExists_successfullyDeletedBook() {
         //  given
         given(bookRepository.existsById(any())).willReturn(true);
 
@@ -270,7 +269,7 @@ import static org.mockito.Mockito.times;
     }
 
     @Test
-    void deleteBook_bookDoesNotExist_shouldThrowException() {
+    void deleteBook_bookDoesNotExist_throwsException() {
         //  given
         given(bookRepository.existsById(any())).willReturn(false);
 
@@ -287,7 +286,7 @@ import static org.mockito.Mockito.times;
     }
 
     @Test
-    void setBookStatusInStock_bookIsbnIsValid_SuccessfullyChangedStatus() {
+    void setBookStatusInStock_bookIsbnIsValid_successfullyChangedStatus() {
         //  given
         List<Book> books = getBooks();
         List<BookDTO> bookDTOS = getBookDTOs();
@@ -308,7 +307,7 @@ import static org.mockito.Mockito.times;
     }
 
     @Test
-    void setBookStatusInStock_bookDoesNotExist_ThrowException() {
+    void setBookStatusInStock_bookDoesNotExist_throwsException() {
         //  given
         given(bookRepository.findByIsbn(anyString())).willReturn(Optional.empty());
         String isbn = "1234567891234";
@@ -378,10 +377,12 @@ import static org.mockito.Mockito.times;
                 "A book about summer love",
                 Language.ENGLISH.toString(),
                 genres,
-                120, BookStatus.REQUESTED,
+                120,
+                BookStatus.REQUESTED,
                 "https://google.com/images",
                 10.0,
-                10.0, Set.of(authorDTO1));
+                10.0,
+                Set.of(authorDTO1));
 
         BookDTO bookDTO2 = new BookDTO(
                 "9780545414654",
