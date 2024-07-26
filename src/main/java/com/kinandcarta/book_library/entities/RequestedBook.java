@@ -37,12 +37,8 @@ public class RequestedBook {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
 
-    public void increaseLikeCounter() {
-        this.likeCounter++;
-    }
-
-    public void decreaseLikeCounter() {
-        this.likeCounter--;
+    public void refreshLikeCounter() {
+        likeCounter = (long) users.size();
     }
 
     @Override

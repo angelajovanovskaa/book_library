@@ -31,6 +31,7 @@ class RequestedBookConverterTest {
                 LocalDate.now(),
                 1L,
                 "isbn1",
+                BookStatus.REQUESTED,
                 "title1",
                 "image1"
         );

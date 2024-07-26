@@ -70,6 +70,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         return null;
     }
 
+    //todo: change javadoc, test, change by isbn
     /**
      * Deletes a {@link RequestedBook} by its ID.
      * <p>
@@ -152,11 +153,10 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         Set<User> likedByUsers = requestedBook.getUsers();
         if (likedByUsers.contains(user)) {
             likedByUsers.remove(user);
-            requestedBook.decreaseLikeCounter();
         } else {
             likedByUsers.add(user);
-            requestedBook.increaseLikeCounter();
         }
+        requestedBook.refreshLikeCounter();
         requestedBookRepository.save(requestedBook);
 
         return requestedBookConverter.toRequestedBookDTO(requestedBook);

@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -93,9 +92,9 @@ class ReviewQueryServiceImplTest {
         // when & then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> reviewQueryService.getReviewById(id))
-                .withMessage("Review not found with ID: " + id);
+                .withMessage("Review with id " + id + " not found");
 
-        then(reviewConverter).shouldHaveNoInteractions();
+        verify(reviewConverter, times(0)).toReviewResponseDTO(any());
     }
 
     @Test

@@ -1,5 +1,7 @@
 package com.kinandcarta.book_library.dtos;
 
+import com.kinandcarta.book_library.enums.BookStatus;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
@@ -13,6 +15,8 @@ public record RequestedBookDTO(
         Long likeCounter,
 
         String bookISBN,
+
+        BookStatus bookStatus,
 
         String title,
 

@@ -12,6 +12,7 @@ import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final ReviewConverter reviewConverter;
-    private final BookAverageRatingCalculatorImpl calculateAverageReviewRatingOnBook;
+    private final BookAverageRatingCalculator bookAverageRatingCalculator;
 
     /**
      * Inserts a new review into the system and updates the book's rating.
@@ -144,7 +145,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
         }
         List<Integer> reviewRatings = reviews.stream().map(Review::getRating).toList();
 
-        return calculateAverageReviewRatingOnBook.getAverageRatingOnBook(reviewRatings);
+        return bookAverageRatingCalculator.getAverageRatingOnBook(reviewRatings);
     }
 
     private Book getBook(String isbn) {

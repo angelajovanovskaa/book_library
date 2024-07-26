@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.ReviewConverter;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Review;
+import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     @Override
     public ReviewResponseDTO getReviewById(UUID reviewId) {
         Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new RuntimeException("Review not found with ID: " + reviewId));
+                .orElseThrow(() -> new ReviewNotFoundException(reviewId));
         return reviewConverter.toReviewResponseDTO(review);
     }
 

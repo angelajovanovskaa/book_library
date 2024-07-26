@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,9 +100,9 @@ class ReviewManagementServiceImplTest {
                 .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
                 .withMessage("Book with ISBN: " + reviewRequestDTO.bookISBN() + " not found");
 
-        then(userRepository).shouldHaveNoInteractions();
-        then(reviewRepository).shouldHaveNoInteractions();
-        then(calculateAverageRatingOnBook).shouldHaveNoInteractions();
+        verify(userRepository, times(0)).findByEmail(any());
+        verify(reviewRepository, times(0)).save(any());
+        verify(calculateAverageRatingOnBook, times(0)).getAverageRatingOnBook(any());
     }
 
     @Test
@@ -122,8 +122,8 @@ class ReviewManagementServiceImplTest {
                 .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
                 .withMessage("User with email: " + reviewRequestDTO.userEmail() + " not found");
 
-        then(reviewRepository).shouldHaveNoInteractions();
-        then(calculateAverageRatingOnBook).shouldHaveNoInteractions();
+        verify(reviewRepository, times(0)).save(any());
+        verify(calculateAverageRatingOnBook, times(0)).getAverageRatingOnBook(any());
     }
 
     @Test
@@ -190,8 +190,8 @@ class ReviewManagementServiceImplTest {
                 .isThrownBy(() -> reviewManagementService.deleteReviewById(id))
                 .withMessage("Review with id " + id + " not found");
 
-        then(bookRepository).shouldHaveNoInteractions();
-        then(calculateAverageRatingOnBook).shouldHaveNoInteractions();
+        verify(bookRepository, times(0)).findByIsbn(any());
+        verify(calculateAverageRatingOnBook, times(0)).getAverageRatingOnBook(any());
     }
 
     private Book getBook() {

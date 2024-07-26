@@ -2,8 +2,6 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.RequestedBookDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
@@ -16,18 +14,19 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class RequestedBookQueryServiceImplTest {
-    private static final Office OFFICE = new Office("Skopje kancelarija");
 
     @Mock
     private RequestedBookRepository requestedBookRepository;
@@ -118,7 +117,7 @@ class RequestedBookQueryServiceImplTest {
                 .isThrownBy(() -> requestedBookQueryService.getRequestedBookById(requestedBookId));
 
         verify(requestedBookRepository).findById(requestedBookId);
-        then(requestedBookConverter).shouldHaveNoInteractions();
+        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
     }
 
     @Test
@@ -153,7 +152,7 @@ class RequestedBookQueryServiceImplTest {
                 .isThrownBy(() -> requestedBookQueryService.getRequestedBookByISBN(isbn));
 
         verify(requestedBookRepository).findByBookIsbn(isbn);
-        then(requestedBookConverter).shouldHaveNoInteractions();
+        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
     }
 
     private List<RequestedBook> getRequestedBooks() {
@@ -189,6 +188,7 @@ class RequestedBookQueryServiceImplTest {
                 LocalDate.now(),
                 1L,
                 "isbn1",
+                BookStatus.REQUESTED,
                 "title1",
                 "image1"
         );
@@ -198,6 +198,7 @@ class RequestedBookQueryServiceImplTest {
                 LocalDate.now(),
                 3L,
                 "isbn2",
+                BookStatus.REQUESTED,
                 "title2",
                 "image2"
         );
@@ -206,6 +207,7 @@ class RequestedBookQueryServiceImplTest {
                 LocalDate.now(),
                 1L,
                 "isbn3",
+                BookStatus.REQUESTED,
                 "title3",
                 "image3"
         );

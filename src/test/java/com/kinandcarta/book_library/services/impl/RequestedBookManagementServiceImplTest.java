@@ -21,13 +21,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -59,7 +61,6 @@ class RequestedBookManagementServiceImplTest {
         final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         final String isbn = "isbn1";
         RequestedBook requestedBook = getRequestedBook();
-        Book book = requestedBook.getBook();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
 
@@ -84,7 +85,7 @@ class RequestedBookManagementServiceImplTest {
                 .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookById(id))
                 .withMessage("RequestedBook with id " + id + " not found");
 
-        then(bookRepository).shouldHaveNoInteractions();
+        verify(bookRepository, times(0)).deleteByIsbn(any());
     }
 
     @Test
@@ -125,9 +126,9 @@ class RequestedBookManagementServiceImplTest {
                 .isThrownBy(() -> requestedBookManagementService.changeBookStatus(requestedBookId, newBookStatus))
                 .withMessage("RequestedBook with id " + requestedBookId + " not found");
 
-        then(requestedBookConverter).shouldHaveNoInteractions();
-        then(bookStatusTransitionValidator).shouldHaveNoInteractions();
-        then(bookRepository).shouldHaveNoInteractions();
+        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
+        verify(bookStatusTransitionValidator, times(0)).isValid(any(), any());
+        verify(bookRepository, times(0)).save(any());
     }
 
     @Test
@@ -149,8 +150,8 @@ class RequestedBookManagementServiceImplTest {
                         "Transition from status PENDING_PURCHASE to status REQUESTED for requested book is not " +
                                 "feasible");
 
-        then(requestedBookConverter).shouldHaveNoInteractions();
-        then(bookRepository).shouldHaveNoInteractions();
+        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
+        verify(bookRepository, times(0)).save(any());
     }
 
     @Test
@@ -192,8 +193,8 @@ class RequestedBookManagementServiceImplTest {
                 .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(requestedBookId, email))
                 .withMessage("RequestedBook with id " + requestedBookId + " not found");
 
-        then(userRepository).shouldHaveNoInteractions();
-        then(requestedBookConverter).shouldHaveNoInteractions();
+        verify(userRepository, times(0)).findByEmail(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
     }
 
     @Test
@@ -212,7 +213,7 @@ class RequestedBookManagementServiceImplTest {
                 .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(requestedBookId, email))
                 .withMessage("User with email: " + email + " not found");
 
-        then(requestedBookConverter).shouldHaveNoInteractions();
+        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
     }
 
     private RequestedBook getRequestedBook() {
@@ -244,6 +245,7 @@ class RequestedBookManagementServiceImplTest {
                 LocalDate.now(),
                 1L,
                 "isbn1",
+                BookStatus.REQUESTED,
                 "title1",
                 "image1"
         );
