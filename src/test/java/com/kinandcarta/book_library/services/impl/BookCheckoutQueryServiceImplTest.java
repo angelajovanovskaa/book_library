@@ -21,10 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -248,16 +245,11 @@ class BookCheckoutQueryServiceImplTest {
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
-        author.addBook(book1);
-        author.addBook(book2);
-        author.addBook(book3);
-        author.addBook(book4);
+        book1.setAuthors(Set.of(author));
+        book2.setAuthors(Set.of(author));
+        book3.setAuthors(Set.of(author));
+        book4.setAuthors(Set.of(author));
 
-
-        book1.getAuthors().add(author);
-        book2.getAuthors().add(author);
-        book3.getAuthors().add(author);
-        book4.getAuthors().add(author);
 
         BookItem bookItem1 =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book1);

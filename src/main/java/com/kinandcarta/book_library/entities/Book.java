@@ -53,12 +53,16 @@ public class Book {
     @Column(name = "genres", columnDefinition = "text[]")
     private String[] genres;
 
-    @ManyToMany(mappedBy = "books", cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "book_author", joinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")},
+            inverseJoinColumns =
+    @JoinColumn(name = "author_id"))
+    @ToString.Exclude
     private Set<Author> authors;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "book")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
+    @ToString.Exclude
     private List<BookItem> bookItems;
-
 
     public void addBookItems(Collection<BookItem> bookItems) {
         if (isNotEmpty(bookItems)) {

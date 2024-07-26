@@ -232,17 +232,10 @@ class BookCheckoutManagementServiceImplTest {
                         genres, new HashSet<>(), new ArrayList<>());
 
 
-        author.addBook(book1);
-        author.addBook(book2);
-        author.addBook(book3);
-        author.addBook(book4);
-
-
-        book1.getAuthors().add(author);
-        book2.getAuthors().add(author);
-        book3.getAuthors().add(author);
-        book4.getAuthors().add(author);
-
+        book1.setAuthors(Set.of(author));
+        book2.setAuthors(Set.of(author));
+        book3.setAuthors(Set.of(author));
+        book4.setAuthors(Set.of(author));
 
         BookItem bookItem1 =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book1);
