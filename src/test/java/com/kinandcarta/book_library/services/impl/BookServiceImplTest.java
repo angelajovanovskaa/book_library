@@ -43,7 +43,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-    class BookServiceImplTest {
+class BookServiceImplTest {
 
     @Mock
     private AuthorRepository authorRepository;
