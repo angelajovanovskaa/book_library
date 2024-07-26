@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -151,12 +152,15 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     }
 
     private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
-        return bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
-                book.getIsbn(), userId).isPresent();
+        Optional<BookCheckout> bookCheckoutOptional =
+                bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
+                        book.getIsbn(), userId);
+
+        return bookCheckoutOptional.isPresent();
     }
 
     private String resolveBookCheckoutResponseMessage(LocalDate scheduledReturnDate, LocalDate dateReturned) {
-        if (scheduledReturnDate.isBefore(dateReturned) || scheduledReturnDate.isEqual(dateReturned)) {
+        if (scheduledReturnDate.isBefore(dateReturned)) {
             return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
         } else {
             return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;

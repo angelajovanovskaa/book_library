@@ -36,11 +36,11 @@ public class UserConverter {
      * @return a {@link UserResponseDTO}
      */
     public UserResponseDTO toUserResponseDTO(User user) {
+
         return new UserResponseDTO(
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
-                user.getOffice().getName(),
                 user.getProfilePicture()
         );
     }

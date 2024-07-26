@@ -2,6 +2,9 @@ package com.kinandcarta.book_library.utils;
 
 import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class containing response messages related to BookCheckout operations.
+ */
 @UtilityClass
 public class BookCheckoutResponseMessages {
     public static final String BOOK_ITEM_BORROWED_RESPONSE = "You have successfully borrowed the book";

@@ -10,7 +10,6 @@ public record UserUpdateDataRequestDTO(
         @NotNull
         UUID userId,
         String fullName,
-        String officeName,
         byte[] image
 ) {
     @Override
@@ -29,7 +28,7 @@ public record UserUpdateDataRequestDTO(
 
     @Override
     public String toString() {
-        return "UserChangePictureRequestDTO{" +
+        return "UserUpdateDataRequestDTO{" +
                 "userId=" + userId +
                 ", fullName='" + fullName + '\'' +
                 ", image=" + Arrays.toString(image) +

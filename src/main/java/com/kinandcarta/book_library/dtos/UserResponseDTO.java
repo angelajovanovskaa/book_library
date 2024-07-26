@@ -8,7 +8,6 @@ public record UserResponseDTO(
         UUID userId,
         String fullName,
         String email,
-        String officeName,
         byte[] profilePicture
 ) {
     @Override

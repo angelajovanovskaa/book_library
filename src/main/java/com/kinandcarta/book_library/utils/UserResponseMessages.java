@@ -2,6 +2,9 @@ package com.kinandcarta.book_library.utils;
 
 import lombok.experimental.UtilityClass;
 
+/**
+ * Utility class containing response messages related to User operations.
+ */
 @UtilityClass
 public class UserResponseMessages {
     public static final String USER_REGISTERED_RESPONSE = "You have successfully created your account";

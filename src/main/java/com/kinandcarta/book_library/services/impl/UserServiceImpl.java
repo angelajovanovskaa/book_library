@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method.
      *
      * @param userDTO the DTO where we have data needed for registering new account.
-     * @return A message for the user that he account is successfully created.
+     * @return A message for the user that the account is successfully created.
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
@@ -133,8 +133,9 @@ public class UserServiceImpl implements UserService {
 
     /**
      * This method is used for updating {@link User} information<br>
-     * At least one attributes needs to not be {@code null} in the {@link UserUpdateDataRequestDTO}so the method can
-     * pass.
+     * Existing User data will be updated only if there's value present for the corresponding data in
+     * UserUpdateDataRequestDTO. For instance, if a certain field has null/empty value in UserUpdateDataRequestDTO,
+     * it will not be updated.<br>
      * All the users have access to this method for their account.
      *
      * @param userDTO the DTO where we have data needed for updating the {@link User} information.
@@ -152,11 +153,6 @@ public class UserServiceImpl implements UserService {
 
         if (userDTO.image().length != 0) {
             user.setProfilePicture(userDTO.image());
-        }
-
-        if (StringUtils.isNotBlank(userDTO.officeName())) {
-            Office office = officeRepository.getReferenceById(userDTO.officeName());
-            user.setOffice(office);
         }
 
         userRepository.save(user);

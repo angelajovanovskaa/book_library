@@ -228,7 +228,6 @@ class UserServiceImplTest {
         UserUpdateDataRequestDTO userDTO = new UserUpdateDataRequestDTO(
                 userId,
                 "",
-                "",
                 byteArray
         );
 
@@ -321,11 +320,11 @@ class UserServiceImplTest {
     private List<UserResponseDTO> getUserResponseDTOs() {
         UserResponseDTO user1 =
                 new UserResponseDTO(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                        "Martin Bojkovski", "martin@gmail.com", SKOPJE_OFFICE.getName(), null);
+                        "Martin Bojkovski", "martin@gmail.com", null);
 
         UserResponseDTO user2 =
                 new UserResponseDTO(UUID.fromString("4cfe701c-45ee-4a22-a8e1-bde61acd6f43"),
-                        "David Bojkovski", "david@gmail.com", SKOPJE_OFFICE.getName(), null);
+                        "David Bojkovski", "david@gmail.com", null);
 
         return List.of(user1, user2);
     }
