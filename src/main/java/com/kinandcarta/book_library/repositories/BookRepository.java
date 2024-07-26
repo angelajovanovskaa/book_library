@@ -12,6 +12,8 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
 
     Optional<Book> findByIsbn(String isbn);
 
+    void deleteByIsbn(String isbn);
+
     @Modifying
     @Query("UPDATE Book book SET book.ratingFromFirm = :rating WHERE book.isbn = :isbn")
     void updateRatingByIsbn(String isbn, double rating);
