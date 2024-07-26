@@ -10,5 +10,7 @@ maven-build:
   image: maven:3.9.8-eclipse-temurin-22
   stage: build
   script: "mvn clean install -U"
+
 remove-docker-unused-images:
+  stage: remove-docker-unused-images
   script: docker image prune -a -f
