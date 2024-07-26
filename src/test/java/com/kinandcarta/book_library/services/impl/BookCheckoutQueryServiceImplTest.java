@@ -21,10 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -319,7 +316,6 @@ class BookCheckoutQueryServiceImplTest {
         BookCheckout bookCheckout3 =
                 new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), user,
                         bookItems.get(2), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(2));
-
 
         return List.of(bookCheckout1, bookCheckout2, bookCheckout3);
     }
