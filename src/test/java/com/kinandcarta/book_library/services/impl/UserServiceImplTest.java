@@ -92,7 +92,6 @@ class UserServiceImplTest {
                 .withMessage("The credentials that you have entered don't match.");
     }
 
-
     @Test
     void changeUserPassword_oldPasswordDoesNotMatch_throwsIncorrectPasswordException() {
         // given
@@ -328,6 +327,4 @@ class UserServiceImplTest {
 
         return List.of(user1, user2);
     }
-
-
 }

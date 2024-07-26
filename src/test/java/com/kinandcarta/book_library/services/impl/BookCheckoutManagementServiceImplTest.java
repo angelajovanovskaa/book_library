@@ -65,7 +65,6 @@ class BookCheckoutManagementServiceImplTest {
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
                 .withMessage(
                         "You have reached the maximum number of borrowed books. 3 books borrowed already.");
-
     }
 
     @Test
@@ -211,8 +210,6 @@ class BookCheckoutManagementServiceImplTest {
     private List<BookItem> getBookItems() {
         String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
-        Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
-
         Book book1 =
                 new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
@@ -228,15 +225,6 @@ class BookCheckoutManagementServiceImplTest {
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
-
-        author.addBook(book1);
-        author.addBook(book2);
-        author.addBook(book3);
-
-        book1.getAuthors().add(author);
-        book2.getAuthors().add(author);
-        book3.getAuthors().add(author);
-
         BookItem bookItem1 =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.AVAILABLE, book1);
 
@@ -245,7 +233,6 @@ class BookCheckoutManagementServiceImplTest {
 
         BookItem bookItem3 =
                 new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"), BookItemState.AVAILABLE, book3);
-
 
         return List.of(bookItem1, bookItem2, bookItem3);
     }
@@ -258,15 +245,15 @@ class BookCheckoutManagementServiceImplTest {
     private List<BookCheckout> getBookCheckouts() {
         List<BookItem> bookItems = getBookItems();
         User user = getUser();
+        LocalDate date = LocalDate.now();
 
         BookCheckout bookCheckout1 =
                 new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user,
-                        bookItems.get(0), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().minusDays(5));
+                        bookItems.get(0), SKOPJE_OFFICE, date, null, date.minusDays(5));
 
         BookCheckout bookCheckout3 =
                 new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), user,
-                        bookItems.get(2), SKOPJE_OFFICE, LocalDate.now(), null, LocalDate.now().plusDays(14));
-
+                        bookItems.get(2), SKOPJE_OFFICE, date, null, date.plusDays(14));
 
         return List.of(bookCheckout1, bookCheckout3);
     }

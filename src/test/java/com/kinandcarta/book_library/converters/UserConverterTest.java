@@ -64,5 +64,6 @@ class UserConverterTest {
         assertThat(result.getFullName()).isEqualTo(FULL_NAME);
         assertThat(result.getEmail()).isEqualTo(EMAIL);
         assertThat(result.getPassword()).isEqualTo(PASSWORD);
+        assertThat(result).hasNoNullFieldsOrPropertiesExcept("id", "profilePicture", "role", "office");
     }
 }

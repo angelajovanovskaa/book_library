@@ -16,5 +16,4 @@ public class UserResponseMessages {
     public static final String USER_DELETED_RESPONSE = "The user has been successfully deleted";
 
     public static final String USER_PASSWORD_UPDATED_RESPONSE = "The password has been successfully updated.";
-
 }

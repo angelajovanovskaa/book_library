@@ -237,8 +237,6 @@ class BookCheckoutQueryServiceImplTest {
     private List<BookItem> getBookItems() {
         String[] genres = {String.valueOf(Genre.BIOGRAPHY), String.valueOf(Genre.HISTORY)};
 
-        Author author = new Author(UUID.fromString("3fa01d29-333a-4b1a-a620-bcb4a0ea5acc"), "AA AA", new HashSet<>());
-
         Book book1 =
                 new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
@@ -249,19 +247,6 @@ class BookCheckoutQueryServiceImplTest {
                         String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         genres, new HashSet<>(), new ArrayList<>());
 
-        Book book3 =
-                new Book("3333", SKOPJE_OFFICE, "Batman", "book description", "some summary", 555,
-                        String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        genres, new HashSet<>(), new ArrayList<>());
-
-        author.addBook(book1);
-        author.addBook(book2);
-        author.addBook(book3);
-
-        book1.getAuthors().add(author);
-        book2.getAuthors().add(author);
-        book3.getAuthors().add(author);
-
         BookItem bookItem1 =
                 new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"), BookItemState.BORROWED, book1);
 
@@ -271,10 +256,7 @@ class BookCheckoutQueryServiceImplTest {
         BookItem bookItem3 =
                 new BookItem(UUID.fromString("9f97a183-84dc-412c-8b66-fe71ce52ae2d"), BookItemState.BORROWED, book2);
 
-        BookItem bookItem4 =
-                new BookItem(UUID.fromString("9f97a183-84dc-412c-8b66-fe71ce52ae2d"), BookItemState.AVAILABLE, book3);
-
-        return List.of(bookItem1, bookItem2, bookItem3, bookItem4);
+        return List.of(bookItem1, bookItem2, bookItem3);
     }
 
     public User getUser() {
@@ -321,7 +303,6 @@ class BookCheckoutQueryServiceImplTest {
         return List.of(bookCheckoutDTO1, bookCheckoutDTO2, bookCheckoutDTO3);
     }
 
-
     private List<BookCheckout> getBookCheckouts() {
         List<BookItem> bookItems = getBookItems();
         User user = getUser();
@@ -361,5 +342,4 @@ class BookCheckoutQueryServiceImplTest {
 
         return List.of(bookCheckoutDTO1, bookCheckoutDTO2, bookCheckoutDTO3);
     }
-
 }

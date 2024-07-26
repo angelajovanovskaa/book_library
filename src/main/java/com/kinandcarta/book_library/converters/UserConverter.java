@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserConverter {
+
     /**
      * Converts a {@link User} entity to a response DTO containing the role, and excluding the profilePicture.
      * This response will only be accessible by the admin on the admin panel page.

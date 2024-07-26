@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class BookCheckoutConverter {
+
     /**
      * Converts a {@link BookCheckout} entity to a more detailed response DTO containing user and book item related data.
      * This detailed response will only be accessible by the admin on the admin panel page.
