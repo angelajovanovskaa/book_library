@@ -43,7 +43,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     List<Book> findBookByBookStatus(BookStatus bookStatus);
 
     @Query("SELECT b FROM Book b JOIN FETCH b.office WHERE b.isbn = :isbn AND b.office.name = :officeName")
-    Optional<Book> findByIsbnAndOffice_Name(@Param("isbn")String isbn, @Param("officeName") String officeName);
+    Optional<Book> findByIsbnAndOffice_Name(@Param("isbn") String isbn, @Param("officeName") String officeName);
 
     Optional<Book> findByIsbn(String isbn);
 
@@ -52,6 +52,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     List<Book> findBooksByLanguageAndOffice_Name(String language, String officeName);
 
     List<Book> findByLanguage(String language);
+
     @Query(value = "SELECT * FROM book WHERE genres @> ARRAY[:genres]::text[]", nativeQuery = true)
     List<Book> findBooksByGenresContaining(@Param("genres") String[] genres);
 
