@@ -1,7 +1,11 @@
 package com.kinandcarta.book_library.validators;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,107 +13,39 @@ class BookStatusTransitionValidatorTest {
 
     private final BookStatusTransitionValidator bookStatusTransitionValidator = new BookStatusTransitionValidator();
 
-    @Test
-    void isValid_changeBookStatusFromRequestedToPendingPurchase_returnsTrue() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.REQUESTED;
-        final BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
-
+    @ParameterizedTest
+    @MethodSource("provideParametersForTest")
+    void isValid_testBookStatusTransitions_returnsBoolean(BookStatus currentBookStatus, BookStatus newBookStatus,
+                                                          boolean expectedResult) {
         // when
         final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
         // then
-        assertThat(actualResult).isTrue();
+        assertThat(actualResult).isEqualTo(expectedResult);
     }
 
-    @Test
-    void isValid_changeBookStatusFromRequestedToRejected_returnsTrue() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.REQUESTED;
-        final BookStatus newBookStatus = BookStatus.REJECTED;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isTrue();
-    }
-
-    @Test
-    void isValid_changeBookStatusFromRequestedToInStock_returnsFalse() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.REQUESTED;
-        final BookStatus newBookStatus = BookStatus.IN_STOCK;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isFalse();
-    }
-
-    @Test
-    void isValid_changeBookStatusFromRejectedToPendingPurchase_returnsTrue() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.REJECTED;
-        final BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isTrue();
-    }
-
-    @Test
-    void isValid_changeBookStatusFromRejectedToInStock_returnsFalse() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.REJECTED;
-        final BookStatus newBookStatus = BookStatus.IN_STOCK;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isFalse();
-    }
-
-    @Test
-    void isValid_changeBookStatusFromPendingPurchaseToRejected_returnsTrue() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.PENDING_PURCHASE;
-        final BookStatus newBookStatus = BookStatus.REJECTED;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isTrue();
-    }
-
-    @Test
-    void isValid_changeBookStatusFromPendingPurchaseToInStock_returnsTrue() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.PENDING_PURCHASE;
-        final BookStatus newBookStatus = BookStatus.IN_STOCK;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isTrue();
-    }
-
-    @Test
-    void isValid_changeBookStatusFromPendingPurchaseToRequested_returnsFalse() {
-        // given
-        final BookStatus currentBookStatus = BookStatus.PENDING_PURCHASE;
-        final BookStatus newBookStatus = BookStatus.REQUESTED;
-
-        // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
-
-        // then
-        assertThat(actualResult).isFalse();
+    private static Stream<Arguments> provideParametersForTest() {
+        return Stream.of(
+                Arguments.of(BookStatus.REQUESTED, BookStatus.PENDING_PURCHASE, true),
+                Arguments.of(BookStatus.REQUESTED, BookStatus.REJECTED, true),
+                Arguments.of(BookStatus.REQUESTED, BookStatus.IN_STOCK, false),
+                Arguments.of(BookStatus.REQUESTED, BookStatus.CURRENTLY_UNAVAILABLE, false),
+                Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.REJECTED, true),
+                Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.IN_STOCK, true),
+                Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.REQUESTED, false),
+                Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.CURRENTLY_UNAVAILABLE, false),
+                Arguments.of(BookStatus.REJECTED, BookStatus.PENDING_PURCHASE, true),
+                Arguments.of(BookStatus.REJECTED, BookStatus.REQUESTED, false),
+                Arguments.of(BookStatus.REJECTED, BookStatus.IN_STOCK, false),
+                Arguments.of(BookStatus.REJECTED, BookStatus.CURRENTLY_UNAVAILABLE, false),
+                Arguments.of(BookStatus.IN_STOCK, BookStatus.CURRENTLY_UNAVAILABLE, true),
+                Arguments.of(BookStatus.IN_STOCK, BookStatus.REQUESTED, false),
+                Arguments.of(BookStatus.IN_STOCK, BookStatus.PENDING_PURCHASE, false),
+                Arguments.of(BookStatus.IN_STOCK, BookStatus.REJECTED, false),
+                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.IN_STOCK, true),
+                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.REQUESTED, false),
+                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.PENDING_PURCHASE, false),
+                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.REJECTED, false)
+        );
     }
 }
