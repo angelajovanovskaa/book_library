@@ -22,25 +22,27 @@ class RequestedBookConverterTest {
     @Test
     void toRequestedBookDTO_convertsRequestedBookToRequestedBookDTOActionIsValid_returnsRequestedBookDTO() {
         // given
+        Book book = new Book(
+                "isbn1",
+                OFFICE,
+                "title1",
+                "description1",
+                "summary1",
+                0,
+                "MK",
+                0.0,
+                0.0,
+                "image1",
+                BookStatus.REQUESTED,
+                null,
+                new HashSet<>(),
+                new ArrayList<>()
+        );
         final RequestedBook requestedBook = new RequestedBook(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 1L,
-                new Book(
-                        "isbn1",
-                        OFFICE,
-                        "title1",
-                        "description1",
-                        "summary1",
-                        0,
-                        "MK",
-                        0.0,
-                        0.0,
-                        "image1",
-                        BookStatus.REQUESTED,
-                        null,
-                        new HashSet<>(),
-                        new ArrayList<>()),
+                book,
                 new HashSet<>()
         );
 

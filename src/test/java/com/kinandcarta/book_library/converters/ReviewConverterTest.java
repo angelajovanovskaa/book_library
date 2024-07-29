@@ -24,36 +24,38 @@ class ReviewConverterTest {
     @Test
     void toReviewResponseDTO_convertsReviewToReviewResponseDTOActionIsValid_returnsReviewResponseDTO() {
         // given
+        Book book = new Book(
+                "isbn1",
+                OFFICE,
+                "title1",
+                "description1",
+                "summary1",
+                0,
+                "MK",
+                0.0,
+                0.0,
+                "image1",
+                BookStatus.REQUESTED,
+                new String[0],
+                new HashSet<>(),
+                new ArrayList<>()
+        );
+        User user = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-010000000000"),
+                "fullname1",
+                null,
+                "email1",
+                "USER",
+                "password1",
+                OFFICE
+        );
         final Review review = new Review(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 "message1",
                 1,
-                new Book(
-                        "isbn1",
-                        OFFICE,
-                        "title1",
-                        "description1",
-                        "summary1",
-                        0,
-                        "MK",
-                        0.0,
-                        0.0,
-                        "image1",
-                        BookStatus.REQUESTED,
-                        new String[0],
-                        new HashSet<>(),
-                        new ArrayList<>()
-                ),
-                new User(
-                        UUID.fromString("123e4567-e89b-12d3-a456-010000000000"),
-                        "fullname1",
-                        null,
-                        "email1",
-                        "USER",
-                        "password1",
-                        OFFICE
-                )
+                book,
+                user
         );
 
         // when
