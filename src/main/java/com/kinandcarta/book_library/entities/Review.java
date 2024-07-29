@@ -14,7 +14,6 @@ import static java.util.Objects.nonNull;
 @Getter
 @Setter
 @ToString
-
 @Entity
 public class Review {
 

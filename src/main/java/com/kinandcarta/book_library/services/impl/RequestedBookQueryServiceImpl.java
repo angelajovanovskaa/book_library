@@ -20,8 +20,8 @@ import java.util.UUID;
  * retrieving requested books by their status, and retrieving requested books by their ISBN.
  * </p>
  */
-@Service
 @RequiredArgsConstructor
+@Service
 public class RequestedBookQueryServiceImpl implements RequestedBookQueryService {
 
     private final RequestedBookRepository requestedBookRepository;

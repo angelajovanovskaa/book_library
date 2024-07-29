@@ -14,6 +14,7 @@ import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +49,7 @@ class ReviewManagementServiceImplTest {
     private ReviewConverter reviewConverter;
 
     @Mock
-    private BookAverageRatingCalculatorImpl calculateAverageRatingOnBook;
+    private BookAverageRatingCalculator calculateAverageRatingOnBook;
 
     @InjectMocks
     private ReviewManagementServiceImpl reviewManagementService;

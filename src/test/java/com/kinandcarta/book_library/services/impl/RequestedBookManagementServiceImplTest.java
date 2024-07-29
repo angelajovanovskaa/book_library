@@ -13,6 +13,7 @@ import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,36 +57,17 @@ class RequestedBookManagementServiceImplTest {
     private RequestedBookManagementServiceImpl requestedBookManagementService;
 
     @Test
-    void deleteRequestedBookById_requestedBookDeleteValid_returnUUI() {
+    void deleteRequestedBookByBookIsbn_requestedBookDeleteValid_returnUUI() {
         // given
-        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
         final String isbn = "isbn1";
-        RequestedBook requestedBook = getRequestedBook();
-
-        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
 
         // when
-        final UUID actualResult = requestedBookManagementService.deleteRequestedBookById(id);
+        final String actualResult = requestedBookManagementService.deleteRequestedBookByBookIsbn(isbn);
 
         // then
         verify(bookRepository).deleteByIsbn(isbn);
 
-        assertThat(actualResult).isEqualTo(id);
-    }
-
-    @Test
-    void deleteRequestedBookById_requestedBookWithIdNotFound_throwsException() {
-        // given
-        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-
-        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookById(id))
-                .withMessage("RequestedBook with id " + id + " not found");
-
-        verify(bookRepository, times(0)).deleteByIsbn(any());
+        assertThat(actualResult).isEqualTo(isbn);
     }
 
     @Test

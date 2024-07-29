@@ -24,50 +24,7 @@ class ReviewConverterTest {
     @Test
     void toReviewResponseDTO_convertsReviewToReviewResponseDTOActionIsValid_returnsReviewResponseDTO() {
         // given
-        final Review review = getReview();
-        final Book book = review.getBook();
-        final User user = review.getUser();
-        final ReviewResponseDTO reviewResponseDTO = new ReviewResponseDTO(
-                book.getIsbn(),
-                user.getEmail(),
-                LocalDate.now(),
-                review.getMessage(),
-                review.getRating()
-        );
-
-        // when
-        final ReviewResponseDTO actualResult = reviewConverter.toReviewResponseDTO(review);
-
-        // then
-        assertThat(actualResult).isEqualTo(reviewResponseDTO);
-    }
-
-    @Test
-    void toReview_convertsReviewRequestDTOToReviewActionIsValid_returnsReview() {
-        // given
-        final Review review = getReview();
-        final Book book = review.getBook();
-        final User user = review.getUser();
-        final ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(
-                book.getIsbn(),
-                user.getEmail(),
-                review.getMessage(),
-                review.getRating()
-        );
-
-        // when
-        final Review actualResult = reviewConverter.toReview(reviewRequestDTO);
-        actualResult.setId(UUID.fromString("123e4567-e89b-12d3-a456-100000000000"));
-        actualResult.setDate(LocalDate.now());
-        actualResult.setBook(book);
-        actualResult.setUser(user);
-
-        // then
-        assertThat(actualResult).isEqualTo(review);
-    }
-
-    private Review getReview() {
-        return new Review(
+        final Review review = new Review(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 "message1",
@@ -98,5 +55,37 @@ class ReviewConverterTest {
                         OFFICE
                 )
         );
+
+        // when
+        final ReviewResponseDTO actualResult = reviewConverter.toReviewResponseDTO(review);
+
+        // then
+        assertThat(actualResult.bookISBN()).isEqualTo("isbn1");
+        assertThat(actualResult.userEmail()).isEqualTo("email1");
+        assertThat(actualResult.date()).isEqualTo(LocalDate.now());
+        assertThat(actualResult.message()).isEqualTo("message1");
+        assertThat(actualResult.rating()).isEqualTo(1);
+    }
+
+    @Test
+    void toReview_convertsReviewRequestDTOToReviewActionIsValid_returnsReview() {
+        // given
+        final ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(
+                "isbn1",
+                "user1",
+                "message1",
+                1
+        );
+
+        // when
+        final Review actualResult = reviewConverter.toReview(reviewRequestDTO);
+
+        // then
+        assertThat(actualResult.getId()).isNull();
+        assertThat(actualResult.getDate()).isNull();
+        assertThat(actualResult.getMessage()).isEqualTo("message1");
+        assertThat(actualResult.getRating()).isEqualTo(1);
+        assertThat(actualResult.getBook()).isNull();
+        assertThat(actualResult.getUser()).isNull();
     }
 }

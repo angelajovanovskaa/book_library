@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @ToString
-
 @Entity
 public class RequestedBook {
 

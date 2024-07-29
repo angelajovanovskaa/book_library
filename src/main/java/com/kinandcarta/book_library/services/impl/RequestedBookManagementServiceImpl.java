@@ -30,8 +30,8 @@ import java.util.UUID;
  * operations related to book status changes.
  * </p>
  */
-@Service
 @RequiredArgsConstructor
+@Service
 public class RequestedBookManagementServiceImpl implements RequestedBookManagementService {
 
     private final RequestedBookRepository requestedBookRepository;
@@ -70,27 +70,21 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         return null;
     }
 
-    //todo: change javadoc, test, change by isbn
     /**
-     * Deletes a {@link RequestedBook} by its ID.
+     * Deletes a requested book by its ISBN.
      * <p>
-     * Removes the requested book record from the database than the associated {@link Book} will also be deleted.
+     * With the deletion of the {@link Book} tuple, the {@link RequestedBook} tuple is also deleted as well.
      * </p>
      *
-     * @param requestedBookId ID of the requested book to be deleted.
-     * @return {@code UUID} of the deleted requested book.
-     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
+     * @param bookIsbn ISBN of the requested book to be deleted.
+     * @return {@code String} the ISBN of the deleted requested book.
+     * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
      */
     @Override
     @Transactional
-    public UUID deleteRequestedBookById(UUID requestedBookId) {
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
-
-        Book book = requestedBook.getBook();
-        String bookIsbn = book.getIsbn();
+    public String deleteRequestedBookByBookIsbn(String bookIsbn) {
         bookRepository.deleteByIsbn(bookIsbn);
-
-        return requestedBookId;
+        return bookIsbn;
     }
 
     /**

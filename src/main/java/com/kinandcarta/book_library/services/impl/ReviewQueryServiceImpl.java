@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * This service provides methods for querying {@link Review} data.
@@ -20,8 +19,8 @@ import java.util.stream.Collectors;
  * retrieving reviews for a book by its ISBN, and getting the top 3 reviews for a book.
  * </p>
  */
-@Service
 @RequiredArgsConstructor
+@Service
 public class ReviewQueryServiceImpl implements ReviewQueryService {
 
     private final ReviewRepository reviewRepository;
@@ -40,7 +39,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         List<Review> reviews = reviewRepository.findAll();
         return reviews.stream()
                 .map(reviewConverter::toReviewResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -64,7 +63,8 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     /**
      * Retrieves reviews for a specific book identified by its ISBN.
      * <p>
-     * This method fetches all reviews for a book with the given ISBN and converts them to {@link ReviewResponseDTO} objects.
+     * This method fetches all reviews for a book with the given ISBN and converts them to {@link ReviewResponseDTO}
+     * objects.
      * </p>
      *
      * @param isbn ISBN of the book for which reviews are to be retrieved.
@@ -75,7 +75,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         List<Review> reviews = reviewRepository.findAllByBookIsbn(isbn);
         return reviews.stream()
                 .map(reviewConverter::toReviewResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -94,6 +94,6 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         List<Review> reviews = reviewRepository.findTop3ByBookIsbnOrderByRatingDesc(isbn);
         return reviews.stream()
                 .map(reviewConverter::toReviewResponseDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

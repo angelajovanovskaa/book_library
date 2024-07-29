@@ -22,24 +22,37 @@ class RequestedBookConverterTest {
     @Test
     void toRequestedBookDTO_convertsRequestedBookToRequestedBookDTOActionIsValid_returnsRequestedBookDTO() {
         // given
-        final UUID id = UUID.fromString("123e4567-e89b-12d3-a456-100000000000");
-        final Book book = new Book("isbn1", OFFICE, "title1", "description1", "summary1", 0, "MK", 0.0, 0.0, "image1",
-                BookStatus.REQUESTED, null, new HashSet<>(), new ArrayList<>());
-        final RequestedBook requestedBook = new RequestedBook(id, LocalDate.now(), 1L, book, new HashSet<>());
-        final RequestedBookDTO requestedBookDTO = new RequestedBookDTO(
-                id,
+        final RequestedBook requestedBook = new RequestedBook(
+                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 1L,
-                "isbn1",
-                BookStatus.REQUESTED,
-                "title1",
-                "image1"
+                new Book(
+                        "isbn1",
+                        OFFICE,
+                        "title1",
+                        "description1",
+                        "summary1",
+                        0,
+                        "MK",
+                        0.0,
+                        0.0,
+                        "image1",
+                        BookStatus.REQUESTED,
+                        null,
+                        new HashSet<>(),
+                        new ArrayList<>()),
+                new HashSet<>()
         );
 
         // when
         RequestedBookDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
 
         // then
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
+        assertThat(actualResult.id()).isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-100000000000"));
+        assertThat(actualResult.requestedDate()).isEqualTo(LocalDate.now());
+        assertThat(actualResult.likeCounter()).isEqualTo(1L);
+        assertThat(actualResult.bookStatus()).isEqualTo(BookStatus.REQUESTED);
+        assertThat(actualResult.title()).isEqualTo("title1");
+        assertThat(actualResult.image()).isEqualTo("image1");
     }
 }

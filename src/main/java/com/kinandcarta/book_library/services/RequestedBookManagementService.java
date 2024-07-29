@@ -9,7 +9,7 @@ public interface RequestedBookManagementService {
     //todo: create test for method saveRequestedBook()
     RequestedBookDTO saveRequestedBook(String bookISBN);
 
-    UUID deleteRequestedBookById(UUID requestedBookId);
+    String deleteRequestedBookByBookIsbn(String requestedBookIsbn);
 
     RequestedBookDTO changeBookStatus(UUID requestedBookId, BookStatus to);
 

@@ -30,8 +30,8 @@ import java.util.UUID;
  * book after inserting or updating a review.
  * </p>
  */
-@Service
 @RequiredArgsConstructor
+@Service
 public class ReviewManagementServiceImpl implements ReviewManagementService {
 
     private final ReviewRepository reviewRepository;
@@ -43,7 +43,8 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
     /**
      * Inserts a new review into the system and updates the book's rating.
      * <p>
-     * This method converts the {@link ReviewRequestDTO} to a {@link Review} entity, associates it with the specified book
+     * This method converts the {@link ReviewRequestDTO} to a {@link Review} entity, associates it with the specified
+     * book
      * and user, and saves it to the repository. The book's rating is then updated based on the new review.
      * </p>
      *
@@ -74,7 +75,8 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
     /**
      * Updates an existing review in the system.
      * <p>
-     * This method updates an existing review with the data provided in the {@link ReviewRequestDTO}. It also updates the
+     * This method updates an existing review with the data provided in the {@link ReviewRequestDTO}. It also updates
+     * the
      * book's rating based on the new review details.
      * </p>
      *
