@@ -2,29 +2,29 @@ package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.collections4.CollectionUtils;
 
-import java.util.*;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @Getter
 @Setter
-
+@ToString
 @Entity
 public class RequestedBook {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Date requestedDate;
+    private LocalDate requestedDate;
 
     private Long likeCounter = 1L;
 
+    @ToString.Exclude
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "book_isbn")
     @JoinColumn(name = "office_name")
@@ -34,28 +34,10 @@ public class RequestedBook {
     @JoinTable(name = "liked_by",
             joinColumns = @JoinColumn(name = "requested_book_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> users = new HashSet<>();
+    private Set<User> users;
 
-    public void addBook(Book book) {
-        if (nonNull(book)) {
-            this.book = book;
-        }
-    }
-
-    public void addUsers(Set<User> users) {
-        if (isNull(this.users)) {
-            this.users = new HashSet<>();
-        }
-
-        if (CollectionUtils.isNotEmpty(users)) {
-            users.forEach(this::addUser);
-        }
-    }
-
-    private void addUser(User user) {
-        if (nonNull(user)) {
-            this.users.add(user);
-        }
+    public void refreshLikeCounter() {
+        likeCounter = (long) users.size();
     }
 
     @Override

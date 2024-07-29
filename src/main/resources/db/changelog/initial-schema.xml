@@ -100,7 +100,7 @@
             <column name="office_name" type="VARCHAR(255) NOT NULL"/>
             <column name="author_id" type="UUID NOT NULL"/>
         </createTable>
-        
+
         <addPrimaryKey tableName="book_author"
                        columnNames="book_isbn, author_id, office_name"
                        constraintName="pk_book_author" />

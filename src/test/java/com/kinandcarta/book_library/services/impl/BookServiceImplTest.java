@@ -162,7 +162,7 @@ class BookServiceImplTest {
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> bookService.getBookByIsbn(isbn))
-                .withMessage("Book with isbn: " + isbn + " not found");
+                .withMessage("Book with ISBN: " + isbn + " not found");
     }
 
     @Test
@@ -279,7 +279,7 @@ class BookServiceImplTest {
         //  when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> bookService.deleteBook(isbn))
-                .withMessage("Book with isbn: " + isbn + " not found");
+                .withMessage("Book with ISBN: " + isbn + " not found");
 
         verify(bookRepository).existsById(bookId);
         verify(bookRepository, times(0)).deleteById(bookId);
@@ -315,7 +315,7 @@ class BookServiceImplTest {
         //  when & then
         assertThatThrownBy(() -> bookService.setBookStatusInStock(isbn))
                 .isInstanceOf(BookNotFoundException.class)
-                .hasMessageContaining("Book with isbn: " + isbn + " not found");
+                .hasMessageContaining("Book with ISBN: " + isbn + " not found");
 
         verify(bookRepository).findByIsbn(isbn);
         verify(bookRepository, never()).save(any());
