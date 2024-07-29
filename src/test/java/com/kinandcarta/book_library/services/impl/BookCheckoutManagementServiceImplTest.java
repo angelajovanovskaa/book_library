@@ -47,24 +47,37 @@ class BookCheckoutManagementServiceImplTest {
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
 
     @Test
-    void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
+    void borrowBookItem_theBookItemDoesNotExists_throwsBookItemNotFoundException() {
         // given
-        List<BookCheckout> bookCheckouts = getBookCheckouts();
+        UUID bookItemId = UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf23");
         User user = getUser();
-        BookItem bookItem = getBookItems().get(1);
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
-        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
-                List.of(bookCheckouts.getFirst(), bookCheckouts.getFirst(), bookCheckouts.getFirst()));
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+
+        // when && then
+        assertThatExceptionOfType(BookItemNotFoundException.class)
+                .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
+                .withMessage("The bookItem with id: " + bookItemId + " doesn't exist");
+    }
+
+    @Test
+    void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException() {
+        // given
+        BookItem bookItem = getBookItems().get(2);
+        UUID bookItemId = bookItem.getId();
+        User user = getUser();
+
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+
         // when && then
-        assertThatExceptionOfType(LimitReachedForBorrowedBooksException.class)
+        assertThatExceptionOfType(EntitiesInDifferentOfficesException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage(
-                        "You have reached the maximum number of borrowed books. 3 books borrowed already.");
+                .withMessage("You can't borrow a book from a different office!");
     }
 
     @Test
@@ -109,21 +122,40 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
-    void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException() {
+    void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
         // given
-        BookItem bookItem = getBookItems().get(2);
-        UUID bookItemId = bookItem.getId();
+        List<BookCheckout> bookCheckouts = getBookCheckouts();
         User user = getUser();
+        BookItem bookItem = getBookItems().get(1);
 
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+
+        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
+                List.of(bookCheckouts.getFirst(), bookCheckouts.getFirst(), bookCheckouts.getFirst()));
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+
+        // when && then
+        assertThatExceptionOfType(LimitReachedForBorrowedBooksException.class)
+                .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
+                .withMessage(
+                        "You have reached the maximum number of borrowed books. 3 books borrowed already.");
+    }
+
+    @Test
+    void returnBookItem_BookItemDoesNotExists_throwsBookItemNotFoundException() {
+        // given
+        UUID bookItemId = UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf23");
+        User user = getUser();
+
+        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
 
         // when && then
-        assertThatExceptionOfType(EntitiesInDifferentOfficesException.class)
-                .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("You can't borrow a book from a different office!");
+        assertThatExceptionOfType(BookItemNotFoundException.class)
+                .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
+                .withMessage("The bookItem with id: " + bookItemId + " doesn't exist");
     }
 
     @Test
@@ -206,7 +238,7 @@ class BookCheckoutManagementServiceImplTest {
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
-    private List<Book> getBooks(){
+    private List<Book> getBooks() {
         Book book1 =
                 new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
