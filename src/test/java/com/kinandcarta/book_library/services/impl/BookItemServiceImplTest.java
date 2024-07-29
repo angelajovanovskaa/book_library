@@ -96,7 +96,7 @@ class BookItemServiceImplTest {
         //  when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> bookItemService.insertBookItem(isbn))
-                .withMessage("Book with isbn: " + isbn + " not found");
+                .withMessage("Book with ISBN: " + isbn + " not found");
     }
 
     @Test

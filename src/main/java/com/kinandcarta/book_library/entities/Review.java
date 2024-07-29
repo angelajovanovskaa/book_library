@@ -3,25 +3,25 @@ package com.kinandcarta.book_library.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
 import static java.util.Objects.nonNull;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @Getter
 @Setter
-
+@ToString
 @Entity
 public class Review {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private Date date;
+    private LocalDate date;
 
     private String message;
 
