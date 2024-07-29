@@ -21,11 +21,11 @@ public class BookCheckout {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "book_item_id")
     private BookItem bookItem;
 
