@@ -65,7 +65,7 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException() {
         // given
-        BookItem bookItem = getBookItems().get(2);
+        BookItem bookItem = getBookItems().getLast();
         UUID bookItemId = bookItem.getId();
         User user = getUser();
 
@@ -103,13 +103,13 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_BookAlreadyBorrowedByUser_throwsBookAlreadyBorrowedByUserException() {
         // given
-        BookCheckout bookCheckouts = getBookCheckouts().getFirst();
+        BookCheckout bookCheckout = getBookCheckouts().getFirst();
         User user = getUser();
-        BookItem bookItem = getBookItems().get(1);
-        Book book = getBooks().get(1);
+        BookItem bookItem = getBookItems().getFirst();
+        Book book = getBooks().getFirst();
 
         given(bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
-                anyString(), any())).willReturn(Optional.of(bookCheckouts));
+                anyString(), any())).willReturn(Optional.of(bookCheckout));
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
@@ -126,7 +126,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         List<BookCheckout> bookCheckouts = getBookCheckouts();
         User user = getUser();
-        BookItem bookItem = getBookItems().get(1);
+        BookItem bookItem = getBookItems().getFirst();
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
@@ -197,12 +197,12 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOverdue() {
         // given
-        List<BookCheckout> bookCheckout = getBookCheckouts();
+        BookCheckout bookCheckout = getBookCheckouts().getFirst();
         BookItem bookItem = getBookItems().getFirst();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
-                Optional.of(bookCheckout.getFirst()));
+                Optional.of(bookCheckout));
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
@@ -218,7 +218,7 @@ class BookCheckoutManagementServiceImplTest {
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOnTime() {
         // given
         BookItem bookItem = getBookItems().getFirst();
-        BookCheckout bookCheckout = getBookCheckouts().get(1);
+        BookCheckout bookCheckout = getBookCheckouts().getLast();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
@@ -240,30 +240,22 @@ class BookCheckoutManagementServiceImplTest {
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
                         new String[5], new HashSet<>(), new ArrayList<>());
 
-        Book book2 =
-                new Book("2222", SKOPJE_OFFICE, "Homo sapiens11", "book description", "some summary", 555,
-                        String.valueOf(Language.MACEDONIAN), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        new String[5], new HashSet<>(), new ArrayList<>());
-
         Book book3 =
                 new Book("4444", SOFIJA_OFFICE, "Spiderman", "book description", "some summary", 555,
                         String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
                         new String[5], new HashSet<>(), new ArrayList<>());
 
-        return List.of(book1, book2, book3);
+        return List.of(book1, book3);
     }
 
     private List<BookItem> getBookItems() {
         BookItem bookItem1 = new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"),
                 BookItemState.AVAILABLE, getBooks().getFirst());
 
-        BookItem bookItem2 = new BookItem(UUID.fromString("93dc9a03-aa8f-45b2-80a4-8355fd98fd04"),
-                BookItemState.AVAILABLE, getBooks().get(1));
-
         BookItem bookItem3 = new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"),
                 BookItemState.AVAILABLE, getBooks().getLast());
 
-        return List.of(bookItem1, bookItem2, bookItem3);
+        return List.of(bookItem1, bookItem3);
     }
 
     private User getUser() {
@@ -272,18 +264,16 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     private List<BookCheckout> getBookCheckouts() {
-        User user = getUser();
-
         BookItem bookItem1 = getBookItems().getFirst();
         BookCheckout bookCheckout1 =
-                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem1,
+                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), getUser(), bookItem1,
                         SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.minusDays(5));
 
-        BookItem bookItem2 = getBookItems().get(1);
-        BookCheckout bookCheckout3 =
-                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), user, bookItem2,
+        BookItem bookItem2 = getBookItems().getLast();
+        BookCheckout bookCheckout2 =
+                new BookCheckout(UUID.fromString("7c1fff5f-8018-403f-8f51-6c35e5345c97"), getUser(), bookItem2,
                         SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
 
-        return List.of(bookCheckout1, bookCheckout3);
+        return List.of(bookCheckout1, bookCheckout2);
     }
 }
