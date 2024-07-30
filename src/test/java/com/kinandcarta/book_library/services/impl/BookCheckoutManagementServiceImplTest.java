@@ -29,6 +29,7 @@ import static org.mockito.BDDMockito.given;
 class BookCheckoutManagementServiceImplTest {
     private static final LocalDate DATE_NOW = LocalDate.now();
     private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
+    private static final String BOOK_ISBN = "1111";
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
     private static final Office SOFIJA_OFFICE = new Office("Sofija");
 
@@ -106,7 +107,6 @@ class BookCheckoutManagementServiceImplTest {
         BookCheckout bookCheckout = getBookCheckouts().getFirst();
         User user = getUser();
         BookItem bookItem = getBookItems().getFirst();
-        Book book = getBooks().getFirst();
 
         given(bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
                 anyString(), any())).willReturn(Optional.of(bookCheckout));
@@ -118,7 +118,7 @@ class BookCheckoutManagementServiceImplTest {
         // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The user already has an instance borrowed from the book with isbn: " + book.getIsbn());
+                .withMessage("The user already has an instance borrowed from the book with isbn: " + BOOK_ISBN);
     }
 
     @Test
@@ -234,33 +234,26 @@ class BookCheckoutManagementServiceImplTest {
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
-    private List<Book> getBooks() {
-        Book book1 =
-                new Book("1111", SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
-                        String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
-                        new String[5], new HashSet<>(), new ArrayList<>());
-
-        Book book3 =
-                new Book("4444", SOFIJA_OFFICE, "Spiderman", "book description", "some summary", 555,
-                        String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK,
-                        new String[5], new HashSet<>(), new ArrayList<>());
-
-        return List.of(book1, book3);
-    }
-
     private List<BookItem> getBookItems() {
+        Book book1 = new Book(BOOK_ISBN, SKOPJE_OFFICE, "Homo sapiens2", "book description", "some summary", 120,
+                String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.PENDING_PURCHASE,
+                new String[5], new HashSet<>(), new ArrayList<>());
+
         BookItem bookItem1 = new BookItem(UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75"),
-                BookItemState.AVAILABLE, getBooks().getFirst());
+                BookItemState.AVAILABLE, book1);
 
-        BookItem bookItem3 = new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"),
-                BookItemState.AVAILABLE, getBooks().getLast());
+        Book book2 = new Book("2222", SOFIJA_OFFICE, "Spiderman", "book description", "some summary", 555,
+                String.valueOf(Language.ENGLISH), 10.0, 9.0, "https://google.com", BookStatus.IN_STOCK, new String[5],
+                new HashSet<>(), new ArrayList<>());
 
-        return List.of(bookItem1, bookItem3);
+        BookItem bookItem2 =
+                new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"), BookItemState.AVAILABLE, book2);
+
+        return List.of(bookItem1, bookItem2);
     }
 
     private User getUser() {
-        return new User(UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"), "Martin Bojkovski", null,
-                "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
+        return new User(USER_ID, "Martin Bojkovski", null, "martin@gmail.com", "USER", "pw", SKOPJE_OFFICE);
     }
 
     private List<BookCheckout> getBookCheckouts() {
