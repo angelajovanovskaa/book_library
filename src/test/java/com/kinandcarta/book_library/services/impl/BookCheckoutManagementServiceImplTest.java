@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
     private static final LocalDate DATE_NOW = LocalDate.now();
+    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
     private static final Office SKOPJE_OFFICE = new Office("Skopje");
     private static final Office SOFIJA_OFFICE = new Office("Sofija");
 
@@ -50,11 +51,10 @@ class BookCheckoutManagementServiceImplTest {
     void borrowBookItem_theBookItemDoesNotExists_throwsBookItemNotFoundException() {
         // given
         UUID bookItemId = UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf23");
-        User user = getUser();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItemId);
 
         // when && then
         assertThatExceptionOfType(BookItemNotFoundException.class)
@@ -72,7 +72,7 @@ class BookCheckoutManagementServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItemId);
 
         // when && then
         assertThatExceptionOfType(EntitiesInDifferentOfficesException.class)
@@ -92,7 +92,7 @@ class BookCheckoutManagementServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItemId);
 
         // when && then
         assertThatExceptionOfType(BookItemAlreadyBorrowedException.class)
@@ -103,17 +103,17 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_BookAlreadyBorrowedByUser_throwsBookAlreadyBorrowedByUserException() {
         // given
-        List<BookCheckout> bookCheckouts = getBookCheckouts();
+        BookCheckout bookCheckouts = getBookCheckouts().getFirst();
         User user = getUser();
         BookItem bookItem = getBookItems().get(1);
         Book book = getBooks().get(1);
 
         given(bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
-                anyString(), any())).willReturn(Optional.of(bookCheckouts.getFirst()));
+                anyString(), any())).willReturn(Optional.of(bookCheckouts));
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
         // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
@@ -128,7 +128,7 @@ class BookCheckoutManagementServiceImplTest {
         User user = getUser();
         BookItem bookItem = getBookItems().get(1);
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
         given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
                 List.of(bookCheckouts.getFirst(), bookCheckouts.getFirst(), bookCheckouts.getFirst()));
@@ -146,11 +146,10 @@ class BookCheckoutManagementServiceImplTest {
     void returnBookItem_BookItemDoesNotExists_throwsBookItemNotFoundException() {
         // given
         UUID bookItemId = UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf23");
-        User user = getUser();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItemId);
 
         // when && then
         assertThatExceptionOfType(BookItemNotFoundException.class)
@@ -163,12 +162,11 @@ class BookCheckoutManagementServiceImplTest {
         // given
         BookItem bookItem = getBookItems().getFirst();
         UUID bookItemId = bookItem.getId();
-        User user = getUser();
 
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(Optional.empty());
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItemId);
 
         // when && then
         assertThatExceptionOfType(BookItemIsNotBorrowedException.class)
@@ -186,7 +184,7 @@ class BookCheckoutManagementServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
         // when
         String result = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
@@ -201,13 +199,12 @@ class BookCheckoutManagementServiceImplTest {
         // given
         List<BookCheckout> bookCheckout = getBookCheckouts();
         BookItem bookItem = getBookItems().getFirst();
-        User user = getUser();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
                 Optional.of(bookCheckout.getFirst()));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
         // when
         String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
@@ -221,14 +218,13 @@ class BookCheckoutManagementServiceImplTest {
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOnTime() {
         // given
         BookItem bookItem = getBookItems().getFirst();
-        User user = getUser();
         BookCheckout bookCheckout = getBookCheckouts().get(1);
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
                 Optional.of(bookCheckout));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
         // when
         String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
