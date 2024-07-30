@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.*;
 
-import static com.kinandcarta.book_library.services.impl.BookCheckoutServiceImplTestData.*;
+import static com.kinandcarta.book_library.services.impl.BookCheckoutServiceTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -72,7 +72,7 @@ class BookCheckoutManagementServiceImplTest {
         BookItem bookItem =
                 new BookItem(UUID.fromString("0a47a03f-dbc5-4b0c-9187-07e57f188be5"), BookItemState.AVAILABLE, book2);
 
-        User user = GET_USER();
+        User user = getUser();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
@@ -88,11 +88,11 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_BookItemAlreadyBorrowed_throwsBookItemAlreadyBorrowedException() {
         // given
-        BookItem bookItem = GET_BOOK_ITEM();
+        BookItem bookItem = getBookItem();
         bookItem.setBookItemState(BookItemState.BORROWED);
 
         UUID bookItemId = bookItem.getId();
-        User user = GET_USER();
+        User user = getUser();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
@@ -108,9 +108,9 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_BookAlreadyBorrowedByUser_throwsBookAlreadyBorrowedByUserException() {
         // given
-        BookCheckout bookCheckout = GET_BOOK_CHECKOUT();
-        User user = GET_USER();
-        BookItem bookItem = GET_BOOK_ITEM();
+        BookCheckout bookCheckout = getBookCheckout();
+        User user = getUser();
+        BookItem bookItem = getBookItem();
 
         given(bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
                 anyString(), any())).willReturn(Optional.of(bookCheckout));
@@ -128,9 +128,9 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_BorrowBorrowedBooksLimitReached_throwsLimitReachedForBorrowedBooksException() {
         // given
-        BookCheckout bookCheckout = GET_BOOK_CHECKOUT();
-        User user = GET_USER();
-        BookItem bookItem = GET_BOOK_ITEM();
+        BookCheckout bookCheckout = getBookCheckout();
+        User user = getUser();
+        BookItem bookItem = getBookItem();
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
@@ -164,7 +164,7 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void returnBookItem_BookItemIsNotBorrowed_throwsBookItemIsNotBorrowedException() {
         // given
-        BookItem bookItem = GET_BOOK_ITEM();
+        BookItem bookItem = getBookItem();
         UUID bookItemId = bookItem.getId();
 
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(Optional.empty());
@@ -182,8 +182,8 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_TheBorrowingIsSuccessful_returnsConfirmationMessage() {
         // given
-        User user = GET_USER();
-        BookItem bookItem = GET_BOOK_ITEM();
+        User user = getUser();
+        BookItem bookItem = getBookItem();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
@@ -201,8 +201,8 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOverdue() {
         // given
-        BookCheckout bookCheckout = GET_BOOK_CHECKOUT();
-        BookItem bookItem = GET_BOOK_ITEM();
+        BookCheckout bookCheckout = getBookCheckout();
+        BookItem bookItem = getBookItem();
 
         bookCheckout.setScheduledReturnDate(DATE_NOW.minusDays(3));
 
@@ -223,8 +223,8 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOnTime() {
         // given
-        BookItem bookItem = GET_BOOK_ITEM();
-        BookCheckout bookCheckout = GET_BOOK_CHECKOUT();
+        BookItem bookItem = getBookItem();
+        BookCheckout bookCheckout = getBookCheckout();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
