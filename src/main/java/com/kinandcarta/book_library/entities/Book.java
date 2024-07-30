@@ -17,7 +17,6 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @ToString
 @Getter
 @Setter
-
 @Entity
 @IdClass(BookId.class)
 public class Book {
@@ -28,6 +27,7 @@ public class Book {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Office office;
 
     private String title;

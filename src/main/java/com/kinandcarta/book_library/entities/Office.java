@@ -11,7 +11,6 @@ import java.util.Objects;
 @ToString
 @Getter
 @Setter
-
 @Entity
 public class Office {
     @Id

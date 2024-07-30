@@ -12,7 +12,6 @@ import java.util.UUID;
 @ToString
 @Getter
 @Setter
-
 @Entity
 @Table(name = "book_checkout")
 public class BookCheckout {
@@ -23,14 +22,17 @@ public class BookCheckout {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_item_id")
+    @ToString.Exclude
     private BookItem bookItem;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Office office;
 
     private LocalDate dateBorrowed;

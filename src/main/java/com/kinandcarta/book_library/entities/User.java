@@ -11,7 +11,6 @@ import java.util.UUID;
 @ToString
 @Getter
 @Setter
-
 @Entity
 @Table(name = "user_table")
 public class User {
@@ -32,6 +31,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Office office;
 
     @Override
