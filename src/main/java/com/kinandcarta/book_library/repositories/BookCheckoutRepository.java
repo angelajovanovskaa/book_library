@@ -16,39 +16,33 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
             "JOIN FETCH bc.bookItem bi " +
             "JOIN FETCH bi.book b " +
             "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE o.name = :officeName " +
+            "WHERE bc.office.name = :officeName " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByOffice_NameOrderByDateBorrowedDesc(@Param("officeName") String officeName);
+    List<BookCheckout> findAll(@Param("officeName") String officeName);
 
     @Query("SELECT bc FROM BookCheckout bc " +
             "JOIN FETCH bc.bookItem bi " +
             "JOIN FETCH bi.book b " +
             "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE o.name = :officeName " +
+            "WHERE bc.office.name = :officeName " +
             "ORDER BY bc.dateBorrowed DESC")
-    Page<BookCheckout> findByOffice_NameOrderByDateBorrowedDesc(@Param("officeName") String officeName,
-                                                                Pageable pageable);
+    Page<BookCheckout> findAll(@Param("officeName") String officeName, Pageable pageable);
+
+    @Query("SELECT bc FROM BookCheckout bc " +
+            "JOIN FETCH bc.bookItem bi " +
+            "JOIN FETCH bi.book b " +
+            "WHERE bc.user.id = :userId " +
+            "ORDER BY bc.dateBorrowed DESC")
+    List<BookCheckout> findByUser(@Param("userId") UUID userId);
 
     @Query("SELECT bc FROM BookCheckout bc " +
             "JOIN FETCH bc.bookItem bi " +
             "JOIN FETCH bi.book b " +
             "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE u.id = :userId " +
-            "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByUserIdOrderByDateBorrowedDesc(@Param("userId") UUID userId);
-
-    @Query("SELECT bc FROM BookCheckout bc " +
-            "JOIN FETCH bc.bookItem bi " +
-            "JOIN FETCH bi.book b " +
-            "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE o.name = :officeName " +
+            "WHERE bc.office.name = :officeName " +
             "AND LOWER(b.title) LIKE LOWER(CONCAT('%', :titleSearchTerm, '%')) " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByOffice_NameAndBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
+    List<BookCheckout> findByBookTitle(
             @Param("officeName") String officeName, @Param("titleSearchTerm") String titleSearchTerm);
 
     Optional<BookCheckout> findFirstByBookItemIdAndDateReturnedIsNull(UUID bookItemId);
@@ -56,12 +50,10 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
     @Query("SELECT bc FROM BookCheckout bc " +
             "JOIN FETCH bc.bookItem bi " +
             "JOIN FETCH bi.book b " +
-            "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE u.id = :userId " +
+            "WHERE bc.user.id = :userId " +
             "AND LOWER(b.title) LIKE LOWER(CONCAT('%', :titleSearchTerm, '%')) " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
+    List<BookCheckout> findByUserAndBookTitle(
             @Param("titleSearchTerm") String titleSearchTerm, @Param("userId") UUID userId);
 
     Optional<BookCheckout> findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(String bookISBN, UUID userId);
@@ -70,21 +62,19 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
             "JOIN FETCH bc.bookItem bi " +
             "JOIN FETCH bi.book b " +
             "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE o.name = :officeName " +
+            "WHERE bc.office.name = :officeName " +
             "AND bc.dateReturned IS NULL " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByOffice_NameAndDateReturnedIsNullOrderByDateBorrowedDesc(
+    List<BookCheckout> findAllActiveCheckouts(
             @Param("officeName") String officeName);
 
     @Query("SELECT bc FROM BookCheckout bc " +
             "JOIN FETCH bc.bookItem bi " +
             "JOIN FETCH bi.book b " +
             "JOIN FETCH bc.user u " +
-            "JOIN FETCH bc.office o " +
-            "WHERE o.name = :officeName " +
+            "WHERE bc.office.name = :officeName " +
             "AND bc.dateReturned IS NOT NULL " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByOffice_NameAndDateReturnedIsNotNullOrderByDateBorrowedDesc(
+    List<BookCheckout> findAllPastCheckouts(
             @Param("officeName") String officeName);
 }

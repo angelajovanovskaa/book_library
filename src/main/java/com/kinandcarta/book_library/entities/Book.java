@@ -26,7 +26,7 @@ public class Book {
     private String isbn;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
     private Office office;
 
@@ -56,7 +56,7 @@ public class Book {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_author", joinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")},
             inverseJoinColumns =
-    @JoinColumn(name = "author_id"))
+            @JoinColumn(name = "author_id"))
     @ToString.Exclude
     private Set<Author> authors;
 

@@ -40,8 +40,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts(String officeName) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByOffice_NameOrderByDateBorrowedDesc(officeName);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAll(officeName);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -61,8 +60,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
                                                                                              int pageSize,
                                                                                              String officeName) {
         Pageable pageable = PageRequest.of(numberOfPages, pageSize);
-        Page<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByOffice_NameOrderByDateBorrowedDesc(officeName, pageable);
+        Page<BookCheckout> bookCheckouts = bookCheckoutRepository.findAll(officeName, pageable);
 
         return bookCheckouts.map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO);
     }
@@ -76,8 +74,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts(String officeName) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNullOrderByDateBorrowedDesc(officeName);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllActiveCheckouts(officeName);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -92,8 +89,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllPastBookCheckouts(String officeName) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNotNullOrderByDateBorrowedDesc(officeName);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllPastCheckouts(officeName);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -110,9 +106,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
     @Override
     public List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
                                                                             String bookTitleSearchTerm) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByBookItem_Book_TitleContainingIgnoreCaseAndUserIdOrderByDateBorrowedDesc(
-                        bookTitleSearchTerm, userId);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByUserAndBookTitle(bookTitleSearchTerm, userId);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
     }
@@ -128,9 +122,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(
             String officeName, String titleSearchTerm) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByOffice_NameAndBookItem_Book_TitleContainingIgnoreCaseOrderByDateBorrowedDesc(
-                        officeName, titleSearchTerm);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByBookTitle(officeName, titleSearchTerm);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
@@ -145,7 +137,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId) {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(userId);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByUser(userId);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
     }
@@ -159,8 +151,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      */
     @Override
     public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate(String officeName) {
-        List<BookCheckout> bookCheckouts =
-                bookCheckoutRepository.findByOffice_NameAndDateReturnedIsNullOrderByDateBorrowedDesc(officeName);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllActiveCheckouts(officeName);
 
         return bookCheckouts.stream()
                 .filter(bookCheckout -> isBookCheckoutNearingReturnDate(bookCheckout.getScheduledReturnDate()))
