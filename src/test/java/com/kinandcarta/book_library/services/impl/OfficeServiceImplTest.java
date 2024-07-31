@@ -37,14 +37,14 @@ class OfficeServiceImplTest {
         assertThat(result).isEqualTo(officeResponseDTOS);
     }
 
-    List<Office> getOffices() {
+    private List<Office> getOffices() {
         Office office1 = new Office("Skopje");
         Office office2 = new Office("Sofija");
 
         return List.of(office1, office2);
     }
 
-    List<OfficeResponseDTO> getOfficeResponseDTOs() {
+    private List<OfficeResponseDTO> getOfficeResponseDTOs() {
         OfficeResponseDTO office1 = new OfficeResponseDTO("Skopje");
         OfficeResponseDTO office2 = new OfficeResponseDTO("Sofija");
 
