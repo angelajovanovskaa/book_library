@@ -12,7 +12,6 @@ import java.util.UUID;
 @ToString
 @Getter
 @Setter
-
 @Entity
 @Table(name = "book_checkout")
 public class BookCheckout {
@@ -21,16 +20,19 @@ public class BookCheckout {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_item_id")
+    @ToString.Exclude
     private BookItem bookItem;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Office office;
 
     private LocalDate dateBorrowed;

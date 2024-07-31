@@ -141,8 +141,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     }
 
     private boolean isBorrowedBooksLimitReached(UUID userId) {
-        List<BookCheckout> listOfBookCheckoutsWithUser =
-                bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(userId);
+        List<BookCheckout> listOfBookCheckoutsWithUser = bookCheckoutRepository.findByUser(userId);
 
         long countInstancesOfUser = listOfBookCheckoutsWithUser.stream()
                 .filter(bookCheckout -> bookCheckout.getDateReturned() == null)
