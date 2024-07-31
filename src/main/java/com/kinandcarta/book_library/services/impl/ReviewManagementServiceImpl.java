@@ -159,7 +159,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
 
     private Book getBook(String isbn, String officeName) {
         return bookRepository.findByIsbnAndOffice_Name(isbn, officeName)
-                .orElseThrow(() -> new BookNotFoundException(isbn));
+                .orElseThrow(() -> new BookNotFoundException(isbn, officeName));
     }
 
     private User getUser(String email) {
