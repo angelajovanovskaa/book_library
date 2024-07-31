@@ -17,13 +17,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.kinandcarta.book_library.services.impl.BookCheckoutServiceTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -187,9 +187,11 @@ class BookCheckoutManagementServiceImplTest {
         User user = getUser();
         BookItem bookItem = getBookItem();
         BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        LocalDate dateNow = LocalDate.now();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(bookReturnDateCalculatorService.calculateReturnDateOfBookItem(anyInt())).willReturn(dateNow.plusDays(5));
 
         BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutResponseDTO);
