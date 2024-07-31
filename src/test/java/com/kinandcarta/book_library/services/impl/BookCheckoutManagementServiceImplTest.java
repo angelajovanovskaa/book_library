@@ -134,7 +134,7 @@ class BookCheckoutManagementServiceImplTest {
 
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
 
-        given(bookCheckoutRepository.findByUserIdOrderByDateBorrowedDesc(any())).willReturn(
+        given(bookCheckoutRepository.findByUser(any())).willReturn(
                 List.of(bookCheckout, bookCheckout, bookCheckout));
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));

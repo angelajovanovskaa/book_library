@@ -108,7 +108,8 @@ class BookCheckoutQueryServiceImplTest {
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
 
-        given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), anyString())).willReturn(List.of(bookCheckout));
+        given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), anyString())).willReturn(
+                List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutDTO);
 
         // when
@@ -126,7 +127,8 @@ class BookCheckoutQueryServiceImplTest {
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDto();
 
-        given(bookCheckoutRepository.findByBookTitleContaining(anyString(), anyString())).willReturn(List.of(bookCheckout));
+        given(bookCheckoutRepository.findByBookTitleContaining(anyString(), anyString())).willReturn(
+                List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
                 bookCheckoutDTO);
 
