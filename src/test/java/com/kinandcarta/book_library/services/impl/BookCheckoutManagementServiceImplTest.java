@@ -1,6 +1,8 @@
 package com.kinandcarta.book_library.services.impl;
 
+import com.kinandcarta.book_library.converters.BookCheckoutConverter;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.entities.*;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -9,7 +11,6 @@ import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,13 +23,11 @@ import java.util.*;
 import static com.kinandcarta.book_library.services.impl.BookCheckoutServiceTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
-    private static final LocalDate DATE_NOW = LocalDate.now();
     private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
     private static final String BOOK_ISBN = "1111";
     private static final Office SOFIJA_OFFICE = new Office("Sofija");
@@ -44,6 +43,9 @@ class BookCheckoutManagementServiceImplTest {
 
     @Mock
     private BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService;
+
+    @Mock
+    private BookCheckoutConverter bookCheckoutConverter;
 
     @InjectMocks
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
@@ -180,63 +182,48 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
-    void borrowBookItem_TheBorrowingIsSuccessful_returnsConfirmationMessage() {
+    void borrowBookItem_TheBorrowingIsSuccessful_returnsBookCheckoutResponseDTO() {
         // given
         User user = getUser();
         BookItem bookItem = getBookItem();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        LocalDate dateNow = LocalDate.now();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(bookReturnDateCalculatorService.calculateReturnDateOfBookItem(anyInt())).willReturn(dateNow.plusDays(5));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutResponseDTO);
 
         // when
-        String result = bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO);
+        BookCheckoutResponseDTO result = bookCheckoutManagementService.borrowBookItem(bookCheckoutRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE);
+        assertThat(result).isEqualTo(bookCheckoutResponseDTO);
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.BORROWED);
     }
 
     @Test
-    void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOverdue() {
+    void returnBookItem_theBookItemReturnIsSuccessful_returnsBookCheckoutResponseDTO() {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookItem bookItem = getBookItem();
-
-        bookCheckout.setScheduledReturnDate(DATE_NOW.minusDays(3));
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        User user = getUser();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
                 Optional.of(bookCheckout));
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutResponseDTO);
 
         // when
-        String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
+        BookCheckoutResponseDTO result = bookCheckoutManagementService.returnBookItem(bookCheckoutRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE);
-        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
-    }
-
-    @Test
-    void returnBookItem_theBookItemReturnIsSuccessful_returnsConfirmationMessageThatTheReturnIsOnTime() {
-        // given
-        BookItem bookItem = getBookItem();
-        BookCheckout bookCheckout = getBookCheckout();
-
-        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(
-                Optional.of(bookCheckout));
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, bookItem.getId());
-
-        // when
-        String result = bookCheckoutManagementService.returnBookItem(bookCheckoutDTO);
-
-        // then
-        assertThat(result).isEqualTo(BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE);
+        assertThat(result).isEqualTo(bookCheckoutResponseDTO);
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 }

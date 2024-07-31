@@ -1,9 +1,10 @@
 package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 
 public interface BookCheckoutManagementService {
-    String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
+    BookCheckoutResponseDTO borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
 
-    String returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
+    BookCheckoutResponseDTO returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO);
 }
