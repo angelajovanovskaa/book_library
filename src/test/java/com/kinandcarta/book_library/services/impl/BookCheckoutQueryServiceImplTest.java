@@ -21,7 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static com.kinandcarta.book_library.services.impl.BookCheckoutServiceTestData.*;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
