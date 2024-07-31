@@ -19,7 +19,6 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
     List<Review> findAllByBookIsbnAndOfficeName(@Param("isbn") String isbn,
                                                 @Param("officeName") String officeName);
 
-    @EntityGraph(attributePaths = {"book.office", "user.office"})
     @Query("select r from Review r " +
             "join fetch r.book b " +
             "join fetch r.user u " +
