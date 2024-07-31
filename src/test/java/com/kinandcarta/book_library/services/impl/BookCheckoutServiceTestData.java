@@ -39,17 +39,17 @@ class BookCheckoutServiceTestData {
         User user = getUser();
 
         return new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem,
-                        SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
+                SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
     }
 
     static BookCheckoutWithUserAndBookItemInfoResponseDTO getBookCheckoutWithUserAndBookItemInfoResponseDto() {
         BookItem bookItem = getBookItem();
 
         return new BookCheckoutWithUserAndBookItemInfoResponseDTO(USER_FULL_NAME, bookItem.getId(), BOOK_TITLE,
-                        BOOK_ISBN, DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
+                BOOK_ISBN, DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
     }
 
     static BookCheckoutResponseDTO getBookCheckoutResponseDto() {
-        return new BookCheckoutResponseDTO(BOOK_TITLE, BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(2));
+        return new BookCheckoutResponseDTO(BOOK_TITLE, BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(5));
     }
 }

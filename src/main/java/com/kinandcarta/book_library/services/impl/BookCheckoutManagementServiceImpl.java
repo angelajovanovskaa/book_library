@@ -1,6 +1,8 @@
 package com.kinandcarta.book_library.services.impl;
 
+import com.kinandcarta.book_library.converters.BookCheckoutConverter;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
+import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.entities.*;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.*;
@@ -9,7 +11,6 @@ import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookCheckoutManagementService;
 import com.kinandcarta.book_library.services.BookReturnDateCalculatorService;
-import com.kinandcarta.book_library.utils.BookCheckoutResponseMessages;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     private static final int MAX_NUMBER_OF_BORROWED_BOOKS = 3;
 
     private final BookCheckoutRepository bookCheckoutRepository;
+    private final BookCheckoutConverter bookCheckoutConverter;
     private final BookItemRepository bookItemRepository;
     private final UserRepository userRepository;
     private final BookReturnDateCalculatorService bookReturnDateCalculatorService;
@@ -38,6 +40,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      * For this method to perform a successful borrowing of a bookItem, the following constraints must be satisfied by
      * the user:
      * <ul>
+     *     <li>Check if the bookItem that is given exists in the database</li>
      *     <li>Check if the user has reached the limit for borrowed books.</li>
      *     <li>Check if the book item being borrowed is available.</li>
      *     <li>Ensure the user does not already have an instance of the same book borrowed.</li>
@@ -47,7 +50,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      * dates are set, also the {@code bookItemState} is set to BORROWED.
      *
      * @param bookCheckoutDTO The DTO containing userId and bookItemId for the bookItem to be borrowed.
-     * @return A message indicating that the book was successfully borrowed.
+     * @return {@link BookCheckoutResponseDTO}
      * @throws BookItemNotFoundException             If the specified bookItemId does not correspond to any book item
      *                                               in the repository.
      * @throws EntitiesInDifferentOfficesException   if the user tries to borrow a book from a different office.
@@ -57,7 +60,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      */
     @Override
     @Transactional
-    public String borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
+    public BookCheckoutResponseDTO borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
         UUID bookItemId = bookCheckoutDTO.bookItemId();
         BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
@@ -99,7 +102,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         bookItem.setBookItemState(BookItemState.BORROWED);
         bookItemRepository.save(bookItem);
 
-        return BookCheckoutResponseMessages.BOOK_ITEM_BORROWED_RESPONSE;
+        return bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckout);
     }
 
     /**
@@ -108,19 +111,14 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
      * and updating its state to AVAILABLE. It also checks if the return was on time or overdue.
      *
      * @param bookCheckoutDTO The DTO containing userId and bookItemId for the bookItem to be returned.
-     * @return A message indicating the status of the book return:
-     * <ul>
-     *     <li>If the book return is overdue, it returns a message that the book return is overdue.</li>
-     *     <li>If the book is returned on the same date or before the scheduled return date, it returns a message
-     *     that the book is returned on time</li>
-     * </ul>
+     * @return {@link BookCheckoutResponseDTO}
      * @throws BookItemNotFoundException      If the specified bookItemId does not correspond to any book item in the
      *                                        repository.
      * @throws BookItemIsNotBorrowedException If the book item identified by bookItemId is not currently borrowed.
      */
     @Override
     @Transactional
-    public String returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
+    public BookCheckoutResponseDTO returnBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
         UUID bookItemId = bookCheckoutDTO.bookItemId();
         BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
@@ -135,9 +133,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         bookItem.setBookItemState(BookItemState.AVAILABLE);
         bookItemRepository.save(bookItem);
 
-        LocalDate scheduledReturnDate = bookCheckout.getScheduledReturnDate();
-
-        return resolveBookCheckoutResponseMessage(scheduledReturnDate, dateReturned);
+        return bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckout);
     }
 
     private boolean isBorrowedBooksLimitReached(UUID userId) {
@@ -156,13 +152,5 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
                         book.getIsbn(), userId);
 
         return bookCheckoutOptional.isPresent();
-    }
-
-    private String resolveBookCheckoutResponseMessage(LocalDate scheduledReturnDate, LocalDate dateReturned) {
-        if (scheduledReturnDate.isBefore(dateReturned)) {
-            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_OVERDUE_RESPONSE;
-        } else {
-            return BookCheckoutResponseMessages.BOOK_ITEM_RETURN_ON_TIME_RESPONSE;
-        }
     }
 }
