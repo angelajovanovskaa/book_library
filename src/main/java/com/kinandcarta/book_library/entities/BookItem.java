@@ -1,8 +1,14 @@
 package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookItemState;
+
 import jakarta.persistence.*;
-import lombok.*;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -26,10 +32,10 @@ public class BookItem {
     @Enumerated(EnumType.STRING)
     private BookItemState bookItemState;
 
-    @ManyToOne
-    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_isbn")
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Book book;
 
     public void addBook(Book book) {

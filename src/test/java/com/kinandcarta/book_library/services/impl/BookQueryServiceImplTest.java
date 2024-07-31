@@ -1,13 +1,14 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
+
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.entities.keys.BookId;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
@@ -28,23 +29,17 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-class BookServiceImplTest {
-
+class BookQueryServiceImplTest {
     @Mock
     private AuthorRepository authorRepository;
 
@@ -55,20 +50,20 @@ class BookServiceImplTest {
     private BookConverter bookConverter;
 
     @InjectMocks
-    private BookServiceImpl bookService;
-
+    private BookQueryServiceImpl bookService;
 
     @Test
     void getAllBooks_theListHasAtLeastOne_listOfBookDTOs() {
         // given
         List<Book> books = getBooks();
         List<BookDTO> bookDTOS = getBookDTOs();
+        String officeName = "Bristol";
 
-        given(bookRepository.findAll()).willReturn(books);
+        given(bookRepository.findAllBooksByOfficeName(anyString())).willReturn(books);
         given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
 
         //when
-        List<BookDTO> actualResult = bookService.getAllBooks();
+        List<BookDTO> actualResult = bookService.getAllBooks(officeName);
 
         //then
         assertThat(actualResult).isEqualTo(bookDTOS);
@@ -81,10 +76,12 @@ class BookServiceImplTest {
         int size = 2;
         BookStatus bookStatus = BookStatus.IN_STOCK;
         BookItemState bookItemState = BookItemState.AVAILABLE;
+        Office office = new Office("Bristol");
 
         List<Book> books = getBooks();
 
-        given(bookRepository.pagingAvailableBooks(bookStatus, bookItemState, PageRequest.of(page, size)))
+        given(bookRepository.pagingAvailableBooks(bookStatus, bookItemState, office.getName(), PageRequest.of(page,
+                size)))
                 .willReturn(new PageImpl<>(books));
 
         given(bookConverter.toBookDisplayDTO(any())).
@@ -92,7 +89,7 @@ class BookServiceImplTest {
 
         //  when
         Page<BookDisplayDTO> resultPage = bookService
-                .getPaginatedAvailableBooks(bookStatus, bookItemState, page, size);
+                .getPaginatedAvailableBooks(bookStatus, bookItemState, page, size, office.getName());
 
         //  then
         assertThat(resultPage).isNotNull();
@@ -106,13 +103,14 @@ class BookServiceImplTest {
         //  given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
+        Office office = new Office("Bristol");
 
-        given(bookRepository.findBooksByStatusAndAvailableItems(any(), any()))
+        given(bookRepository.findBooksByStatusAndAvailableItems(any(), any(), anyString()))
                 .willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         //  when
-        List<BookDisplayDTO> result = bookService.getAvailableBooks();
+        List<BookDisplayDTO> result = bookService.getAvailableBooks(office.getName());
 
         //  then
         assertThat(result).isNotNull();
@@ -124,12 +122,13 @@ class BookServiceImplTest {
         //  given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
+        String officeName = "Bristol";
 
-        given(bookRepository.findBookByBookStatus(BookStatus.REQUESTED)).willReturn(books);
+        given(bookRepository.findBookByBookStatusAndOffice_Name(any(), anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         //  when
-        List<BookDisplayDTO> result = bookService.getRequestedBooks();
+        List<BookDisplayDTO> result = bookService.getRequestedBooks(officeName);
 
         //  then
         assertThat(result).isNotNull();
@@ -142,13 +141,14 @@ class BookServiceImplTest {
         Book book = getBooks().getFirst();
         BookDTO expectedResult = getBookDTOs().getFirst();
 
-        given(bookRepository.findByIsbn(anyString())).willReturn(Optional.of(book));
+        given(bookRepository.findByIsbnAndOffice_Name(anyString(), anyString())).willReturn(Optional.of(book));
         given(bookConverter.toBookDTO(book)).willReturn(expectedResult);
 
         String isbn = "9412545414654";
+        String officeName = "Bristol";
 
         // when
-        BookDTO result = bookService.getBookByIsbn(isbn);
+        BookDTO result = bookService.getBookByIsbn(isbn, officeName);
 
         // then
         assertThat(result).isEqualTo(expectedResult);
@@ -158,10 +158,11 @@ class BookServiceImplTest {
     void getBookByIsbn_isbnDoesNotExist_throwsException() {
         // given
         String isbn = "1234567891234";
+        String officeName = "Bristol";
 
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookService.getBookByIsbn(isbn))
+                .isThrownBy(() -> bookService.getBookByIsbn(isbn, officeName))
                 .withMessage("Book with ISBN: " + isbn + " not found");
     }
 
@@ -171,13 +172,14 @@ class BookServiceImplTest {
         List<Book> books = getBooks();
         List<BookDTO> bookDTOS = getBookDTOs();
 
-        given(bookRepository.findBooksByTitleContainingIgnoreCase(anyString())).willReturn(books);
+        given(bookRepository.findByTitleContainingIgnoreCaseAndOffice_Name(anyString(), anyString())).willReturn(books);
         given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
 
         String title = "of us";
+        String officeName = "Bristol";
 
         //when
-        List<BookDTO> result = bookService.getBooksByTitle(title);
+        List<BookDTO> result = bookService.getBooksByTitleOffice(title, officeName);
 
         //then
         assertThat(result).isEqualTo(bookDTOS);
@@ -189,13 +191,14 @@ class BookServiceImplTest {
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
 
-        given(bookRepository.findByLanguage(anyString())).willReturn(books);
+        given(bookRepository.findBooksByLanguageAndOffice_Name(anyString(), anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         final String language = "ENGLISH";
+        String officeName = "Bristol";
 
         //  when
-        List<BookDisplayDTO> result = bookService.getBooksByLanguage(language);
+        List<BookDisplayDTO> result = bookService.getBooksByLanguage(language, officeName);
 
         //  then
         assertThat(result).isEqualTo(bookDisplayDTOS);
@@ -207,120 +210,19 @@ class BookServiceImplTest {
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
 
-        given(bookRepository.findBooksByGenresContaining(any())).willReturn(books);
+        given(bookRepository.findBooksByGenresContaining(any(), anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
+        String officeName = "Bristol";
 
         //  when
-        List<BookDisplayDTO> result = bookService.getBooksByGenresContaining(genres);
+        List<BookDisplayDTO> result = bookService.getBooksByGenresContaining(genres, officeName);
 
         //  then
         assertThat(result).isEqualTo(bookDisplayDTOS);
     }
 
-    @Test
-    void createBookWithAuthors_successfullyCreatedBook() {
-        //  given
-        final Book bookToSave = getBooks().getFirst();
-        final BookDTO bookDTO = getBookDTOs().getFirst();
-
-        given(bookConverter.toBookEntity(any(), any())).willReturn(bookToSave);
-        given(bookRepository.save(any())).willReturn(bookToSave);
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
-
-        //  when
-        BookDTO savedBookDTO = bookService.createBookWithAuthors(bookDTO);
-
-        //  then
-        assertThat(savedBookDTO).isNotNull();
-        assertThat(savedBookDTO.isbn()).isEqualTo("9412545414654");
-        assertThat(savedBookDTO.title()).isEqualTo("Last Summer of us being together");
-        assertThat(savedBookDTO.description()).isEqualTo("A book about summer love");
-        assertThat(savedBookDTO.language()).isEqualTo(Language.ENGLISH.toString());
-        assertThat(savedBookDTO.bookStatus()).isEqualTo(BookStatus.REQUESTED);
-        assertThat(savedBookDTO.totalPages()).isEqualTo(120);
-        assertThat(savedBookDTO.image()).isEqualTo("https://google.com/images");
-        assertThat(savedBookDTO.ratingFromFirm()).isEqualTo(10.0);
-        assertThat(savedBookDTO.ratingFromWeb()).isEqualTo(10.0);
-        assertThat(savedBookDTO.genres()).isEqualTo(new String[]{Genre.MEMOIR.name(),
-                Genre.ROMANCE.name()});
-        assertThat(savedBookDTO.authorDTOS()).hasSize(1);
-        assertThat(savedBookDTO.authorDTOS())
-                .satisfiesExactly(a -> assertThat(a.fullName()).isEqualTo("Leah Thomas"));
-
-        verify(bookRepository).save(bookToSave);
-    }
-
-    @Test
-    void deleteBook_bookExists_successfullyDeletedBook() {
-        //  given
-        given(bookRepository.existsById(any())).willReturn(true);
-
-        final String isbn = "9780545414654";
-        BookId bookId = new BookId(isbn, "Sk");
-
-        //  when
-        String deletedBookIsbn = bookService.deleteBook(isbn);
-
-        //  then
-        assertThat(deletedBookIsbn).isEqualTo(isbn);
-        verify(bookRepository).deleteById(bookId);
-    }
-
-    @Test
-    void deleteBook_bookDoesNotExist_throwsException() {
-        //  given
-        given(bookRepository.existsById(any())).willReturn(false);
-
-        final String isbn = "123456789123";
-        BookId bookId = new BookId(isbn, "Sk");
-
-        //  when & then
-        assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookService.deleteBook(isbn))
-                .withMessage("Book with ISBN: " + isbn + " not found");
-
-        verify(bookRepository).existsById(bookId);
-        verify(bookRepository, times(0)).deleteById(bookId);
-    }
-
-    @Test
-    void setBookStatusInStock_bookIsbnIsValid_successfullyChangedStatus() {
-        //  given
-        List<Book> books = getBooks();
-        List<BookDTO> bookDTOS = getBookDTOs();
-
-        Book book = books.getFirst();
-        BookDTO bookDTO = bookDTOS.getFirst();
-
-        given(bookRepository.findByIsbn(anyString())).willReturn(Optional.of(book));
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
-
-        String isbn = "9412545414654";
-
-        //  when
-        BookDTO result = bookService.setBookStatusInStock(isbn);
-
-        //  then
-        assertThat(result).isEqualTo(bookDTO);
-    }
-
-    @Test
-    void setBookStatusInStock_bookDoesNotExist_throwsException() {
-        //  given
-        given(bookRepository.findByIsbn(anyString())).willReturn(Optional.empty());
-        String isbn = "1234567891234";
-
-        //  when & then
-        assertThatThrownBy(() -> bookService.setBookStatusInStock(isbn))
-                .isInstanceOf(BookNotFoundException.class)
-                .hasMessageContaining("Book with ISBN: " + isbn + " not found");
-
-        verify(bookRepository).findByIsbn(isbn);
-        verify(bookRepository, never()).save(any());
-        verify(bookConverter, never()).toBookDTO(any());
-    }
 
     private List<Book> getBooks() {
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
@@ -415,4 +317,9 @@ class BookServiceImplTest {
 
         return List.of(bookDisplayDTO1, bookDisplayDTO2);
     }
+
 }
+
+
+/*
+ * */
