@@ -10,7 +10,7 @@ public interface ReviewQueryService {
 
     ReviewResponseDTO getReviewById(UUID id);
 
-    List<ReviewResponseDTO> getAllReviewsByBookIsbn(String isbn);
+    List<ReviewResponseDTO> getAllReviewsByBookIsbnAndByOfficeName(String isbn, String officeName);
 
-    List<ReviewResponseDTO> getTopReviewsForDisplayInBookView(String isbn);
+    List<ReviewResponseDTO> getTopReviewsForDisplayInBookView(String isbn, String officeName);
 }

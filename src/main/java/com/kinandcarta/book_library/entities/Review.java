@@ -27,14 +27,17 @@ public class Review {
 
     private Integer rating;
 
-    @ManyToOne
     @ToString.Exclude
-    @JoinColumn(name = "book_isbn")
-    @JoinColumn(name = "office_name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumns({
+            @JoinColumn(name = "book_isbn", referencedColumnName = "isbn"),
+            @JoinColumn(name = "office_name", referencedColumnName = "office_name")
+    })
     private Book book;
 
-    @ManyToOne
     @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     public void addBook(Book book) {

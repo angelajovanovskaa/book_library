@@ -2,6 +2,8 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.ReviewConverter;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
+import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
@@ -67,12 +69,13 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
      * objects.
      * </p>
      *
-     * @param isbn ISBN of the book for which reviews are to be retrieved.
+     * @param isbn       ISBN of the book for which reviews are to be retrieved.
+     * @param officeName Name of hte {@link Office} where the {@link Book} belongs.
      * @return List of {@link ReviewResponseDTO} representing reviews for the book with the specified ISBN.
      */
     @Override
-    public List<ReviewResponseDTO> getAllReviewsByBookIsbn(String isbn) {
-        List<Review> reviews = reviewRepository.findAllByBookIsbn(isbn);
+    public List<ReviewResponseDTO> getAllReviewsByBookIsbnAndByOfficeName(String isbn, String officeName) {
+        List<Review> reviews = reviewRepository.findAllByBookIsbnAndOfficeName(isbn, officeName);
         return reviews.stream()
                 .map(reviewConverter::toReviewResponseDTO)
                 .toList();
@@ -85,13 +88,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
      * and converts them to {@link ReviewResponseDTO} objects.
      * </p>
      *
-     * @param isbn ISBN of the book for which top reviews are to be retrieved.
+     * @param isbn       ISBN of the book for which top reviews are to be retrieved.
+     * @param officeName Name of hte {@link Office} where the {@link Book} belongs.
      * @return List of the top 3 {@link ReviewResponseDTO} representing the highest-rated reviews for the book with the
      * specified ISBN.
      */
     @Override
-    public List<ReviewResponseDTO> getTopReviewsForDisplayInBookView(String isbn) {
-        List<Review> reviews = reviewRepository.findTop3ByBookIsbnOrderByRatingDesc(isbn);
+    public List<ReviewResponseDTO> getTopReviewsForDisplayInBookView(String isbn, String officeName) {
+        List<Review> reviews = reviewRepository.findTop3ByBookIsbnAndOfficeName(isbn, officeName);
         return reviews.stream()
                 .map(reviewConverter::toReviewResponseDTO)
                 .toList();
