@@ -49,7 +49,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         Pageable pageable = PageRequest.of(0, 1);
 
-        given(bookCheckoutRepository.findAll(anyString(), any())).willReturn(Page.empty(pageable));
+        given(bookCheckoutRepository.findAllPaginated(anyString(), any())).willReturn(Page.empty(pageable));
 
         // when
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -127,7 +127,7 @@ class BookCheckoutQueryServiceImplTest {
         UUID userId = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
         String bookTitle = "Homo";
 
-        given(bookCheckoutRepository.findByUserAndBookTitle(anyString(), any())).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), anyString())).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
                 expectedResult.getFirst());
 
@@ -151,7 +151,7 @@ class BookCheckoutQueryServiceImplTest {
 
         String bookTitleSearchTerm = "Homo ";
 
-        given(bookCheckoutRepository.findByBookTitle(anyString(), anyString())).willReturn(bookCheckouts);
+        given(bookCheckoutRepository.findByBookTitleContaining(anyString(), anyString())).willReturn(bookCheckouts);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
                 bookCheckoutDTOS.get(0), bookCheckoutDTOS.get(1), bookCheckoutDTOS.get(2));
 
@@ -210,7 +210,7 @@ class BookCheckoutQueryServiceImplTest {
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
                 new PageImpl<>(getBookCheckoutWithUserAndBookItemInfoResponseDTOs());
 
-        given(bookCheckoutRepository.findAll(anyString(), any())).willReturn(bookCheckoutsPages);
+        given(bookCheckoutRepository.findAllPaginated(anyString(), any())).willReturn(bookCheckoutsPages);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
                 bookCheckoutDTOsPages.getContent().get(0), bookCheckoutDTOsPages.getContent().get(1),
                 bookCheckoutDTOsPages.getContent().get(2));

@@ -26,7 +26,7 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
             "JOIN FETCH bc.user u " +
             "WHERE bc.office.name = :officeName " +
             "ORDER BY bc.dateBorrowed DESC")
-    Page<BookCheckout> findAll(@Param("officeName") String officeName, Pageable pageable);
+    Page<BookCheckout> findAllPaginated(@Param("officeName") String officeName, Pageable pageable);
 
     @Query("SELECT bc FROM BookCheckout bc " +
             "JOIN FETCH bc.bookItem bi " +
@@ -42,7 +42,7 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
             "WHERE bc.office.name = :officeName " +
             "AND LOWER(b.title) LIKE LOWER(CONCAT('%', :titleSearchTerm, '%')) " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByBookTitle(
+    List<BookCheckout> findByBookTitleContaining(
             @Param("officeName") String officeName, @Param("titleSearchTerm") String titleSearchTerm);
 
     Optional<BookCheckout> findFirstByBookItemIdAndDateReturnedIsNull(UUID bookItemId);
@@ -53,8 +53,8 @@ public interface BookCheckoutRepository extends JpaRepository<BookCheckout, UUID
             "WHERE bc.user.id = :userId " +
             "AND LOWER(b.title) LIKE LOWER(CONCAT('%', :titleSearchTerm, '%')) " +
             "ORDER BY bc.dateBorrowed DESC")
-    List<BookCheckout> findByUserAndBookTitle(
-            @Param("titleSearchTerm") String titleSearchTerm, @Param("userId") UUID userId);
+    List<BookCheckout> findByUserAndBookTitleContaining(@Param("userId") UUID userId,
+                                                        @Param("titleSearchTerm") String titleSearchTerm);
 
     Optional<BookCheckout> findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(String bookISBN, UUID userId);
 

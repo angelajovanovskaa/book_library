@@ -60,7 +60,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
                                                                                              int pageSize,
                                                                                              String officeName) {
         Pageable pageable = PageRequest.of(numberOfPages, pageSize);
-        Page<BookCheckout> bookCheckouts = bookCheckoutRepository.findAll(officeName, pageable);
+        Page<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllPaginated(officeName, pageable);
 
         return bookCheckouts.map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO);
     }
@@ -106,7 +106,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
     @Override
     public List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserForBook(UUID userId,
                                                                             String bookTitleSearchTerm) {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByUserAndBookTitle(bookTitleSearchTerm, userId);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByUserAndBookTitleContaining(userId, bookTitleSearchTerm);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutResponseDTO).toList();
     }
@@ -122,7 +122,7 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
     @Override
     public List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsForBookTitle(
             String officeName, String titleSearchTerm) {
-        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByBookTitle(officeName, titleSearchTerm);
+        List<BookCheckout> bookCheckouts = bookCheckoutRepository.findByBookTitleContaining(officeName, titleSearchTerm);
 
         return bookCheckouts.stream().map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO)
                 .toList();
