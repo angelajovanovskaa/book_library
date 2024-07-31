@@ -16,7 +16,6 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @ToString
 @Getter
 @Setter
-
 @Entity
 public class BookItem {
 

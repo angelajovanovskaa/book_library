@@ -17,7 +17,6 @@ import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 @ToString
 @Getter
 @Setter
-
 @Entity
 @IdClass(BookId.class)
 public class Book {
@@ -26,8 +25,9 @@ public class Book {
     private String isbn;
 
     @Id
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Office office;
 
     private String title;
@@ -56,7 +56,7 @@ public class Book {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_author", joinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")},
             inverseJoinColumns =
-    @JoinColumn(name = "author_id"))
+            @JoinColumn(name = "author_id"))
     @ToString.Exclude
     private Set<Author> authors;
 
