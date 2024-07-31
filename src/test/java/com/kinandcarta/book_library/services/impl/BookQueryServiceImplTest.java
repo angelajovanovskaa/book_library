@@ -317,9 +317,4 @@ class BookQueryServiceImplTest {
 
         return List.of(bookDisplayDTO1, bookDisplayDTO2);
     }
-
 }
-
-
-/*
- * */

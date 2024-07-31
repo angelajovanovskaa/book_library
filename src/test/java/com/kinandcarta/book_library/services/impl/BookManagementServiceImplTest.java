@@ -273,5 +273,4 @@ class BookManagementServiceImplTest {
 
         return List.of(bookDTO1, bookDTO2);
     }
-
 }
