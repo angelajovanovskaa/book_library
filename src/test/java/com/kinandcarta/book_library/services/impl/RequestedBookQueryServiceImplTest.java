@@ -1,12 +1,13 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
+import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
-import com.kinandcarta.book_library.services.RequestedBookQueryService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,9 +29,13 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class RequestedBookQueryServiceImplTest {
+    private final Office OFFICE = new Office("Skopje");
 
     @Mock
     private RequestedBookRepository requestedBookRepository;
+
+    @Mock
+    private OfficeRepository officeRepository;
 
     @Mock
     private RequestedBookConverter requestedBookConverter;
@@ -39,51 +44,58 @@ class RequestedBookQueryServiceImplTest {
     private RequestedBookQueryServiceImpl requestedBookQueryService;
 
     @Test
-    void getAllRequestedBooks_atLeastOneRequestedBookExists_returnListOfRequestedBookDTOs() {
+    void getAllRequestedBooksByOfficeName_atLeastOneRequestedBookExists_returnListOfRequestedBookDTOs() {
         // given
         List<RequestedBook> requestedBooks = getRequestedBooks();
-        List<RequestedBookDTO> requestedBookDTOS = getRequestedBookDTOs();
+        List<RequestedBookResponseDTO> requestedBookResponseDTOS = getRequestedBookDTOs();
+        final String officeName = OFFICE.getName();
 
-        given(requestedBookRepository.findAll()).willReturn(requestedBooks);
+        given(officeRepository.findById(any())).willReturn(Optional.of(OFFICE));
+        given(requestedBookRepository.findAllByBookOfficeName(any())).willReturn(requestedBooks);
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(
-                requestedBookDTOS.get(0),
-                requestedBookDTOS.get(1),
-                requestedBookDTOS.get(2)
+                requestedBookResponseDTOS.get(0),
+                requestedBookResponseDTOS.get(1),
+                requestedBookResponseDTOS.get(2)
         );
 
         // when
-        List<RequestedBookDTO> actualResult = requestedBookQueryService.getAllRequestedBooks();
+        List<RequestedBookResponseDTO> actualResult =
+                requestedBookQueryService.getAllRequestedBooksByOfficeName(officeName);
 
         // then
-        verify(requestedBookRepository).findAll();
+        verify(officeRepository).findById(any());
+        verify(requestedBookRepository).findAllByBookOfficeName(any());
         verify(requestedBookConverter, times(3)).toRequestedBookDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookDTOS);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTOS);
     }
 
     @Test
     void getRequestedBooksByBookStatus_givenStatus_returnListOfRequestedBookDTOs() {
         // given
-        BookStatus status = BookStatus.REQUESTED;
-        List<RequestedBook> requestedBooks = getRequestedBooks();
-        List<RequestedBookDTO> requestedBookDTOS = getRequestedBookDTOs();
+        final BookStatus status = BookStatus.REQUESTED;
+        final List<RequestedBook> requestedBooks = getRequestedBooks();
+        final List<RequestedBookResponseDTO> requestedBookResponseDTOS = getRequestedBookDTOs();
+        final String officeName = OFFICE.getName();
 
-        given(requestedBookRepository.findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status))
-                .willReturn(List.of(requestedBooks.get(0), requestedBooks.get(1), requestedBooks.get(2)));
+        given(requestedBookRepository.findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(any(),
+                any())).willReturn(List.of(requestedBooks.get(0), requestedBooks.get(1), requestedBooks.get(2)));
         given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(
-                requestedBookDTOS.get(0),
-                requestedBookDTOS.get(1),
-                requestedBookDTOS.get(2)
+                requestedBookResponseDTOS.get(0),
+                requestedBookResponseDTOS.get(1),
+                requestedBookResponseDTOS.get(2)
         );
 
         // when
-        List<RequestedBookDTO> actualResult = requestedBookQueryService.getRequestedBooksByBookStatus(status);
+        List<RequestedBookResponseDTO> actualResult =
+                requestedBookQueryService.getRequestedBooksByBookStatusAndOfficeName(status, officeName);
 
         // then
-        verify(requestedBookRepository).findAllByBookBookStatusOrderByLikeCounterDescBookTitleAsc(status);
+        verify(requestedBookRepository).findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(
+                any(), any());
         verify(requestedBookConverter, times(3)).toRequestedBookDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookDTOS);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTOS);
     }
 
     @Test
@@ -91,19 +103,19 @@ class RequestedBookQueryServiceImplTest {
         // given
         UUID requestedBookId = UUID.randomUUID();
         RequestedBook requestedBook = getRequestedBook();
-        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
 
-        given(requestedBookRepository.findById(requestedBookId)).willReturn(Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
+        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
+        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
-        RequestedBookDTO actualResult = requestedBookQueryService.getRequestedBookById(requestedBookId);
+        RequestedBookResponseDTO actualResult = requestedBookQueryService.getRequestedBookById(requestedBookId);
 
         // then
-        verify(requestedBookRepository).findById(requestedBookId);
-        verify(requestedBookConverter).toRequestedBookDTO(requestedBook);
+        verify(requestedBookRepository).findById(any());
+        verify(requestedBookConverter).toRequestedBookDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
 
     @Test
@@ -111,48 +123,52 @@ class RequestedBookQueryServiceImplTest {
         // given
         UUID requestedBookId = UUID.randomUUID();
 
-        given(requestedBookRepository.findById(requestedBookId)).willReturn(Optional.empty());
+        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         Assertions.assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookQueryService.getRequestedBookById(requestedBookId));
 
-        verify(requestedBookRepository).findById(requestedBookId);
+        verify(requestedBookRepository).findById(any());
         verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
     }
 
     @Test
     void getRequestedBookByISBN_givenValidISBN_returnRequestedBookDTO() {
         // given
-        String isbn = "isbn1";
-        RequestedBook requestedBook = getRequestedBook();
-        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        final String isbn = "isbn1";
+        final String officeName = OFFICE.getName();
+        final RequestedBook requestedBook = getRequestedBook();
+        final RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
 
-        given(requestedBookRepository.findByBookIsbn(isbn)).willReturn(Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
+        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+                Optional.of(requestedBook));
+        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
-        RequestedBookDTO actualResult = requestedBookQueryService.getRequestedBookByISBN(isbn);
+        RequestedBookResponseDTO actualResult =
+                requestedBookQueryService.getRequestedBookByISBNAndOfficeName(isbn, officeName);
 
         // then
-        verify(requestedBookRepository).findByBookIsbn(isbn);
-        verify(requestedBookConverter).toRequestedBookDTO(requestedBook);
+        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
+        verify(requestedBookConverter).toRequestedBookDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
 
     @Test
     void getRequestedBookByISBN_givenInvalidISBN_throwsException() {
         // given
-        String isbn = "invalidISBN";
+        final String isbn = "invalidISBN";
+        final String officeName = OFFICE.getName();
 
-        given(requestedBookRepository.findByBookIsbn(isbn)).willReturn(Optional.empty());
+        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
 
         // when & then
         Assertions.assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookQueryService.getRequestedBookByISBN(isbn));
+                .isThrownBy(() -> requestedBookQueryService.getRequestedBookByISBNAndOfficeName(isbn, officeName));
 
-        verify(requestedBookRepository).findByBookIsbn(isbn);
+        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
         verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
     }
 
@@ -183,8 +199,8 @@ class RequestedBookQueryServiceImplTest {
     }
 
 
-    private List<RequestedBookDTO> getRequestedBookDTOs() {
-        RequestedBookDTO requestedBookDTO1 = new RequestedBookDTO(
+    private List<RequestedBookResponseDTO> getRequestedBookDTOs() {
+        RequestedBookResponseDTO requestedBookResponseDTO1 = new RequestedBookResponseDTO(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 1L,
@@ -193,7 +209,7 @@ class RequestedBookQueryServiceImplTest {
                 "title1",
                 "image1"
         );
-        RequestedBookDTO requestedBookDTO2 = new RequestedBookDTO(
+        RequestedBookResponseDTO requestedBookResponseDTO2 = new RequestedBookResponseDTO(
                 UUID.fromString("123e4567-e89b-12d3-a456-2" +
                         "00000000000"),
                 LocalDate.now(),
@@ -203,7 +219,7 @@ class RequestedBookQueryServiceImplTest {
                 "title2",
                 "image2"
         );
-        RequestedBookDTO requestedBookDTO3 = new RequestedBookDTO(
+        RequestedBookResponseDTO requestedBookResponseDTO3 = new RequestedBookResponseDTO(
                 UUID.fromString("123e4567-e89b-12d3-a456-300000000000"),
                 LocalDate.now(),
                 1L,
@@ -213,14 +229,14 @@ class RequestedBookQueryServiceImplTest {
                 "image3"
         );
 
-        return List.of(requestedBookDTO1, requestedBookDTO2, requestedBookDTO3);
+        return List.of(requestedBookResponseDTO1, requestedBookResponseDTO2, requestedBookResponseDTO3);
     }
 
     private RequestedBook getRequestedBook() {
         return getRequestedBooks().getFirst();
     }
 
-    private RequestedBookDTO getRequestedBookDTO() {
+    private RequestedBookResponseDTO getRequestedBookDTO() {
         return getRequestedBookDTOs().getFirst();
     }
 }

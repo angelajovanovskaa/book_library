@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
-public record RequestedBookDTO(
+public record RequestedBookResponseDTO(
 
         UUID id,
 
@@ -31,7 +31,7 @@ public record RequestedBookDTO(
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        RequestedBookDTO that = (RequestedBookDTO) obj;
+        RequestedBookResponseDTO that = (RequestedBookResponseDTO) obj;
         return Objects.equals(id, that.id) &&
                 Objects.equals(requestedDate, that.requestedDate) &&
                 Objects.equals(likeCounter, that.likeCounter) &&

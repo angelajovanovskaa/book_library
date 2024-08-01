@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -57,15 +57,16 @@ class RequestedBookManagementServiceImplTest {
     private RequestedBookManagementServiceImpl requestedBookManagementService;
 
     @Test
-    void deleteRequestedBookByBookIsbn_requestedBookDeleteValid_returnUUI() {
+    void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
         // given
         final String isbn = "isbn1";
+        final String officeName = OFFICE.getName();
 
         // when
-        final String actualResult = requestedBookManagementService.deleteRequestedBookByBookIsbn(isbn);
+        final String actualResult = requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(isbn, officeName);
 
         // then
-        verify(bookRepository).deleteByIsbn(isbn);
+        verify(bookRepository).deleteByIsbnAndOfficeName(isbn, officeName);
 
         assertThat(actualResult).isEqualTo(isbn);
     }
@@ -75,15 +76,16 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = getRequestedBook();
         BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
-        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
         UUID requestedBookId = requestedBook.getId();
 
         given(requestedBookRepository.findById(requestedBookId)).willReturn(Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
+        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
 
         // when
-        RequestedBookDTO actualResult = requestedBookManagementService.changeBookStatus(requestedBookId, newBookStatus);
+        RequestedBookResponseDTO
+                actualResult = requestedBookManagementService.changeBookStatus(requestedBookId, newBookStatus);
 
         // then
         verify(requestedBookRepository).findById(any());
@@ -91,7 +93,7 @@ class RequestedBookManagementServiceImplTest {
         verify(bookRepository).save(any());
         verify(requestedBookConverter).toRequestedBookDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
 
     @Test
@@ -143,21 +145,22 @@ class RequestedBookManagementServiceImplTest {
         UUID requestedBookId = requestedBook.getId();
         User user = getUser();
         String email = user.getEmail();
-        RequestedBookDTO requestedBookDTO = getRequestedBookDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookDTO);
+        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
-        RequestedBookDTO actualResult = requestedBookManagementService.handleRequestedBookLike(requestedBookId, email);
+        RequestedBookResponseDTO
+                actualResult = requestedBookManagementService.handleRequestedBookLike(requestedBookId, email);
 
         // then
         verify(requestedBookRepository).findById(any());
         verify(userRepository).findByEmail(any());
         verify(requestedBookConverter).toRequestedBookDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookDTO);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
 
     @Test
@@ -221,8 +224,8 @@ class RequestedBookManagementServiceImplTest {
         );
     }
 
-    private RequestedBookDTO getRequestedBookDTO() {
-        return new RequestedBookDTO(
+    private RequestedBookResponseDTO getRequestedBookDTO() {
+        return new RequestedBookResponseDTO(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
                 1L,

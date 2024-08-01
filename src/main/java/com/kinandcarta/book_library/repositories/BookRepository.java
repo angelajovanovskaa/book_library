@@ -56,7 +56,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     @Query(value = "SELECT * FROM book WHERE genres @> ARRAY[:genres]::text[]", nativeQuery = true)
     List<Book> findBooksByGenresContaining(@Param("genres") String[] genres);
 
-    void deleteByIsbn(String isbn);
+    void deleteByIsbnAndOfficeName(String isbn, String officeName);
 
     @Modifying
     @Query("UPDATE Book book SET book.ratingFromFirm = :rating WHERE book.isbn = :isbn")

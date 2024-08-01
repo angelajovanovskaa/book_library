@@ -1,8 +1,10 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -41,10 +43,10 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     private final BookStatusTransitionValidator bookStatusTransitionValidator;
 
     /**
-     * Saves a new {@link RequestedBook} based on the provided ISBN.
+     * Saves a new {@link RequestedBook} based on the provided ISBN for the specified {@link Office}.
      * <p>
-     * Checks if the book with the given ISBN already exists in the database. If not, the method will
-     * call an external service to fetch the book details and create a new {@link RequestedBook}.
+     * Checks if the book with the given ISBN for the given office already exists in the database. If not, the method
+     * will call an external service to fetch the book details and create a new {@link RequestedBook}.
      * </p>
      * <p>
      * Constraints:
@@ -53,16 +55,18 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * </ul>
      * </p>
      *
-     * @param bookISBN ISBN of the book to be requested.
-     * @return {@link RequestedBookDTO} of the newly saved requested book.
+     * @param requestedBookRequestDTO Request DTO of the book that needs to be recommended.
+     * @return {@link RequestedBookResponseDTO} of the newly saved requested book.
      * @throws BookAlreadyPresentException If a book with the given ISBN already exists in the database.
      */
     @Override
-    public RequestedBookDTO saveRequestedBook(String bookISBN) {
-        Optional<Book> book = bookRepository.findByIsbn(bookISBN);
+    public RequestedBookResponseDTO saveRequestedBook(RequestedBookRequestDTO requestedBookRequestDTO) {
+        String bookISBN = requestedBookRequestDTO.bookIsbn();
+        String officeName = requestedBookRequestDTO.officeName();
+        Optional<Book> book = bookRepository.findByIsbnAndOffice_Name(bookISBN, officeName);
 
         if (book.isPresent()) {
-            throw new BookAlreadyPresentException(bookISBN);
+            throw new BookAlreadyPresentException(bookISBN, officeName);
         }
 
         //todo: implement method from book service that uses google books api to fetch given book
@@ -71,19 +75,20 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Deletes a requested book by its ISBN.
+     * Deletes a requested book by its ISBN and {@link Office} name.
      * <p>
      * With the deletion of the {@link Book} tuple, the {@link RequestedBook} tuple is also deleted as well.
      * </p>
      *
      * @param bookIsbn ISBN of the requested book to be deleted.
+     * @param officeName Name of the office where the requested book belongs.
      * @return {@code String} the ISBN of the deleted requested book.
      * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
      */
     @Override
     @Transactional
-    public String deleteRequestedBookByBookIsbn(String bookIsbn) {
-        bookRepository.deleteByIsbn(bookIsbn);
+    public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
+        bookRepository.deleteByIsbnAndOfficeName(bookIsbn, officeName);
         return bookIsbn;
     }
 
@@ -102,12 +107,12 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      *
      * @param requestedBookId UUID of the requested book.
      * @param newBookStatus   new status to set for the book.
-     * @return {@link RequestedBookDTO} of the updated requested book.
+     * @return {@link RequestedBookResponseDTO} of the updated requested book.
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      * @throws RequestedBookStatusException   If the status transition is not allowed.
      */
     @Override
-    public RequestedBookDTO changeBookStatus(UUID requestedBookId, BookStatus newBookStatus) {
+    public RequestedBookResponseDTO changeBookStatus(UUID requestedBookId, BookStatus newBookStatus) {
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 
         Book book = requestedBook.getBook();
@@ -133,12 +138,12 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      *
      * @param requestedBookId ID of the requested book.
      * @param userEmail       Email of the user liking or unliking the book.
-     * @return {@link RequestedBookDTO} with the updated like counter information.
+     * @return {@link RequestedBookResponseDTO} with the updated like counter information.
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      * @throws UserNotFoundException          If a user with the given email does not exist.
      */
     @Override
-    public RequestedBookDTO handleRequestedBookLike(UUID requestedBookId, String userEmail) {
+    public RequestedBookResponseDTO handleRequestedBookLike(UUID requestedBookId, String userEmail) {
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 
         User user = userRepository.findByEmail(userEmail)

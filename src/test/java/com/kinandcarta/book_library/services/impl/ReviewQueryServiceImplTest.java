@@ -8,7 +8,6 @@ import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
-import com.kinandcarta.book_library.services.ReviewQueryService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

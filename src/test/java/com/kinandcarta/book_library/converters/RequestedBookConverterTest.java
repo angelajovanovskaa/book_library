@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -47,7 +47,7 @@ class RequestedBookConverterTest {
         );
 
         // when
-        RequestedBookDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
+        RequestedBookResponseDTO actualResult = requestedBookConverter.toRequestedBookDTO(requestedBook);
 
         // then
         assertThat(actualResult.id()).isEqualTo(UUID.fromString("123e4567-e89b-12d3-a456-100000000000"));
