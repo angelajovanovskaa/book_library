@@ -1,8 +1,8 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -80,7 +80,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * With the deletion of the {@link Book} tuple, the {@link RequestedBook} tuple is also deleted as well.
      * </p>
      *
-     * @param bookIsbn ISBN of the requested book to be deleted.
+     * @param bookIsbn   ISBN of the requested book to be deleted.
      * @param officeName Name of the office where the requested book belongs.
      * @return {@code String} the ISBN of the deleted requested book.
      * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.

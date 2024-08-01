@@ -13,7 +13,6 @@ import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -63,7 +62,8 @@ class RequestedBookManagementServiceImplTest {
         final String officeName = OFFICE.getName();
 
         // when
-        final String actualResult = requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(isbn, officeName);
+        final String actualResult =
+                requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(isbn, officeName);
 
         // then
         verify(bookRepository).deleteByIsbnAndOfficeName(isbn, officeName);
