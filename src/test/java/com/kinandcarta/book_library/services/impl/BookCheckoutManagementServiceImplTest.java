@@ -11,14 +11,13 @@ import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import java.time.LocalDate;
+import java.util.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.LocalDate;
-import java.util.*;
 
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -186,7 +185,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         User user = getUser();
         BookItem bookItem = getBookItem();
-        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
         LocalDate dateNow = LocalDate.now();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
@@ -209,7 +208,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookItem bookItem = getBookItem();
-        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
         User user = getUser();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));

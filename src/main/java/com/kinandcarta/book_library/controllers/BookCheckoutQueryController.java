@@ -4,13 +4,12 @@ import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.services.BookCheckoutQueryService;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -51,7 +50,7 @@ public class BookCheckoutQueryController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/getAllExpiring")
+    @GetMapping("/getAllNearReturnDate")
     ResponseEntity<List<BookCheckoutReturnReminderResponseDTO>> getAllExpiring(
             @RequestParam String officeName) {
         List<BookCheckoutReturnReminderResponseDTO> result =
@@ -70,14 +69,14 @@ public class BookCheckoutQueryController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/getForUser/{userId}")
+    @GetMapping("/getAllBooksForUser/{userId}")
     ResponseEntity<List<BookCheckoutResponseDTO>> getAllFromUser(@PathVariable UUID userId) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/getForUserByTitleContaining/{userId}")
+    @GetMapping("/getAllBooksForUserByTitleContaining/{userId}")
     ResponseEntity<List<BookCheckoutResponseDTO>> getAllFromUserByBookTitle(@PathVariable UUID userId,
                                                                             @RequestParam String titleSearchTerm) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId,

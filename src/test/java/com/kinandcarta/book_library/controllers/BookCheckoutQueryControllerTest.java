@@ -7,6 +7,10 @@ import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +22,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +56,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllBookCheckoutsPath = BASE_PATH + "/getAll";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTOs =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
 
         given(bookCheckoutQueryService.getAllBookCheckouts(anyString())).willReturn(List.of(bookCheckoutDTOs));
 
@@ -81,7 +80,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllPaginatedBookCheckoutsPath = BASE_PATH + "/getAllPaginated";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
                 new PageImpl<>(List.of(bookCheckoutDTO));
 
@@ -100,7 +99,8 @@ class BookCheckoutQueryControllerTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
 
-        Map<String, Object> resultMap = objectMapper.readValue(jsonResult, new TypeReference<>() {});
+        Map<String, Object> resultMap = objectMapper.readValue(jsonResult, new TypeReference<>() {
+        });
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> content = objectMapper.convertValue(
                 resultMap.get("content"), new TypeReference<>() {});
@@ -117,7 +117,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllActiveBookCheckoutsPath = BASE_PATH + "/getAllActive";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
 
         given(bookCheckoutQueryService.getAllActiveBookCheckouts(anyString())).willReturn(List.of(bookCheckoutDTO));
 
@@ -164,7 +164,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllExpiring_atLeastOneCheckoutExists_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
-        final String getAllExpiringBookCheckoutsPath = BASE_PATH + "/getAllExpiring";
+        final String getAllExpiringBookCheckoutsPath = BASE_PATH + "/getAllNearReturnDate";
         BookCheckoutReturnReminderResponseDTO bookCheckoutDTO =
                 new BookCheckoutReturnReminderResponseDTO(USER_ID, BOOK_TITLE, DATE_NOW.plusDays(2));
 
@@ -191,7 +191,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllBookCheckoutsByTitleContainingPath = BASE_PATH + "/getAllByTitleContaining";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
 
         given(bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(anyString(), anyString())).willReturn(
                 List.of(bookCheckoutDTO));
@@ -218,8 +218,8 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllFromUser_atLeastOneCheckoutExists_returnsBookCheckoutResponseDTO() {
         // given
-        final String getAllUsersBookCheckoutPath = BASE_PATH + "/getForUser/{userId}";
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
+        final String getAllUsersBookCheckoutPath = BASE_PATH + "/getAllBooksForUser/{userId}";
+        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(any())).willReturn(
                 List.of(bookCheckoutDTO));
@@ -241,15 +241,16 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllFromUserByBookTitle_atLeastOneCheckoutExists_returnsListOfBookCheckoutResponseDTO() {
         // given
-        final String getAllUsersBookCheckoutByTitlePath = BASE_PATH + "/getForUserByTitleContaining/{userId}";
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
+        final String getAllUsersBookCheckoutByTitlePath = BASE_PATH + "/getAllBooksForUserByTitleContaining/{userId}";
+        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
-        given(bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(any(),anyString())).willReturn(
+        given(bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(any(), anyString())).willReturn(
                 List.of(bookCheckoutDTO));
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllUsersBookCheckoutByTitlePath, USER_ID).queryParam(BOOK_TITLE_PARAM, BOOK_TITLE))
+                mockMvc.perform(get(getAllUsersBookCheckoutByTitlePath, USER_ID).queryParam(BOOK_TITLE_PARAM,
+                                        BOOK_TITLE))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();

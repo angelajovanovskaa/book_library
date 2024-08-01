@@ -6,12 +6,11 @@ import com.kinandcarta.book_library.entities.*;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Language;
-import lombok.experimental.UtilityClass;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
+import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BookCheckoutTestData {
@@ -42,14 +41,14 @@ public class BookCheckoutTestData {
                 SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
     }
 
-    public static BookCheckoutWithUserAndBookItemInfoResponseDTO getBookCheckoutWithUserAndBookItemInfoResponseDto() {
+    public static BookCheckoutWithUserAndBookItemInfoResponseDTO getBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         BookItem bookItem = getBookItem();
 
         return new BookCheckoutWithUserAndBookItemInfoResponseDTO(USER_FULL_NAME, bookItem.getId(), BOOK_TITLE,
                 BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(14));
     }
 
-    public static BookCheckoutResponseDTO getBookCheckoutResponseDto() {
+    public static BookCheckoutResponseDTO getBookCheckoutResponseDTO() {
         return new BookCheckoutResponseDTO(BOOK_TITLE, BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(14));
     }
 }
