@@ -1,14 +1,10 @@
 package com.kinandcarta.book_library.repositories;
 
-import com.kinandcarta.book_library.entities.Review;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.kinandcarta.book_library.entities.*;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public interface ReviewRepository extends JpaRepository<Review, UUID> {
 

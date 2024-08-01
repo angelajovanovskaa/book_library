@@ -1,18 +1,13 @@
 package com.kinandcarta.book_library.repositories;
 
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.keys.BookId;
-import com.kinandcarta.book_library.enums.BookItemState;
-import com.kinandcarta.book_library.enums.BookStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.kinandcarta.book_library.entities.*;
+import com.kinandcarta.book_library.entities.keys.*;
+import com.kinandcarta.book_library.enums.*;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public interface BookRepository extends JpaRepository<Book, BookId> {
     @Query("SELECT DISTINCT b " +
@@ -59,7 +54,8 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     void deleteByIsbn(String isbn);
 
     @Modifying
-    @Query("UPDATE Book book SET book.ratingFromFirm = :rating WHERE book.isbn = :isbn AND book.office.name = " +
-            ":officeName")
+    @Query("update Book b " +
+            "set b.ratingFromFirm = :rating " +
+            "where b.isbn = :isbn and b.office.name = :officeName")
     void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
 }

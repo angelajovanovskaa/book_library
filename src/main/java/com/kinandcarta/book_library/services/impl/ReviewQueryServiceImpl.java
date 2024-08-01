@@ -1,18 +1,15 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.converters.ReviewConverter;
-import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Office;
-import com.kinandcarta.book_library.entities.Review;
-import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
-import com.kinandcarta.book_library.repositories.ReviewRepository;
-import com.kinandcarta.book_library.services.ReviewQueryService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.kinandcarta.book_library.converters.*;
+import com.kinandcarta.book_library.dtos.*;
+import com.kinandcarta.book_library.entities.*;
+import com.kinandcarta.book_library.exceptions.*;
+import com.kinandcarta.book_library.repositories.*;
+import com.kinandcarta.book_library.services.*;
+import lombok.*;
+import org.springframework.stereotype.*;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This service provides methods for querying {@link Review} data.
@@ -70,7 +67,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
      * </p>
      *
      * @param isbn       ISBN of the book for which reviews are to be retrieved.
-     * @param officeName Name of hte {@link Office} where the {@link Book} belongs.
+     * @param officeName Name of the {@link Office} where the {@link Book} belongs.
      * @return List of {@link ReviewResponseDTO} representing reviews for the book with the specified ISBN.
      */
     @Override
@@ -89,7 +86,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
      * </p>
      *
      * @param isbn       ISBN of the book for which top reviews are to be retrieved.
-     * @param officeName Name of hte {@link Office} where the {@link Book} belongs.
+     * @param officeName Name of the {@link Office} where the {@link Book} belongs.
      * @return List of the top 3 {@link ReviewResponseDTO} representing the highest-rated reviews for the book with the
      * specified ISBN.
      */

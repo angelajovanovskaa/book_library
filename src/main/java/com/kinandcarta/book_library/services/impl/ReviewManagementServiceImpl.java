@@ -1,27 +1,17 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.converters.ReviewConverter;
-import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
-import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Office;
-import com.kinandcarta.book_library.entities.Review;
-import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
-import com.kinandcarta.book_library.exceptions.UserNotFoundException;
-import com.kinandcarta.book_library.repositories.BookRepository;
-import com.kinandcarta.book_library.repositories.ReviewRepository;
-import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
-import com.kinandcarta.book_library.services.ReviewManagementService;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.kinandcarta.book_library.converters.*;
+import com.kinandcarta.book_library.dtos.*;
+import com.kinandcarta.book_library.entities.*;
+import com.kinandcarta.book_library.exceptions.*;
+import com.kinandcarta.book_library.repositories.*;
+import com.kinandcarta.book_library.services.*;
+import jakarta.transaction.*;
+import lombok.*;
+import org.springframework.stereotype.*;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
+import java.time.*;
+import java.util.*;
 
 /**
  * This service provides methods for managing {@link Review} entities.
@@ -59,15 +49,15 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
 
         LocalDate date = LocalDate.now();
         review.setDate(date);
-        String isbn = reviewRequestDTO.bookISBN();
-        String officeName = reviewRequestDTO.officeName();
-        Book book = getBook(isbn, officeName);
-        review.addBook(book);
         String email = reviewRequestDTO.userEmail();
         User user = getUser(email);
-        review.addUser(user);
+        review.setUser(user);
+        Office office = user.getOffice();
+        String officeName = office.getName();
+        String isbn = reviewRequestDTO.bookISBN();
+        Book book = getBook(isbn, officeName);
+        review.setBook(book);
         reviewRepository.save(review);
-
 
         double ratingFromFirm = calculateBookRating(isbn, officeName);
         bookRepository.updateRatingByIsbnAndOfficeName(ratingFromFirm, isbn, officeName);
@@ -92,7 +82,6 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
     public ReviewResponseDTO updateReview(ReviewRequestDTO reviewRequestDTO) {
         String email = reviewRequestDTO.userEmail();
         String isbn = reviewRequestDTO.bookISBN();
-        String officeName = reviewRequestDTO.officeName();
         Review review = reviewRepository.findByUserEmailAndBookIsbn(email, isbn)
                 .orElseThrow(() -> new ReviewNotFoundException(email, isbn));
 
@@ -104,6 +93,9 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
         review.setRating(newRatingFromUser);
         reviewRepository.save(review);
 
+        Book book = review.getBook();
+        Office office = book.getOffice();
+        String officeName = office.getName();
         double ratingFromFirm = calculateBookRating(isbn, officeName);
         bookRepository.updateRatingByIsbnAndOfficeName(ratingFromFirm, isbn, officeName);
 
@@ -127,9 +119,9 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
         reviewRepository.deleteById(reviewId);
 
         Book book = review.getBook();
-        String isbn = book.getIsbn();
         Office office = book.getOffice();
         String officeName = office.getName();
+        String isbn = book.getIsbn();
         double ratingFromFirm = calculateBookRating(isbn, officeName);
         bookRepository.updateRatingByIsbnAndOfficeName(ratingFromFirm, isbn, officeName);
 
@@ -144,9 +136,9 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
      * </p>
      *
      * @param isbn       ISBN of the {@link Book} whose rating needs to be updated.
-     * @param officeName Name of hte {@link Office} where the {@link Book} belongs.
+     * @param officeName Name of the {@link Office} where the {@link Book} belongs.
      */
-    private double calculateBookRating(String isbn, String officeName) {
+    protected double calculateBookRating(String isbn, String officeName) {
         List<Review> reviews = reviewRepository.findAllByBookIsbnAndOfficeName(isbn, officeName);
 
         if (reviews.isEmpty()) {

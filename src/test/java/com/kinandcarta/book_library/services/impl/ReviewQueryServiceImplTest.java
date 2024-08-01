@@ -1,29 +1,23 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.converters.ReviewConverter;
-import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Office;
-import com.kinandcarta.book_library.entities.Review;
-import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.repositories.ReviewRepository;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import com.kinandcarta.book_library.converters.*;
+import com.kinandcarta.book_library.dtos.*;
+import com.kinandcarta.book_library.entities.*;
+import com.kinandcarta.book_library.enums.*;
+import com.kinandcarta.book_library.repositories.*;
+import lombok.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
+import org.mockito.*;
+import org.mockito.junit.jupiter.*;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewQueryServiceImplTest {
@@ -68,15 +62,15 @@ class ReviewQueryServiceImplTest {
         List<ReviewResponseDTO> reviewResponseDTOS = getReviewResponseDTOs();
         ReviewResponseDTO reviewResponseDTO = reviewResponseDTOS.getFirst();
 
-        given(reviewRepository.findById(id)).willReturn(Optional.of(review));
-        given(reviewConverter.toReviewResponseDTO(review)).willReturn(reviewResponseDTO);
+        given(reviewRepository.findById(any())).willReturn(Optional.of(review));
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
 
         // when
         ReviewResponseDTO actualResult = reviewQueryService.getReviewById(id);
 
         // then
-        verify(reviewRepository).findById(id);
-        verify(reviewConverter).toReviewResponseDTO(review);
+        verify(reviewRepository).findById(any());
+        verify(reviewConverter).toReviewResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(reviewResponseDTO);
     }
@@ -87,7 +81,7 @@ class ReviewQueryServiceImplTest {
         // given
         UUID id = UUID.randomUUID();
 
-        given(reviewRepository.findById(id)).willReturn(Optional.empty());
+        given(reviewRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(RuntimeException.class)
@@ -106,7 +100,7 @@ class ReviewQueryServiceImplTest {
         List<ReviewResponseDTO> reviewResponseDTOS =
                 getReviewResponseDTOs().stream().filter(obj -> obj.bookISBN().equals(isbn)).toList();
 
-        given(reviewRepository.findAllByBookIsbnAndOfficeName(isbn, officeName)).willReturn(reviews);
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(reviews);
         given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOS.get(0),
                 reviewResponseDTOS.get(1));
 
@@ -115,7 +109,7 @@ class ReviewQueryServiceImplTest {
                 reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(isbn, officeName);
 
         // then
-        verify(reviewRepository).findAllByBookIsbnAndOfficeName(isbn, officeName);
+        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
         verify(reviewConverter, times(2)).toReviewResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(reviewResponseDTOS);

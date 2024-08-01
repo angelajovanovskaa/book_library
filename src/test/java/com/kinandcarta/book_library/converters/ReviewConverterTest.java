@@ -73,7 +73,6 @@ class ReviewConverterTest {
     void toReview_convertsReviewRequestDTOToReviewActionIsValid_returnsReview() {
         // given
         final ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(
-                "Skopje",
                 "isbn1",
                 "user1",
                 "message1",
