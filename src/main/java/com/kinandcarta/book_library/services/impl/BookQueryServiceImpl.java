@@ -11,7 +11,9 @@ import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.services.BookQueryService;
+
 import lombok.AllArgsConstructor;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -52,9 +54,9 @@ public class BookQueryServiceImpl implements BookQueryService {
      */
     @Override
     public BookDTO getBookByIsbn(String isbn, String officeName) {
-
         Book book = bookRepository.findByIsbnAndOffice_Name(isbn, officeName)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
+
         return bookConverter.toBookDTO(book);
     }
 

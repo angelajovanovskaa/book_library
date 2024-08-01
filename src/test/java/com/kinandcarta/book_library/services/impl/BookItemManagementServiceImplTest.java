@@ -104,6 +104,7 @@ class BookItemManagementServiceImplTest {
 
         final UUID id = UUID.fromString("a123456e-c933-43b7-b58d-d48054507061");
         String officeName = "Bristol";
+
         //  when & then
         assertThatExceptionOfType(BookItemNotFoundException.class)
                 .isThrownBy(() -> bookItemService.deleteById(id, officeName))

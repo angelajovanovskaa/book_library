@@ -172,6 +172,7 @@ class BookManagementServiceImplTest {
 
         String isbn = "9412545414654";
         String officeName = "Bristol";
+
         //  when
         BookDTO result = bookService.setBookStatusInStock(isbn, officeName);
 
@@ -185,6 +186,7 @@ class BookManagementServiceImplTest {
         given(bookRepository.findByIsbnAndOffice_Name(anyString(), anyString())).willReturn(Optional.empty());
         String isbn = "1234567891234";
         String officeName = "Bristol";
+
         //  when & then
         assertThatThrownBy(() -> bookService.setBookStatusInStock(isbn, officeName))
                 .isInstanceOf(BookNotFoundException.class)

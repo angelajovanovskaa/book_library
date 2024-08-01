@@ -99,5 +99,4 @@ public class BookManagementServiceImpl implements BookManagementService {
 
         return bookConverter.toBookDTO(foundBook);
     }
-
 }

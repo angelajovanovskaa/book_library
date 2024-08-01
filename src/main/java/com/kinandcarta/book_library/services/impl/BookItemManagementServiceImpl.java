@@ -110,6 +110,4 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
 
         return BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST;
     }
-
-
 }
