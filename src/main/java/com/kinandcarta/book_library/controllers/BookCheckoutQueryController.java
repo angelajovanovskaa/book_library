@@ -51,7 +51,7 @@ public class BookCheckoutQueryController {
     }
 
     @GetMapping("/getAllNearReturnDate")
-    ResponseEntity<List<BookCheckoutReturnReminderResponseDTO>> getAllExpiring(
+    ResponseEntity<List<BookCheckoutReturnReminderResponseDTO>> getAllNearReturnDate(
             @RequestParam String officeName) {
         List<BookCheckoutReturnReminderResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(officeName);
@@ -70,14 +70,14 @@ public class BookCheckoutQueryController {
     }
 
     @GetMapping("/getAllBooksForUser/{userId}")
-    ResponseEntity<List<BookCheckoutResponseDTO>> getAllFromUser(@PathVariable UUID userId) {
+    ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUser(@PathVariable UUID userId) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/getAllBooksForUserByTitleContaining/{userId}")
-    ResponseEntity<List<BookCheckoutResponseDTO>> getAllFromUserByBookTitle(@PathVariable UUID userId,
+    ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUserByTitleContaining(@PathVariable UUID userId,
                                                                             @RequestParam String titleSearchTerm) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId,
                 titleSearchTerm);
