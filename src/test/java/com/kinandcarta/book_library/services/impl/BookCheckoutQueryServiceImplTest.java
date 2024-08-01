@@ -5,7 +5,9 @@ import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
+import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +23,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-import static com.kinandcarta.book_library.services.impl.BookCheckoutServiceTestData.*;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -86,9 +88,14 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllPastBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutOfUserAndBookItemInfoResponseDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
+        User user = getUser();
+        BookItem bookItem = getBookItem();
+        BookCheckout bookCheckout =
+                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem,
+                        SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO("Martin Bojkovski", getBookItem().getId(),
+                        BOOK_TITLE, "1111", DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
 
         given(bookCheckoutRepository.findAllPastCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
