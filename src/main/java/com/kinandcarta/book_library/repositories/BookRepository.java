@@ -61,5 +61,5 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     @Modifying
     @Query("UPDATE Book book SET book.ratingFromFirm = :rating WHERE book.isbn = :isbn AND book.office.name = " +
             ":officeName")
-    void updateRatingByIsbnAndOfficeName(String isbn, String officeName, double rating);
+    void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
 }

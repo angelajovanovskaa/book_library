@@ -70,7 +70,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
 
 
         double ratingFromFirm = calculateBookRating(isbn, officeName);
-        bookRepository.updateRatingByIsbnAndOfficeName(isbn, officeName, ratingFromFirm);
+        bookRepository.updateRatingByIsbnAndOfficeName(ratingFromFirm, isbn, officeName);
 
         return reviewConverter.toReviewResponseDTO(review);
     }
@@ -105,7 +105,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
         reviewRepository.save(review);
 
         double ratingFromFirm = calculateBookRating(isbn, officeName);
-        bookRepository.updateRatingByIsbnAndOfficeName(isbn, officeName, ratingFromFirm);
+        bookRepository.updateRatingByIsbnAndOfficeName(ratingFromFirm, isbn, officeName);
 
         return reviewConverter.toReviewResponseDTO(review);
     }
@@ -131,7 +131,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
         Office office = book.getOffice();
         String officeName = office.getName();
         double ratingFromFirm = calculateBookRating(isbn, officeName);
-        bookRepository.updateRatingByIsbnAndOfficeName(isbn, officeName, ratingFromFirm);
+        bookRepository.updateRatingByIsbnAndOfficeName(ratingFromFirm, isbn, officeName);
 
         return reviewId;
     }

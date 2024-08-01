@@ -173,9 +173,7 @@ class ReviewManagementServiceImplTest {
         // then
         verify(reviewRepository).findById(id);
         verify(reviewRepository).deleteById(id);
-        verify(bookRepository).updateRatingByIsbnAndOfficeName(book.getIsbn(), OFFICE.getName(),
-                4.0); // Updated to match
-        // service call
+        verify(bookRepository).updateRatingByIsbnAndOfficeName(4.0, book.getIsbn(), OFFICE.getName());
 
         assertThat(actualResult).isEqualTo(id);
     }
