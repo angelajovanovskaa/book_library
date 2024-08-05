@@ -69,7 +69,8 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
             throw new BookAlreadyPresentException(bookIsbn, officeName);
         }
 
-        //todo: implement method from book service that uses google books api to fetch given book
+        //todo: implement method from book service that uses google books api to fetch given book & add the user to
+        // the books liked_by
 
         return null;
     }
