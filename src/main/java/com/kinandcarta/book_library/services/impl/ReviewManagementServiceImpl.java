@@ -147,7 +147,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
      * @param isbn       ISBN of the {@link Book} whose rating needs to be updated.
      * @param officeName Name of the {@link Office} where the {@link Book} belongs.
      */
-    protected double calculateBookRating(String isbn, String officeName) {
+    private double calculateBookRating(String isbn, String officeName) {
         List<Review> reviews = reviewRepository.findAllByBookIsbnAndOfficeName(isbn, officeName);
 
         if (reviews.isEmpty()) {

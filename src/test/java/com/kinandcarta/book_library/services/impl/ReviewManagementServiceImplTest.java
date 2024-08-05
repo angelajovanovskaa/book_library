@@ -8,6 +8,7 @@ import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
+import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
@@ -60,8 +61,8 @@ class ReviewManagementServiceImplTest {
         User user = getUser();
 
         given(reviewConverter.toReview(any())).willReturn(review);
-        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.of(book));
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.of(book));
         given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of(review));
         given(bookAverageRatingCalculator.getAverageRatingOnBook(any())).willReturn(1.0);
         given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
@@ -82,11 +83,42 @@ class ReviewManagementServiceImplTest {
     }
 
     @Test
+    void insertReview_reviewsIsEmpty_returnsZero() {
+        // given
+        Review review = getReview();
+        ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
+        ReviewResponseDTO reviewResponseDTO = getReviewResponseDTO();
+        Book book = getBook();
+        User user = getUser();
+
+        given(reviewConverter.toReview(any())).willReturn(review);
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.of(book));
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of());
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
+
+        // when
+        double actualResult = reviewManagementService.insertReview(reviewRequestDTO).rating();
+
+        // then
+        verify(reviewConverter).toReview(any());
+        verify(bookRepository).findByIsbnAndOffice_Name(any(), any());
+        verify(userRepository).findByEmail(any());
+        verify(reviewRepository).save(any());
+        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
+        verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
+        verify(reviewConverter).toReviewResponseDTO(any());
+
+        assertThat(actualResult).isEqualTo(0.0);
+    }
+
+    @Test
     @SneakyThrows
     void insertReview_userWithEmailDoesNotExist_throwsException() {
         // given
         Review review = getReview();
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
+        String userEmail = reviewRequestDTO.userEmail();
 
         given(reviewConverter.toReview(any())).willReturn(review);
         given(userRepository.findByEmail(any())).willReturn(Optional.empty());
@@ -94,7 +126,7 @@ class ReviewManagementServiceImplTest {
         // when & then
         assertThatExceptionOfType(UserNotFoundException.class)
                 .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
-                .withMessage("User with email: " + reviewRequestDTO.userEmail() + " not found");
+                .withMessage("User with email: " + userEmail + " not found");
 
         verify(reviewRepository, times(0)).save(any());
         verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
@@ -106,14 +138,18 @@ class ReviewManagementServiceImplTest {
         // given
         Review review = getReview();
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
+        User user = getUser();
+        String isbn = "isbn1";
+        String officeName = "Skopje kancelarija";
 
         given(reviewConverter.toReview(any())).willReturn(review);
-        given(userRepository.findByEmail(any())).willReturn(Optional.empty());
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.empty());
 
         // when & then
-        assertThatExceptionOfType(UserNotFoundException.class)
+        assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
-                .withMessage("User with email: " + reviewRequestDTO.userEmail() + " not found");
+                .withMessage("Book with ISBN: " + isbn + " in office: " + officeName + " not found");
 
         verify(reviewRepository, times(0)).save(any());
         verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
@@ -142,23 +178,6 @@ class ReviewManagementServiceImplTest {
         verify(reviewConverter).toReviewResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(reviewResponseDTO);
-    }
-
-    @Test
-    void calculateBookRating_noReviews_returnZero() {
-        // given
-        String isbn = "isbn1";
-        String officeName = "Skopje kancelarija";
-        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(Collections.emptyList());
-
-        // when
-        double actualResult = reviewManagementService.calculateBookRating(isbn, officeName);
-
-        // then
-        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
-        verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
-
-        assertThat(actualResult).isEqualTo(0.0);
     }
 
     @Test
@@ -248,7 +267,7 @@ class ReviewManagementServiceImplTest {
                 getUser().getEmail(),
                 LocalDate.now(),
                 "message1",
-                1
+                0
         );
     }
 
