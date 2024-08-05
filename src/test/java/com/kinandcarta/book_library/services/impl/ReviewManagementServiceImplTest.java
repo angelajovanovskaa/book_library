@@ -89,6 +89,8 @@ class ReviewManagementServiceImplTest {
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
         ReviewResponseDTO reviewResponseDTO = getReviewResponseDTO();
         Book book = getBook();
+        String bookIsbn = book.getIsbn();
+        String officeName = OFFICE.getName();
         User user = getUser();
 
         given(reviewConverter.toReview(any())).willReturn(review);
@@ -106,6 +108,7 @@ class ReviewManagementServiceImplTest {
         verify(userRepository).findByEmail(any());
         verify(reviewRepository).save(any());
         verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
+        verify(bookRepository).updateRatingByIsbnAndOfficeName(0, bookIsbn, officeName);
         verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
         verify(reviewConverter).toReviewResponseDTO(any());
 
