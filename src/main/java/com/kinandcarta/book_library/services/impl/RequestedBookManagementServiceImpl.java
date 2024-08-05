@@ -17,13 +17,11 @@ import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
-import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * This service provides methods for managing {@link RequestedBook} entities.
@@ -61,12 +59,14 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      */
     @Override
     public RequestedBookResponseDTO saveRequestedBook(RequestedBookRequestDTO requestedBookRequestDTO) {
-        String bookISBN = requestedBookRequestDTO.bookIsbn();
-        String officeName = requestedBookRequestDTO.officeName();
-        Optional<Book> book = bookRepository.findByIsbnAndOffice_Name(bookISBN, officeName);
-
-        if (book.isPresent()) {
-            throw new BookAlreadyPresentException(bookISBN, officeName);
+        String userEmail = requestedBookRequestDTO.userEmail();
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException(userEmail));
+        Office office = user.getOffice();
+        String officeName = office.getName();
+        String bookIsbn = requestedBookRequestDTO.bookIsbn();
+        Optional<Book> optionalBook = bookRepository.findByIsbn(bookIsbn);
+        if (optionalBook.isPresent()) {
+            throw new BookAlreadyPresentException(bookIsbn, officeName);
         }
 
         //todo: implement method from book service that uses google books api to fetch given book
@@ -86,7 +86,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
      */
     @Override
-    @Transactional
     public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
         bookRepository.deleteByIsbnAndOfficeName(bookIsbn, officeName);
         return bookIsbn;

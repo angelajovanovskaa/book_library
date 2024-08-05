@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.services;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.enums.BookStatus;
-
 import java.util.UUID;
 
 public interface RequestedBookManagementService {

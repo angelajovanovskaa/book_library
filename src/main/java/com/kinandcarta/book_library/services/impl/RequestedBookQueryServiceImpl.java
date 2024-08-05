@@ -10,12 +10,11 @@ import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * Service implementation for querying {@link RequestedBook} data.
@@ -57,15 +56,15 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      * Retrieves all {@link RequestedBook} objects for {@link Office} with the given {@link BookStatus}.
      * <hr>
      *
-     * @param status     {@link BookStatus} representing the book status.
+     * @param bookStatus {@link BookStatus} representing the book status.
      * @param officeName Representing the office name where the requested books are fetched from.
      * @return List of {@link RequestedBookResponseDTO} with the specified status for the specified office.
      */
     @Override
-    public List<RequestedBookResponseDTO> getRequestedBooksByBookStatusAndOfficeName(BookStatus status,
+    public List<RequestedBookResponseDTO> getRequestedBooksByBookStatusAndOfficeName(BookStatus bookStatus,
                                                                                      String officeName) {
         List<RequestedBook> requestedBooks = requestedBookRepository
-                .findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(status, officeName);
+                .findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(bookStatus, officeName);
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookDTO)
                 .toList();

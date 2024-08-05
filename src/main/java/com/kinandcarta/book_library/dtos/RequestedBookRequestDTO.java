@@ -7,9 +7,6 @@ public record RequestedBookRequestDTO(
         String bookIsbn,
 
         @NotBlank
-        String officeName,
-
-        @NotBlank
         String userEmail
 ) {
 }
