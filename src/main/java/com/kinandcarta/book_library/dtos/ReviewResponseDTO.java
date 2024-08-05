@@ -12,6 +12,6 @@ public record ReviewResponseDTO(
 
         String message,
 
-        Integer rating
+        int rating
 ) {
 }

@@ -4,15 +4,14 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface BookRepository extends JpaRepository<Book, BookId> {
     @Query("SELECT DISTINCT b " +
@@ -59,6 +58,8 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     void deleteByIsbnAndOfficeName(String isbn, String officeName);
 
     @Modifying
-    @Query("UPDATE Book book SET book.ratingFromFirm = :rating WHERE book.isbn = :isbn")
-    void updateRatingByIsbn(String isbn, double rating);
+    @Query("update Book b " +
+            "set b.ratingFromFirm = :rating " +
+            "where b.isbn = :isbn and b.office.name = :officeName")
+    void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
 }
