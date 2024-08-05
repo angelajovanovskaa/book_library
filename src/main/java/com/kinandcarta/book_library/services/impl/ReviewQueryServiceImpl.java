@@ -1,15 +1,17 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.converters.*;
-import com.kinandcarta.book_library.dtos.*;
-import com.kinandcarta.book_library.entities.*;
-import com.kinandcarta.book_library.exceptions.*;
-import com.kinandcarta.book_library.repositories.*;
-import com.kinandcarta.book_library.services.*;
-import lombok.*;
-import org.springframework.stereotype.*;
-
-import java.util.*;
+import com.kinandcarta.book_library.converters.ReviewConverter;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
+import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.Review;
+import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
+import com.kinandcarta.book_library.repositories.ReviewRepository;
+import com.kinandcarta.book_library.services.ReviewQueryService;
+import java.util.List;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * This service provides methods for querying {@link Review} data.

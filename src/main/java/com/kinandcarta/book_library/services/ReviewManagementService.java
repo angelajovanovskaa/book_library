@@ -2,7 +2,6 @@ package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
-
 import java.util.UUID;
 
 public interface ReviewManagementService {

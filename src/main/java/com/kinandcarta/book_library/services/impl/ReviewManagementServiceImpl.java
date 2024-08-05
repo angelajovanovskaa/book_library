@@ -1,17 +1,26 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.converters.*;
-import com.kinandcarta.book_library.dtos.*;
-import com.kinandcarta.book_library.entities.*;
-import com.kinandcarta.book_library.exceptions.*;
-import com.kinandcarta.book_library.repositories.*;
-import com.kinandcarta.book_library.services.*;
-import jakarta.transaction.*;
-import lombok.*;
-import org.springframework.stereotype.*;
-
-import java.time.*;
-import java.util.*;
+import com.kinandcarta.book_library.converters.ReviewConverter;
+import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
+import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.Review;
+import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.exceptions.BookNotFoundException;
+import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
+import com.kinandcarta.book_library.exceptions.UserNotFoundException;
+import com.kinandcarta.book_library.repositories.BookRepository;
+import com.kinandcarta.book_library.repositories.ReviewRepository;
+import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
+import com.kinandcarta.book_library.services.ReviewManagementService;
+import jakarta.transaction.Transactional;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
  * This service provides methods for managing {@link Review} entities.

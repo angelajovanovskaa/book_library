@@ -1,13 +1,17 @@
 package com.kinandcarta.book_library.repositories;
 
-import com.kinandcarta.book_library.entities.*;
-import com.kinandcarta.book_library.entities.keys.*;
-import com.kinandcarta.book_library.enums.*;
-import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.*;
-
-import java.util.*;
+import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.keys.BookId;
+import com.kinandcarta.book_library.enums.BookItemState;
+import com.kinandcarta.book_library.enums.BookStatus;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface BookRepository extends JpaRepository<Book, BookId> {
     @Query("SELECT DISTINCT b " +
