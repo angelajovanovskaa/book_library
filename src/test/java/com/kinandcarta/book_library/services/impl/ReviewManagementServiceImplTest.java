@@ -15,6 +15,8 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
+import java.time.LocalDate;
+import java.util.*;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,15 +24,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.util.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewManagementServiceImplTest {
@@ -49,7 +46,7 @@ class ReviewManagementServiceImplTest {
     private ReviewConverter reviewConverter;
 
     @Mock
-    private BookAverageRatingCalculator calculateAverageRatingOnBook;
+    private BookAverageRatingCalculator bookAverageRatingCalculator;
 
     @InjectMocks
     private ReviewManagementServiceImpl reviewManagementService;
@@ -58,52 +55,64 @@ class ReviewManagementServiceImplTest {
     void insertReview_reviewInsertIsValid_returnReviewDTO() {
         // given
         Review review = getReview();
-        ReviewResponseDTO reviewResponseDTO = getReviewResponseDTO();
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
-        Book book = review.getBook();
-        User user = review.getUser();
+        ReviewResponseDTO reviewResponseDTO = getReviewResponseDTO();
+        Book book = getBook();
+        User user = getUser();
 
-        given(reviewConverter.toReview(reviewRequestDTO)).willReturn(review);
-        given(bookRepository.findByIsbn(reviewRequestDTO.bookISBN())).willReturn(Optional.of(book));
-        given(userRepository.findByEmail(reviewRequestDTO.userEmail())).willReturn(Optional.of(user));
-        given(reviewRepository.save(review)).willReturn(review);
-        given(reviewConverter.toReviewResponseDTO(review)).willReturn(reviewResponseDTO);
-        given(reviewRepository.findAllByBookIsbn(reviewRequestDTO.bookISBN())).willReturn(
-                Collections.singletonList(review));
-        given(calculateAverageRatingOnBook.getAverageRatingOnBook(Collections.singletonList(review.getRating())))
-                .willReturn(4.0);
+        given(reviewConverter.toReview(any())).willReturn(review);
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.of(book));
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of(review));
+        given(bookAverageRatingCalculator.getAverageRatingOnBook(any())).willReturn(1.0);
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
 
         // when
         ReviewResponseDTO actualResult = reviewManagementService.insertReview(reviewRequestDTO);
 
         // then
-        verify(reviewConverter).toReview(reviewRequestDTO);
-        verify(bookRepository).findByIsbn(reviewRequestDTO.bookISBN());
-        verify(userRepository).findByEmail(reviewRequestDTO.userEmail());
-        verify(reviewRepository).save(review);
-        verify(reviewConverter).toReviewResponseDTO(review);
+        verify(reviewConverter).toReview(any());
+        verify(bookRepository).findByIsbnAndOffice_Name(any(), any());
+        verify(userRepository).findByEmail(any());
+        verify(reviewRepository).save(any());
+        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
+        verify(bookAverageRatingCalculator).getAverageRatingOnBook(any());
+        verify(reviewConverter).toReviewResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(reviewResponseDTO);
     }
 
     @Test
-    @SneakyThrows
-    void insertReview_bookWithIsbnDoesNotExist_throwsException() {
+    void insertReview_reviewsIsEmpty_returnsZero() {
         // given
         Review review = getReview();
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
+        ReviewResponseDTO reviewResponseDTO = getReviewResponseDTO();
+        Book book = getBook();
+        String bookIsbn = book.getIsbn();
+        String officeName = OFFICE.getName();
+        User user = getUser();
 
-        given(reviewConverter.toReview(reviewRequestDTO)).willReturn(review);
-        given(bookRepository.findByIsbn(any())).willReturn(Optional.empty());
+        given(reviewConverter.toReview(any())).willReturn(review);
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.of(book));
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of());
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
 
-        // when & then
-        assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
-                .withMessage("Book with ISBN: " + reviewRequestDTO.bookISBN() + " not found");
+        // when
+        double actualResult = reviewManagementService.insertReview(reviewRequestDTO).rating();
 
-        verify(userRepository, times(0)).findByEmail(any());
-        verify(reviewRepository, times(0)).save(any());
-        verify(calculateAverageRatingOnBook, times(0)).getAverageRatingOnBook(any());
+        // then
+        verify(reviewConverter).toReview(any());
+        verify(bookRepository).findByIsbnAndOffice_Name(any(), any());
+        verify(userRepository).findByEmail(any());
+        verify(reviewRepository).save(any());
+        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
+        verify(bookRepository).updateRatingByIsbnAndOfficeName(0, bookIsbn, officeName);
+        verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
+        verify(reviewConverter).toReviewResponseDTO(any());
+
+        assertThat(actualResult).isEqualTo(0.0);
     }
 
     @Test
@@ -112,19 +121,41 @@ class ReviewManagementServiceImplTest {
         // given
         Review review = getReview();
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
-        Book book = getBook();
+        String userEmail = reviewRequestDTO.userEmail();
 
-        given(reviewConverter.toReview(reviewRequestDTO)).willReturn(review);
-        given(bookRepository.findByIsbn(any())).willReturn(Optional.of(book));
+        given(reviewConverter.toReview(any())).willReturn(review);
         given(userRepository.findByEmail(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(UserNotFoundException.class)
                 .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
-                .withMessage("User with email: " + reviewRequestDTO.userEmail() + " not found");
+                .withMessage("User with email: " + userEmail + " not found");
 
         verify(reviewRepository, times(0)).save(any());
-        verify(calculateAverageRatingOnBook, times(0)).getAverageRatingOnBook(any());
+        verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
+    }
+
+    @Test
+    @SneakyThrows
+    void insertReview_bookWithIsbnDoesNotExist_throwsException() {
+        // given
+        Review review = getReview();
+        ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
+        User user = getUser();
+        String isbn = "isbn1";
+        String officeName = "Skopje kancelarija";
+
+        given(reviewConverter.toReview(any())).willReturn(review);
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatExceptionOfType(BookNotFoundException.class)
+                .isThrownBy(() -> reviewManagementService.insertReview(reviewRequestDTO))
+                .withMessage("Book with ISBN: " + isbn + " in office: " + officeName + " not found");
+
+        verify(reviewRepository, times(0)).save(any());
+        verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
     }
 
     @Test
@@ -134,11 +165,9 @@ class ReviewManagementServiceImplTest {
         ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
         ReviewResponseDTO reviewResponseDTO = getReviewResponseDTO();
 
-        given(reviewRepository.findByUserEmailAndBookIsbn(any(), any()))
-                .willReturn(Optional.of(review));
-        given(reviewRepository.findAllByBookIsbn(any())).willReturn(Collections.singletonList(review));
-        given(calculateAverageRatingOnBook.getAverageRatingOnBook(any()))
-                .willReturn(4.0);
+        given(reviewRepository.findByUserEmailAndBookIsbn(any(), any())).willReturn(Optional.of(review));
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of(review));
+        given(bookAverageRatingCalculator.getAverageRatingOnBook(any())).willReturn(1.0);
         given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
 
         // when
@@ -146,10 +175,9 @@ class ReviewManagementServiceImplTest {
 
         // then
         verify(reviewRepository).findByUserEmailAndBookIsbn(any(), any());
-        verify(reviewRepository).save(any()); // This is correct if save is used in service
-        verify(reviewRepository).findAllByBookIsbn(any());
-        verify(calculateAverageRatingOnBook).getAverageRatingOnBook(any());
-        verify(bookRepository).updateRatingByIsbn("isbn1", 4.0); // Updated to match service call
+        verify(reviewRepository).save(any());
+        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
+        verify(bookAverageRatingCalculator).getAverageRatingOnBook(any());
         verify(reviewConverter).toReviewResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(reviewResponseDTO);
@@ -159,23 +187,22 @@ class ReviewManagementServiceImplTest {
     void deleteReviewById_reviewDeleteValid_returnUUID() {
         // given
         Review review = getReview();
-        UUID id = review.getId();
-        Book book = review.getBook();
+        UUID reviewId = review.getId();
 
-        given(reviewRepository.findById(id)).willReturn(Optional.of(review));
-        given(reviewRepository.findAllByBookIsbn(book.getIsbn())).willReturn(Collections.singletonList(review));
-        given(calculateAverageRatingOnBook.getAverageRatingOnBook(Collections.singletonList(review.getRating())))
-                .willReturn(4.0);
+        given(reviewRepository.findById(any())).willReturn(Optional.of(review));
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of(review));
+        given(bookAverageRatingCalculator.getAverageRatingOnBook(any())).willReturn(1.0);
 
         // when
-        UUID actualResult = reviewManagementService.deleteReviewById(id);
+        UUID actualResult = reviewManagementService.deleteReviewById(reviewId);
 
         // then
-        verify(reviewRepository).findById(id);
-        verify(reviewRepository).deleteById(id);
-        verify(bookRepository).updateRatingByIsbn(book.getIsbn(), 4.0); // Updated to match service call
+        verify(reviewRepository).findById(any());
+        verify(reviewRepository).deleteById(any());
+        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
+        verify(bookAverageRatingCalculator).getAverageRatingOnBook(any());
 
-        assertThat(actualResult).isEqualTo(id);
+        assertThat(actualResult).isEqualTo(reviewId);
     }
 
     @Test
@@ -184,7 +211,7 @@ class ReviewManagementServiceImplTest {
         // given
         UUID id = UUID.randomUUID();
 
-        given(reviewRepository.findById(id)).willReturn(Optional.empty());
+        given(reviewRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(ReviewNotFoundException.class)
@@ -192,7 +219,7 @@ class ReviewManagementServiceImplTest {
                 .withMessage("Review with id " + id + " not found");
 
         verify(bookRepository, times(0)).findByIsbn(any());
-        verify(calculateAverageRatingOnBook, times(0)).getAverageRatingOnBook(any());
+        verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
     }
 
     private Book getBook() {
@@ -243,7 +270,7 @@ class ReviewManagementServiceImplTest {
                 getUser().getEmail(),
                 LocalDate.now(),
                 "message1",
-                1
+                0
         );
     }
 
