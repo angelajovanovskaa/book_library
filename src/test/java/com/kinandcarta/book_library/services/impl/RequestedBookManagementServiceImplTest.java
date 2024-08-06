@@ -18,12 +18,11 @@ import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,6 +55,9 @@ class RequestedBookManagementServiceImplTest {
 
     @InjectMocks
     private RequestedBookManagementServiceImpl requestedBookManagementService;
+
+    @Captor
+    ArgumentCaptor<RequestedBook> requestedBookCaptor;
 
     @Test
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
@@ -187,7 +189,7 @@ class RequestedBookManagementServiceImplTest {
     }
 
     @Test
-    void handleRequestedBookLike_userLikesRequestedBook_returnRequestedBookDTO() {
+    void handleRequestedBookLike_userLikesOrUnlikesRequestedBook_returnRequestedBookDTO() {
         // given
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
@@ -208,6 +210,68 @@ class RequestedBookManagementServiceImplTest {
         verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
         verify(requestedBookRepository).save(any());
         verify(requestedBookConverter).toRequestedBookResponseDTO(any());
+
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
+    }
+
+    @Test
+    void handleRequestedBookLike_userNotInLikedBy_returnRequestedBookDTO() {
+        // given
+        RequestedBook requestedBook = getRequestedBook();
+        RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
+        User user = getUser();
+
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+                Optional.of(requestedBook));
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
+
+        // when
+        RequestedBookResponseDTO actualResult =
+                requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
+
+        // then
+        verify(userRepository).findByEmail(any());
+        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
+        verify(requestedBookRepository).save(requestedBookCaptor.capture());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
+
+        RequestedBook capturedRequestedBook = requestedBookCaptor.getValue();
+        Set<User> likedByUsers = capturedRequestedBook.getUsers();
+        assertThat(likedByUsers).contains(user);
+
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
+    }
+
+    @Test
+    void handleRequestedBookLike_userAlreadyInLikedBy_returnRequestedBookDTO() {
+        // given
+        RequestedBook requestedBook = getRequestedBook();
+        RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
+        User user = getUser();
+        Set<User> users = requestedBook.getUsers();
+        users.add(user);
+
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+                Optional.of(requestedBook));
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
+
+        // when
+        RequestedBookResponseDTO actualResult =
+                requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
+
+        // then
+        verify(userRepository).findByEmail(any());
+        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
+        verify(requestedBookRepository).save(requestedBookCaptor.capture());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
+
+        RequestedBook capturedRequestedBook = requestedBookCaptor.getValue();
+        Set<User> likedByUsers = capturedRequestedBook.getUsers();
+        assertThat(likedByUsers).doesNotContain(user);
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
