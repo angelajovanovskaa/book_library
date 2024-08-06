@@ -1,17 +1,16 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
-import com.kinandcarta.book_library.enums.BookStatus;
-
-import java.util.UUID;
+import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 
 public interface RequestedBookManagementService {
     //todo: create test for method saveRequestedBook()
-    RequestedBookDTO saveRequestedBook(String bookISBN);
+    RequestedBookResponseDTO saveRequestedBook(RequestedBookRequestDTO requestedBookRequestDTO);
 
-    String deleteRequestedBookByBookIsbn(String requestedBookIsbn);
+    String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName);
 
-    RequestedBookDTO changeBookStatus(UUID requestedBookId, BookStatus to);
+    RequestedBookResponseDTO changeBookStatus(RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO);
 
-    RequestedBookDTO handleRequestedBookLike(UUID requestedBookId, String userEmail);
+    RequestedBookResponseDTO handleRequestedBookLike(RequestedBookRequestDTO requestedBookRequestDTO);
 }

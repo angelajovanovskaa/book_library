@@ -55,11 +55,13 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     @Query(value = "SELECT * FROM book WHERE genres @> ARRAY[:genres]::text[]", nativeQuery = true)
     List<Book> findBooksByGenresContaining(@Param("genres") String[] genres);
 
-    void deleteByIsbn(String isbn);
+    void deleteByIsbnAndOfficeName(String isbn, String officeName);
 
     @Modifying
     @Query("update Book b " +
             "set b.ratingFromFirm = :rating " +
             "where b.isbn = :isbn and b.office.name = :officeName")
     void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
+
+    boolean existsByIsbnAndOfficeName(String isbn, String officeName);
 }
