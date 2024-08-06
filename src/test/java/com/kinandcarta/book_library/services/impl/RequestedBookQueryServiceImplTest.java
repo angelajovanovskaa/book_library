@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
-import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -34,9 +33,6 @@ class RequestedBookQueryServiceImplTest {
     private RequestedBookRepository requestedBookRepository;
 
     @Mock
-    private OfficeRepository officeRepository;
-
-    @Mock
     private RequestedBookConverter requestedBookConverter;
 
     @InjectMocks
@@ -49,9 +45,8 @@ class RequestedBookQueryServiceImplTest {
         List<RequestedBookResponseDTO> requestedBookResponseDTOS = getRequestedBookDTOs();
         final String officeName = OFFICE.getName();
 
-        given(officeRepository.findById(any())).willReturn(Optional.of(OFFICE));
         given(requestedBookRepository.findAllByBookOfficeName(any())).willReturn(requestedBooks);
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 requestedBookResponseDTOS.get(0),
                 requestedBookResponseDTOS.get(1),
                 requestedBookResponseDTOS.get(2)
@@ -62,9 +57,8 @@ class RequestedBookQueryServiceImplTest {
                 requestedBookQueryService.getAllRequestedBooksByOfficeName(officeName);
 
         // then
-        verify(officeRepository).findById(any());
         verify(requestedBookRepository).findAllByBookOfficeName(any());
-        verify(requestedBookConverter, times(3)).toRequestedBookDTO(any());
+        verify(requestedBookConverter, times(3)).toRequestedBookResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTOS);
     }
@@ -79,7 +73,7 @@ class RequestedBookQueryServiceImplTest {
 
         given(requestedBookRepository.findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(any(),
                 any())).willReturn(List.of(requestedBooks.get(0), requestedBooks.get(1), requestedBooks.get(2)));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 requestedBookResponseDTOS.get(0),
                 requestedBookResponseDTOS.get(1),
                 requestedBookResponseDTOS.get(2)
@@ -92,7 +86,7 @@ class RequestedBookQueryServiceImplTest {
         // then
         verify(requestedBookRepository).findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(
                 any(), any());
-        verify(requestedBookConverter, times(3)).toRequestedBookDTO(any());
+        verify(requestedBookConverter, times(3)).toRequestedBookResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTOS);
     }
@@ -105,14 +99,14 @@ class RequestedBookQueryServiceImplTest {
         RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
         RequestedBookResponseDTO actualResult = requestedBookQueryService.getRequestedBookById(requestedBookId);
 
         // then
         verify(requestedBookRepository).findById(any());
-        verify(requestedBookConverter).toRequestedBookDTO(any());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
@@ -129,7 +123,7 @@ class RequestedBookQueryServiceImplTest {
                 .isThrownBy(() -> requestedBookQueryService.getRequestedBookById(requestedBookId));
 
         verify(requestedBookRepository).findById(any());
-        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
     }
 
     @Test
@@ -142,7 +136,7 @@ class RequestedBookQueryServiceImplTest {
 
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
                 Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
         RequestedBookResponseDTO actualResult =
@@ -150,7 +144,7 @@ class RequestedBookQueryServiceImplTest {
 
         // then
         verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
-        verify(requestedBookConverter).toRequestedBookDTO(any());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
@@ -168,7 +162,7 @@ class RequestedBookQueryServiceImplTest {
                 .isThrownBy(() -> requestedBookQueryService.getRequestedBookByISBNAndOfficeName(isbn, officeName));
 
         verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
-        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
     }
 
     private List<RequestedBook> getRequestedBooks() {
@@ -196,7 +190,6 @@ class RequestedBookQueryServiceImplTest {
 
         return List.of(requestedBook1, requestedBook2, requestedBook3);
     }
-
 
     private List<RequestedBookResponseDTO> getRequestedBookDTOs() {
         RequestedBookResponseDTO requestedBookResponseDTO1 = new RequestedBookResponseDTO(

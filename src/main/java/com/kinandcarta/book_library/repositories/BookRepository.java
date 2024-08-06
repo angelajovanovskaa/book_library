@@ -62,4 +62,6 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
             "set b.ratingFromFirm = :rating " +
             "where b.isbn = :isbn and b.office.name = :officeName")
     void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
+
+    boolean existsByIsbnAndOfficeName(String isbn, String officeName);
 }

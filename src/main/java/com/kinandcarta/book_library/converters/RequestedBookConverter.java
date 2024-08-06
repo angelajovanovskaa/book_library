@@ -23,7 +23,7 @@ public class RequestedBookConverter {
      * @param requestedBook {@link RequestedBook} entity to convert
      * @return {@link RequestedBookResponseDTO} converted entity
      */
-    public RequestedBookResponseDTO toRequestedBookDTO(RequestedBook requestedBook) {
+    public RequestedBookResponseDTO toRequestedBookResponseDTO(RequestedBook requestedBook) {
         UUID id = requestedBook.getId();
         LocalDate requestedDate = requestedBook.getRequestedDate();
         Long likeCounter = requestedBook.getLikeCounter();

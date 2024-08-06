@@ -5,13 +5,10 @@ import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.exceptions.OfficeNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
-import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,6 @@ import org.springframework.stereotype.Service;
 public class RequestedBookQueryServiceImpl implements RequestedBookQueryService {
 
     private final RequestedBookRepository requestedBookRepository;
-    private final OfficeRepository officeRepository;
     private final RequestedBookConverter requestedBookConverter;
 
     /**
@@ -41,14 +37,9 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      */
     @Override
     public List<RequestedBookResponseDTO> getAllRequestedBooksByOfficeName(String officeName) {
-        Optional<Office> office = officeRepository.findById(officeName);
-        if (office.isEmpty()) {
-            throw new OfficeNotFoundException(officeName);
-        }
-
         List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookOfficeName(officeName);
         return requestedBooks.stream()
-                .map(requestedBookConverter::toRequestedBookDTO)
+                .map(requestedBookConverter::toRequestedBookResponseDTO)
                 .toList();
     }
 
@@ -66,7 +57,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
         List<RequestedBook> requestedBooks = requestedBookRepository
                 .findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(bookStatus, officeName);
         return requestedBooks.stream()
-                .map(requestedBookConverter::toRequestedBookDTO)
+                .map(requestedBookConverter::toRequestedBookResponseDTO)
                 .toList();
     }
 
@@ -82,7 +73,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
     public RequestedBookResponseDTO getRequestedBookById(UUID requestedBookId) {
         RequestedBook requestedBook = requestedBookRepository.findById(requestedBookId)
                 .orElseThrow(() -> new RequestedBookNotFoundException(requestedBookId));
-        return requestedBookConverter.toRequestedBookDTO(requestedBook);
+        return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
 
     /**
@@ -98,6 +89,6 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
     public RequestedBookResponseDTO getRequestedBookByISBNAndOfficeName(String isbn, String officeName) {
         RequestedBook requestedBook = requestedBookRepository.findByBookIsbnAndBookOfficeName(isbn, officeName)
                 .orElseThrow(() -> new RequestedBookNotFoundException(isbn, officeName));
-        return requestedBookConverter.toRequestedBookDTO(requestedBook);
+        return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
 }

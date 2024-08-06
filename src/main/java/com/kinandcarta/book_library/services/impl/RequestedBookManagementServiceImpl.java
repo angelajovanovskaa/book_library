@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
@@ -8,10 +9,7 @@ import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.exceptions.BookAlreadyPresentException;
-import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
-import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
-import com.kinandcarta.book_library.exceptions.UserNotFoundException;
+import com.kinandcarta.book_library.exceptions.*;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
@@ -64,7 +62,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         Office office = user.getOffice();
         String officeName = office.getName();
         String bookIsbn = requestedBookRequestDTO.bookIsbn();
-        Optional<Book> optionalBook = bookRepository.findByIsbn(bookIsbn);
+        Optional<Book> optionalBook = bookRepository.findByIsbnAndOffice_Name(bookIsbn, officeName);
         if (optionalBook.isPresent()) {
             throw new BookAlreadyPresentException(bookIsbn, officeName);
         }
@@ -88,6 +86,10 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      */
     @Override
     public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
+        if (!bookRepository.existsByIsbnAndOfficeName(bookIsbn, officeName)) {
+            throw new BookNotFoundException(bookIsbn, officeName);
+        }
+
         bookRepository.deleteByIsbnAndOfficeName(bookIsbn, officeName);
         return bookIsbn;
     }
@@ -105,28 +107,30 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * </ul>
      * </p>
      *
-     * @param requestedBookId UUID of the requested book.
-     * @param newBookStatus   new status to set for the book.
+     * @param requestedBookChangeStatusRequestDTO DTO for status change
      * @return {@link RequestedBookResponseDTO} of the updated requested book.
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      * @throws RequestedBookStatusException   If the status transition is not allowed.
      */
     @Override
-    public RequestedBookResponseDTO changeBookStatus(UUID requestedBookId, BookStatus newBookStatus) {
+    public RequestedBookResponseDTO changeBookStatus(
+            RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
+        UUID requestedBookId = requestedBookChangeStatusRequestDTO.requestedBookId();
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
 
         Book book = requestedBook.getBook();
         BookStatus currentBookStatus = book.getBookStatus();
 
+        BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
         if (currentBookStatus == newBookStatus) {
-            return requestedBookConverter.toRequestedBookDTO(requestedBook);
+            return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
         }
 
         validateBookStatusTransition(currentBookStatus, newBookStatus);
         book.setBookStatus(newBookStatus);
         bookRepository.save(book);
 
-        return requestedBookConverter.toRequestedBookDTO(requestedBook);
+        return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
 
     /**
@@ -136,18 +140,20 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * accordingly.
      * </p>
      *
-     * @param requestedBookId ID of the requested book.
-     * @param userEmail       Email of the user liking or unliking the book.
+     * @param requestedBookRequestDTO Request DTO of the book that is liked/disliked.
      * @return {@link RequestedBookResponseDTO} with the updated like counter information.
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      * @throws UserNotFoundException          If a user with the given email does not exist.
      */
     @Override
-    public RequestedBookResponseDTO handleRequestedBookLike(UUID requestedBookId, String userEmail) {
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
-
-        User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new UserNotFoundException(userEmail));
+    public RequestedBookResponseDTO handleRequestedBookLike(RequestedBookRequestDTO requestedBookRequestDTO) {
+        String userEmail = requestedBookRequestDTO.userEmail();
+        User user = getUser(userEmail);
+        Office office = user.getOffice();
+        String officeName = office.getName();
+        String isbn = requestedBookRequestDTO.bookIsbn();
+        RequestedBook requestedBook = requestedBookRepository.findByBookIsbnAndBookOfficeName(isbn,
+                officeName).orElseThrow(() -> new RequestedBookNotFoundException(isbn, officeName));
 
         Set<User> likedByUsers = requestedBook.getUsers();
         if (likedByUsers.contains(user)) {
@@ -158,7 +164,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         requestedBook.refreshLikeCounter();
         requestedBookRepository.save(requestedBook);
 
-        return requestedBookConverter.toRequestedBookDTO(requestedBook);
+        return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
 
     /**
@@ -180,5 +186,9 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     private RequestedBook getRequestedBook(UUID requestedBookId) {
         return requestedBookRepository.findById(requestedBookId)
                 .orElseThrow(() -> new RequestedBookNotFoundException(requestedBookId));
+    }
+
+    private User getUser(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 }

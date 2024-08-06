@@ -1,12 +1,15 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
+import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -57,11 +60,13 @@ class RequestedBookManagementServiceImplTest {
     @Test
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
         // given
-        final String isbn = "isbn1";
-        final String officeName = OFFICE.getName();
+        String isbn = "isbn1";
+        String officeName = OFFICE.getName();
+
+        given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(true);
 
         // when
-        final String actualResult =
+        String actualResult =
                 requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(isbn, officeName);
 
         // then
@@ -71,26 +76,68 @@ class RequestedBookManagementServiceImplTest {
     }
 
     @Test
-    void changeBookStatus_validTransition_updatesStatus() {
+    void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDoesntExist_throwsException() {
+        // given
+        String isbn = "isbn1";
+        String officeName = OFFICE.getName();
+
+        given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(false);
+
+        // when & then
+        assertThatExceptionOfType(BookNotFoundException.class)
+                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(isbn,
+                        officeName))
+                .withMessage("Book with ISBN: " + isbn + " in office: " + officeName + " not found");
+    }
+
+    @Test
+    void changeBookStatus_validTransition_returnRequestedBookDTO() {
         // given
         RequestedBook requestedBook = getRequestedBook();
-        BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
-        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
-        UUID requestedBookId = requestedBook.getId();
+        RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
+                getRequestedBookChangeStatusRequestDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
 
-        given(requestedBookRepository.findById(requestedBookId)).willReturn(Optional.of(requestedBook));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
+        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
         RequestedBookResponseDTO
-                actualResult = requestedBookManagementService.changeBookStatus(requestedBookId, newBookStatus);
+                actualResult = requestedBookManagementService.changeBookStatus(requestedBookChangeStatusRequestDTO);
 
         // then
         verify(requestedBookRepository).findById(any());
         verify(bookStatusTransitionValidator).isValid(any(), any());
         verify(bookRepository).save(any());
-        verify(requestedBookConverter).toRequestedBookDTO(any());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
+
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
+    }
+
+    @Test
+    void changeBookStatus_bookStatusIsSame_returnRequestedBookDTO() {
+        // given
+        RequestedBook requestedBook = getRequestedBook();
+        Book book = requestedBook.getBook();
+        BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
+        book.setBookStatus(newBookStatus);
+        RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
+                getRequestedBookChangeStatusRequestDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
+
+        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
+
+        // when
+        RequestedBookResponseDTO
+                actualResult = requestedBookManagementService.changeBookStatus(requestedBookChangeStatusRequestDTO);
+
+        // then
+        verify(requestedBookRepository).findById(any());
+        verify(bookStatusTransitionValidator, times(0)).isValid(any(), any());
+        verify(bookRepository, times(0)).save(any());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
@@ -99,17 +146,18 @@ class RequestedBookManagementServiceImplTest {
     void changeBookStatus_requestedBookNotFound_throwsException() {
         // given
         RequestedBook requestedBook = getRequestedBook();
-        BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
+        RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
+                getRequestedBookChangeStatusRequestDTO();
         UUID requestedBookId = requestedBook.getId();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.changeBookStatus(requestedBookId, newBookStatus))
+                .isThrownBy(() -> requestedBookManagementService.changeBookStatus(requestedBookChangeStatusRequestDTO))
                 .withMessage("RequestedBook with id " + requestedBookId + " not found");
 
-        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
         verify(bookStatusTransitionValidator, times(0)).isValid(any(), any());
         verify(bookRepository, times(0)).save(any());
     }
@@ -119,85 +167,87 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
-        book.setBookStatus(BookStatus.PENDING_PURCHASE);
-        BookStatus newBookStatus = BookStatus.REQUESTED;
-        UUID requestedBookId = requestedBook.getId();
+        BookStatus currentBookStatus = BookStatus.CURRENTLY_UNAVAILABLE;
+        book.setBookStatus(currentBookStatus);
+        RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
+                getRequestedBookChangeStatusRequestDTO();
+        BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
 
-        given(requestedBookRepository.findById(requestedBookId)).willReturn(Optional.of(requestedBook));
-        given(bookStatusTransitionValidator.isValid(BookStatus.PENDING_PURCHASE, newBookStatus)).willReturn(false);
+        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
+        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
 
         // when & then
         assertThatExceptionOfType(RequestedBookStatusException.class)
-                .isThrownBy(() -> requestedBookManagementService.changeBookStatus(requestedBookId, newBookStatus))
-                .withMessage(
-                        "Transition from status PENDING_PURCHASE to status REQUESTED for requested book is not " +
-                                "feasible");
+                .isThrownBy(() -> requestedBookManagementService.changeBookStatus(requestedBookChangeStatusRequestDTO))
+                .withMessage("Transition from status " + currentBookStatus + " to status " + newBookStatus +
+                        " for requested " + "book is not feasible");
 
-        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
         verify(bookRepository, times(0)).save(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
     }
 
     @Test
     void handleRequestedBookLike_userLikesRequestedBook_returnRequestedBookDTO() {
         // given
         RequestedBook requestedBook = getRequestedBook();
-        UUID requestedBookId = requestedBook.getId();
+        RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
+        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
         User user = getUser();
-        String email = user.getEmail();
-        RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookDTO();
 
-        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(requestedBookConverter.toRequestedBookDTO(any())).willReturn(requestedBookResponseDTO);
+        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+                Optional.of(requestedBook));
+        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
         RequestedBookResponseDTO
-                actualResult = requestedBookManagementService.handleRequestedBookLike(requestedBookId, email);
+                actualResult = requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
 
         // then
-        verify(requestedBookRepository).findById(any());
         verify(userRepository).findByEmail(any());
-        verify(requestedBookConverter).toRequestedBookDTO(any());
+        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
+        verify(requestedBookRepository).save(any());
+        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
 
         assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
 
     @Test
-    void handleRequestedBookLike_requestedBookNotFound_throwsException() {
-        // given
-        RequestedBook requestedBook = getRequestedBook();
-        UUID requestedBookId = requestedBook.getId();
-        User user = getUser();
-        String email = user.getEmail();
-
-        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(requestedBookId, email))
-                .withMessage("RequestedBook with id " + requestedBookId + " not found");
-
-        verify(userRepository, times(0)).findByEmail(any());
-        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
-    }
-
-    @Test
     void handleRequestedBookLike_userNotFound_throwsException() {
         // given
-        RequestedBook requestedBook = getRequestedBook();
-        UUID requestedBookId = requestedBook.getId();
-        User user = getUser();
-        String email = user.getEmail();
+        RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
+        String email = requestedBookRequestDTO.userEmail();
 
-        given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(userRepository.findByEmail(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(UserNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(requestedBookId, email))
+                .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO))
                 .withMessage("User with email: " + email + " not found");
 
-        verify(requestedBookConverter, times(0)).toRequestedBookDTO(any());
+        verify(requestedBookRepository, times(0)).findByBookIsbnAndBookOfficeName(any(), any());
+        verify(requestedBookRepository, times(0)).save(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
+    }
+
+    @Test
+    void handleRequestedBookLike_requestedBookNotFound_throwsException() {
+        // given
+        RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
+        String isbn = requestedBookRequestDTO.bookIsbn();
+        User user = getUser();
+        String officeName = OFFICE.getName();
+
+        given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
+        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO))
+                .withMessage("RequestedBook with ISBN " + isbn + " for office " + officeName + " not found");
+
+        verify(requestedBookRepository, times(0)).save(any());
+        verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
     }
 
     private RequestedBook getRequestedBook() {
@@ -223,7 +273,7 @@ class RequestedBookManagementServiceImplTest {
         );
     }
 
-    private RequestedBookResponseDTO getRequestedBookDTO() {
+    private RequestedBookResponseDTO getRequestedBookResponseDTO() {
         return new RequestedBookResponseDTO(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
@@ -232,6 +282,20 @@ class RequestedBookManagementServiceImplTest {
                 BookStatus.REQUESTED,
                 "title1",
                 "image1"
+        );
+    }
+
+    private RequestedBookRequestDTO getRequestedBookRequestDTO() {
+        return new RequestedBookRequestDTO(
+                "isbn1",
+                "email@gmail.com"
+        );
+    }
+
+    private RequestedBookChangeStatusRequestDTO getRequestedBookChangeStatusRequestDTO() {
+        return new RequestedBookChangeStatusRequestDTO(
+                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
+                BookStatus.PENDING_PURCHASE
         );
     }
 
