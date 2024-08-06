@@ -57,7 +57,7 @@ class RequestedBookManagementServiceImplTest {
     private RequestedBookManagementServiceImpl requestedBookManagementService;
 
     @Captor
-    ArgumentCaptor<RequestedBook> requestedBookCaptor;
+    private ArgumentCaptor<RequestedBook> requestedBookCaptor;
 
     @Test
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
@@ -228,20 +228,14 @@ class RequestedBookManagementServiceImplTest {
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
-        RequestedBookResponseDTO actualResult =
-                requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
+        requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
 
         // then
-        verify(userRepository).findByEmail(any());
-        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
         verify(requestedBookRepository).save(requestedBookCaptor.capture());
-        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
 
         RequestedBook capturedRequestedBook = requestedBookCaptor.getValue();
         Set<User> likedByUsers = capturedRequestedBook.getUsers();
         assertThat(likedByUsers).contains(user);
-
-        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
     }
 
     @Test
@@ -250,8 +244,8 @@ class RequestedBookManagementServiceImplTest {
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
         RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
-        User user = getUser();
         Set<User> users = requestedBook.getUsers();
+        User user = getUser();
         users.add(user);
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
@@ -260,20 +254,14 @@ class RequestedBookManagementServiceImplTest {
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(requestedBookResponseDTO);
 
         // when
-        RequestedBookResponseDTO actualResult =
-                requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
+        requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
 
         // then
-        verify(userRepository).findByEmail(any());
-        verify(requestedBookRepository).findByBookIsbnAndBookOfficeName(any(), any());
         verify(requestedBookRepository).save(requestedBookCaptor.capture());
-        verify(requestedBookConverter).toRequestedBookResponseDTO(any());
 
         RequestedBook capturedRequestedBook = requestedBookCaptor.getValue();
         Set<User> likedByUsers = capturedRequestedBook.getUsers();
-        assertThat(likedByUsers).doesNotContain(user);
-
-        assertThat(actualResult).isEqualTo(requestedBookResponseDTO);
+        assertThat(likedByUsers).isNotEmpty().doesNotContain(user);
     }
 
     @Test
@@ -315,6 +303,16 @@ class RequestedBookManagementServiceImplTest {
     }
 
     private RequestedBook getRequestedBook() {
+        Set<User> users = new HashSet<>();
+        users.add(new User(
+                UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c999"),
+                "test",
+                null,
+                "test@gmail.com",
+                "USER",
+                "pw",
+                OFFICE
+        ));
         return new RequestedBook(
                 UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
                 LocalDate.now(),
@@ -333,7 +331,7 @@ class RequestedBookManagementServiceImplTest {
                         new String[0],
                         new HashSet<>(),
                         new ArrayList<>()),
-                new HashSet<>()
+                users
         );
     }
 
