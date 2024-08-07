@@ -5,7 +5,6 @@ import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -17,8 +16,9 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -27,6 +27,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.*;
+import static com.kinandcarta.book_library.utils.UserTestData.getUser;
+import static com.kinandcarta.book_library.utils.UserTestData.getUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,8 +41,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class RequestedBookManagementServiceImplTest {
-    private static final Office OFFICE = new Office("Skopje kancelarija");
-
     @Mock
     private RequestedBookRepository requestedBookRepository;
 
@@ -62,7 +65,7 @@ class RequestedBookManagementServiceImplTest {
     @Test
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
         // given
-        String isbn = "isbn1";
+        String isbn = BOOK_ISBN;
         String officeName = OFFICE.getName();
 
         given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(true);
@@ -80,7 +83,7 @@ class RequestedBookManagementServiceImplTest {
     @Test
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDoesntExist_throwsException() {
         // given
-        String isbn = "isbn1";
+        String isbn = BOOK_ISBN;
         String officeName = OFFICE.getName();
 
         given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(false);
@@ -97,7 +100,7 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
-                getRequestedBookChangeStatusRequestDTO();
+                getRequestedBookChangeStatusRequestDTOInvalid();
         RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
@@ -125,7 +128,7 @@ class RequestedBookManagementServiceImplTest {
         BookStatus newBookStatus = BookStatus.PENDING_PURCHASE;
         book.setBookStatus(newBookStatus);
         RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
-                getRequestedBookChangeStatusRequestDTO();
+                getRequestedBookChangeStatusRequestDTOValid();
         RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
@@ -147,10 +150,9 @@ class RequestedBookManagementServiceImplTest {
     @Test
     void changeBookStatus_requestedBookNotFound_throwsException() {
         // given
-        RequestedBook requestedBook = getRequestedBook();
         RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
-                getRequestedBookChangeStatusRequestDTO();
-        UUID requestedBookId = requestedBook.getId();
+                getRequestedBookChangeStatusRequestDTOInvalid();
+        UUID requestedBookId = requestedBookChangeStatusRequestDTO.requestedBookId();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
 
@@ -169,10 +171,9 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
-        BookStatus currentBookStatus = BookStatus.CURRENTLY_UNAVAILABLE;
-        book.setBookStatus(currentBookStatus);
+        BookStatus currentBookStatus = book.getBookStatus();
         RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO =
-                getRequestedBookChangeStatusRequestDTO();
+                getRequestedBookChangeStatusRequestDTOInvalid();
         BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
@@ -220,7 +221,7 @@ class RequestedBookManagementServiceImplTest {
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
         RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
-        User user = getUser();
+        User user = getUsers().getLast();
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
@@ -244,8 +245,8 @@ class RequestedBookManagementServiceImplTest {
         RequestedBook requestedBook = getRequestedBook();
         RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
         RequestedBookResponseDTO requestedBookResponseDTO = getRequestedBookResponseDTO();
+        User user = getUsers().getLast();
         Set<User> users = requestedBook.getUsers();
-        User user = getUser();
         users.add(user);
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
@@ -300,76 +301,5 @@ class RequestedBookManagementServiceImplTest {
 
         verify(requestedBookRepository, times(0)).save(any());
         verify(requestedBookConverter, times(0)).toRequestedBookResponseDTO(any());
-    }
-
-    private RequestedBook getRequestedBook() {
-        Set<User> users = new HashSet<>();
-        users.add(new User(
-                UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c999"),
-                "test",
-                null,
-                "test@gmail.com",
-                "USER",
-                "pw",
-                OFFICE
-        ));
-        return new RequestedBook(
-                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
-                LocalDate.now(),
-                1L,
-                new Book("isbn1",
-                        OFFICE,
-                        "title1",
-                        "description1",
-                        "summary1",
-                        0,
-                        "MK",
-                        0.0,
-                        0.0,
-                        "image1",
-                        BookStatus.REQUESTED,
-                        new String[0],
-                        new HashSet<>(),
-                        new ArrayList<>()),
-                users
-        );
-    }
-
-    private RequestedBookResponseDTO getRequestedBookResponseDTO() {
-        return new RequestedBookResponseDTO(
-                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
-                LocalDate.now(),
-                1L,
-                "isbn1",
-                BookStatus.REQUESTED,
-                "title1",
-                "image1"
-        );
-    }
-
-    private RequestedBookRequestDTO getRequestedBookRequestDTO() {
-        return new RequestedBookRequestDTO(
-                "isbn1",
-                "email@gmail.com"
-        );
-    }
-
-    private RequestedBookChangeStatusRequestDTO getRequestedBookChangeStatusRequestDTO() {
-        return new RequestedBookChangeStatusRequestDTO(
-                UUID.fromString("123e4567-e89b-12d3-a456-100000000000"),
-                BookStatus.PENDING_PURCHASE
-        );
-    }
-
-    private User getUser() {
-        return new User(
-                UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
-                "user",
-                null,
-                "email@gmail.com",
-                "USER",
-                "pw",
-                OFFICE
-        );
     }
 }

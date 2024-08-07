@@ -9,22 +9,31 @@ import java.util.Objects;
 import java.util.Set;
 
 public record BookDTO(
+
         String isbn,
+
         @NotBlank
         String title,
+
         @NotBlank
         String description,
+
         String language,
+
         String[] genres,
+
         @Positive
         int totalPages,
-        BookStatus bookStatus,
-        String image,
-        double ratingFromWeb,
-        double ratingFromFirm,
-        Set<AuthorDTO> authorDTOS
-//        Set<Review> reviews
 
+        BookStatus bookStatus,
+
+        String image,
+
+        double ratingFromWeb,
+
+        double ratingFromFirm,
+
+        Set<AuthorDTO> authorDTOs
 ) {
 
     @Override
@@ -37,13 +46,13 @@ public record BookDTO(
                 && Objects.equals(title, bookDTO.title) && Objects.equals(image, bookDTO.image)
                 && Objects.equals(language, bookDTO.language) && Objects.deepEquals(genres, bookDTO.genres)
                 && Objects.equals(description, bookDTO.description) && bookStatus == bookDTO.bookStatus
-                && Objects.equals(authorDTOS, bookDTO.authorDTOS);
+                && Objects.equals(authorDTOs, bookDTO.authorDTOs);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(isbn, title, description, language, Arrays.hashCode(genres), totalPages, bookStatus,
-                image, ratingFromWeb, ratingFromFirm, authorDTOS);
+                image, ratingFromWeb, ratingFromFirm, authorDTOs);
     }
 
     @Override
@@ -59,7 +68,7 @@ public record BookDTO(
                 ", image='" + image + '\'' +
                 ", ratingFromWeb=" + ratingFromWeb +
                 ", ratingFromFirm=" + ratingFromFirm +
-                ", authorDTOS=" + authorDTOS +
+                ", authorDTOs=" + authorDTOs +
                 '}';
     }
 }

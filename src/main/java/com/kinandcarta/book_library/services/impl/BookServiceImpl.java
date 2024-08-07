@@ -155,7 +155,7 @@ public class BookServiceImpl implements BookService {
      */
     @Override
     public BookDTO createBookWithAuthors(BookDTO bookDTO) {
-        Set<AuthorDTO> authorsDTOs = bookDTO.authorDTOS();
+        Set<AuthorDTO> authorsDTOs = bookDTO.authorDTOs();
         Set<Author> authors = new HashSet<>();
         for (AuthorDTO authorDTO : authorsDTOs) {
             String fullName = authorDTO.fullName();

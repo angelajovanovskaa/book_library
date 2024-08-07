@@ -2,7 +2,6 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookItemConverter;
 import com.kinandcarta.book_library.dtos.BookItemDTO;
-import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
@@ -10,27 +9,22 @@ import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.utils.BookItemResponseMessages;
-
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-
+import static com.kinandcarta.book_library.utils.BookItemTestData.*;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookItemServiceImplTest {
@@ -56,10 +50,8 @@ class BookItemServiceImplTest {
         given(bookItemRepository.findByBookIsbn(any())).willReturn(bookItems);
         given(bookItemConverter.toBookItemDTO(any())).willReturn(bookItemDTOs.get(0), bookItemDTOs.get(1));
 
-        String isbn = "9780545414654";
-
         // when
-        List<BookItemDTO> result = bookItemService.getBookItemsByBookIsbn(isbn);
+        List<BookItemDTO> result = bookItemService.getBookItemsByBookIsbn(BOOK_ISBN);
 
         // then
         assertThat(result).isEqualTo(bookItemDTOs);
@@ -70,28 +62,26 @@ class BookItemServiceImplTest {
         // given
         BookItem bookItem = getBookItems().getFirst();
         BookItemDTO bookItemDTO = getBookItemDTOs().getFirst();
+        String isbn = BOOK_ISBN;
 
         given(bookItemRepository.save(any())).willReturn(bookItem);
         given(bookRepository.findByIsbn(anyString()))
                 .willReturn(Optional.of((bookItem.getBook())));
         given(bookItemConverter.toBookItemDTO(any())).willReturn(bookItemDTO);
 
-        String isbn = "9780545414654";
-        UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
-
         // when
         BookItemDTO bookItemSaved = bookItemService.insertBookItem(isbn);
 
         // then
         assertThat(bookItemSaved).isNotNull();
-        assertThat(bookItemSaved.id()).isEqualTo(id);
+        assertThat(bookItemSaved.id()).isEqualTo(BOOK_ITEM_ID);
         assertThat(bookItemSaved.isbn()).isEqualTo(isbn);
     }
 
     @Test
     void insertBookItem_isbnNotFound_throwsException() {
         //  given
-        String isbn = "9780545414654";
+        String isbn = "invalid-isbn";
 
         //  when & then
         assertThatExceptionOfType(BookNotFoundException.class)
@@ -102,7 +92,7 @@ class BookItemServiceImplTest {
     @Test
     void deleteBookItemById_bookItemExists_successfullyDeletedBookItem() {
         //  given
-        final UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
+        UUID id = BOOK_ITEM_ID;
         given(bookItemRepository.existsById(id)).willReturn(true);
 
         //  when
@@ -117,7 +107,7 @@ class BookItemServiceImplTest {
     @Test
     void deleteItemBook_bookItemDoesNotExist_throwsException() {
         //  given
-        final UUID id = UUID.fromString("a123456e-c933-43b7-b58d-d48054507061");
+        UUID id = NEW_BOOK_ITEM_ID;
         given(bookItemRepository.existsById(id)).willReturn(false);
 
         //  when & then
@@ -132,12 +122,11 @@ class BookItemServiceImplTest {
     void reportBookItemAsDamaged_bookItemExists_returnsReportedBookItem() {
         //  given
         BookItem bookItem = getBookItems().getFirst();
+
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
-
         //  when
-        String message = bookItemService.reportBookItemAsDamaged(id);
+        String message = bookItemService.reportBookItemAsDamaged(BOOK_ITEM_ID);
 
         //  then
         assertThat(message).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
@@ -147,7 +136,7 @@ class BookItemServiceImplTest {
     @Test
     void reportBookItemAsDamaged_bookItemDoesNotExist_throwsException() {
         //  given
-        UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
+        UUID id = BOOK_ITEM_ID;
         given(bookItemRepository.findById(id)).willReturn(Optional.empty());
 
         //  when & then
@@ -163,7 +152,7 @@ class BookItemServiceImplTest {
     void reportBookItemAsLost_bookItemExists_returnsLostBookItem() {
         //  given
         BookItem bookItem = getBookItems().getFirst();
-        UUID id = UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11");
+        UUID id = BOOK_ITEM_ID;
 
         given(bookItemRepository.findById(id)).willReturn(Optional.of(bookItem));
 
@@ -188,36 +177,5 @@ class BookItemServiceImplTest {
 
         verify(bookItemRepository).findById(id);
         verify(bookItemRepository, never()).save(any());
-    }
-
-    private List<BookItem> getBookItems() {
-        Book book = new Book();
-        book.setIsbn("9780545414654");
-
-        BookItem bookItem1 = new BookItem();
-        bookItem1.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
-        bookItem1.setBookItemState(BookItemState.AVAILABLE);
-        bookItem1.setBook(book);
-
-        BookItem bookItem2 = new BookItem();
-        bookItem2.setId(UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11"));
-        bookItem2.setBookItemState(BookItemState.LOST);
-        bookItem2.setBook(book);
-
-        return List.of(bookItem1, bookItem2);
-    }
-
-    private List<BookItemDTO> getBookItemDTOs() {
-        Book book = new Book();
-        book.setIsbn("9780545414654");
-
-        BookItemDTO bookItemDTO1 = new BookItemDTO("9780545414654",
-                UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215")
-        );
-
-        BookItemDTO bookItemDTO2 = new BookItemDTO("9780545414654",
-                UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11"));
-
-        return List.of(bookItemDTO1, bookItemDTO2);
     }
 }
