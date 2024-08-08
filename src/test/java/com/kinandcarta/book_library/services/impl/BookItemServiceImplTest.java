@@ -18,13 +18,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.kinandcarta.book_library.utils.BookItemTestData.*;
+import static com.kinandcarta.book_library.utils.BookItemTestData.BOOK_ITEM_ID;
+import static com.kinandcarta.book_library.utils.BookItemTestData.getBookItemDTOs;
+import static com.kinandcarta.book_library.utils.BookItemTestData.getBookItems;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BookItemServiceImplTest {

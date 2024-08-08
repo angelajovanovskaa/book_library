@@ -6,19 +6,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 public record RequestedBookResponseDTO(
-
         UUID id,
-
         LocalDate requestedDate,
-
         Long likeCounter,
-
         String bookISBN,
-
         BookStatus bookStatus,
-
         String title,
-
         String image
 ) {
 

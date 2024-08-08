@@ -9,30 +9,19 @@ import java.util.Objects;
 import java.util.Set;
 
 public record BookDTO(
-
         String isbn,
-
         @NotBlank
         String title,
-
         @NotBlank
         String description,
-
         String language,
-
         String[] genres,
-
         @Positive
         int totalPages,
-
         BookStatus bookStatus,
-
         String image,
-
         double ratingFromWeb,
-
         double ratingFromFirm,
-
         Set<AuthorDTO> authorDTOs
 ) {
 

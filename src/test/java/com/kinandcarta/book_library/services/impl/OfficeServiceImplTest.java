@@ -10,8 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.kinandcarta.book_library.utils.OfficeTestData.getOfficeResponseDTOs;
-import static com.kinandcarta.book_library.utils.OfficeTestData.getOffices;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -27,7 +25,7 @@ class OfficeServiceImplTest {
     void getAllOffices_theListHasAtLeastOne_returnsListOfOfficeResponseDTO() {
         // given
         List<Office> offices = getOffices();
-        List<OfficeResponseDTO> officeResponseDTOS = getOfficeResponseDTOs();
+        List<OfficeResponseDTO> officeResponseDTOs = getOfficeResponseDTOs();
 
         given(officeRepository.findAll()).willReturn(offices);
 
@@ -35,6 +33,20 @@ class OfficeServiceImplTest {
         List<OfficeResponseDTO> result = officeService.getAllOffices();
 
         //then
-        assertThat(result).isEqualTo(officeResponseDTOS);
+        assertThat(result).isEqualTo(officeResponseDTOs);
+    }
+
+    private List<Office> getOffices() {
+        Office office1 = new Office("Skopje");
+        Office office2 = new Office("Sofija");
+
+        return List.of(office1, office2);
+    }
+
+    private List<OfficeResponseDTO> getOfficeResponseDTOs() {
+        OfficeResponseDTO office1 = new OfficeResponseDTO("Skopje");
+        OfficeResponseDTO office2 = new OfficeResponseDTO("Sofija");
+
+        return List.of(office1, office2);
     }
 }

@@ -12,9 +12,11 @@ import static com.kinandcarta.book_library.utils.BookItemTestData.BOOK_ITEM_ID;
 import static com.kinandcarta.book_library.utils.BookItemTestData.getBookItem;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE;
-import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
 import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
-import static com.kinandcarta.book_library.utils.UserTestData.*;
+import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_FULL_NAME;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
+import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 
 @UtilityClass
 public class BookCheckoutTestData {
@@ -23,7 +25,7 @@ public class BookCheckoutTestData {
                 UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf51"),
                 getUser(),
                 getBookItem(),
-                OFFICE,
+                SKOPJE_OFFICE,
                 DATE_NOW,
                 null,
                 DATE_NOW.plusDays(14)

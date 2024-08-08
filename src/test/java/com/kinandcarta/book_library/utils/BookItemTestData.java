@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
-import static com.kinandcarta.book_library.utils.BookTestData.*;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.BookTestData.getBook;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookFromDifferentOffice;
 
 @UtilityClass
 public class BookItemTestData {
@@ -16,7 +18,7 @@ public class BookItemTestData {
 
     public static List<BookItem> getBookItems() {
         BookItem bookItem1 = new BookItem(
-                UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc51"),
+                BOOK_ITEM_ID,
                 BOOK_ITEM_STATE,
                 getBook()
         );
@@ -44,7 +46,7 @@ public class BookItemTestData {
     public static List<BookItemDTO> getBookItemDTOs() {
         BookItemDTO bookItemDTO1 = new BookItemDTO(
                 BOOK_ISBN,
-                UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc51")
+                BOOK_ITEM_ID
         );
         BookItemDTO bookItemDTO2 = new BookItemDTO(
                 BOOK_ISBN,

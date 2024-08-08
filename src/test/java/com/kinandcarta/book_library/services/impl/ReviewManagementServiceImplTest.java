@@ -24,13 +24,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.kinandcarta.book_library.utils.BookTestData.getBook;
-import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
-import static com.kinandcarta.book_library.utils.ReviewTestData.*;
+import static com.kinandcarta.book_library.utils.ReviewTestData.getReview;
+import static com.kinandcarta.book_library.utils.ReviewTestData.getReviewRequestDTO;
+import static com.kinandcarta.book_library.utils.ReviewTestData.getReviewResponseDTO;
+import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
 import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.times;
+import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewManagementServiceImplTest {
@@ -112,7 +116,7 @@ class ReviewManagementServiceImplTest {
         User user = getUser();
         Book book = review.getBook();
         String isbn = book.getIsbn();
-        String officeName = OFFICE.getName();
+        String officeName = SKOPJE_OFFICE.getName();
 
         given(reviewConverter.toReview(any())).willReturn(review);
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
@@ -180,7 +184,7 @@ class ReviewManagementServiceImplTest {
         Review review = getReview();
         Book book = review.getBook();
         String isbn = book.getIsbn();
-        String officeName = OFFICE.getName();
+        String officeName = SKOPJE_OFFICE.getName();
         UUID reviewId = review.getId();
 
         given(reviewRepository.findById(any())).willReturn(Optional.of(review));

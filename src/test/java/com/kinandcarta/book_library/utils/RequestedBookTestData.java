@@ -4,16 +4,21 @@ import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.RequestedBook;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
-import static com.kinandcarta.book_library.utils.BookTestData.*;
-import static com.kinandcarta.book_library.utils.UserTestData.getSetUsers;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_STATUS;
+import static com.kinandcarta.book_library.utils.BookTestData.getBook;
+import static com.kinandcarta.book_library.utils.BookTestData.getLastBook;
+import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static com.kinandcarta.book_library.utils.UserTestData.getUser;
+import static com.kinandcarta.book_library.utils.UserTestData.getUsers;
 
 @UtilityClass
 public class RequestedBookTestData {
@@ -22,20 +27,22 @@ public class RequestedBookTestData {
 
     public static List<RequestedBook> getRequestedBooks() {
         List<RequestedBook> requestedBooks = new ArrayList<>();
+        Set<User> users = new HashSet<>(getUsers());
+        users.remove(getUsers().getLast());
         RequestedBook requestedBook1 = new RequestedBook(
-                UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a1"),
-                LocalDate.now(),
-                1L,
+                REQUESTED_BOOK_ID,
+                DATE_NOW,
+                REQUESTED_BOOK_LIKE_COUNTER,
                 getBook(),
-                getSetUsers()
+                users
         );
         requestedBooks.add(requestedBook1);
         RequestedBook requestedBook2 = new RequestedBook(
                 UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a2"),
-                LocalDate.now(),
-                2L,
+                DATE_NOW,
+                REQUESTED_BOOK_LIKE_COUNTER,
                 getBook(),
-                getSetUsers()
+                new HashSet<>(getUsers())
         );
         requestedBooks.add(requestedBook2);
 
@@ -49,9 +56,9 @@ public class RequestedBookTestData {
     public static List<RequestedBookResponseDTO> getRequestedBookResponseDTOs() {
         List<RequestedBookResponseDTO> requestedBookDTOs = new ArrayList<>();
         RequestedBookResponseDTO requestedBookResponseDTO1 = new RequestedBookResponseDTO(
-                UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a1"),
-                LocalDate.now(),
-                1L,
+                REQUESTED_BOOK_ID,
+                DATE_NOW,
+                REQUESTED_BOOK_LIKE_COUNTER,
                 getBook().getIsbn(),
                 BOOK_STATUS,
                 getBook().getTitle(),
@@ -60,8 +67,8 @@ public class RequestedBookTestData {
         requestedBookDTOs.add(requestedBookResponseDTO1);
         RequestedBookResponseDTO requestedBookResponseDTO2 = new RequestedBookResponseDTO(
                 UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a2"),
-                LocalDate.now(),
-                2L,
+                DATE_NOW,
+                REQUESTED_BOOK_LIKE_COUNTER,
                 getBook().getIsbn(),
                 BOOK_STATUS,
                 getLastBook().getTitle(),
@@ -78,9 +85,9 @@ public class RequestedBookTestData {
 
     public static RequestedBookResponseDTO getRequestedBookResponseDTO() {
         return new RequestedBookResponseDTO(
-                getRequestedBook().getId(),
-                LocalDate.now(),
-                1L,
+                REQUESTED_BOOK_ID,
+                DATE_NOW,
+                REQUESTED_BOOK_LIKE_COUNTER,
                 getBook().getIsbn(),
                 BOOK_STATUS,
                 getBook().getTitle(),
@@ -97,7 +104,7 @@ public class RequestedBookTestData {
 
     public static RequestedBookChangeStatusRequestDTO getRequestedBookChangeStatusRequestDTOValid() {
         return new RequestedBookChangeStatusRequestDTO(
-                UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a1"),
+                REQUESTED_BOOK_ID,
                 BookStatus.PENDING_PURCHASE
         );
     }

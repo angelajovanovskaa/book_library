@@ -14,16 +14,17 @@ import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 
 @UtilityClass
 public class ReviewTestData {
-    public static final String REVIEW_MESSAGE = "message1";
+    public static final UUID REVIEW_ID = UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf841");
+    public static final String REVIEW_MESSAGE = "message";
     public static final int REVIEW_RATING = 1;
 
     public static List<Review> getReviews() {
         List<Review> reviews = new ArrayList<>();
         Review review1 = new Review(
-                UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf841"),
+                REVIEW_ID,
                 DATE_NOW,
-                "message1",
-                1,
+                REVIEW_MESSAGE,
+                REVIEW_RATING,
                 getBook(),
                 getUser()
         );
@@ -31,8 +32,8 @@ public class ReviewTestData {
         Review review2 = new Review(
                 UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf842"),
                 DATE_NOW,
-                "message2",
-                2,
+                REVIEW_MESSAGE,
+                REVIEW_RATING,
                 getBook(),
                 getUser()
         );
@@ -51,8 +52,8 @@ public class ReviewTestData {
                 getBook().getIsbn(),
                 getUser().getEmail(),
                 DATE_NOW,
-                "message1",
-                1
+                REVIEW_MESSAGE,
+                REVIEW_RATING
 
         );
         reviewResponseDTOs.add(review1);
@@ -60,8 +61,8 @@ public class ReviewTestData {
                 getBook().getIsbn(),
                 getUser().getEmail(),
                 DATE_NOW,
-                "message2",
-                2
+                REVIEW_MESSAGE,
+                REVIEW_RATING
 
         );
         reviewResponseDTOs.add(review2);
@@ -77,8 +78,8 @@ public class ReviewTestData {
         return new ReviewRequestDTO(
                 getBook().getIsbn(),
                 getUser().getEmail(),
-                "message1",
-                1
+                REVIEW_MESSAGE,
+                REVIEW_RATING
         );
     }
 }

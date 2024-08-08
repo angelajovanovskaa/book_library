@@ -21,10 +21,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import static com.kinandcarta.book_library.utils.BookItemTestData.BOOK_ITEM_STATE;
-import static com.kinandcarta.book_library.utils.BookTestData.*;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_GENRES;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_LANGUAGE;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_STATUS;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE;
+import static com.kinandcarta.book_library.utils.BookTestData.getBook;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookDTO;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookDTOs;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookDisplayDTO;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookDisplayDTOs;
+import static com.kinandcarta.book_library.utils.BookTestData.getBooks;
 import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_NUMBER;
 import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_SIZE;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -47,16 +59,16 @@ class BookServiceImplTest {
     void getAllBooks_theListHasAtLeastOne_listOfBookDTOs() {
         // given
         List<Book> books = getBooks();
-        List<BookDTO> bookDTOS = getBookDTOs();
+        List<BookDTO> bookDTOs = getBookDTOs();
 
         given(bookRepository.findAll()).willReturn(books);
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
+        given(bookConverter.toBookDTO(any())).willReturn(bookDTOs.get(0), bookDTOs.get(1));
 
         //when
         List<BookDTO> actualResult = bookService.getAllBooks();
 
         //then
-        assertThat(actualResult).isEqualTo(bookDTOS);
+        assertThat(actualResult).isEqualTo(bookDTOs);
     }
 
     @Test
@@ -85,33 +97,33 @@ class BookServiceImplTest {
     void getAvailableBooks_thereAreAvailableBooks_returnsListOfBookDTOs() {
         //  given
         List<Book> books = getBooks();
-        List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOs();
+        List<BookDisplayDTO> bookDisplayDTOs = getBookDisplayDTOs();
 
         given(bookRepository.findBooksByStatusAndAvailableItems(any(), any()))
                 .willReturn(books);
-        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         //  when
         List<BookDisplayDTO> result = bookService.getAvailableBooks();
 
         //  then
-        assertThat(result).isNotNull().containsExactlyElementsOf(bookDisplayDTOS);
+        assertThat(result).isNotNull().containsExactlyElementsOf(bookDisplayDTOs);
     }
 
     @Test
     void getRequestedBooks_thereAreRequestedBooks_returnsListOfBookDTOs() {
         //  given
         List<Book> books = getBooks();
-        List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOs();
+        List<BookDisplayDTO> bookDisplayDTOs = getBookDisplayDTOs();
 
         given(bookRepository.findBookByBookStatus(BookStatus.REQUESTED)).willReturn(books);
-        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         //  when
         List<BookDisplayDTO> result = bookService.getRequestedBooks();
 
         //  then
-        assertThat(result).isNotNull().containsExactlyElementsOf(bookDisplayDTOS);
+        assertThat(result).isNotNull().containsExactlyElementsOf(bookDisplayDTOs);
     }
 
     @Test
@@ -145,49 +157,49 @@ class BookServiceImplTest {
     void getBooksByTitle_titleIsValid_returnsListBookDTOs() {
         // given
         List<Book> books = getBooks();
-        List<BookDTO> bookDTOS = getBookDTOs();
+        List<BookDTO> bookDTOs = getBookDTOs();
 
         given(bookRepository.findBooksByTitleContainingIgnoreCase(anyString())).willReturn(books);
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
+        given(bookConverter.toBookDTO(any())).willReturn(bookDTOs.get(0), bookDTOs.get(1));
 
         //when
         List<BookDTO> result = bookService.getBooksByTitle(BOOK_TITLE);
 
         //then
-        assertThat(result).isEqualTo(bookDTOS);
+        assertThat(result).isEqualTo(bookDTOs);
     }
 
     @Test
     void getBooksByLanguage_languageIsValid_returnsListBookDisplayDTOs() {
         //  given
         List<Book> books = getBooks();
-        List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOs();
+        List<BookDisplayDTO> bookDisplayDTOs = getBookDisplayDTOs();
 
         given(bookRepository.findByLanguage(anyString())).willReturn(books);
-        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
 
         //  when
         List<BookDisplayDTO> result = bookService.getBooksByLanguage(BOOK_LANGUAGE);
 
         //  then
-        assertThat(result).isEqualTo(bookDisplayDTOS);
+        assertThat(result).isEqualTo(bookDisplayDTOs);
     }
 
     @Test
     void getBooksByGenresContaining_genresAreValid_returnsListBookDisplayDTOs() {
         //  given
         List<Book> books = getBooks();
-        List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOs();
+        List<BookDisplayDTO> bookDisplayDTOs = getBookDisplayDTOs();
 
         given(bookRepository.findBooksByGenresContaining(any())).willReturn(books);
-        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         //  when
         List<BookDisplayDTO> result = bookService.getBooksByGenresContaining(BOOK_GENRES);
 
         //  then
-        assertThat(result).isEqualTo(bookDisplayDTOS);
+        assertThat(result).isEqualTo(bookDisplayDTOs);
     }
 
     @Test

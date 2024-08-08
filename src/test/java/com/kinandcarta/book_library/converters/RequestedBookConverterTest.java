@@ -4,8 +4,12 @@ import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.BookTestData.*;
-import static com.kinandcarta.book_library.utils.RequestedBookTestData.*;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_IMAGE;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_STATUS;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.REQUESTED_BOOK_ID;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.REQUESTED_BOOK_LIKE_COUNTER;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBook;
 import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 

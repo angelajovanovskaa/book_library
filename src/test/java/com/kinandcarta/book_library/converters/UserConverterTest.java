@@ -6,7 +6,13 @@ import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.UserTestData.*;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_EMAIL;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_FULL_NAME;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_PASSWORD;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_ROLE;
+import static com.kinandcarta.book_library.utils.UserTestData.getUser;
+import static com.kinandcarta.book_library.utils.UserTestData.getUserRegistrationDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserConverterTest {

@@ -8,8 +8,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.BookTestData.*;
-import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
+import static com.kinandcarta.book_library.utils.BookTestData.getBook;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookDTO;
+import static com.kinandcarta.book_library.utils.BookTestData.getBookDisplayDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookConverterTest {
@@ -30,7 +31,7 @@ class BookConverterTest {
     }
 
     @Test
-    void toBookEntity_conversionIsDone_returnsBookEntity1() {
+    void toBookEntity_conversionIsDone_returnsBookEntity() {
         // given
         Book book = getBook();
         BookDTO bookDTO = getBookDTO();
@@ -38,10 +39,19 @@ class BookConverterTest {
 
         //  when
         Book result = bookConverter.toBookEntity(bookDTO, authors);
-        result.setOffice(OFFICE);
 
         //  then
-        assertThat(result).isEqualTo(book);
+        assertThat(result.getIsbn()).isEqualTo(book.getIsbn());
+        assertThat(result.getTitle()).isEqualTo(book.getTitle());
+        assertThat(result.getDescription()).isEqualTo(book.getDescription());
+        assertThat(result.getLanguage()).isEqualTo(book.getLanguage());
+        assertThat(result.getGenres()).isEqualTo(book.getGenres());
+        assertThat(result.getTotalPages()).isEqualTo(book.getTotalPages());
+        assertThat(result.getBookStatus()).isEqualTo(book.getBookStatus());
+        assertThat(result.getImage()).isEqualTo(book.getImage());
+        assertThat(result.getRatingFromWeb()).isEqualTo(book.getRatingFromWeb());
+        assertThat(result.getRatingFromFirm()).isEqualTo(book.getRatingFromFirm());
+        assertThat(result.getAuthors()).isEqualTo(book.getAuthors());
     }
 
     @Test

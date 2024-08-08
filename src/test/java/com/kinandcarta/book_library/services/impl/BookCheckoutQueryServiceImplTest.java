@@ -17,10 +17,15 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE_SEARCH_TERM;
-import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
-import static com.kinandcarta.book_library.utils.SharedTestData.*;
+import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
+import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_NUMBER;
+import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_SIZE;
+import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
 import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -51,7 +56,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckouts(OFFICE.getName());
+                bookCheckoutQueryService.getAllBookCheckouts(SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).containsExactly(bookCheckoutDTO);
@@ -70,7 +75,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllActiveBookCheckouts(OFFICE.getName());
+                bookCheckoutQueryService.getAllActiveBookCheckouts(SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).containsExactly(bookCheckoutDTO);
@@ -89,7 +94,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllPastBookCheckouts(OFFICE.getName());
+                bookCheckoutQueryService.getAllPastBookCheckouts(SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).containsExactly(bookCheckoutDTO);
@@ -128,7 +133,7 @@ class BookCheckoutQueryServiceImplTest {
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(BOOK_TITLE_SEARCH_TERM,
-                        OFFICE.getName());
+                        SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).containsExactly(bookCheckoutDTO);
@@ -162,7 +167,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutReturnReminderResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(OFFICE.getName());
+                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).containsExactly(bookCheckoutDTO);
@@ -186,7 +191,7 @@ class BookCheckoutQueryServiceImplTest {
         // when
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(),
-                        pageable.getPageSize(), OFFICE.getName());
+                        pageable.getPageSize(), SKOPJE_OFFICE.getName());
 
         // then
         assertThat(result).isEqualTo(bookCheckoutDTOsPages);

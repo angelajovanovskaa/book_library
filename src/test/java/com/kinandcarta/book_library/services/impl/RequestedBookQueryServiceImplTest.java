@@ -17,8 +17,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
-import static com.kinandcarta.book_library.utils.RequestedBookTestData.*;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBook;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBookDTO;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBookResponseDTOs;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBooks;
+import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,13 +43,13 @@ class RequestedBookQueryServiceImplTest {
     void getAllRequestedBooksByOfficeName_atLeastOneRequestedBookExists_returnListOfRequestedBookDTOs() {
         // given
         List<RequestedBook> requestedBooks = getRequestedBooks();
-        List<RequestedBookResponseDTO> requestedBookResponseDTOS = getRequestedBookResponseDTOs();
-        final String officeName = OFFICE.getName();
+        List<RequestedBookResponseDTO> requestedBookResponseDTOs = getRequestedBookResponseDTOs();
+        final String officeName = SKOPJE_OFFICE.getName();
 
         given(requestedBookRepository.findAllByBookOfficeName(any())).willReturn(requestedBooks);
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
-                requestedBookResponseDTOS.get(0),
-                requestedBookResponseDTOS.get(1)
+                requestedBookResponseDTOs.get(0),
+                requestedBookResponseDTOs.get(1)
         );
 
         // when
@@ -57,7 +60,7 @@ class RequestedBookQueryServiceImplTest {
         verify(requestedBookRepository).findAllByBookOfficeName(any());
         verify(requestedBookConverter, times(2)).toRequestedBookResponseDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookResponseDTOS);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTOs);
     }
 
     @Test
@@ -65,14 +68,14 @@ class RequestedBookQueryServiceImplTest {
         // given
         final BookStatus status = BookStatus.REQUESTED;
         final List<RequestedBook> requestedBooks = getRequestedBooks();
-        final List<RequestedBookResponseDTO> requestedBookResponseDTOS = getRequestedBookResponseDTOs();
-        final String officeName = OFFICE.getName();
+        final List<RequestedBookResponseDTO> requestedBookResponseDTOs = getRequestedBookResponseDTOs();
+        final String officeName = SKOPJE_OFFICE.getName();
 
         given(requestedBookRepository.findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(any(),
                 any())).willReturn(List.of(requestedBooks.get(0), requestedBooks.get(1)));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
-                requestedBookResponseDTOS.get(0),
-                requestedBookResponseDTOS.get(1)
+                requestedBookResponseDTOs.get(0),
+                requestedBookResponseDTOs.get(1)
         );
 
         // when
@@ -84,7 +87,7 @@ class RequestedBookQueryServiceImplTest {
                 any(), any());
         verify(requestedBookConverter, times(2)).toRequestedBookResponseDTO(any());
 
-        assertThat(actualResult).isEqualTo(requestedBookResponseDTOS);
+        assertThat(actualResult).isEqualTo(requestedBookResponseDTOs);
     }
 
     @Test
@@ -125,7 +128,7 @@ class RequestedBookQueryServiceImplTest {
     @Test
     void getRequestedBookByISBN_givenValidISBN_returnRequestedBookDTO() {
         // given
-        String officeName = OFFICE.getName();
+        String officeName = SKOPJE_OFFICE.getName();
         RequestedBook requestedBook = getRequestedBook();
         Book book = requestedBook.getBook();
         String isbn = book.getIsbn();
@@ -150,7 +153,7 @@ class RequestedBookQueryServiceImplTest {
     void getRequestedBookByISBN_givenInvalidISBN_throwsException() {
         // given
         final String isbn = "invalidISBN";
-        final String officeName = OFFICE.getName();
+        final String officeName = SKOPJE_OFFICE.getName();
 
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
 

@@ -28,8 +28,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
-import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
-import static com.kinandcarta.book_library.utils.RequestedBookTestData.*;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBook;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBookChangeStatusRequestDTOInvalid;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBookChangeStatusRequestDTOValid;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBookRequestDTO;
+import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBookResponseDTO;
+import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
 import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 import static com.kinandcarta.book_library.utils.UserTestData.getUsers;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,7 +70,7 @@ class RequestedBookManagementServiceImplTest {
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
         // given
         String isbn = BOOK_ISBN;
-        String officeName = OFFICE.getName();
+        String officeName = SKOPJE_OFFICE.getName();
 
         given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(true);
 
@@ -84,7 +88,7 @@ class RequestedBookManagementServiceImplTest {
     void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDoesntExist_throwsException() {
         // given
         String isbn = BOOK_ISBN;
-        String officeName = OFFICE.getName();
+        String officeName = SKOPJE_OFFICE.getName();
 
         given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(false);
 
@@ -289,7 +293,7 @@ class RequestedBookManagementServiceImplTest {
         RequestedBookRequestDTO requestedBookRequestDTO = getRequestedBookRequestDTO();
         String isbn = requestedBookRequestDTO.bookIsbn();
         User user = getUser();
-        String officeName = OFFICE.getName();
+        String officeName = SKOPJE_OFFICE.getName();
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());

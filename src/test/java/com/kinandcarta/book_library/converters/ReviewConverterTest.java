@@ -6,7 +6,10 @@ import com.kinandcarta.book_library.entities.Review;
 import org.junit.jupiter.api.Test;
 
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
-import static com.kinandcarta.book_library.utils.ReviewTestData.*;
+import static com.kinandcarta.book_library.utils.ReviewTestData.REVIEW_MESSAGE;
+import static com.kinandcarta.book_library.utils.ReviewTestData.REVIEW_RATING;
+import static com.kinandcarta.book_library.utils.ReviewTestData.getReview;
+import static com.kinandcarta.book_library.utils.ReviewTestData.getReviewRequestDTO;
 import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static com.kinandcarta.book_library.utils.UserTestData.USER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
