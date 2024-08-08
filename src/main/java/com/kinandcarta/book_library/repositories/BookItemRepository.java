@@ -15,8 +15,5 @@ public interface BookItemRepository extends JpaRepository<BookItem, UUID> {
             "WHERE b.isbn = :isbn AND b.office.name = :officeName")
     List<BookItem> findByBookIsbn(@Param("isbn") String isbn, @Param("officeName") String officeName);
 
-    @Query("SELECT bi FROM BookItem bi " +
-            "WHERE bi.id = :bookItemId AND bi.book.office.name = :officeName")
-    Optional<BookItem> findByIdAndOfficeName(@Param("bookItemId") UUID bookItemId,
-                                             @Param("officeName") String officeName);
+    Optional<BookItem> findById(UUID bookItemId);
 }

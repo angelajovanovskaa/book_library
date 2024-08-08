@@ -51,7 +51,7 @@ class BookItemManagementServiceImplTest {
         BookItemDTO bookItemDTO = getBookItemDTOs().getFirst();
 
         given(bookItemRepository.save(any())).willReturn(bookItem);
-        given(bookRepository.findByIsbnAndOffice_Name(anyString(), anyString()))
+        given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString()))
                 .willReturn(Optional.of((bookItem.getBook())));
         given(bookItemConverter.toBookItemDTO(any())).willReturn(bookItemDTO);
 
@@ -83,13 +83,12 @@ class BookItemManagementServiceImplTest {
     void deleteBookItemById_bookItemExists_successfullyDeletedBookItem() {
         //  given
         BookItem bookItem = getBookItems().getFirst();
-        given(bookItemRepository.findByIdAndOfficeName(any(), anyString())).willReturn(Optional.of(bookItem));
+        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
-        String officeName = "Bristol";
         final UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
 
         //  when
-        UUID deleteBookId = bookItemService.deleteById(id, officeName);
+        UUID deleteBookId = bookItemService.deleteById(id);
 
         //  then
         assertThat(deleteBookId).isEqualTo(id);
@@ -100,16 +99,15 @@ class BookItemManagementServiceImplTest {
     @Test
     void deleteItemBook_bookItemDoesNotExist_throwsException() {
         //  given
-        given(bookItemRepository.findByIdAndOfficeName(any(), anyString())).willReturn(Optional.empty());
+        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
         final UUID id = UUID.fromString("a123456e-c933-43b7-b58d-d48054507061");
-        String officeName = "Bristol";
 
         //  when & then
         assertThatExceptionOfType(BookItemNotFoundException.class)
-                .isThrownBy(() -> bookItemService.deleteById(id, officeName))
+                .isThrownBy(() -> bookItemService.deleteById(id))
                 .withMessage("The bookItem with id: " + id + " doesn't exist");
-        verify(bookItemRepository).findByIdAndOfficeName(id, officeName);
+        verify(bookItemRepository).findById(id);
         verify(bookItemRepository, times(0)).deleteById(id);
     }
 
@@ -117,13 +115,12 @@ class BookItemManagementServiceImplTest {
     void reportBookItemAsDamaged_bookItemExists_returnsReportedBookItem() {
         //  given
         BookItem bookItem = getBookItems().getFirst();
-        given(bookItemRepository.findByIdAndOfficeName(any(), anyString())).willReturn(Optional.of(bookItem));
+        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
 
         UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
-        String officeName = "Bristol";
 
         //  when
-        String message = bookItemService.reportBookItemAsDamaged(id, officeName);
+        String message = bookItemService.reportBookItemAsDamaged(id);
 
         //  then
         assertThat(message).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
@@ -133,17 +130,16 @@ class BookItemManagementServiceImplTest {
     @Test
     void reportBookItemAsDamaged_bookItemDoesNotExist_throwsException() {
         //  given
-        given(bookItemRepository.findByIdAndOfficeName(any(), anyString())).willReturn(Optional.empty());
+        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
         UUID id = UUID.fromString("aabedb04-38e7-43d8-991d-1df1cf829215");
-        String officeName = "Bristol";
 
         //  when & then
-        assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id, officeName))
+        assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id))
                 .isInstanceOf(BookItemNotFoundException.class)
                 .hasMessageContaining("The bookItem with id: " + id + " doesn't exist");
 
-        verify(bookItemRepository).findByIdAndOfficeName(id, officeName);
+        verify(bookItemRepository).findById(id);
         verify(bookItemRepository, never()).save(any());
     }
 
@@ -152,12 +148,11 @@ class BookItemManagementServiceImplTest {
         //  given
         BookItem bookItem = getBookItems().getFirst();
         UUID id = UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11");
-        String officeName = "Bristol";
 
-        given(bookItemRepository.findByIdAndOfficeName(id, officeName)).willReturn(Optional.of(bookItem));
+        given(bookItemRepository.findById(id)).willReturn(Optional.of(bookItem));
 
         //  when
-        String message = bookItemService.reportBookItemAsLost(id, officeName);
+        String message = bookItemService.reportBookItemAsLost(id);
 
         //  then
         assertThat(message).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
@@ -168,15 +163,14 @@ class BookItemManagementServiceImplTest {
     void reportBookItemAsLost_bookItemDoesNotExist_throwsException() {
         //  given
         UUID id = UUID.fromString("07a1cbfb-3867-4b12-a0b5-46ad02387d11");
-        String officeName = "Bristol";
 
         //  when & then
-        given(bookItemRepository.findByIdAndOfficeName(id, officeName)).willReturn(Optional.empty());
-        assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id, officeName))
+        given(bookItemRepository.findById(id)).willReturn(Optional.empty());
+        assertThatThrownBy(() -> bookItemService.reportBookItemAsLost(id))
                 .isInstanceOf(BookItemNotFoundException.class)
                 .hasMessageContaining("The bookItem with id: " + id + " doesn't exist");
 
-        verify(bookItemRepository).findByIdAndOfficeName(id, officeName);
+        verify(bookItemRepository).findById(id);
         verify(bookItemRepository, never()).save(any());
     }
 

@@ -124,7 +124,7 @@ class BookQueryServiceImplTest {
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
         String officeName = "Bristol";
 
-        given(bookRepository.findBookByBookStatusAndOffice_Name(any(), anyString())).willReturn(books);
+        given(bookRepository.findBookByBookStatusAndOfficeName(any(), anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         //  when
@@ -141,7 +141,7 @@ class BookQueryServiceImplTest {
         Book book = getBooks().getFirst();
         BookDTO expectedResult = getBookDTOs().getFirst();
 
-        given(bookRepository.findByIsbnAndOffice_Name(anyString(), anyString())).willReturn(Optional.of(book));
+        given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.of(book));
         given(bookConverter.toBookDTO(book)).willReturn(expectedResult);
 
         String isbn = "9412545414654";
@@ -172,7 +172,7 @@ class BookQueryServiceImplTest {
         List<Book> books = getBooks();
         List<BookDTO> bookDTOS = getBookDTOs();
 
-        given(bookRepository.findByTitleContainingIgnoreCaseAndOffice_Name(anyString(), anyString())).willReturn(books);
+        given(bookRepository.findByTitleContainingIgnoreCaseAndOfficeName(anyString(), anyString())).willReturn(books);
         given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
 
         String title = "of us";
@@ -191,7 +191,7 @@ class BookQueryServiceImplTest {
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
 
-        given(bookRepository.findBooksByLanguageAndOffice_Name(anyString(), anyString())).willReturn(books);
+        given(bookRepository.findBooksByLanguageAndOfficeName(anyString(), anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         final String language = "ENGLISH";

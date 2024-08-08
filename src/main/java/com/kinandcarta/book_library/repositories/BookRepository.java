@@ -21,7 +21,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
             "WHERE b.office.name = :officeName")
     List<Book> findAllBooksByOfficeName(@Param("officeName") String officeName);
 
-    @Query("SELECT DISTINCT b " +
+    @Query("SELECT b " +
             "FROM Book b " +
             "JOIN FETCH b.office o " +
             "WHERE b.bookStatus = :bookStatus " +
@@ -36,7 +36,7 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
                                                   @Param("bookItemState") BookItemState bookItemState,
                                                   @Param("officeName") String officeName);
 
-    @Query("SELECT DISTINCT b " +
+    @Query("SELECT b " +
             "FROM Book b " +
             "JOIN FETCH b.office o " +
             "WHERE b.bookStatus = :bookStatus " +
@@ -52,28 +52,28 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
                                     @Param("officeName") String officeName,
                                     Pageable pageable);
 
-    List<Book> findBookByBookStatusAndOffice_Name(BookStatus bookStatus, String officeName);
+    List<Book> findBookByBookStatusAndOfficeName(BookStatus bookStatus, String officeName);
 
     @Query("SELECT b FROM Book b " +
             "JOIN FETCH b.office " +
             "JOIN FETCH b.authors " +
             "WHERE b.isbn = :isbn AND b.office.name = :officeName")
-    Optional<Book> findByIsbnAndOffice_Name(@Param("isbn") String isbn,
-                                            @Param("officeName") String officeName);
+    Optional<Book> findByIsbnAndOfficeName(@Param("isbn") String isbn,
+                                           @Param("officeName") String officeName);
 
     Optional<Book> findByIsbn(String isbn);
 
     @Query("SELECT b FROM Book b " +
             "JOIN FETCH b.office " +
             "WHERE b.title LIKE %:title% AND b.office.name = :officeName")
-    List<Book> findByTitleContainingIgnoreCaseAndOffice_Name(@Param("title") String title,
-                                                             @Param("officeName") String officeName);
+    List<Book> findByTitleContainingIgnoreCaseAndOfficeName(@Param("title") String title,
+                                                            @Param("officeName") String officeName);
 
     @Query("SELECT b FROM Book b " +
             "JOIN FETCH b.office " +
             "WHERE b.language = :language AND b.office.name = :officeName")
-    List<Book> findBooksByLanguageAndOffice_Name(@Param("language") String language,
-                                                 @Param("officeName") String officeName);
+    List<Book> findBooksByLanguageAndOfficeName(@Param("language") String language,
+                                                @Param("officeName") String officeName);
 
     @Query(value = "SELECT b.* " +
             "FROM book b " +

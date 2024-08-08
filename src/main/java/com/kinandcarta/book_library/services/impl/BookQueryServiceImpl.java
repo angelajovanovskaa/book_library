@@ -34,6 +34,7 @@ public class BookQueryServiceImpl implements BookQueryService {
 
     /**
      * Retrieves all books, filtered by the office name.
+     *
      * @param officeName The name of the office that the book is located.
      * @return A list of all books represented as {@link BookDTO}.
      */
@@ -47,14 +48,14 @@ public class BookQueryServiceImpl implements BookQueryService {
     /**
      * Retrieves a book by its ISBN, filtered by the office name.
      *
-     * @param isbn isbn of the book to find.
+     * @param isbn       isbn of the book to find.
      * @param officeName The name of the office that the book is located.
      * @return converted BookDTO if book exists by the input isbn.
      * @throws BookNotFoundException if no book with the given ISBN is found.
      */
     @Override
     public BookDTO getBookByIsbn(String isbn, String officeName) {
-        Book book = bookRepository.findByIsbnAndOffice_Name(isbn, officeName)
+        Book book = bookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
         return bookConverter.toBookDTO(book);
@@ -64,19 +65,21 @@ public class BookQueryServiceImpl implements BookQueryService {
      * Retrieves books with title that contains the provided search term. Filtered by the office name.
      *
      * @param titleSearchTerm a search term that will be used in searching the books by title
-     * @param officeName The name of the office that the book is located.
+     * @param officeName      The name of the office that the book is located.
      * @return List of books matching the titleSearchTerm converted to BookDTOs.
      */
     @Override
     public List<BookDTO> getBooksByTitleOffice(String titleSearchTerm, String officeName) {
-        List<Book> books = bookRepository.findByTitleContainingIgnoreCaseAndOffice_Name(titleSearchTerm, officeName);
+        List<Book> books = bookRepository.findByTitleContainingIgnoreCaseAndOfficeName(titleSearchTerm, officeName);
 
         return books.stream().map(bookConverter::toBookDTO).toList();
     }
 
 
     /**
-     * Filters books that are currently available and converts them into BookDisplayDTO objects. Filtered by the office name.
+     * Filters books that are currently available and converts them into BookDisplayDTO objects. Filtered by the
+     * office name.
+     *
      * @param officeName The name of the office that the book is located.
      * @return List of available books converted to BookDisplayDTOs
      */
@@ -95,7 +98,7 @@ public class BookQueryServiceImpl implements BookQueryService {
      * @param bookItemState The state of the book items to filter by.
      * @param page          The page number (zero-based) of the requested page.
      * @param size          The size of the page to be returned.
-     * @param officeName The name of the office that the book is located.
+     * @param officeName    The name of the office that the book is located.
      * @return A {@link org.springframework.data.domain.Page} containing {@link BookDisplayDTO} objects
      * representing the available books matching the given criteria.
      * If no books are found, an empty Page will be returned.
@@ -121,7 +124,7 @@ public class BookQueryServiceImpl implements BookQueryService {
      */
     @Override
     public List<BookDisplayDTO> getRequestedBooks(String officeName) {
-        List<Book> books = bookRepository.findBookByBookStatusAndOffice_Name(BookStatus.REQUESTED, officeName);
+        List<Book> books = bookRepository.findBookByBookStatusAndOfficeName(BookStatus.REQUESTED, officeName);
 
         return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
@@ -130,13 +133,13 @@ public class BookQueryServiceImpl implements BookQueryService {
      * Retrieves books written in a specific language and converts them into BookDisplayDTO objects.
      * Filtered by the office name.
      *
-     * @param language Language of the books to find
+     * @param language   Language of the books to find
      * @param officeName The name of the office that the book is located.
      * @return List of books in the specified language converted to BookDisplayDTOs
      */
     @Override
     public List<BookDisplayDTO> getBooksByLanguage(String language, String officeName) {
-        List<Book> books = bookRepository.findBooksByLanguageAndOffice_Name(language, officeName);
+        List<Book> books = bookRepository.findBooksByLanguageAndOfficeName(language, officeName);
 
         return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
@@ -145,7 +148,7 @@ public class BookQueryServiceImpl implements BookQueryService {
      * Retrieves books that contain at least one of the specified genres and converts them into BookDisplayDTO objects.
      * Filtered by the office name.
      *
-     * @param genres Array of genres to search for
+     * @param genres     Array of genres to search for
      * @param officeName The name of the office that the book is located.
      * @return List of books containing any of the specified genres converted to BookDisplayDTOs
      */

@@ -29,7 +29,7 @@ public class BookItemQueryServiceImpl implements BookItemQueryService {
      * Retrieves a list of BookItems associated with a specific book identified by ISBN.
      * Filtered by the office name.
      *
-     * @param isbn The ISBN of the book.
+     * @param isbn       The ISBN of the book.
      * @param officeName The name of the office that the book is located.
      * @return A list of BookItemDTOs representing BookItems associated with the book.
      */

@@ -43,6 +43,7 @@ class BookManagementServiceImplTest {
 
     @Mock
     private BookRepository bookRepository;
+
     @Mock
     private OfficeRepository officeRepository;
 
@@ -167,7 +168,7 @@ class BookManagementServiceImplTest {
         Book book = books.getFirst();
         BookDTO bookDTO = bookDTOS.getFirst();
 
-        given(bookRepository.findByIsbnAndOffice_Name(anyString(), anyString())).willReturn(Optional.of(book));
+        given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.of(book));
         given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
 
         String isbn = "9412545414654";
@@ -183,7 +184,7 @@ class BookManagementServiceImplTest {
     @Test
     void setBookStatusInStock_bookDoesNotExist_throwsException() {
         //  given
-        given(bookRepository.findByIsbnAndOffice_Name(anyString(), anyString())).willReturn(Optional.empty());
+        given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.empty());
         String isbn = "1234567891234";
         String officeName = "Bristol";
 
@@ -192,7 +193,7 @@ class BookManagementServiceImplTest {
                 .isInstanceOf(BookNotFoundException.class)
                 .hasMessageContaining("Book with ISBN: " + isbn + " not found");
 
-        verify(bookRepository).findByIsbnAndOffice_Name(isbn, officeName);
+        verify(bookRepository).findByIsbnAndOfficeName(isbn, officeName);
         verify(bookRepository, never()).save(any());
         verify(bookConverter, never()).toBookDTO(any());
     }

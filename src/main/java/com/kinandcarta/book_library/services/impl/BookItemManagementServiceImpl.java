@@ -21,7 +21,7 @@ import java.util.UUID;
 
 /**
  * Implementation of {@link BookItemManagementService} that includes methods for retrieving various operations of
- *   book items.
+ * book items.
  */
 @RequiredArgsConstructor
 @Service
@@ -34,14 +34,14 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
     /**
      * Inserts a new book item with the state set to AVAILABLE for the specified book isbn.
      *
-     * @param isbn The isbn of the book for which a new item is to be inserted.
+     * @param isbn       The isbn of the book for which a new item is to be inserted.
      * @param officeName The name of the office that the book is located.
      * @return A DTO representation of the newly inserted book item.
      * @throws BookNotFoundException If no book with the specified isbn is found.
      */
     @Override
     public BookItemDTO insertBookItem(String isbn, String officeName) {
-        Optional<Book> bookOptional = bookRepository.findByIsbnAndOffice_Name(isbn, officeName);
+        Optional<Book> bookOptional = bookRepository.findByIsbnAndOfficeName(isbn, officeName);
         if (bookOptional.isEmpty()) {
             throw new BookNotFoundException(isbn);
         }
@@ -58,13 +58,12 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
      * Deletes a BookItem identified by its id.
      *
      * @param id The id of the BookItem to delete.
-     * @param officeName The name of the office that the book is located.
      * @return The id of the deleted BookItem.
      * @throws BookItemNotFoundException If no BookItem exists with the given id.
      */
     @Override
-    public UUID deleteById(UUID id, String officeName) {
-        BookItem bookItem = bookItemRepository.findByIdAndOfficeName(id, officeName)
+    public UUID deleteById(UUID id) {
+        BookItem bookItem = bookItemRepository.findById(id)
                 .orElseThrow(() -> new BookItemNotFoundException(id));
 
         bookItemRepository.deleteById(bookItem.getId());
@@ -76,13 +75,12 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
      * All users will have access to this method. Only accessible after a successful return
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
-     * @param officeName The name of the office that the book is located.
      * @return A message indicating that the book has been reported as damaged.
      * @throws BookItemNotFoundException if bookItemId is {@code null}
      */
     @Override
-    public String reportBookItemAsDamaged(UUID bookItemId, String officeName) {
-        BookItem bookItem = bookItemRepository.findByIdAndOfficeName(bookItemId, officeName)
+    public String reportBookItemAsDamaged(UUID bookItemId) {
+        BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         bookItem.setBookItemState(BookItemState.DAMAGED);
@@ -96,13 +94,12 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
      * All users will have access to this method.
      *
      * @param bookItemId UUID value for the id of the BookItem, cannot be {@code null}
-     * @param officeName The name of the office that the book is located.
      * @return A message indicating that the book has been reported as lost.
      * @throws BookItemNotFoundException if bookItemId is {@code null}
      */
     @Override
-    public String reportBookItemAsLost(UUID bookItemId, String officeName) {
-        BookItem bookItem = bookItemRepository.findByIdAndOfficeName(bookItemId, officeName)
+    public String reportBookItemAsLost(UUID bookItemId) {
+        BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
         bookItem.setBookItemState(BookItemState.LOST);

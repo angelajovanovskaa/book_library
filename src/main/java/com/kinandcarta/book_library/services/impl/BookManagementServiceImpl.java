@@ -35,7 +35,7 @@ public class BookManagementServiceImpl implements BookManagementService {
     /**
      * Creates a new book based on the provided BookDTO.
      *
-     * @param bookDTO The BookDTO object containing the details of the book to create
+     * @param bookDTO    The BookDTO object containing the details of the book to create
      * @param officeName The name of the office that the book is located.
      * @return The created BookDTO object
      */
@@ -85,13 +85,13 @@ public class BookManagementServiceImpl implements BookManagementService {
     /**
      * Sets the status of the given book to "IN_STOCK".
      *
-     * @param isbn The isbn of the book in which the status is changed IN STOCK.
+     * @param isbn       The isbn of the book in which the status is changed IN STOCK.
      * @param officeName The name of the office that the book is located.
      * @return An Optional containing the updated BookDTO if the book was found, otherwise empty.
      */
     @Override
     public BookDTO setBookStatusInStock(String isbn, String officeName) {
-        Book foundBook = bookRepository.findByIsbnAndOffice_Name(isbn, officeName)
+        Book foundBook = bookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);

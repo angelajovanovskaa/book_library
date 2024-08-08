@@ -76,7 +76,7 @@ public class Book {
     @Column(name = "genres", columnDefinition = "text[]")
     private String[] genres;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_author", joinColumns = {@JoinColumn(name = "book_isbn"), @JoinColumn(name = "office_name")},
             inverseJoinColumns =
             @JoinColumn(name = "author_id"))
