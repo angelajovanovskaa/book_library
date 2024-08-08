@@ -2,10 +2,14 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import static com.kinandcarta.book_library.utils.BookTestData.*;
+import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookConverterTest {
@@ -25,19 +29,20 @@ class BookConverterTest {
         assertThat(result).isEqualTo(bookDTO);
     }
 
-//    @Test
-//    void toBookEntity_conversionIsDone_returnsBookEntity() {
-//        //  given
-//        BookDTO bookDTO = getBookDTO();
-//        Book book = getBook();
-//        Set<Author> authors = book.getAuthors();
-//
-//        //  when
-//        Book result = bookConverter.toBookEntity(bookDTO, authors);
-//
-//        //  then
-//        assertThat(result).isEqualTo(book);
-//    }
+    @Test
+    void toBookEntity_conversionIsDone_returnsBookEntity1() {
+        // given
+        Book book = getBook();
+        BookDTO bookDTO = getBookDTO();
+        Set<Author> authors = new HashSet<>();
+
+        //  when
+        Book result = bookConverter.toBookEntity(bookDTO, authors);
+        result.setOffice(OFFICE);
+
+        //  then
+        assertThat(result).isEqualTo(book);
+    }
 
     @Test
     void bookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
