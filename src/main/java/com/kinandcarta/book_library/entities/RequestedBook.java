@@ -1,12 +1,11 @@
 package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor

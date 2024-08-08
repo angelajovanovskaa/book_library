@@ -1,17 +1,16 @@
 package com.kinandcarta.book_library.services;
 
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.enums.BookStatus;
-
 import java.util.List;
 import java.util.UUID;
 
 public interface RequestedBookQueryService {
-    List<RequestedBookDTO> getAllRequestedBooks();
+    List<RequestedBookResponseDTO> getAllRequestedBooksByOfficeName(String officeName);
 
-    List<RequestedBookDTO> getRequestedBooksByBookStatus(BookStatus status);
+    List<RequestedBookResponseDTO> getRequestedBooksByBookStatusAndOfficeName(BookStatus status, String officeName);
 
-    RequestedBookDTO getRequestedBookById(UUID id);
+    RequestedBookResponseDTO getRequestedBookById(UUID id);
 
-    RequestedBookDTO getRequestedBookByISBN(String isbn);
+    RequestedBookResponseDTO getRequestedBookByISBNAndOfficeName(String isbn, String officeName);
 }
