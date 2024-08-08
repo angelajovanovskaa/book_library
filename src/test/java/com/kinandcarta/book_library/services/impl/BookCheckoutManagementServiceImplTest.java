@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
 import static com.kinandcarta.book_library.utils.BookItemTestData.*;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -168,7 +169,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         User user = getUser();
         BookItem bookItem = getBookItem();
-        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
         BookCheckoutRequestDTO bookCheckoutRequestDTO = getBookCheckoutRequestDTO();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
@@ -189,7 +190,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookItem bookItem = getBookItem();
-        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
         BookCheckoutRequestDTO bookCheckoutRequestDTO = getBookCheckoutRequestDTO();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));

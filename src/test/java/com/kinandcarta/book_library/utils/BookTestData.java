@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.utils;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import java.util.ArrayList;
@@ -17,12 +16,12 @@ import static com.kinandcarta.book_library.utils.OfficeTestData.OTHER_OFFICE;
 @UtilityClass
 public class BookTestData {
     public static final String BOOK_ISBN = "isbn1";
-    public static final BookId BOOK_ID = new BookId(BOOK_ISBN, OFFICE.getName());
     public static final String BOOK_TITLE = "title1";
     public static final String BOOK_TITLE_SEARCH_TERM = "ti";
     public static final String BOOK_LANGUAGE = "MK";
     public static final String[] BOOK_GENRES = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
     public static final BookStatus BOOK_STATUS = BookStatus.REQUESTED;
+    public static final String BOOK_IMAGE = "image1";
 
     public static List<Book> getBooks() {
         List<Book> books = new ArrayList<>();
@@ -66,6 +65,10 @@ public class BookTestData {
 
     public static Book getBook() {
         return getBooks().getFirst();
+    }
+
+    public static Book getLastBook() {
+        return getBooks().getLast();
     }
 
     public static Book getBookFromDifferentOffice() {

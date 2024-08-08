@@ -11,7 +11,10 @@ import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
 public class UserTestData {
     public static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c141");
     public static final String USER_FULL_NAME = "fullname1";
-    public static final String IMAGE_PATH = "classpath:image/profile-picture.png";
+    public static final String USER_EMAIL = "user1@gmail.com";
+    public static final String USER_PASSWORD = "password1";
+    public static final String USER_ROLE = "USER";
+    public static final String USER_IMAGE_PATH = "classpath:image/profile-picture.png";
 
     public static List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -102,8 +105,8 @@ public class UserTestData {
         return new UserRegistrationRequestDTO(
                 "fullname1",
                 "user1@gmail.com",
-                "password1",
-                OFFICE.getName()
+                OFFICE.getName(),
+                "password1"
         );
     }
 

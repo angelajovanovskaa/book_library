@@ -107,7 +107,7 @@ class BookItemServiceImplTest {
     @Test
     void deleteItemBook_bookItemDoesNotExist_throwsException() {
         //  given
-        UUID id = NEW_BOOK_ITEM_ID;
+        UUID id = UUID.randomUUID();
         given(bookItemRepository.existsById(id)).willReturn(false);
 
         //  when & then

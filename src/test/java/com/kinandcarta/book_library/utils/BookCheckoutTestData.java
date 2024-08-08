@@ -5,7 +5,6 @@ import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
-import java.time.LocalDate;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
@@ -14,12 +13,11 @@ import static com.kinandcarta.book_library.utils.BookItemTestData.getBookItem;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE;
 import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
+import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static com.kinandcarta.book_library.utils.UserTestData.*;
 
 @UtilityClass
 public class BookCheckoutTestData {
-    public static final LocalDate DATE_NOW = LocalDate.now();
-
     public static BookCheckout getBookCheckout() {
         return new BookCheckout(
                 UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf51"),
@@ -44,14 +42,14 @@ public class BookCheckoutTestData {
         );
     }
 
-    public static BookCheckoutRequestDTO getBookCheckoutRequestDTO(){
+    public static BookCheckoutRequestDTO getBookCheckoutRequestDTO() {
         return new BookCheckoutRequestDTO(
                 USER_ID,
                 BOOK_ITEM_ID
         );
     }
 
-    public static BookCheckoutResponseDTO getBookCheckoutResponseDto() {
+    public static BookCheckoutResponseDTO getBookCheckoutResponseDTO() {
         return new BookCheckoutResponseDTO(
                 BOOK_TITLE,
                 BOOK_ISBN,
@@ -61,7 +59,7 @@ public class BookCheckoutTestData {
         );
     }
 
-    public static BookCheckoutReturnReminderResponseDTO getBookCheckoutReturnReminderResponseDTO(){
+    public static BookCheckoutReturnReminderResponseDTO getBookCheckoutReturnReminderResponseDTO() {
         return new BookCheckoutReturnReminderResponseDTO(
                 USER_ID,
                 BOOK_TITLE,

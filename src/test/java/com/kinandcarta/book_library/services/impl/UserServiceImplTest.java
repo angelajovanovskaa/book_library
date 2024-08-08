@@ -151,7 +151,7 @@ class UserServiceImplTest {
         given(officeRepository.getReferenceById(anyString())).willReturn(OFFICE);
 
         Resource mockResource = mock(Resource.class);
-        given(mockResource.getContentAsByteArray()).willReturn(IMAGE_PATH.getBytes());
+        given(mockResource.getContentAsByteArray()).willReturn(USER_IMAGE_PATH.getBytes());
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
         // when
@@ -194,7 +194,7 @@ class UserServiceImplTest {
     @Test
     void updateUserRole_userRoleUpdated_returnsConfirmationMessage() {
         // given
-        User user = getUsers().get(1);
+        User user = getUser();
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = getUserUpdateRoleRequestDTO();
 
         given(userRepository.getReferenceById(any())).willReturn(user);

@@ -3,23 +3,25 @@ package com.kinandcarta.book_library.utils;
 import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Review;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
 import static com.kinandcarta.book_library.utils.BookTestData.getBook;
+import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 
 @UtilityClass
 public class ReviewTestData {
+    public static final String REVIEW_MESSAGE = "message1";
+    public static final int REVIEW_RATING = 1;
 
     public static List<Review> getReviews() {
         List<Review> reviews = new ArrayList<>();
         Review review1 = new Review(
                 UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf841"),
-                LocalDate.now(),
+                DATE_NOW,
                 "message1",
                 1,
                 getBook(),
@@ -28,7 +30,7 @@ public class ReviewTestData {
         reviews.add(review1);
         Review review2 = new Review(
                 UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf842"),
-                LocalDate.now(),
+                DATE_NOW,
                 "message2",
                 2,
                 getBook(),
@@ -48,7 +50,7 @@ public class ReviewTestData {
         ReviewResponseDTO review1 = new ReviewResponseDTO(
                 getBook().getIsbn(),
                 getUser().getEmail(),
-                LocalDate.now(),
+                DATE_NOW,
                 "message1",
                 1
 
@@ -57,7 +59,7 @@ public class ReviewTestData {
         ReviewResponseDTO review2 = new ReviewResponseDTO(
                 getBook().getIsbn(),
                 getUser().getEmail(),
-                LocalDate.now(),
+                DATE_NOW,
                 "message2",
                 2
 

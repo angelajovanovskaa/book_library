@@ -4,6 +4,7 @@ import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
@@ -18,15 +19,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import static com.kinandcarta.book_library.utils.BookItemTestData.BOOK_ITEM_STATE;
 import static com.kinandcarta.book_library.utils.BookTestData.*;
+import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_NUMBER;
+import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_SIZE;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceImplTest {
@@ -59,26 +62,23 @@ class BookServiceImplTest {
     @Test
     void getPaginatedAvailableBooks_shouldReturnPageOfBookDTOs() {
         //  given
-        int page = 0;
-        int size = 2;
-        BookStatus bookStatus = BOOK_STATUS;
-        BookItemState bookItemState = BOOK_ITEM_STATE;
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         BookDisplayDTO bookDisplayDTO = getBookDisplayDTO();
         List<Book> books = getBooks();
 
-        given(bookRepository.pagingAvailableBooks(bookStatus, bookItemState, PageRequest.of(page, size))).willReturn(
+        given(bookRepository.pagingAvailableBooks(BOOK_STATUS, BOOK_ITEM_STATE, pageable)).willReturn(
                 new PageImpl<>(books));
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTO);
 
         //  when
-        Page<BookDisplayDTO> resultPage = bookService
-                .getPaginatedAvailableBooks(bookStatus, bookItemState, page, size);
+        Page<BookDisplayDTO> result = bookService
+                .getPaginatedAvailableBooks(BOOK_STATUS, BOOK_ITEM_STATE, PAGE_NUMBER, PAGE_SIZE);
 
         //  then
-        assertThat(resultPage).isNotNull();
-        assertThat(resultPage.getNumber()).isEqualTo(page);
-        assertThat(resultPage.getSize()).isEqualTo(size);
-        assertThat(resultPage.getContent()).hasSize(books.size());
+        assertThat(result).isNotNull();
+        assertThat(result.getNumber()).isEqualTo(PAGE_NUMBER);
+        assertThat(result.getSize()).isEqualTo(PAGE_SIZE);
+        assertThat(result.getContent()).hasSize(books.size());
     }
 
     @Test
@@ -240,7 +240,6 @@ class BookServiceImplTest {
 //    void deleteBook_bookDoesNotExist_throwsException() {
 //        //  given
 //        final String isbn = BOOK_ISBN;
-//        BookId bookId = BOOK_ID;
 //
 //        given(bookRepository.existsById(any())).willReturn(false);
 //
@@ -249,8 +248,7 @@ class BookServiceImplTest {
 //                .isThrownBy(() -> bookService.deleteBook(isbn))
 //                .withMessage("Book with ISBN: " + isbn + " not found");
 //
-//        verify(bookRepository).existsById(bookId);
-//        verify(bookRepository, times(0)).deleteById(bookId);
+//        verify(bookRepository).existsById(BOOK_ID);
 //    }
 
     @Test

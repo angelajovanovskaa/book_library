@@ -13,7 +13,6 @@ import static com.kinandcarta.book_library.utils.BookTestData.*;
 public class BookItemTestData {
     public static final BookItemState BOOK_ITEM_STATE = BookItemState.AVAILABLE;
     public static final UUID BOOK_ITEM_ID = UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc51");
-    public static final UUID NEW_BOOK_ITEM_ID = UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc00");
 
     public static List<BookItem> getBookItems() {
         BookItem bookItem1 = new BookItem(

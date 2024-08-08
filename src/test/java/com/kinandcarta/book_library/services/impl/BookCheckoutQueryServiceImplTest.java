@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE_SEARCH_TERM;
 import static com.kinandcarta.book_library.utils.OfficeTestData.OFFICE;
+import static com.kinandcarta.book_library.utils.SharedTestData.*;
 import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -98,7 +99,7 @@ class BookCheckoutQueryServiceImplTest {
     void getAllBookCheckoutsFromUserForBook_parametersAreValid_returnsListOfBookCheckoutDTO() {
         // given
         BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), anyString())).willReturn(
                 List.of(bookCheckout));
@@ -137,7 +138,7 @@ class BookCheckoutQueryServiceImplTest {
     void getAllBookCheckoutsFromUser_UserIdIsValid_returnsListOfBookCheckoutDTO() {
         // given
         BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutRepository.findByUser(any())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutDTO);
@@ -170,7 +171,7 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsPaginated_bookCheckoutsArePresent_returnsAPageWithBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Page<BookCheckout> bookCheckoutsPages =
                 new PageImpl<>(List.of(getBookCheckout()));
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =

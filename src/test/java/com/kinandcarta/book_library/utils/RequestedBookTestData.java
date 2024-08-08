@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.utils;
 import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
-import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import java.time.LocalDate;
@@ -18,7 +17,8 @@ import static com.kinandcarta.book_library.utils.UserTestData.getUser;
 
 @UtilityClass
 public class RequestedBookTestData {
-    private static final Book GET_LAST_BOOK = getBooks().getLast();
+    public static final UUID REQUESTED_BOOK_ID = UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a1");
+    public static final Long REQUESTED_BOOK_LIKE_COUNTER = 1L;
 
     public static List<RequestedBook> getRequestedBooks() {
         List<RequestedBook> requestedBooks = new ArrayList<>();
@@ -64,8 +64,8 @@ public class RequestedBookTestData {
                 2L,
                 getBook().getIsbn(),
                 BOOK_STATUS,
-                GET_LAST_BOOK.getTitle(),
-                GET_LAST_BOOK.getImage()
+                getLastBook().getTitle(),
+                getLastBook().getImage()
         );
         requestedBookDTOs.add(requestedBookResponseDTO2);
 
@@ -104,7 +104,7 @@ public class RequestedBookTestData {
 
     public static RequestedBookChangeStatusRequestDTO getRequestedBookChangeStatusRequestDTOInvalid() {
         return new RequestedBookChangeStatusRequestDTO(
-                UUID.randomUUID(),
+                UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a1"),
                 BookStatus.CURRENTLY_UNAVAILABLE
         );
     }
