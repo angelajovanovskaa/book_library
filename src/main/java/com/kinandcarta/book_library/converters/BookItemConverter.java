@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.dtos.BookItemDTO;
@@ -20,7 +19,7 @@ public class BookItemConverter {
      * Converts a {@link BookItem} entity to a response DTO.
      *
      * @param bookItem The {@link BookItem} entity to convert.
-     * @return a {@link BookDTO}
+     * @return a {@link BookItemDTO}
      */
     public BookItemDTO toBookItemDTO(BookItem bookItem) {
         Book book = bookItem.getBook();
