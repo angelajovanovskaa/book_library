@@ -6,6 +6,7 @@ import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 
+import com.kinandcarta.book_library.entities.Office;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -37,7 +38,8 @@ public class BookConverter {
                 book.getRatingFromFirm(),
                 book.getAuthors().stream()
                         .map(author -> new AuthorDTO(author.getFullName()))
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                book.getOffice().getName()
         );
 
     }
@@ -49,7 +51,7 @@ public class BookConverter {
      * @param authors The set of {@link Author} entities associated with the book.
      * @return a new instance of Book entity.
      */
-    public Book toBookEntity(BookDTO bookDTO, Set<Author> authors) {
+    public Book toBookEntity(BookDTO bookDTO, Set<Author> authors, Office office) {
         Book book = new Book();
 
         book.setIsbn(bookDTO.isbn());
@@ -63,6 +65,7 @@ public class BookConverter {
         book.setRatingFromWeb(bookDTO.ratingFromWeb());
         book.setRatingFromFirm(bookDTO.ratingFromFirm());
         book.setAuthors(authors);
+        book.setOffice(office);
 
         return book;
     }

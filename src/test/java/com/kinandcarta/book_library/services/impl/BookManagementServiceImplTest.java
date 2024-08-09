@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
@@ -17,6 +18,10 @@ import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 
 import com.kinandcarta.book_library.repositories.OfficeRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -24,13 +29,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -61,7 +67,7 @@ class BookManagementServiceImplTest {
         final BookDTO bookDTO = getBookDTOs().getFirst();
         Office office = new Office("Bristol");
 
-        given(bookConverter.toBookEntity(any(), any())).willReturn(bookToSave);
+        given(bookConverter.toBookEntity(any(), any(), any())).willReturn(bookToSave);
         given(bookRepository.save(any())).willReturn(bookToSave);
         given(officeRepository.findById(any())).willReturn(Optional.of(office));
         given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
@@ -104,7 +110,7 @@ class BookManagementServiceImplTest {
         newAuthor.setFullName("Mark Manson");
         given(authorRepository.save(any(Author.class))).willReturn(newAuthor);
 
-        given(bookConverter.toBookEntity(any(BookDTO.class), anySet())).willReturn(bookToSave);
+        given(bookConverter.toBookEntity(any(BookDTO.class), anySet(), any())).willReturn(bookToSave);
         given(bookRepository.save(any(Book.class))).willReturn(bookToSave);
         given(bookConverter.toBookDTO(any(Book.class))).willReturn(bookDTO);
 
@@ -132,10 +138,11 @@ class BookManagementServiceImplTest {
         given(bookRepository.existsById(any())).willReturn(true);
 
         final String isbn = "9780545414654";
-        BookId bookId = new BookId(isbn, "Bristol");
+        final String officeName = "Bristol";
+        BookId bookId = new BookId(isbn, officeName);
 
         //  when
-        String deletedBookIsbn = bookService.deleteBook(bookId);
+        String deletedBookIsbn = bookService.deleteBook(bookId.getIsbn(), bookId.getOffice());
 
         //  then
         assertThat(deletedBookIsbn).isEqualTo(isbn);
@@ -148,11 +155,12 @@ class BookManagementServiceImplTest {
         given(bookRepository.existsById(any())).willReturn(false);
 
         final String isbn = "123456789123";
-        BookId bookId = new BookId(isbn, "Bristol");
+        final String officeName = "Bristol";
+        BookId bookId = new BookId(isbn, officeName);
 
         //  when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookService.deleteBook(bookId))
+                .isThrownBy(() -> bookService.deleteBook(bookId.getIsbn(), bookId.getOffice()))
                 .withMessage("Book with ISBN: " + isbn + " not found");
 
         verify(bookRepository).existsById(bookId);
@@ -174,8 +182,9 @@ class BookManagementServiceImplTest {
         String isbn = "9412545414654";
         String officeName = "Bristol";
 
+        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
         //  when
-        BookDTO result = bookService.setBookStatusInStock(isbn, officeName);
+        BookDTO result = bookService.setBookStatusInStock(bookIdRequestDTO);
 
         //  then
         assertThat(result).isEqualTo(bookDTO);
@@ -188,8 +197,10 @@ class BookManagementServiceImplTest {
         String isbn = "1234567891234";
         String officeName = "Bristol";
 
+        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+
         //  when & then
-        assertThatThrownBy(() -> bookService.setBookStatusInStock(isbn, officeName))
+        assertThatThrownBy(() -> bookService.setBookStatusInStock(bookIdRequestDTO))
                 .isInstanceOf(BookNotFoundException.class)
                 .hasMessageContaining("Book with ISBN: " + isbn + " not found");
 
@@ -205,6 +216,8 @@ class BookManagementServiceImplTest {
         author1.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
         author1.setFullName("Leah Thomas");
 
+        Office office = new Office("Bristol");
+
         Book book1 = new Book();
         book1.setIsbn("9412545414654");
         book1.setTitle("Last Summer of us being together");
@@ -217,6 +230,7 @@ class BookManagementServiceImplTest {
         book1.setRatingFromWeb(10.0);
         book1.setGenres(genres);
         book1.setAuthors(Set.of(author1));
+        book1.setOffice(office);
 
         Book book2 = new Book();
         book2.setIsbn("9780545414654");
@@ -231,6 +245,7 @@ class BookManagementServiceImplTest {
         book2.setRatingFromWeb(0.0);
         book2.setGenres(genres);
         book2.setAuthors(Set.of(author1));
+        book2.setOffice(office);
 
         BookItem bookItem1 = new BookItem();
         bookItem1.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
@@ -259,7 +274,8 @@ class BookManagementServiceImplTest {
                 "https://google.com/images",
                 10.0,
                 10.0,
-                Set.of(authorDTO1));
+                Set.of(authorDTO1),
+                "Bristol");
 
         BookDTO bookDTO2 = new BookDTO(
                 "9780545414654",
@@ -272,7 +288,8 @@ class BookManagementServiceImplTest {
                 "https://google.com/images",
                 0.0,
                 10.0,
-                Set.of(authorDTO2));
+                Set.of(authorDTO2),
+                "Bristol");
 
         return List.of(bookDTO1, bookDTO2);
     }

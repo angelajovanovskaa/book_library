@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookItemConverter;
+import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
 import com.kinandcarta.book_library.dtos.BookItemDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
@@ -21,13 +22,16 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BookItemManagementServiceImplTest {
@@ -57,10 +61,12 @@ class BookItemManagementServiceImplTest {
 
         String isbn = "9780545414654";
         String officeName = "Bristol";
+        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+
         UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
 
         // when
-        BookItemDTO bookItemSaved = bookItemService.insertBookItem(isbn, officeName);
+        BookItemDTO bookItemSaved = bookItemService.insertBookItem(bookIdRequestDTO);
 
         // then
         assertThat(bookItemSaved).isNotNull();
@@ -73,17 +79,18 @@ class BookItemManagementServiceImplTest {
         //  given
         String isbn = "9780545414654";
         String officeName = "Bristol";
+        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+
         //  when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookItemService.insertBookItem(isbn, officeName))
+                .isThrownBy(() -> bookItemService.insertBookItem(bookIdRequestDTO))
                 .withMessage("Book with ISBN: " + isbn + " not found");
     }
 
     @Test
     void deleteBookItemById_bookItemExists_successfullyDeletedBookItem() {
         //  given
-        BookItem bookItem = getBookItems().getFirst();
-        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(bookItemRepository.existsById(any())).willReturn(true);
 
         final UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
 
@@ -94,12 +101,13 @@ class BookItemManagementServiceImplTest {
         assertThat(deleteBookId).isEqualTo(id);
 
         verify(bookItemRepository).deleteById(deleteBookId);
+        verify(bookItemRepository).existsById(id);
     }
 
     @Test
     void deleteItemBook_bookItemDoesNotExist_throwsException() {
         //  given
-        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
+        given(bookItemRepository.existsById(any())).willReturn(false);
 
         final UUID id = UUID.fromString("a123456e-c933-43b7-b58d-d48054507061");
 
@@ -107,7 +115,7 @@ class BookItemManagementServiceImplTest {
         assertThatExceptionOfType(BookItemNotFoundException.class)
                 .isThrownBy(() -> bookItemService.deleteById(id))
                 .withMessage("The bookItem with id: " + id + " doesn't exist");
-        verify(bookItemRepository).findById(id);
+        verify(bookItemRepository).existsById(id);
         verify(bookItemRepository, times(0)).deleteById(id);
     }
 

@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
-
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
@@ -35,7 +34,8 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,17 +56,17 @@ class BookQueryServiceImplTest {
     void getAllBooks_theListHasAtLeastOne_listOfBookDTOs() {
         // given
         List<Book> books = getBooks();
-        List<BookDTO> bookDTOS = getBookDTOs();
+        List<BookDisplayDTO> bookDisplayDTOs = getBookDisplayDTOS();
         String officeName = "Bristol";
 
         given(bookRepository.findAllBooksByOfficeName(anyString())).willReturn(books);
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         //when
-        List<BookDTO> actualResult = bookService.getAllBooks(officeName);
+        List<BookDisplayDTO> actualResult = bookService.getAllBooks(officeName);
 
         //then
-        assertThat(actualResult).isEqualTo(bookDTOS);
+        assertThat(actualResult).isEqualTo(bookDisplayDTOs);
     }
 
     @Test
@@ -170,19 +170,19 @@ class BookQueryServiceImplTest {
     void getBooksByTitle_titleIsValid_returnsListBookDTOs() {
         // given
         List<Book> books = getBooks();
-        List<BookDTO> bookDTOS = getBookDTOs();
+        List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
 
         given(bookRepository.findByTitleContainingIgnoreCaseAndOfficeName(anyString(), anyString())).willReturn(books);
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTOS.get(0), bookDTOS.get(1));
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
         String title = "of us";
         String officeName = "Bristol";
 
         //when
-        List<BookDTO> result = bookService.getBooksByTitleOffice(title, officeName);
+        List<BookDisplayDTO> result = bookService.getBooksByTitle(title, officeName);
 
         //then
-        assertThat(result).isEqualTo(bookDTOS);
+        assertThat(result).isEqualTo(bookDisplayDTOS);
     }
 
     @Test
@@ -284,7 +284,8 @@ class BookQueryServiceImplTest {
                 "https://google.com/images",
                 10.0,
                 10.0,
-                Set.of(authorDTO1));
+                Set.of(authorDTO1),
+                "Bristol");
 
         BookDTO bookDTO2 = new BookDTO(
                 "9780545414654",
@@ -297,7 +298,8 @@ class BookQueryServiceImplTest {
                 "https://google.com/images",
                 0.0,
                 10.0,
-                Set.of(authorDTO1));
+                Set.of(authorDTO1),
+                "Bristol");
 
         return List.of(bookDTO1, bookDTO2);
     }

@@ -39,10 +39,10 @@ public class BookQueryServiceImpl implements BookQueryService {
      * @return A list of all books represented as {@link BookDTO}.
      */
     @Override
-    public List<BookDTO> getAllBooks(String officeName) {
+    public List<BookDisplayDTO> getAllBooks(String officeName) {
         List<Book> books = bookRepository.findAllBooksByOfficeName(officeName);
 
-        return books.stream().map(bookConverter::toBookDTO).toList();
+        return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
 
     /**
@@ -62,23 +62,22 @@ public class BookQueryServiceImpl implements BookQueryService {
     }
 
     /**
-     * Retrieves books with title that contains the provided search term. Filtered by the office name.
+     * Retrieves books with title that contains the provided search term, filtered by the office name.
      *
      * @param titleSearchTerm a search term that will be used in searching the books by title
      * @param officeName      The name of the office that the book is located.
      * @return List of books matching the titleSearchTerm converted to BookDTOs.
      */
     @Override
-    public List<BookDTO> getBooksByTitleOffice(String titleSearchTerm, String officeName) {
+    public List<BookDisplayDTO> getBooksByTitle(String titleSearchTerm, String officeName) {
         List<Book> books = bookRepository.findByTitleContainingIgnoreCaseAndOfficeName(titleSearchTerm, officeName);
 
-        return books.stream().map(bookConverter::toBookDTO).toList();
+        return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
 
 
     /**
-     * Filters books that are currently available and converts them into BookDisplayDTO objects. Filtered by the
-     * office name.
+     * Filters books by office name that are currently available and converts them into BookDisplayDTO objects.
      *
      * @param officeName The name of the office that the book is located.
      * @return List of available books converted to BookDisplayDTOs
@@ -92,7 +91,7 @@ public class BookQueryServiceImpl implements BookQueryService {
     }
 
     /**
-     * Retrieves a paginated list of available books based on the specified criteria. Filtered by the office name.
+     * Retrieves a paginated list of available books based on the specified criteria, filtered by the office name.
      *
      * @param bookStatus    The status of the books to filter by.
      * @param bookItemState The state of the book items to filter by.
@@ -116,8 +115,7 @@ public class BookQueryServiceImpl implements BookQueryService {
     }
 
     /**
-     * Filters books that are currently requested and converts them into BookDisplayDTO objects.
-     * Filtered by the office name.
+     * Filters books by office name that are currently requested and converts them into BookDisplayDTO objects.
      *
      * @param officeName The name of the office that the book is located.
      * @return List of requested books converted to BookDisplayDTOs
@@ -130,8 +128,8 @@ public class BookQueryServiceImpl implements BookQueryService {
     }
 
     /**
-     * Retrieves books written in a specific language and converts them into BookDisplayDTO objects.
-     * Filtered by the office name.
+     * Retrieves books written in a specific language and converts them into BookDisplayDTO objects, filtered by the
+     * office name
      *
      * @param language   Language of the books to find
      * @param officeName The name of the office that the book is located.
@@ -145,8 +143,8 @@ public class BookQueryServiceImpl implements BookQueryService {
     }
 
     /**
-     * Retrieves books that contain at least one of the specified genres and converts them into BookDisplayDTO objects.
-     * Filtered by the office name.
+     * Retrieves books that are filtered by the office name and contain at least one of the specified genres and
+     * converts them into BookDisplayDTO objects, filtered by the office name.
      *
      * @param genres     Array of genres to search for
      * @param officeName The name of the office that the book is located.
@@ -158,7 +156,5 @@ public class BookQueryServiceImpl implements BookQueryService {
 
         return books.stream().map(bookConverter::toBookDisplayDTO).toList();
     }
-
-
 }
 

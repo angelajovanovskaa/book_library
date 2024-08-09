@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookItemConverter;
+import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
@@ -34,16 +35,17 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
     /**
      * Inserts a new book item with the state set to AVAILABLE for the specified book isbn.
      *
-     * @param isbn       The isbn of the book for which a new item is to be inserted.
-     * @param officeName The name of the office that the book is located.
+     * @param bookIdRequestDTO A DTO containing the ISBN of the book and the name of the office where
+     *                         the book is located. Must not be {@code null}.
      * @return A DTO representation of the newly inserted book item.
      * @throws BookNotFoundException If no book with the specified isbn is found.
      */
     @Override
-    public BookItemDTO insertBookItem(String isbn, String officeName) {
-        Optional<Book> bookOptional = bookRepository.findByIsbnAndOfficeName(isbn, officeName);
+    public BookItemDTO insertBookItem(BookIdRequestDTO bookIdRequestDTO) {
+        Optional<Book> bookOptional = bookRepository.findByIsbnAndOfficeName(bookIdRequestDTO.isbn(),
+                bookIdRequestDTO.officeName());
         if (bookOptional.isEmpty()) {
-            throw new BookNotFoundException(isbn);
+            throw new BookNotFoundException(bookIdRequestDTO.isbn());
         }
         BookItem bookItem = new BookItem();
         bookItem.setBookItemState(BookItemState.AVAILABLE);
@@ -63,10 +65,12 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
      */
     @Override
     public UUID deleteById(UUID id) {
-        BookItem bookItem = bookItemRepository.findById(id)
-                .orElseThrow(() -> new BookItemNotFoundException(id));
+        if (!bookItemRepository.existsById(id)) {
+            throw new BookItemNotFoundException(id);
+        }
 
-        bookItemRepository.deleteById(bookItem.getId());
+        bookItemRepository.deleteById(id);
+
         return id;
     }
 

@@ -9,11 +9,11 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface BookQueryService {
-    List<BookDTO> getAllBooks(String officeName);
+    List<BookDisplayDTO> getAllBooks(String officeName);
 
     BookDTO getBookByIsbn(String isbn, String officeName);
 
-    List<BookDTO> getBooksByTitleOffice(String title, String officeName);
+    List<BookDisplayDTO> getBooksByTitle(String title, String officeName);
 
     List<BookDisplayDTO> getAvailableBooks(String officeName);
 

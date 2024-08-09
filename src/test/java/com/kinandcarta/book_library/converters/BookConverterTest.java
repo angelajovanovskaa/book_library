@@ -6,10 +6,12 @@ import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -41,9 +43,10 @@ class BookConverterTest {
         BookDTO bookDTO = getBookDTO();
         Book book = getBook();
         Set<Author> authors = book.getAuthors();
+        Office office = new Office("Bristol");
 
         //  when
-        Book result = bookConverter.toBookEntity(bookDTO, authors);
+        Book result = bookConverter.toBookEntity(bookDTO, authors, office);
 
         //  then
         assertThat(result).isEqualTo(book);
@@ -65,6 +68,12 @@ class BookConverterTest {
     private Book getBook() {
         String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
 
+        Office office = new Office("Bristol");
+
+        Author author = new Author();
+        author.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
+        author.setFullName("Leah Thomas");
+
         Book book = new Book();
         book.setIsbn("765612382412");
         book.setTitle("The Doors of Eden");
@@ -76,12 +85,8 @@ class BookConverterTest {
         book.setImage("https://google.com/images");
         book.setRatingFromFirm(10.0);
         book.setGenres(genres);
-
-        Author author = new Author();
-        author.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author.setFullName("Leah Thomas");
-
         book.setAuthors(Set.of(author));
+        book.setOffice(office);
 
         BookItem bookItem = new BookItem();
         bookItem.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
@@ -106,7 +111,8 @@ class BookConverterTest {
                 120, BookStatus.IN_STOCK,
                 "https://google.com/images",
                 0.0,
-                10.0, Set.of(authorDTO));
+                10.0, Set.of(authorDTO),
+                "Bristol");
     }
 
     private BookDisplayDTO getToBookDisplayDTO() {

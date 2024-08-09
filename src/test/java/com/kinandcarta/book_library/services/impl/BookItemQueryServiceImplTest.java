@@ -7,14 +7,15 @@ import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
+
+import java.util.List;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +42,7 @@ class BookItemQueryServiceImplTest {
         List<BookItem> bookItems = getBookItems();
         List<BookItemDTO> bookItemDTOs = getBookItemDTOs();
 
-        given(bookItemRepository.findByBookIsbn(anyString(), anyString())).willReturn(bookItems);
+        given(bookItemRepository.findByBookIsbnAndOfficeName(anyString(), anyString())).willReturn(bookItems);
         given(bookItemConverter.toBookItemDTO(any())).willReturn(bookItemDTOs.get(0), bookItemDTOs.get(1));
 
         String isbn = "9780545414654";

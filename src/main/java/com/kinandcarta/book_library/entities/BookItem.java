@@ -2,20 +2,23 @@ package com.kinandcarta.book_library.entities;
 
 import com.kinandcarta.book_library.enums.BookItemState;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.util.Objects;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.Setter;
-
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
-
-import static java.util.Objects.nonNull;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
+import lombok.ToString;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,17 +40,6 @@ public class BookItem {
     @JoinColumn(name = "office_name")
     @ToString.Exclude
     private Book book;
-
-    public void addBook(Book book) {
-        if (nonNull(book)) {
-            this.book = book;
-            Collection<BookItem> bookItems = book.getBookItems();
-            if (isNotEmpty(bookItems)) {
-                bookItems.add(this);
-                book.addBookItems(bookItems);
-            }
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
