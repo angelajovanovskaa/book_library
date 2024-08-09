@@ -1,12 +1,12 @@
 package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.dtos.BookDTO;
-import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 
 public interface BookManagementService {
     BookDTO createBookWithAuthors(BookDTO bookDTO);
 
-    String deleteBook(String isbn, String officeName);
+    BookIdDTO deleteBook(String isbn, String officeName);
 
-    BookDTO setBookStatusInStock(BookIdRequestDTO bookIdRequestDTO);
+    BookDTO setBookStatusInStock(BookIdDTO bookIdDTO);
 }

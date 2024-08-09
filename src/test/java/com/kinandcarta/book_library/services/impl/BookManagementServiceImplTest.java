@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
-import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
@@ -139,11 +139,13 @@ class BookManagementServiceImplTest {
         final String officeName = "Bristol";
         BookId bookId = new BookId(isbn, officeName);
 
+        given(bookConverter.toBookId(any())).willReturn(bookId);
+
         // when
-        String deletedBookIsbn = bookService.deleteBook(bookId.getIsbn(), bookId.getOffice());
+        BookIdDTO deletedBook = bookService.deleteBook(isbn, officeName);
 
         // then
-        assertThat(deletedBookIsbn).isEqualTo(isbn);
+        assertThat(isbn).isEqualTo(deletedBook.isbn());
         verify(bookRepository).deleteById(bookId);
     }
 
@@ -156,9 +158,11 @@ class BookManagementServiceImplTest {
         final String officeName = "Bristol";
         BookId bookId = new BookId(isbn, officeName);
 
+        given(bookConverter.toBookId(any())).willReturn(bookId);
+
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookService.deleteBook(bookId.getIsbn(), bookId.getOffice()))
+                .isThrownBy(() -> bookService.deleteBook(isbn, officeName))
                 .withMessage("Book with ISBN: " + isbn + " not found");
 
         verify(bookRepository).existsById(bookId);
@@ -180,10 +184,10 @@ class BookManagementServiceImplTest {
         String isbn = "9412545414654";
         String officeName = "Bristol";
 
-        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+        BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
 
         // when
-        BookDTO result = bookService.setBookStatusInStock(bookIdRequestDTO);
+        BookDTO result = bookService.setBookStatusInStock(bookIdDTO);
 
         // then
         assertThat(result).isEqualTo(bookDTO);
@@ -196,10 +200,10 @@ class BookManagementServiceImplTest {
         String isbn = "1234567891234";
         String officeName = "Bristol";
 
-        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+        BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
 
         // when & then
-        assertThatThrownBy(() -> bookService.setBookStatusInStock(bookIdRequestDTO))
+        assertThatThrownBy(() -> bookService.setBookStatusInStock(bookIdDTO))
                 .isInstanceOf(BookNotFoundException.class)
                 .hasMessageContaining("Book with ISBN: " + isbn + " not found");
 

@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookItemConverter;
-import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.BookItemDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
@@ -61,12 +61,12 @@ class BookItemManagementServiceImplTest {
 
         String isbn = "9780545414654";
         String officeName = "Bristol";
-        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+        BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
 
         UUID id = UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215");
 
         // when
-        BookItemDTO bookItemSaved = bookItemService.insertBookItem(bookIdRequestDTO);
+        BookItemDTO bookItemSaved = bookItemService.insertBookItem(bookIdDTO);
 
         // then
         assertThat(bookItemSaved).isNotNull();
@@ -79,11 +79,11 @@ class BookItemManagementServiceImplTest {
         // given
         String isbn = "9780545414654";
         String officeName = "Bristol";
-        BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
+        BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
 
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookItemService.insertBookItem(bookIdRequestDTO))
+                .isThrownBy(() -> bookItemService.insertBookItem(bookIdDTO))
                 .withMessage("Book with ISBN: " + isbn + " not found");
     }
 

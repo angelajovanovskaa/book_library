@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
-import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
@@ -76,33 +76,35 @@ public class BookManagementServiceImpl implements BookManagementService {
      *
      * @param isbn       The ISBN of the book to delete.
      * @param officeName The office where the book is located.
-     * @return The ISBN of the deleted book
-     * @throws BookNotFoundException If no book with the specified ISBN exists
+     * @return The {@link BookIdDTO} corresponding to the deleted book. This is the same DTO that was
+     *         used to identify the book for deletion.
+     * @throws BookNotFoundException if no book with the given ISBN and office name exists in the repository.
      */
     @Override
-    public String deleteBook(String isbn, String officeName) {
-        BookId bookId = new BookId(isbn, officeName);
+    public BookIdDTO deleteBook(String isbn, String officeName) {
+        BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
+        BookId bookId = bookConverter.toBookId(bookIdDTO);
         if (!bookRepository.existsById(bookId)) {
-            throw new BookNotFoundException(bookId.getIsbn());
+            throw new BookNotFoundException(isbn);
         }
 
         bookRepository.deleteById(bookId);
 
-        return isbn;
+        return bookIdDTO;
     }
 
     /**
      * Sets the status of the given book to "IN_STOCK".
      *
-     * @param bookIdRequestDTO A DTO containing the ISBN of the book and the name of the office where
+     * @param bookIdDTO A DTO containing the ISBN of the book and the name of the office where
      *                         the book is located. Must not be {@code null}.
      * @return A {@link BookDTO} containing the details of the updated book with status set to "IN_STOCK".
      * @throws BookNotFoundException If no book with the specified ISBN is found at the given office.
      */
     @Override
-    public BookDTO setBookStatusInStock(BookIdRequestDTO bookIdRequestDTO) {
-        Book foundBook = bookRepository.findByIsbnAndOfficeName(bookIdRequestDTO.isbn(), bookIdRequestDTO.officeName())
-                .orElseThrow(() -> new BookNotFoundException(bookIdRequestDTO.isbn()));
+    public BookDTO setBookStatusInStock(BookIdDTO bookIdDTO) {
+        Book foundBook = bookRepository.findByIsbnAndOfficeName(bookIdDTO.isbn(), bookIdDTO.officeName())
+                .orElseThrow(() -> new BookNotFoundException(bookIdDTO.isbn()));
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
         bookRepository.save(foundBook);

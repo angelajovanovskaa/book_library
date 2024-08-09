@@ -13,7 +13,6 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 
 import org.junit.jupiter.api.Test;
@@ -40,9 +39,6 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookQueryServiceImplTest {
-    @Mock
-    private AuthorRepository authorRepository;
-
     @Mock
     private BookRepository bookRepository;
 

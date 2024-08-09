@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookItemConverter;
-import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
@@ -35,17 +35,17 @@ public class BookItemManagementServiceImpl implements BookItemManagementService 
     /**
      * Inserts a new book item with the state set to AVAILABLE for the specified book isbn.
      *
-     * @param bookIdRequestDTO A DTO containing the ISBN of the book and the name of the office where
-     *                         the book is located. Must not be {@code null}.
+     * @param bookIdDTO A DTO containing the ISBN of the book and the name of the office where
+     *                  the book is located. Must not be {@code null}.
      * @return A DTO representation of the newly inserted book item.
      * @throws BookNotFoundException If no book with the specified isbn is found.
      */
     @Override
-    public BookItemDTO insertBookItem(BookIdRequestDTO bookIdRequestDTO) {
-        Optional<Book> bookOptional = bookRepository.findByIsbnAndOfficeName(bookIdRequestDTO.isbn(),
-                bookIdRequestDTO.officeName());
+    public BookItemDTO insertBookItem(BookIdDTO bookIdDTO) {
+        Optional<Book> bookOptional = bookRepository.findByIsbnAndOfficeName(bookIdDTO.isbn(),
+                bookIdDTO.officeName());
         if (bookOptional.isEmpty()) {
-            throw new BookNotFoundException(bookIdRequestDTO.isbn());
+            throw new BookNotFoundException(bookIdDTO.isbn());
         }
         BookItem bookItem = new BookItem();
         bookItem.setBookItemState(BookItemState.AVAILABLE);

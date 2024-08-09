@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
-import com.kinandcarta.book_library.repositories.BookRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,9 +25,6 @@ import static org.mockito.BDDMockito.given;
 class BookItemQueryServiceImplTest {
     @Mock
     private BookItemRepository bookItemRepository;
-
-    @Mock
-    private BookRepository bookRepository;
 
     @Mock
     private BookItemConverter bookItemConverter;
