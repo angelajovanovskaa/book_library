@@ -24,16 +24,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Setter;
+
 import org.hibernate.annotations.Type;
 
 import java.util.Set;
 import java.util.List;
-import java.util.Collection;
-import java.util.ArrayList;
 import java.util.Objects;
-
-import static java.util.Objects.isNull;
-import static org.apache.commons.collections4.CollectionUtils.isNotEmpty;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -86,20 +82,6 @@ public class Book {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
     @ToString.Exclude
     private List<BookItem> bookItems;
-
-    public void addBookItems(Collection<BookItem> bookItems) {
-        if (isNotEmpty(bookItems)) {
-            bookItems.forEach(this::addBookItem);
-        }
-    }
-
-    private void addBookItem(BookItem bookItem) {
-        if (isNull(this.bookItems)) {
-            this.bookItems = new ArrayList<>();
-        }
-        this.bookItems.add(bookItem);
-        bookItem.setBook(this);
-    }
 
     @Override
     public boolean equals(Object o) {

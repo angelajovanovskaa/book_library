@@ -62,16 +62,16 @@ class BookQueryServiceImplTest {
         given(bookRepository.findAllBooksByOfficeName(anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
-        //when
+        // when
         List<BookDisplayDTO> actualResult = bookService.getAllBooks(officeName);
 
-        //then
+        // then
         assertThat(actualResult).isEqualTo(bookDisplayDTOs);
     }
 
     @Test
     void getPaginatedAvailableBooks_shouldReturnPageOfBookDTOs() {
-        //  given
+        // given
         int page = 0;
         int size = 2;
         BookStatus bookStatus = BookStatus.IN_STOCK;
@@ -87,11 +87,11 @@ class BookQueryServiceImplTest {
         given(bookConverter.toBookDisplayDTO(any())).
                 willReturn(new BookDisplayDTO("939393", "title", "en", "img"));
 
-        //  when
+        // when
         Page<BookDisplayDTO> resultPage = bookService
                 .getPaginatedAvailableBooks(bookStatus, bookItemState, page, size, office.getName());
 
-        //  then
+        // then
         assertThat(resultPage).isNotNull();
         assertThat(resultPage.getNumber()).isEqualTo(page);
         assertThat(resultPage.getSize()).isEqualTo(size);
@@ -100,7 +100,7 @@ class BookQueryServiceImplTest {
 
     @Test
     void getAvailableBooks_thereAreAvailableBooks_returnsListOfBookDTOs() {
-        //  given
+        // given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
         Office office = new Office("Bristol");
@@ -109,17 +109,17 @@ class BookQueryServiceImplTest {
                 .willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
-        //  when
+        // when
         List<BookDisplayDTO> result = bookService.getAvailableBooks(office.getName());
 
-        //  then
+        // then
         assertThat(result).isNotNull();
         assertThat(result).containsExactlyElementsOf(bookDisplayDTOS);
     }
 
     @Test
     void getRequestedBooks_thereAreRequestedBooks_returnsListOfBookDTOs() {
-        //  given
+        // given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
         String officeName = "Bristol";
@@ -127,10 +127,10 @@ class BookQueryServiceImplTest {
         given(bookRepository.findBookByBookStatusAndOfficeName(any(), anyString())).willReturn(books);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOS.get(0), bookDisplayDTOS.get(1));
 
-        //  when
+        // when
         List<BookDisplayDTO> result = bookService.getRequestedBooks(officeName);
 
-        //  then
+        // then
         assertThat(result).isNotNull();
         assertThat(result).containsExactlyElementsOf(bookDisplayDTOS);
     }
@@ -178,16 +178,16 @@ class BookQueryServiceImplTest {
         String title = "of us";
         String officeName = "Bristol";
 
-        //when
+        // when
         List<BookDisplayDTO> result = bookService.getBooksByTitle(title, officeName);
 
-        //then
+        // then
         assertThat(result).isEqualTo(bookDisplayDTOS);
     }
 
     @Test
     void getBooksByLanguage_languageIsValid_returnsListBookDisplayDTOs() {
-        //  given
+        // given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
 
@@ -197,16 +197,16 @@ class BookQueryServiceImplTest {
         final String language = "ENGLISH";
         String officeName = "Bristol";
 
-        //  when
+        // when
         List<BookDisplayDTO> result = bookService.getBooksByLanguage(language, officeName);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookDisplayDTOS);
     }
 
     @Test
     void getBooksByGenresContaining_genresAreValid_returnsListBookDisplayDTOs() {
-        //  given
+        // given
         List<Book> books = getBooks();
         List<BookDisplayDTO> bookDisplayDTOS = getBookDisplayDTOS();
 
@@ -216,10 +216,10 @@ class BookQueryServiceImplTest {
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
         String officeName = "Bristol";
 
-        //  when
+        // when
         List<BookDisplayDTO> result = bookService.getBooksByGenresContaining(genres, officeName);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookDisplayDTOS);
     }
 

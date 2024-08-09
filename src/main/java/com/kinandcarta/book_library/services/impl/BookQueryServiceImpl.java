@@ -7,9 +7,7 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
-import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.services.BookQueryService;
 
 import lombok.AllArgsConstructor;
@@ -28,9 +26,7 @@ import java.util.List;
 public class BookQueryServiceImpl implements BookQueryService {
 
     private final BookRepository bookRepository;
-    private final OfficeRepository officeRepository;
     private final BookConverter bookConverter;
-    private final AuthorRepository authorRepository;
 
     /**
      * Retrieves all books, filtered by the office name.

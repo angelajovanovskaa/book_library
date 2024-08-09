@@ -39,12 +39,11 @@ public class BookManagementServiceImpl implements BookManagementService {
     /**
      * Creates a new book based on the provided BookDTO.
      *
-     * @param bookDTO    The BookDTO object containing the details of the book to create
-     * @param officeName The name of the office that the book is located.
+     * @param bookDTO The BookDTO object containing the details of the book to create
      * @return The created BookDTO object
      */
     @Override
-    public BookDTO createBookWithAuthors(BookDTO bookDTO, String officeName) {
+    public BookDTO createBookWithAuthors(BookDTO bookDTO) {
         Set<AuthorDTO> authorsDTOs = bookDTO.authorDTOS();
         Set<Author> authors = new HashSet<>();
         for (AuthorDTO authorDTO : authorsDTOs) {
@@ -61,17 +60,15 @@ public class BookManagementServiceImpl implements BookManagementService {
             authors.add(author);
         }
 
-        Optional<Office> office = officeRepository.findById(officeName);
+        Optional<Office> office = officeRepository.findById(bookDTO.officeName());
         if (office.isPresent()) {
             Book book = bookConverter.toBookEntity(bookDTO, authors, office.get());
-            book.setOffice(office.get());
             Book savedBook = bookRepository.save(book);
 
             return bookConverter.toBookDTO(savedBook);
         } else {
-            throw new OfficeNotFoundException(officeName);
+            throw new OfficeNotFoundException(bookDTO.officeName());
         }
-
     }
 
     /**
@@ -91,7 +88,7 @@ public class BookManagementServiceImpl implements BookManagementService {
 
         bookRepository.deleteById(bookId);
 
-        return bookId.getIsbn();
+        return isbn;
     }
 
     /**

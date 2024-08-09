@@ -4,7 +4,7 @@ import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookIdRequestDTO;
 
 public interface BookManagementService {
-    BookDTO createBookWithAuthors(BookDTO bookDTO, String officeName);
+    BookDTO createBookWithAuthors(BookDTO bookDTO);
 
     String deleteBook(String isbn, String officeName);
 

@@ -55,7 +55,6 @@ class BookItemQueryServiceImplTest {
         assertThat(result).isEqualTo(bookItemDTOs);
     }
 
-
     private List<BookItem> getBookItems() {
         Book book = new Book();
         book.setIsbn("9780545414654");

@@ -59,10 +59,9 @@ class BookManagementServiceImplTest {
     @InjectMocks
     private BookManagementServiceImpl bookService;
 
-
     @Test
     void createBookWithAuthors_successfullyCreatedBook() {
-        //  given
+        // given
         final Book bookToSave = getBooks().getFirst();
         final BookDTO bookDTO = getBookDTOs().getFirst();
         Office office = new Office("Bristol");
@@ -72,10 +71,10 @@ class BookManagementServiceImplTest {
         given(officeRepository.findById(any())).willReturn(Optional.of(office));
         given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
 
-        //  when
-        BookDTO savedBookDTO = bookService.createBookWithAuthors(bookDTO, office.getName());
+        // when
+        BookDTO savedBookDTO = bookService.createBookWithAuthors(bookDTO);
 
-        //  then
+        // then
         assertThat(savedBookDTO).isNotNull();
         assertThat(savedBookDTO.isbn()).isEqualTo("9412545414654");
         assertThat(savedBookDTO.title()).isEqualTo("Last Summer of us being together");
@@ -115,7 +114,7 @@ class BookManagementServiceImplTest {
         given(bookConverter.toBookDTO(any(Book.class))).willReturn(bookDTO);
 
         // when
-        BookDTO result = bookService.createBookWithAuthors(bookDTO, office.getName());
+        BookDTO result = bookService.createBookWithAuthors(bookDTO);
 
         // then
         assertThat(result).isNotNull();
@@ -129,36 +128,35 @@ class BookManagementServiceImplTest {
         verify(bookRepository).save(bookToSave);
 
         verify(bookConverter).toBookDTO(bookToSave);
-
     }
 
     @Test
     void deleteBook_bookExists_successfullyDeletedBook() {
-        //  given
+        // given
         given(bookRepository.existsById(any())).willReturn(true);
 
         final String isbn = "9780545414654";
         final String officeName = "Bristol";
         BookId bookId = new BookId(isbn, officeName);
 
-        //  when
+        // when
         String deletedBookIsbn = bookService.deleteBook(bookId.getIsbn(), bookId.getOffice());
 
-        //  then
+        // then
         assertThat(deletedBookIsbn).isEqualTo(isbn);
         verify(bookRepository).deleteById(bookId);
     }
 
     @Test
     void deleteBook_bookDoesNotExist_throwsException() {
-        //  given
+        // given
         given(bookRepository.existsById(any())).willReturn(false);
 
         final String isbn = "123456789123";
         final String officeName = "Bristol";
         BookId bookId = new BookId(isbn, officeName);
 
-        //  when & then
+        // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> bookService.deleteBook(bookId.getIsbn(), bookId.getOffice()))
                 .withMessage("Book with ISBN: " + isbn + " not found");
@@ -169,7 +167,7 @@ class BookManagementServiceImplTest {
 
     @Test
     void setBookStatusInStock_bookIsbnIsValid_successfullyChangedStatus() {
-        //  given
+        // given
         List<Book> books = getBooks();
         List<BookDTO> bookDTOS = getBookDTOs();
 
@@ -183,23 +181,24 @@ class BookManagementServiceImplTest {
         String officeName = "Bristol";
 
         BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
-        //  when
+
+        // when
         BookDTO result = bookService.setBookStatusInStock(bookIdRequestDTO);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookDTO);
     }
 
     @Test
     void setBookStatusInStock_bookDoesNotExist_throwsException() {
-        //  given
+        // given
         given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.empty());
         String isbn = "1234567891234";
         String officeName = "Bristol";
 
         BookIdRequestDTO bookIdRequestDTO = new BookIdRequestDTO(isbn, officeName);
 
-        //  when & then
+        // when & then
         assertThatThrownBy(() -> bookService.setBookStatusInStock(bookIdRequestDTO))
                 .isInstanceOf(BookNotFoundException.class)
                 .hasMessageContaining("Book with ISBN: " + isbn + " not found");
