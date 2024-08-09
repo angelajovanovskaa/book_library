@@ -3,10 +3,12 @@ package com.kinandcarta.book_library.converters;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
@@ -63,6 +65,19 @@ class BookConverterTest {
 
         //  then
         assertThat(result).isEqualTo(bookDisplayDTO);
+    }
+
+    @Test
+    void toBookId_conversionIsDone_returnsBookId() {
+        // given
+        BookIdDTO bookIdDTO = new BookIdDTO("9780545414654", "Bristol");
+
+        // when
+        BookId result = bookConverter.toBookId(bookIdDTO);
+
+        // then
+        assertThat(result.getIsbn()).isEqualTo(bookIdDTO.isbn());
+        assertThat(result.getOffice()).isEqualTo(bookIdDTO.officeName());
     }
 
     private Book getBook() {
