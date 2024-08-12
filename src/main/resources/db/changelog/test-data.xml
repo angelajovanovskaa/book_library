@@ -33,8 +33,8 @@
             <column name="description" value="description"/>
             <column name="summary" value="summary"/>
             <column name="total_pages" value="350"/>
-            <column name="rating_from_web" value="2"/>
-            <column name="rating_from_firm" value="5"/>
+            <column name="rating_from_web" value="2.9"/>
+            <column name="rating_from_firm" value="0"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{FICTION}"/>
@@ -56,8 +56,8 @@
             <column name="description" value="description"/>
             <column name="summary" value="summary"/>
             <column name="total_pages" value="232"/>
-            <column name="rating_from_web" value="7"/>
-            <column name="rating_from_firm" value="9"/>
+            <column name="rating_from_web" value="3.1"/>
+            <column name="rating_from_firm" value="0"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{ROMANCE}"/>
@@ -79,8 +79,8 @@
             <column name="description" value="description"/>
             <column name="summary" value="summary"/>
             <column name="total_pages" value="560"/>
-            <column name="rating_from_web" value="10"/>
-            <column name="rating_from_firm" value="10"/>
+            <column name="rating_from_web" value="4.2"/>
+            <column name="rating_from_firm" value="5"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{HEALTH}"/>
@@ -102,9 +102,9 @@
             <column name="description" value="description"/>
             <column name="summary" value="summary"/>
             <column name="total_pages" value="450"/>
-            <column name="rating_from_web" value="2"/>
-            <column name="rating_from_firm" value="5"/>
-            <column name="language" value="{ENGLISH}"/>
+            <column name="rating_from_web" value="3.32"/>
+            <column name="rating_from_firm" value="0"/>
+            <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{BUSINESS,ECONOMICS}"/>
         </insert>
@@ -125,8 +125,8 @@
             <column name="description" value="description"/>
             <column name="summary" value="summary"/>
             <column name="total_pages" value="124"/>
-            <column name="rating_from_web" value="4"/>
-            <column name="rating_from_firm" value="6"/>
+            <column name="rating_from_web" value="2.93"/>
+            <column name="rating_from_firm" value="0"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{HISTORY,BIOGRAPHY}"/>
@@ -148,8 +148,8 @@
             <column name="description" value="description"/>
             <column name="summary" value="summary"/>
             <column name="total_pages" value="124"/>
-            <column name="rating_from_web" value="4"/>
-            <column name="rating_from_firm" value="6"/>
+            <column name="rating_from_web" value="4.13"/>
+            <column name="rating_from_firm" value="0"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{HISTORY}"/>
