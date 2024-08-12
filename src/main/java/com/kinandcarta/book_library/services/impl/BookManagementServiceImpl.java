@@ -67,14 +67,15 @@ public class BookManagementServiceImpl implements BookManagementService {
         }
 
         Optional<Office> office = officeRepository.findById(bookInsertRequestDTO.officeName());
-        if (office.isPresent()) {
-            Book book = bookConverter.toBookEntity(bookInsertRequestDTO, authors, office.get());
-            Book savedBook = bookRepository.save(book);
-
-            return bookConverter.toBookDisplayDTO(savedBook);
-        } else {
+        if (office.isEmpty()) {
             throw new OfficeNotFoundException(bookInsertRequestDTO.officeName());
         }
+
+        Book book = bookConverter.toBookEntity(bookInsertRequestDTO, authors, office.get());
+        book.setBookStatus(BookStatus.IN_STOCK);
+        Book savedBook = bookRepository.save(book);
+
+        return bookConverter.toBookDisplayDTO(savedBook);
     }
 
     /**

@@ -12,6 +12,7 @@ import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.keys.BookId;
+import com.kinandcarta.book_library.enums.BookStatus;
 import java.util.List;
 import org.springframework.stereotype.Component;
 
@@ -89,18 +90,20 @@ public class BookConverter {
     public Book toBookEntity(BookInsertRequestDTO bookInsertRequestDTO, Set<Author> authors,
                              Office office) {
 
-        return new Book(
-                bookInsertRequestDTO.isbn(),
-                bookInsertRequestDTO.title(),
-                bookInsertRequestDTO.description(),
-                bookInsertRequestDTO.language(),
-                bookInsertRequestDTO.genres(),
-                bookInsertRequestDTO.totalPages(),
-                bookInsertRequestDTO.image(),
-                bookInsertRequestDTO.ratingFromWeb(),
-                authors,
-                office
-        );
+        Book book = new Book();
+
+        book.setIsbn(bookInsertRequestDTO.isbn());
+        book.setTitle(bookInsertRequestDTO.title());
+        book.setDescription(bookInsertRequestDTO.description());
+        book.setLanguage(bookInsertRequestDTO.language());
+        book.setImage(bookInsertRequestDTO.image());
+        book.setGenres(bookInsertRequestDTO.genres());
+        book.setTotalPages(bookInsertRequestDTO.totalPages());
+        book.setRatingFromWeb(bookInsertRequestDTO.ratingFromWeb());
+        book.setAuthors(authors);
+        book.setOffice(office);
+
+        return book;
     }
 }
 

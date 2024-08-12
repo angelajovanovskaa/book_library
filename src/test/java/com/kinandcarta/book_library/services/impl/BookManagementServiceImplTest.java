@@ -18,6 +18,7 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
+import com.kinandcarta.book_library.exceptions.OfficeNotFoundException;
 import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
@@ -138,6 +139,19 @@ class BookManagementServiceImplTest {
 
         verify(authorRepository).save(argThat(author -> "Mark Manson".equals(author.getFullName())));
         verify(bookRepository).save(bookToSave);
+    }
+
+    @Test
+    void createBookWithAuthors_officeDoesNotExist_throwsException() {
+        // given
+        final BookInsertRequestDTO bookInsertRequestDTO = getBookInsertRequestDTOs().get(2);
+
+        given(officeRepository.findById(anyString())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatExceptionOfType(OfficeNotFoundException.class)
+                .isThrownBy(() -> bookService.createBookWithAuthors(bookInsertRequestDTO))
+                .withMessage("Office with name: " + bookInsertRequestDTO.officeName() + " not found");
     }
 
     @Test
@@ -347,7 +361,20 @@ class BookManagementServiceImplTest {
                 "Bristol"
         );
 
-        return List.of(bookInsertRequestDTO1, bookInsertRequestDTO2);
+        BookInsertRequestDTO bookInsertRequestDTO3 = new BookInsertRequestDTO(
+                "1920545414654",
+                "Homo Sapiens: Brief History about Humanity",
+                "book description",
+                Language.ENGLISH.toString(),
+                genres,
+                120,
+                "https://google.com/images",
+                0.0,
+                Set.of(authorDTO2),
+                "London"
+                );
+
+        return List.of(bookInsertRequestDTO1, bookInsertRequestDTO2, bookInsertRequestDTO3);
     }
 
     private List<BookDisplayDTO> getBookDisplayDTOS() {
