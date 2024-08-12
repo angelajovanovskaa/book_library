@@ -1,11 +1,9 @@
 package com.kinandcarta.book_library.validators;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 import static java.util.Map.entry;
 
@@ -31,11 +29,7 @@ public final class BookStatusTransitionValidator {
      * @return true if the transition is valid, false otherwise
      */
     public boolean isValid(BookStatus currentBookStatus, BookStatus newBookStatus) {
-        List<BookStatus> allowedStatuses = VALID_STATUS_TRANSITIONS.get(currentBookStatus);
-
-        if (CollectionUtils.isEmpty(allowedStatuses)) {
-            return false;
-        }
+        List<BookStatus> allowedStatuses = VALID_STATUS_TRANSITIONS.getOrDefault(currentBookStatus, List.of());
 
         return allowedStatuses.contains(newBookStatus);
     }

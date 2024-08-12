@@ -25,15 +25,15 @@ public class ReviewConverter {
      * @return {@link ReviewResponseDTO} converted entity
      */
     public ReviewResponseDTO toReviewResponseDTO(Review review) {
-        LocalDate date = review.getDate();
-        String message = review.getMessage();
-        Integer rating = review.getRating();
-
         Book book = review.getBook();
         String bookISBN = book.getIsbn();
 
         User user = review.getUser();
         String userEmail = user.getEmail();
+
+        LocalDate date = review.getDate();
+        String message = review.getMessage();
+        Integer rating = review.getRating();
 
         return new ReviewResponseDTO(bookISBN, userEmail, date, message, rating);
     }

@@ -2,22 +2,20 @@ package com.kinandcarta.book_library.dtos;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 
 public record ReviewRequestDTO(
-        @NotNull
+        @NotBlank
         String bookISBN,
 
-        @NotNull
+        @NotBlank
         String userEmail,
 
-        @NotEmpty
+        @NotBlank
         String message,
 
-        @NotNull
         @Min(1)
         @Max(5)
-        Integer rating
+        int rating
 ) {
 }

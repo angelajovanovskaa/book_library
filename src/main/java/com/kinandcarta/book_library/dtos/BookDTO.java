@@ -22,9 +22,8 @@ public record BookDTO(
         String image,
         double ratingFromWeb,
         double ratingFromFirm,
-        Set<AuthorDTO> authorDTOS
-//        Set<Review> reviews
-
+        Set<AuthorDTO> authorDTOS,
+        String officeName
 ) {
 
     @Override

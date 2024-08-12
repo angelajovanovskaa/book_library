@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.RequestedBookDTO;
+import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -11,19 +11,19 @@ import java.util.UUID;
 
 /**
  * <ul>
- *     <li>Performs conversion of object from type {@link RequestedBook} to {@link RequestedBookDTO}.</li>
+ *     <li>Performs conversion of object from type {@link RequestedBook} to {@link RequestedBookResponseDTO}.</li>
  * </ul>
  */
 @Component
 public class RequestedBookConverter {
 
     /**
-     * Converts a {@link RequestedBook} entity to a {@link RequestedBookDTO} entity.
+     * Converts a {@link RequestedBook} entity to a {@link RequestedBookResponseDTO} entity.
      *
      * @param requestedBook {@link RequestedBook} entity to convert
-     * @return {@link RequestedBookDTO} converted entity
+     * @return {@link RequestedBookResponseDTO} converted entity
      */
-    public RequestedBookDTO toRequestedBookDTO(RequestedBook requestedBook) {
+    public RequestedBookResponseDTO toRequestedBookResponseDTO(RequestedBook requestedBook) {
         UUID id = requestedBook.getId();
         LocalDate requestedDate = requestedBook.getRequestedDate();
         Long likeCounter = requestedBook.getLikeCounter();
@@ -34,6 +34,6 @@ public class RequestedBookConverter {
         String title = book.getTitle();
         String image = book.getImage();
 
-        return new RequestedBookDTO(id, requestedDate, likeCounter, bookISBN, bookStatus, title, image);
+        return new RequestedBookResponseDTO(id, requestedDate, likeCounter, bookISBN, bookStatus, title, image);
     }
 }

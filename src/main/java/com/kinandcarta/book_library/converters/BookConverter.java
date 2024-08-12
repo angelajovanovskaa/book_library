@@ -1,11 +1,14 @@
 package com.kinandcarta.book_library.converters;
 
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 
+import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -37,7 +40,8 @@ public class BookConverter {
                 book.getRatingFromFirm(),
                 book.getAuthors().stream()
                         .map(author -> new AuthorDTO(author.getFullName()))
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toSet()),
+                book.getOffice().getName()
         );
 
     }
@@ -49,7 +53,7 @@ public class BookConverter {
      * @param authors The set of {@link Author} entities associated with the book.
      * @return a new instance of Book entity.
      */
-    public Book toBookEntity(BookDTO bookDTO, Set<Author> authors) {
+    public Book toBookEntity(BookDTO bookDTO, Set<Author> authors, Office office) {
         Book book = new Book();
 
         book.setIsbn(bookDTO.isbn());
@@ -63,6 +67,7 @@ public class BookConverter {
         book.setRatingFromWeb(bookDTO.ratingFromWeb());
         book.setRatingFromFirm(bookDTO.ratingFromFirm());
         book.setAuthors(authors);
+        book.setOffice(office);
 
         return book;
     }
@@ -80,6 +85,17 @@ public class BookConverter {
                 book.getLanguage(),
                 book.getImage()
         );
+    }
+
+    /**
+     * Converts a {@link BookIdDTO} object to a {@link BookId}.
+     *
+     * @param bookIdDTO The {@link BookIdDTO} object to convert.
+     * @return A {@link BookId} object that contains the ISBN and office name from the provided
+     * {@link BookIdDTO}.
+     */
+    public BookId toBookId(BookIdDTO bookIdDTO) {
+        return new BookId(bookIdDTO.isbn(), bookIdDTO.officeName());
     }
 }
 
