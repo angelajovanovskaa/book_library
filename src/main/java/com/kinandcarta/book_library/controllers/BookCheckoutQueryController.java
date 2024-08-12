@@ -1,24 +1,37 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
+import com.kinandcarta.book_library.services.BookCheckoutManagementService;
 import com.kinandcarta.book_library.services.BookCheckoutQueryService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/bookCheckoutQuery")
+@RequestMapping("/book-checkouts")
 public class BookCheckoutQueryController {
     private final BookCheckoutQueryService bookCheckoutQueryService;
+    private final BookCheckoutManagementService bookCheckoutManagementService;
 
     @GetMapping("/getAll")
-    ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAll(@RequestParam String officeName) {
+    ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAll(
+            @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckouts(officeName);
 
@@ -27,7 +40,8 @@ public class BookCheckoutQueryController {
 
     @GetMapping("/getAllPaginated")
     ResponseEntity<Page<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllPaginated(
-            @RequestParam String officeName, int numberOfPages, int pageSize) {
+            @RequestParam @NotBlank String officeName, @RequestParam(defaultValue = "0") int numberOfPages,
+            @RequestParam(defaultValue = "5") int pageSize) {
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsPaginated(numberOfPages, pageSize, officeName);
 
@@ -35,7 +49,8 @@ public class BookCheckoutQueryController {
     }
 
     @GetMapping("/getAllActive")
-    ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllActive(@RequestParam String officeName) {
+    ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllActive(
+            @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllActiveBookCheckouts(officeName);
 
@@ -43,7 +58,8 @@ public class BookCheckoutQueryController {
     }
 
     @GetMapping("/getAllPast")
-    ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllPast(@RequestParam String officeName) {
+    ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllPast(
+            @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllPastBookCheckouts(officeName);
 
@@ -52,7 +68,7 @@ public class BookCheckoutQueryController {
 
     @GetMapping("/getAllNearReturnDate")
     ResponseEntity<List<BookCheckoutReturnReminderResponseDTO>> getAllNearReturnDate(
-            @RequestParam String officeName) {
+            @RequestParam @NotBlank String officeName) {
         List<BookCheckoutReturnReminderResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(officeName);
 
@@ -61,27 +77,42 @@ public class BookCheckoutQueryController {
 
     @GetMapping("/getAllByTitleContaining")
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllByTitleContaining(
-            @RequestParam String titleSearchTerm,
-            @RequestParam String officeName) {
+            @RequestParam @NotBlank String officeName, @RequestParam String titleSearchTerm) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
                 bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(officeName, titleSearchTerm);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/getAllBooksForUser/{userId}")
-    ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUser(@PathVariable UUID userId) {
+    @GetMapping("/getAllBooksForUser")
+    ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUser(@RequestParam @NotNull UUID userId) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/getAllBooksForUserByTitleContaining/{userId}")
-    ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUserByTitleContaining(@PathVariable UUID userId,
-                                                                            @RequestParam String titleSearchTerm) {
+    @GetMapping("/getAllBooksForUserByTitleContaining")
+    ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUserByTitleContaining(
+            @RequestParam @NotNull UUID userId, @RequestParam String titleSearchTerm) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId,
                 titleSearchTerm);
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/borrow")
+    public ResponseEntity<BookCheckoutResponseDTO> borrowBookItem(
+            @Valid @RequestBody BookCheckoutRequestDTO bookCheckoutRequestDTO) {
+        BookCheckoutResponseDTO response = bookCheckoutManagementService.borrowBookItem(bookCheckoutRequestDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/return")
+    public ResponseEntity<BookCheckoutResponseDTO> returnBookItem(
+            @Valid @RequestBody BookCheckoutRequestDTO bookCheckoutRequestDTO) {
+        BookCheckoutResponseDTO response = bookCheckoutManagementService.returnBookItem(bookCheckoutRequestDTO);
+
+        return ResponseEntity.ok(response);
     }
 }
