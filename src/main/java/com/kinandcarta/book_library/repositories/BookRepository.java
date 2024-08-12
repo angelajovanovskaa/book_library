@@ -4,6 +4,8 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,13 +13,19 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface BookRepository extends JpaRepository<Book, BookId> {
-    @Query("SELECT DISTINCT b " +
+
+    @Query("SELECT b FROM Book b " +
+            "JOIN FETCH b.office o " +
+            "JOIN FETCH b.authors a " +
+            "WHERE b.office.name = :officeName")
+    List<Book> findAllBooksByOfficeName(@Param("officeName") String officeName);
+
+    @Query("SELECT b " +
             "FROM Book b " +
+            "JOIN FETCH b.office o " +
             "WHERE b.bookStatus = :bookStatus " +
+            "AND o.name = :officeName " +
             "AND EXISTS (" +
             "    SELECT 1 " +
             "    FROM BookItem bi " +
@@ -25,11 +33,14 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
             "    AND bi.bookItemState = :bookItemState " +
             ")")
     List<Book> findBooksByStatusAndAvailableItems(@Param("bookStatus") BookStatus bookStatus,
-                                                  @Param("bookItemState") BookItemState bookItemState);
+                                                  @Param("bookItemState") BookItemState bookItemState,
+                                                  @Param("officeName") String officeName);
 
-    @Query("SELECT DISTINCT b " +
+    @Query("SELECT b " +
             "FROM Book b " +
+            "JOIN FETCH b.office o " +
             "WHERE b.bookStatus = :bookStatus " +
+            "AND o.name = :officeName " +
             "AND EXISTS (" +
             "    SELECT 1 " +
             "    FROM BookItem bi " +
@@ -38,27 +49,48 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
             ")")
     Page<Book> pagingAvailableBooks(@Param("bookStatus") BookStatus bookStatus,
                                     @Param("bookItemState") BookItemState bookItemState,
+                                    @Param("officeName") String officeName,
                                     Pageable pageable);
 
-    List<Book> findBookByBookStatus(BookStatus bookStatus);
+    List<Book> findBookByBookStatusAndOfficeName(BookStatus bookStatus, String officeName);
 
-    @Query("SELECT b FROM Book b JOIN FETCH b.office WHERE b.isbn = :isbn AND b.office.name = :officeName")
-    Optional<Book> findByIsbnAndOffice_Name(@Param("isbn") String isbn, @Param("officeName") String officeName);
+    @Query("SELECT b FROM Book b " +
+            "JOIN FETCH b.office " +
+            "JOIN FETCH b.authors " +
+            "WHERE b.isbn = :isbn AND b.office.name = :officeName")
+    Optional<Book> findByIsbnAndOfficeName(@Param("isbn") String isbn,
+                                           @Param("officeName") String officeName);
 
     Optional<Book> findByIsbn(String isbn);
 
-    List<Book> findBooksByTitleContainingIgnoreCase(String title);
+    @Query("SELECT b FROM Book b " +
+            "JOIN FETCH b.office " +
+            "WHERE b.title LIKE %:title% AND b.office.name = :officeName")
+    List<Book> findByTitleContainingIgnoreCaseAndOfficeName(@Param("title") String title,
+                                                            @Param("officeName") String officeName);
 
-    List<Book> findBooksByLanguageAndOffice_Name(String language, String officeName);
+    @Query("SELECT b FROM Book b " +
+            "JOIN FETCH b.office " +
+            "WHERE b.language = :language AND b.office.name = :officeName")
+    List<Book> findBooksByLanguageAndOfficeName(@Param("language") String language,
+                                                @Param("officeName") String officeName);
 
-    List<Book> findByLanguage(String language);
+    @Query(value = "SELECT b.* " +
+            "FROM book b " +
+            "JOIN office o ON b.office_name = o.name " +
+            "WHERE b.genres @> ARRAY[:genres]::text[] " +
+            "AND o.name = :officeName",
+            nativeQuery = true)
+    List<Book> findBooksByGenresContaining(@Param("genres") String[] genres,
+                                           @Param("officeName") String officeName);
 
-    @Query(value = "SELECT * FROM book WHERE genres @> ARRAY[:genres]::text[]", nativeQuery = true)
-    List<Book> findBooksByGenresContaining(@Param("genres") String[] genres);
-
-    void deleteByIsbn(String isbn);
+    void deleteByIsbnAndOfficeName(String isbn, String officeName);
 
     @Modifying
-    @Query("UPDATE Book book SET book.ratingFromFirm = :rating WHERE book.isbn = :isbn")
-    void updateRatingByIsbn(String isbn, double rating);
+    @Query("update Book b " +
+            "set b.ratingFromFirm = :rating " +
+            "where b.isbn = :isbn and b.office.name = :officeName")
+    void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
+
+    boolean existsByIsbnAndOfficeName(String isbn, String officeName);
 }
