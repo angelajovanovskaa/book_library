@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/book-checkouts")
-public class BookCheckoutQueryController {
+public class BookCheckoutController {
     private final BookCheckoutQueryService bookCheckoutQueryService;
     private final BookCheckoutManagementService bookCheckoutManagementService;
 

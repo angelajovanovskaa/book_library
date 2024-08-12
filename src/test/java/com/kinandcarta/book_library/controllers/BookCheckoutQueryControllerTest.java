@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BookCheckoutQueryController.class)
+@WebMvcTest(BookCheckoutController.class)
 class BookCheckoutQueryControllerTest {
     private static final String BASE_PATH = "/book-checkouts";
     private static final String OFFICE_PARAM = "officeName";
