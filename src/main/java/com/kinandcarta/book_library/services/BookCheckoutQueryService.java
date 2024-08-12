@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface BookCheckoutQueryService {
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckouts(String officeName);
 
-    Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int numberOfPages, int pageSize
+    Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int pageNumber, int pageSize
             , String officeName);
 
     List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllActiveBookCheckouts(String officeName);

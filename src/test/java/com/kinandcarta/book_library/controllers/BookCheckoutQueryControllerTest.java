@@ -198,11 +198,11 @@ class BookCheckoutQueryControllerTest {
         final String getAllPaginatedBookCheckoutsPath = BASE_PATH + "/getAllPaginated";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTO();
-        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOPage =
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPage =
                 new PageImpl<>(List.of(bookCheckoutDTO));
 
         given(bookCheckoutQueryService.getAllBookCheckoutsPaginated(anyInt(), anyInt(), anyString())).willReturn(
-                bookCheckoutDTOPage);
+                bookCheckoutDTOsPage);
 
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(OFFICE_PARAM, SKOPJE_OFFICE.getName());
@@ -223,7 +223,7 @@ class BookCheckoutQueryControllerTest {
                 });
 
         // then
-        assertThat(content).isEqualTo(bookCheckoutDTOPage.getContent());
+        assertThat(content).isEqualTo(bookCheckoutDTOsPage.getContent());
     }
 
     @Test

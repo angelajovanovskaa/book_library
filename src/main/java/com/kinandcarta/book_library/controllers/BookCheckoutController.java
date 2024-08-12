@@ -40,10 +40,10 @@ public class BookCheckoutController {
 
     @GetMapping("/getAllPaginated")
     ResponseEntity<Page<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllPaginated(
-            @RequestParam @NotBlank String officeName, @RequestParam(defaultValue = "0") int numberOfPages,
+            @RequestParam @NotBlank String officeName, @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "5") int pageSize) {
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsPaginated(numberOfPages, pageSize, officeName);
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageNumber, pageSize, officeName);
 
         return ResponseEntity.ok(result);
     }
