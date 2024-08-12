@@ -4,6 +4,7 @@ import com.kinandcarta.book_library.dtos.AuthorDTO;
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
+import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
@@ -30,7 +31,7 @@ class BookConverterTest {
     private final BookConverter bookConverter = new BookConverter();
 
     @Test
-    void toBookDTO_conversionIsDone_returnsBookDetailsDTO() {
+    void toBookDetailsDTO_conversionIsDone_returnsBookDetailsDTO() {
         //  given
         Book book = getBook();
         BookDetailsDTO bookDetailsDTO = getBookDTO();
@@ -41,11 +42,20 @@ class BookConverterTest {
 
         //  then
         assertThat(result).isEqualTo(bookDetailsDTO);
+        assertThat(result.isbn()).isEqualTo(book.getIsbn());
+        assertThat(result.title()).isEqualTo(book.getTitle());
+        assertThat(result.description()).isEqualTo(book.getDescription());
+        assertThat(result.language()).isEqualTo(book.getLanguage());
+        assertThat(result.genres()).isEqualTo(book.getGenres());
+        assertThat(result.totalPages()).isEqualTo(book.getTotalPages());
+        assertThat(result.ratingFromWeb()).isEqualTo(book.getRatingFromWeb());
+        assertThat(result.ratingFromFirm()).isEqualTo(book.getRatingFromFirm());
+        assertThat(result.officeName()).isEqualTo(book.getOffice().getName());
     }
 
 
     @Test
-    void bookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
+    void toBookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
         //  given
         Book book = getBook();
         BookDisplayDTO bookDisplayDTO = getToBookDisplayDTO();
@@ -55,6 +65,10 @@ class BookConverterTest {
 
         //  then
         assertThat(result).isEqualTo(bookDisplayDTO);
+        assertThat(result.isbn()).isEqualTo(book.getIsbn());
+        assertThat(result.title()).isEqualTo(book.getTitle());
+        assertThat(result.language()).isEqualTo(book.getLanguage());
+        assertThat(result.image()).isEqualTo(book.getImage());
     }
 
     @Test
@@ -68,6 +82,30 @@ class BookConverterTest {
         // then
         assertThat(result.getIsbn()).isEqualTo(bookIdDTO.isbn());
         assertThat(result.getOffice()).isEqualTo(bookIdDTO.officeName());
+    }
+
+    @Test
+    void toBookEntity_conversionIsDone_returnsBookEntity() {
+        //  given
+        BookInsertRequestDTO bookInsertRequestDTO = getBookInsertRequestDTOgetBookInsertRequestDTO();
+        Book book = getBook();
+        Set<Author> authors = book.getAuthors();
+        Office office = new Office("Bristol");
+
+        //  when
+        Book result = bookConverter.toBookEntity(bookInsertRequestDTO, authors, office);
+
+        //  then
+        assertThat(result).isEqualTo(book);
+        assertThat(result.getIsbn()).isEqualTo(book.getIsbn());
+        assertThat(result.getTitle()).isEqualTo(book.getTitle());
+        assertThat(result.getDescription()).isEqualTo(book.getDescription());
+        assertThat(result.getLanguage()).isEqualTo(book.getLanguage());
+        assertThat(result.getGenres()).isEqualTo(book.getGenres());
+        assertThat(result.getTotalPages()).isEqualTo(book.getTotalPages());
+        assertThat(result.getRatingFromWeb()).isEqualTo(book.getRatingFromWeb());
+        assertThat(result.getRatingFromFirm()).isEqualTo(book.getRatingFromFirm());
+        assertThat(result.getOffice().getName()).isEqualTo(book.getOffice().getName());
     }
 
     private Book getBook() {
@@ -88,7 +126,8 @@ class BookConverterTest {
         book.setBookStatus(BookStatus.IN_STOCK);
         book.setTotalPages(120);
         book.setImage("https://google.com/images");
-        book.setRatingFromFirm(10.0);
+        book.setRatingFromWeb(10.0);
+        book.setRatingFromFirm(0.0);
         book.setGenres(genres);
         book.setAuthors(Set.of(author));
         book.setOffice(office);
@@ -116,8 +155,8 @@ class BookConverterTest {
                 Language.ENGLISH.toString(), genres,
                 120, BookStatus.IN_STOCK,
                 "https://google.com/images",
-                0.0,
-                10.0, Set.of(authorDTO),
+                10.0,
+                0.0, Set.of(authorDTO),
                 "Bristol",
                 reviewResponseDTOList);
     }
@@ -129,6 +168,25 @@ class BookConverterTest {
                 "The Doors of Eden",
                 Language.ENGLISH.toString(),
                 "https://google.com/images");
+    }
+
+    public BookInsertRequestDTO getBookInsertRequestDTOgetBookInsertRequestDTO() {
+        String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
+
+        AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
+
+        return new BookInsertRequestDTO(
+                "765612382412",
+                "The Doors of Eden",
+                "book description",
+                Language.ENGLISH.toString(),
+                genres,
+                120,
+                "https://google.com/images",
+                10.0,
+                Set.of(authorDTO1),
+                "Bristol"
+        );
     }
 
     private List<ReviewResponseDTO> getReviewResponseDTOs() {
