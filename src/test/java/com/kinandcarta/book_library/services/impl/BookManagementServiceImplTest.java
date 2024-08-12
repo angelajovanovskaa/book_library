@@ -2,12 +2,16 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
-import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDetailsDTO;
+import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
+import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -16,15 +20,20 @@ import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.AuthorRepository;
 import com.kinandcarta.book_library.repositories.BookRepository;
-
 import com.kinandcarta.book_library.repositories.OfficeRepository;
+import com.kinandcarta.book_library.services.ReviewQueryService;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -56,78 +65,79 @@ class BookManagementServiceImplTest {
     @Mock
     private BookConverter bookConverter;
 
+    @Mock
+    private ReviewQueryService reviewQueryService;
+
     @InjectMocks
     private BookManagementServiceImpl bookService;
+
+    @Captor
+    private ArgumentCaptor<Author> authorArgumentCaptor;
 
     @Test
     void createBookWithAuthors_successfullyCreatedBook() {
         // given
         final Book bookToSave = getBooks().getFirst();
-        final BookDTO bookDTO = getBookDTOs().getFirst();
+        final BookInsertRequestDTO bookInsertRequestDTO = getBookInsertRequestDTOs().getFirst();
+        final BookDisplayDTO bookDisplayDTO = getBookDisplayDTOS().getFirst();
+
         Office office = new Office("Bristol");
 
         given(bookConverter.toBookEntity(any(), any(), any())).willReturn(bookToSave);
         given(bookRepository.save(any())).willReturn(bookToSave);
         given(officeRepository.findById(any())).willReturn(Optional.of(office));
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTO);
 
         // when
-        BookDTO savedBookDTO = bookService.createBookWithAuthors(bookDTO);
+        BookDisplayDTO savedBookDisplay = bookService.createBookWithAuthors(bookInsertRequestDTO);
 
         // then
-        assertThat(savedBookDTO).isNotNull();
-        assertThat(savedBookDTO.isbn()).isEqualTo("9412545414654");
-        assertThat(savedBookDTO.title()).isEqualTo("Last Summer of us being together");
-        assertThat(savedBookDTO.description()).isEqualTo("A book about summer love");
-        assertThat(savedBookDTO.language()).isEqualTo(Language.ENGLISH.toString());
-        assertThat(savedBookDTO.bookStatus()).isEqualTo(BookStatus.REQUESTED);
-        assertThat(savedBookDTO.totalPages()).isEqualTo(120);
-        assertThat(savedBookDTO.image()).isEqualTo("https://google.com/images");
-        assertThat(savedBookDTO.ratingFromFirm()).isEqualTo(10.0);
-        assertThat(savedBookDTO.ratingFromWeb()).isEqualTo(10.0);
-        assertThat(savedBookDTO.genres()).isEqualTo(new String[]{Genre.MEMOIR.name(),
-                Genre.ROMANCE.name()});
-        assertThat(savedBookDTO.authorDTOS()).hasSize(1);
-        assertThat(savedBookDTO.authorDTOS())
-                .satisfiesExactly(a -> assertThat(a.fullName()).isEqualTo("Leah Thomas"));
+        assertThat(savedBookDisplay).isNotNull();
+        assertThat(savedBookDisplay.isbn()).isEqualTo("9412545414654");
+        assertThat(savedBookDisplay.title()).isEqualTo("Last Summer of us being together");
+        assertThat(savedBookDisplay.language()).isEqualTo(Language.ENGLISH.toString());
+        assertThat(savedBookDisplay.image()).isEqualTo("https://google.com/images");
 
         verify(bookRepository).save(bookToSave);
+        verify(bookConverter).toBookDisplayDTO(bookToSave);
     }
 
     @Test
     void createBookWithAuthors_authorDoesNotExist_createsAuthor() {
         // given
         final Book bookToSave = getBooks().get(1);
-        final BookDTO bookDTO = getBookDTOs().get(1);
-
+        final BookInsertRequestDTO bookInsertRequestDTO = getBookInsertRequestDTOs().get(1);
+        final BookDisplayDTO bookDisplayDTO = getBookDisplayDTOS().get(1);
         Office office = new Office("Bristol");
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(office));
 
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(office));
         given(authorRepository.findByFullName(anyString())).willReturn(Optional.empty());
 
         Author newAuthor = new Author();
         newAuthor.setFullName("Mark Manson");
         given(authorRepository.save(any(Author.class))).willReturn(newAuthor);
 
-        given(bookConverter.toBookEntity(any(BookDTO.class), anySet(), any())).willReturn(bookToSave);
+        given(bookConverter.toBookEntity(any(BookInsertRequestDTO.class), anySet(), any()))
+                .willReturn(bookToSave);
         given(bookRepository.save(any(Book.class))).willReturn(bookToSave);
-        given(bookConverter.toBookDTO(any(Book.class))).willReturn(bookDTO);
+        given(bookConverter.toBookDisplayDTO(any(Book.class))).willReturn(bookDisplayDTO);
 
         // when
-        BookDTO result = bookService.createBookWithAuthors(bookDTO);
+        BookDisplayDTO result = bookService.createBookWithAuthors(bookInsertRequestDTO);
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.authorDTOS()).hasSize(1);
-        assertThat(result.authorDTOS()).satisfiesExactly(
-                a -> assertThat(a.fullName()).isEqualTo("Mark Manson")
-        );
+        assertThat(result.isbn()).isEqualTo(bookToSave.getIsbn());
+        assertThat(result.title()).isEqualTo(bookToSave.getTitle());
+        assertThat(result.language()).isEqualTo(bookToSave.getLanguage());
+        assertThat(result.image()).isEqualTo(bookToSave.getImage());
+
+        verify(authorRepository).save(authorArgumentCaptor.capture());
+        Author capturedAuthor = authorArgumentCaptor.getValue();
+        assertThat(capturedAuthor.getFullName()).isEqualTo("Mark Manson");
 
         verify(authorRepository).save(argThat(author -> "Mark Manson".equals(author.getFullName())));
-
         verify(bookRepository).save(bookToSave);
-
-        verify(bookConverter).toBookDTO(bookToSave);
     }
 
     @Test
@@ -173,24 +183,28 @@ class BookManagementServiceImplTest {
     void setBookStatusInStock_bookIsbnIsValid_successfullyChangedStatus() {
         // given
         List<Book> books = getBooks();
-        List<BookDTO> bookDTOS = getBookDTOs();
+        List<BookDetailsDTO> bookDetailsDTOS = getBookDTOs();
 
         Book book = books.getFirst();
-        BookDTO bookDTO = bookDTOS.getFirst();
+        BookDetailsDTO bookDetailsDTO = bookDetailsDTOS.getFirst();
+        List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
 
         given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.of(book));
-        given(bookConverter.toBookDTO(any())).willReturn(bookDTO);
+        given(bookConverter.toBookDetailsDTO(any(), any())).willReturn(bookDetailsDTO);
 
         String isbn = "9412545414654";
         String officeName = "Bristol";
 
         BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
+        given(reviewQueryService.getTopReviewsForDisplayInBookView(anyString(), anyString())).willReturn(
+                reviewResponseDTOList);
 
         // when
-        BookDTO result = bookService.setBookStatusInStock(bookIdDTO);
+        BookDetailsDTO result = bookService.setBookStatusInStock(bookIdDTO);
 
         // then
-        assertThat(result).isEqualTo(bookDTO);
+        assertThat(result).isEqualTo(bookDetailsDTO);
+        verify(bookConverter).toBookDetailsDTO(book, reviewResponseDTOList);
     }
 
     @Test
@@ -209,7 +223,7 @@ class BookManagementServiceImplTest {
 
         verify(bookRepository).findByIsbnAndOfficeName(isbn, officeName);
         verify(bookRepository, never()).save(any());
-        verify(bookConverter, never()).toBookDTO(any());
+        verify(bookConverter, never()).toBookDetailsDTO(any(), any());
     }
 
     private List<Book> getBooks() {
@@ -260,13 +274,15 @@ class BookManagementServiceImplTest {
         return List.of(book1, book2);
     }
 
-    public List<BookDTO> getBookDTOs() {
+    public List<BookDetailsDTO> getBookDTOs() {
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
 
         AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
         AuthorDTO authorDTO2 = new AuthorDTO("Mark Manson");
 
-        BookDTO bookDTO1 = new BookDTO(
+        List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
+
+        BookDetailsDTO bookDetailsDTO1 = new BookDetailsDTO(
                 "9412545414654",
                 "Last Summer of us being together",
                 "A book about summer love",
@@ -278,9 +294,10 @@ class BookManagementServiceImplTest {
                 10.0,
                 10.0,
                 Set.of(authorDTO1),
-                "Bristol");
+                "Bristol",
+                reviewResponseDTOList);
 
-        BookDTO bookDTO2 = new BookDTO(
+        BookDetailsDTO bookDetailsDTO2 = new BookDetailsDTO(
                 "9780545414654",
                 "The Mumbai of Us",
                 "book description",
@@ -292,8 +309,114 @@ class BookManagementServiceImplTest {
                 0.0,
                 10.0,
                 Set.of(authorDTO2),
-                "Bristol");
+                "Bristol",
+                reviewResponseDTOList);
 
-        return List.of(bookDTO1, bookDTO2);
+        return List.of(bookDetailsDTO1, bookDetailsDTO2);
+    }
+
+    public List<BookInsertRequestDTO> getBookInsertRequestDTOs() {
+        String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
+
+        AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
+        AuthorDTO authorDTO2 = new AuthorDTO("Mark Manson");
+
+        BookInsertRequestDTO bookInsertRequestDTO1 = new BookInsertRequestDTO(
+                "9412545414654",
+                "Last Summer of us being together",
+                "A book about summer love",
+                Language.ENGLISH.toString(),
+                genres,
+                120,
+                "https://google.com/images",
+                10.0,
+                Set.of(authorDTO1),
+                "Bristol"
+        );
+
+        BookInsertRequestDTO bookInsertRequestDTO2 = new BookInsertRequestDTO(
+                "9780545414654",
+                "The Mumbai of Us",
+                "Book description",
+                Language.ENGLISH.toString(),
+                genres,
+                120,
+                "https://google.com/images",
+                0.0,
+                Set.of(authorDTO2),
+                "Bristol"
+        );
+
+        return List.of(bookInsertRequestDTO1, bookInsertRequestDTO2);
+    }
+
+    private List<BookDisplayDTO> getBookDisplayDTOS() {
+        BookDisplayDTO bookDisplayDTO1 = new BookDisplayDTO(
+                "9412545414654",
+                "Last Summer of us being together",
+                Language.ENGLISH.toString(),
+                "https://google.com/images");
+
+        BookDisplayDTO bookDisplayDTO2 = new BookDisplayDTO(
+                "9780545414654",
+                "The Mumbai of Us",
+                Language.ENGLISH.toString(),
+                "https://google.com/images");
+
+        return List.of(bookDisplayDTO1, bookDisplayDTO2);
+    }
+
+    private List<ReviewResponseDTO> getReviewResponseDTOs() {
+        ReviewResponseDTO review1 = new ReviewResponseDTO(
+                getBooks().get(0).getIsbn(),
+                getUsers().get(0).getEmail(),
+                LocalDate.now(),
+                "message1",
+                1
+
+        );
+        ReviewResponseDTO review2 = new ReviewResponseDTO(
+                getBooks().get(1).getIsbn(),
+                getUsers().get(0).getEmail(),
+                LocalDate.now(),
+                "message2",
+                2
+
+        );
+        ReviewResponseDTO review3 = new ReviewResponseDTO(
+                getBooks().get(1).getIsbn(),
+                getUsers().get(1).getEmail(),
+                LocalDate.now(),
+                "message3",
+                3
+
+        );
+
+        return List.of(review1, review2, review3);
+    }
+
+    private List<User> getUsers() {
+        Office office = new Office("Bristol");
+
+        User user1 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-010000000000"),
+                "fullname1",
+                null,
+                "email1",
+                "USER",
+                "password1",
+                office
+        );
+        User user2 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-020000000000"),
+                "fullname2",
+                null,
+                "email2",
+                "USER",
+                "password2",
+                office
+        );
+
+        return List.of(user1, user2);
     }
 }

@@ -83,6 +83,21 @@ public class Book {
     @ToString.Exclude
     private List<BookItem> bookItems;
 
+    public Book(String isbn, String title, String description, String language, String[] genres,
+                int totalPages, String image, double ratingFromWeb,
+                Set<Author> authors, Office office) {
+        this.isbn = isbn;
+        this.title = title;
+        this.description = description;
+        this.language = language;
+        this.genres = genres;
+        this.totalPages = totalPages;
+        this.image = image;
+        this.ratingFromWeb = ratingFromWeb;
+        this.authors = authors;
+        this.office = office;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

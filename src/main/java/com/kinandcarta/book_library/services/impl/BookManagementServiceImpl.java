@@ -2,8 +2,11 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
-import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDetailsDTO;
+import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
+import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.Office;
@@ -16,6 +19,8 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.services.BookManagementService;
 
+import com.kinandcarta.book_library.services.ReviewQueryService;
+import java.util.List;
 import lombok.AllArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -35,16 +40,17 @@ public class BookManagementServiceImpl implements BookManagementService {
     private final AuthorRepository authorRepository;
     private final BookConverter bookConverter;
     private final OfficeRepository officeRepository;
+    private final ReviewQueryService reviewQueryService;
 
     /**
      * Creates a new book based on the provided BookDTO.
      *
-     * @param bookDTO The BookDTO object containing the details of the book to create
-     * @return The created BookDTO object
+     * @param bookInsertRequestDTO The BookInsertRequestDTO object containing the details of the book to create
+     * @return The created BookInsertRequestDTO object
      */
     @Override
-    public BookDTO createBookWithAuthors(BookDTO bookDTO) {
-        Set<AuthorDTO> authorsDTOs = bookDTO.authorDTOS();
+    public BookDisplayDTO createBookWithAuthors(BookInsertRequestDTO bookInsertRequestDTO) {
+        Set<AuthorDTO> authorsDTOs = bookInsertRequestDTO.authorDTOS();
         Set<Author> authors = new HashSet<>();
         for (AuthorDTO authorDTO : authorsDTOs) {
             String fullName = authorDTO.fullName();
@@ -60,14 +66,14 @@ public class BookManagementServiceImpl implements BookManagementService {
             authors.add(author);
         }
 
-        Optional<Office> office = officeRepository.findById(bookDTO.officeName());
+        Optional<Office> office = officeRepository.findById(bookInsertRequestDTO.officeName());
         if (office.isPresent()) {
-            Book book = bookConverter.toBookEntity(bookDTO, authors, office.get());
+            Book book = bookConverter.toBookEntity(bookInsertRequestDTO, authors, office.get());
             Book savedBook = bookRepository.save(book);
 
-            return bookConverter.toBookDTO(savedBook);
+            return bookConverter.toBookDisplayDTO(savedBook);
         } else {
-            throw new OfficeNotFoundException(bookDTO.officeName());
+            throw new OfficeNotFoundException(bookInsertRequestDTO.officeName());
         }
     }
 
@@ -98,17 +104,19 @@ public class BookManagementServiceImpl implements BookManagementService {
      *
      * @param bookIdDTO A DTO containing the ISBN of the book and the name of the office where
      *                         the book is located. Must not be {@code null}.
-     * @return A {@link BookDTO} containing the details of the updated book with status set to "IN_STOCK".
+     * @return A {@link BookDetailsDTO} containing the details of the updated book with status set to "IN_STOCK".
      * @throws BookNotFoundException If no book with the specified ISBN is found at the given office.
      */
     @Override
-    public BookDTO setBookStatusInStock(BookIdDTO bookIdDTO) {
+    public BookDetailsDTO setBookStatusInStock(BookIdDTO bookIdDTO) {
         Book foundBook = bookRepository.findByIsbnAndOfficeName(bookIdDTO.isbn(), bookIdDTO.officeName())
                 .orElseThrow(() -> new BookNotFoundException(bookIdDTO.isbn()));
+
+        List<ReviewResponseDTO> reviewResponseDTOS = reviewQueryService.getTopReviewsForDisplayInBookView(bookIdDTO.isbn(), bookIdDTO.officeName());
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
         bookRepository.save(foundBook);
 
-        return bookConverter.toBookDTO(foundBook);
+        return bookConverter.toBookDetailsDTO(foundBook, reviewResponseDTOS);
     }
 }

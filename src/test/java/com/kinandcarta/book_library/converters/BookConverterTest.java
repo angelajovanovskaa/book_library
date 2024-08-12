@@ -1,19 +1,22 @@
 package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.AuthorDTO;
-import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import com.kinandcarta.book_library.enums.Language;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -27,32 +30,19 @@ class BookConverterTest {
     private final BookConverter bookConverter = new BookConverter();
 
     @Test
-    void toBookDTO_conversionIsDone_returnsBookDTO() {
+    void toBookDTO_conversionIsDone_returnsBookDetailsDTO() {
         //  given
         Book book = getBook();
-        BookDTO bookDTO = getBookDTO();
+        BookDetailsDTO bookDetailsDTO = getBookDTO();
+        List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
 
         //  when
-        BookDTO result = bookConverter.toBookDTO(book);
+        BookDetailsDTO result = bookConverter.toBookDetailsDTO(book, reviewResponseDTOList);
 
         //  then
-        assertThat(result).isEqualTo(bookDTO);
+        assertThat(result).isEqualTo(bookDetailsDTO);
     }
 
-    @Test
-    void toBookEntity_conversionIsDone_returnsBookEntity() {
-        //  given
-        BookDTO bookDTO = getBookDTO();
-        Book book = getBook();
-        Set<Author> authors = book.getAuthors();
-        Office office = new Office("Bristol");
-
-        //  when
-        Book result = bookConverter.toBookEntity(bookDTO, authors, office);
-
-        //  then
-        assertThat(result).isEqualTo(book);
-    }
 
     @Test
     void bookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
@@ -113,12 +103,13 @@ class BookConverterTest {
         return book;
     }
 
-    public BookDTO getBookDTO() {
+    public BookDetailsDTO getBookDTO() {
         String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
 
         AuthorDTO authorDTO = new AuthorDTO("Leah Thomas");
+        List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
 
-        return new BookDTO(
+        return new BookDetailsDTO(
                 "765612382412",
                 "The Doors of Eden",
                 "book description",
@@ -127,7 +118,8 @@ class BookConverterTest {
                 "https://google.com/images",
                 0.0,
                 10.0, Set.of(authorDTO),
-                "Bristol");
+                "Bristol",
+                reviewResponseDTOList);
     }
 
     private BookDisplayDTO getToBookDisplayDTO() {
@@ -137,5 +129,58 @@ class BookConverterTest {
                 "The Doors of Eden",
                 Language.ENGLISH.toString(),
                 "https://google.com/images");
+    }
+
+    private List<ReviewResponseDTO> getReviewResponseDTOs() {
+        ReviewResponseDTO review1 = new ReviewResponseDTO(
+                getBook().getIsbn(),
+                getUsers().get(0).getEmail(),
+                LocalDate.now(),
+                "message1",
+                1
+
+        );
+        ReviewResponseDTO review2 = new ReviewResponseDTO(
+                getBook().getIsbn(),
+                getUsers().get(1).getEmail(),
+                LocalDate.now(),
+                "message2",
+                2
+
+        );
+        ReviewResponseDTO review3 = new ReviewResponseDTO(
+                getBook().getIsbn(),
+                getUsers().get(0).getEmail(),
+                LocalDate.now(),
+                "message3",
+                3
+
+        );
+
+        return List.of(review1, review2, review3);
+    }
+    private List<User> getUsers() {
+        Office office = new Office("Bristol");
+
+        User user1 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-010000000000"),
+                "fullname1",
+                null,
+                "email1",
+                "USER",
+                "password1",
+                office
+        );
+        User user2 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-020000000000"),
+                "fullname2",
+                null,
+                "email2",
+                "USER",
+                "password2",
+                office
+        );
+
+        return List.of(user1, user2);
     }
 }
