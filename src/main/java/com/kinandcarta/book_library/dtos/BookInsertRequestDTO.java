@@ -3,37 +3,34 @@ package com.kinandcarta.book_library.dtos;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-import jakarta.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
 public record BookInsertRequestDTO(
-        @NotNull
+        @NotBlank
         String isbn,
-        @NotNull
+        @NotBlank
         String title,
-        @NotNull
+        @NotBlank
         String description,
-        @NotNull
+        @NotBlank
         String language,
-        @NotNull
+        @NotBlank
         String[] genres,
-        @NotNull
+        @NotBlank
         @Positive
         int totalPages,
-        @NotNull
+        @NotBlank
         String image,
         @Min(1)
         @Max(5)
         double ratingFromWeb,
-        @NotNull
-        @Size(min = 1)
+        @NotBlank
         Set<AuthorDTO> authorDTOS,
-        @NotNull
+        @NotBlank
         String officeName
 ) {
 
