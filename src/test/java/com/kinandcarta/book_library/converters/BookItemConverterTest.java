@@ -14,14 +14,14 @@ class BookItemConverterTest {
 
     @Test
     void toBookItemDTO_conversionIsDone_returnsBookItemDTO() {
-        //  given
+        // given
         BookItem bookItem = getBookItem();
         BookItemDTO bookItemDTO = getBookItemDTO();
 
-        //  when
+        // when
         BookItemDTO result = bookItemConverter.toBookItemDTO(bookItem);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookItemDTO);
     }
 }

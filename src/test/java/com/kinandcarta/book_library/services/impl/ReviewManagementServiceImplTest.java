@@ -67,7 +67,7 @@ class ReviewManagementServiceImplTest {
 
         given(reviewConverter.toReview(any())).willReturn(review);
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.of(book));
+        given(bookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(Optional.of(book));
         given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of(review));
         given(bookAverageRatingCalculator.getAverageRatingOnBook(any())).willReturn(1.0);
         given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
@@ -77,7 +77,7 @@ class ReviewManagementServiceImplTest {
 
         // then
         verify(reviewConverter).toReview(any());
-        verify(bookRepository).findByIsbnAndOffice_Name(any(), any());
+        verify(bookRepository).findByIsbnAndOfficeName(any(), any());
         verify(userRepository).findByEmail(any());
         verify(reviewRepository).save(any());
         verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
@@ -120,7 +120,7 @@ class ReviewManagementServiceImplTest {
 
         given(reviewConverter.toReview(any())).willReturn(review);
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(bookRepository.findByIsbnAndOffice_Name(any(), any())).willReturn(Optional.empty());
+        given(bookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)

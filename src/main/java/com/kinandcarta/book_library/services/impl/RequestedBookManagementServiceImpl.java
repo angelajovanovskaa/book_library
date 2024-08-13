@@ -62,7 +62,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         Office office = user.getOffice();
         String officeName = office.getName();
         String bookIsbn = requestedBookRequestDTO.bookIsbn();
-        Optional<Book> optionalBook = bookRepository.findByIsbnAndOffice_Name(bookIsbn, officeName);
+        Optional<Book> optionalBook = bookRepository.findByIsbnAndOfficeName(bookIsbn, officeName);
         if (optionalBook.isPresent()) {
             throw new BookAlreadyPresentException(bookIsbn, officeName);
         }
