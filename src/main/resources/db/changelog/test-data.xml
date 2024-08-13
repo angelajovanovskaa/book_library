@@ -7,9 +7,9 @@
 
     <changeSet id="data-for-author-table" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM author WHERE id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM author WHERE id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="author">
@@ -17,12 +17,12 @@
             <column name="full_name" value="Author1"/>
         </insert>
     </changeSet>
-    
+
     <changeSet id="data-for-book-table-1" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book WHERE isbn = '178-3-16-148410-0' AND office_name = 'Skopje'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '178-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book">
@@ -34,7 +34,7 @@
             <column name="summary" value="summary"/>
             <column name="total_pages" value="350"/>
             <column name="rating_from_web" value="2.9"/>
-            <column name="rating_from_firm" value="0"/>
+            <column name="rating_from_firm" value="1"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{FICTION}"/>
@@ -43,9 +43,9 @@
 
     <changeSet id="data-for-book-table-2" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book WHERE isbn = '278-3-16-148410-0' AND office_name = 'Skopje'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '278-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book">
@@ -57,7 +57,7 @@
             <column name="summary" value="summary"/>
             <column name="total_pages" value="232"/>
             <column name="rating_from_web" value="3.1"/>
-            <column name="rating_from_firm" value="0"/>
+            <column name="rating_from_firm" value="1"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{ROMANCE}"/>
@@ -66,9 +66,9 @@
 
     <changeSet id="data-for-book-table-3" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book WHERE isbn = '378-3-16-148410-0' AND office_name = 'Skopje'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '378-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book">
@@ -89,9 +89,9 @@
 
     <changeSet id="data-for-book-table-4" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book WHERE isbn = '478-3-16-148410-0' AND office_name = 'Skopje'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '478-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book">
@@ -103,7 +103,7 @@
             <column name="summary" value="summary"/>
             <column name="total_pages" value="450"/>
             <column name="rating_from_web" value="3.32"/>
-            <column name="rating_from_firm" value="0"/>
+            <column name="rating_from_firm" value="1"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{BUSINESS,ECONOMICS}"/>
@@ -112,9 +112,9 @@
 
     <changeSet id="data-for-book-table-5" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book WHERE isbn = '538-3-13-342310-0' AND office_name = 'Sofia'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '538-3-13-342310-0' AND office_name = 'Sofia'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book">
@@ -126,7 +126,7 @@
             <column name="summary" value="summary"/>
             <column name="total_pages" value="124"/>
             <column name="rating_from_web" value="2.93"/>
-            <column name="rating_from_firm" value="0"/>
+            <column name="rating_from_firm" value="1"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{HISTORY,BIOGRAPHY}"/>
@@ -135,9 +135,9 @@
 
     <changeSet id="data-for-book-table-6" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book WHERE isbn = '638-3-13-342310-0' AND office_name = 'Sofia'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '638-3-13-342310-0' AND office_name = 'Sofia'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book">
@@ -149,7 +149,7 @@
             <column name="summary" value="summary"/>
             <column name="total_pages" value="124"/>
             <column name="rating_from_web" value="4.13"/>
-            <column name="rating_from_firm" value="0"/>
+            <column name="rating_from_firm" value="1"/>
             <column name="language" value="ENGLISH"/>
             <column name="image" value="sample_image_url"/>
             <column name="genres" value="{HISTORY}"/>
@@ -158,114 +158,114 @@
 
     <changeSet id="data-for-book-author-table-1" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_author WHERE book_isbn = '178-3-16-148410-0' AND office_name = 'Skopje'
-                    AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '178-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_author">
             <column name="book_isbn" value="178-3-16-148410-0"/>
-            <column name="office_name" value="Skopje" />
-            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b" />
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-author-table-2" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_author WHERE book_isbn = '278-3-16-148410-0' AND office_name = 'Skopje'
-                    AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '278-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_author">
             <column name="book_isbn" value="278-3-16-148410-0"/>
-            <column name="office_name" value="Skopje" />
-            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b" />
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-author-table-3" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_author WHERE book_isbn = '378-3-16-148410-0' AND office_name = 'Skopje'
-                    AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '378-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_author">
             <column name="book_isbn" value="378-3-16-148410-0"/>
-            <column name="office_name" value="Skopje" />
-            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b" />
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-author-table-4" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_author WHERE book_isbn = '478-3-16-148410-0' AND office_name = 'Skopje'
-                    AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '478-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_author">
             <column name="book_isbn" value="478-3-16-148410-0"/>
-            <column name="office_name" value="Skopje" />
-            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b" />
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-author-table-5" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_author WHERE book_isbn = '538-3-13-342310-0' AND office_name = 'Sofia'
-                    AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '538-3-13-342310-0' AND office_name = 'Sofia'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_author">
             <column name="book_isbn" value="538-3-13-342310-0"/>
-            <column name="office_name" value="Sofia" />
-            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b" />
+            <column name="office_name" value="Sofia"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-author-table-6" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_author WHERE book_isbn = '638-3-13-342310-0' AND office_name = 'Sofia'
-                    AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '638-3-13-342310-0' AND office_name = 'Sofia'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_author">
             <column name="book_isbn" value="638-3-13-342310-0"/>
-            <column name="office_name" value="Sofia" />
-            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b" />
+            <column name="office_name" value="Sofia"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-item-table-1" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = '265f63ce-9771-4a27-857d-f10c7791c987'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '265f63ce-9771-4a27-857d-f10c7791c987'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
-            <column name="id" value="265f63ce-9771-4a27-857d-f10c7791c987" />
+            <column name="id" value="265f63ce-9771-4a27-857d-f10c7791c987"/>
             <column name="book_isbn" value="178-3-16-148410-0"/>
-            <column name="office_name" value="Skopje" />
+            <column name="office_name" value="Skopje"/>
             <column name="book_item_state" value="BORROWED"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-item-table-2" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = '6786950e-5534-4988-a8b0-e89b013bbf39'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '6786950e-5534-4988-a8b0-e89b013bbf39'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
@@ -278,9 +278,9 @@
 
     <changeSet id="data-for-book-item-table-3" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = '2bdd35c4-29c8-49ad-ac0e-9b019b9fdacf'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '2bdd35c4-29c8-49ad-ac0e-9b019b9fdacf'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
@@ -293,9 +293,9 @@
 
     <changeSet id="data-for-book-item-table-4" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = '0422f10b-ca45-4cd1-b4c0-7b93093a9361'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '0422f10b-ca45-4cd1-b4c0-7b93093a9361'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
@@ -308,9 +308,9 @@
 
     <changeSet id="data-for-book-item-table-5" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = 'c07f289e-9a07-4415-851a-9e5f38c54740'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = 'c07f289e-9a07-4415-851a-9e5f38c54740'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
@@ -323,9 +323,9 @@
 
     <changeSet id="data-for-book-item-table-6" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = '81090fbf-b668-46d3-8835-354754bca4f4'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '81090fbf-b668-46d3-8835-354754bca4f4'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
@@ -338,9 +338,9 @@
 
     <changeSet id="data-for-book-item-table-7" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_item WHERE id = '972b4463-26c0-4951-a982-93e2a9bd8c9b'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '972b4463-26c0-4951-a982-93e2a9bd8c9b'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_item">
@@ -353,43 +353,47 @@
 
     <changeSet id="data-for-user-table-1" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM user_table WHERE id = '9146c7c0-0ac8-443f-a86d-de7039c44179'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM user_table WHERE id = '9146c7c0-0ac8-443f-a86d-de7039c44179'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="user_table">
-            <column name="id" value="9146c7c0-0ac8-443f-a86d-de7039c44179" />
+            <column name="id" value="9146c7c0-0ac8-443f-a86d-de7039c44179"/>
             <column name="full_name" value="User1"/>
-            <column name="email" value="user@kinandcarta.com" />
-            <column name="office_name" value="Skopje" />
+            <column name="email" value="user@kinandcarta.com"/>
+            <column name="office_name" value="Skopje"/>
             <column name="password" value="password"/>
-            <column name="role" value="USER" />
+            <column name="role" value="USER"/>
+            <column name="profile_picture"
+                    value="'\\x1f\\x7a\\xac\\x34\\xbe\\x89\\x42\\xed\\x5d\\x6b\\x92\\x18\\x6c\\xa3\\x7d'"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-user-table-2" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM user_table WHERE id = '71a5d033-cfa1-41ca-90d1-0ce7b7287ca6'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM user_table WHERE id = '71a5d033-cfa1-41ca-90d1-0ce7b7287ca6'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="user_table">
-            <column name="id" value="71a5d033-cfa1-41ca-90d1-0ce7b7287ca6" />
+            <column name="id" value="71a5d033-cfa1-41ca-90d1-0ce7b7287ca6"/>
             <column name="full_name" value="User2"/>
-            <column name="email" value="user@valtech.com" />
-            <column name="office_name" value="Sofia" />
+            <column name="email" value="user@valtech.com"/>
+            <column name="office_name" value="Sofia"/>
             <column name="password" value="password"/>
-            <column name="role" value="ADMIN" />
+            <column name="role" value="ADMIN"/>
+            <column name="profile_picture"
+                    value="'\\x1f\\x7a\\xac\\x34\\xbe\\x89\\x42\\xed\\x5d\\x6b\\x92\\x18\\x6c\\xa3\\x7d'"/>
         </insert>
     </changeSet>
 
     <changeSet id="data-for-book-checkout-table-1" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_checkout WHERE id = 'e2f0ac5a-63df-4d49-abba-7e69f03931f9'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_checkout WHERE id = 'e2f0ac5a-63df-4d49-abba-7e69f03931f9'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_checkout">
@@ -405,9 +409,9 @@
 
     <changeSet id="data-for-book-checkout-table-2" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_checkout WHERE id = '0eb035a7-d907-4f6c-98e0-933f0609e340'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_checkout WHERE id = '0eb035a7-d907-4f6c-98e0-933f0609e340'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_checkout">
@@ -422,9 +426,9 @@
 
     <changeSet id="data-for-book-checkout-table-3" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM book_checkout WHERE id = '04b480b4-3887-49de-9a29-a142b5d7e7db'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_checkout WHERE id = '04b480b4-3887-49de-9a29-a142b5d7e7db'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="book_checkout">
@@ -440,9 +444,9 @@
 
     <changeSet id="data-for-requested-book-table" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM requested_book WHERE id = 'd36696e4-6c2a-4ad0-ae5a-ce199b010f83'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM requested_book WHERE id = 'd36696e4-6c2a-4ad0-ae5a-ce199b010f83'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="requested_book">
@@ -456,10 +460,10 @@
 
     <changeSet id="data-for-liked-by-table" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM liked_by WHERE requested_book_id = 'd36696e4-6c2a-4ad0-ae5a-ce199b010f83'
-                    AND user_id = '71a5d033-cfa1-41ca-90d1-0ce7b7287ca6'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM liked_by WHERE requested_book_id = 'd36696e4-6c2a-4ad0-ae5a-ce199b010f83'
+                AND user_id = '71a5d033-cfa1-41ca-90d1-0ce7b7287ca6'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="liked_by">
@@ -470,9 +474,9 @@
 
     <changeSet id="data-for-review-table" author="mbojkovski" runAlways="true">
         <preConditions onFail="MARK_RAN">
-                <sqlCheck expectedResult="0">
-                    SELECT COUNT(*) FROM review WHERE id = 'bb6df22d-86f0-44c8-9620-b2e375ba2cf4'
-                </sqlCheck>
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM review WHERE id = 'bb6df22d-86f0-44c8-9620-b2e375ba2cf4'
+            </sqlCheck>
         </preConditions>
 
         <insert tableName="review">
