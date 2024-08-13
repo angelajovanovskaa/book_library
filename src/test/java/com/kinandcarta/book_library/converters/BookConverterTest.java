@@ -51,7 +51,6 @@ class BookConverterTest {
         assertThat(result.ratingFromWeb()).isEqualTo(book.getRatingFromWeb());
         assertThat(result.ratingFromFirm()).isEqualTo(book.getRatingFromFirm());
         assertThat(result.officeName()).isEqualTo(book.getOffice().getName());
-        assertThat(result).hasNoNullFieldsOrPropertiesExcept(result.bookStatus().toString(), result.image());
     }
 
     @Test
@@ -106,6 +105,7 @@ class BookConverterTest {
         assertThat(result.getRatingFromWeb()).isEqualTo(book.getRatingFromWeb());
         assertThat(result.getRatingFromFirm()).isEqualTo(book.getRatingFromFirm());
         assertThat(result.getOffice().getName()).isEqualTo(book.getOffice().getName());
+        assertThat(result).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "image", "bookItems");
     }
 
     private Book getBook() {
