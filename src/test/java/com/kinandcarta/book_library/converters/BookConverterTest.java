@@ -32,15 +32,15 @@ class BookConverterTest {
 
     @Test
     void toBookDetailsDTO_conversionIsDone_returnsBookDetailsDTO() {
-        //  given
+        // given
         Book book = getBook();
         BookDetailsDTO bookDetailsDTO = getBookDTO();
         List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
 
-        //  when
+        // when
         BookDetailsDTO result = bookConverter.toBookDetailsDTO(book, reviewResponseDTOList);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookDetailsDTO);
         assertThat(result.isbn()).isEqualTo(book.getIsbn());
         assertThat(result.title()).isEqualTo(book.getTitle());
@@ -51,19 +51,19 @@ class BookConverterTest {
         assertThat(result.ratingFromWeb()).isEqualTo(book.getRatingFromWeb());
         assertThat(result.ratingFromFirm()).isEqualTo(book.getRatingFromFirm());
         assertThat(result.officeName()).isEqualTo(book.getOffice().getName());
+        assertThat(result).hasNoNullFieldsOrPropertiesExcept(result.bookStatus().toString(), result.image());
     }
-
 
     @Test
     void toBookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
-        //  given
+        // given
         Book book = getBook();
         BookDisplayDTO bookDisplayDTO = getToBookDisplayDTO();
 
-        //  when
+        // when
         BookDisplayDTO result = bookConverter.toBookDisplayDTO(book);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookDisplayDTO);
         assertThat(result.isbn()).isEqualTo(book.getIsbn());
         assertThat(result.title()).isEqualTo(book.getTitle());
@@ -86,16 +86,16 @@ class BookConverterTest {
 
     @Test
     void toBookEntity_conversionIsDone_returnsBookEntity() {
-        //  given
+        // given
         BookInsertRequestDTO bookInsertRequestDTO = getBookInsertRequestDTOgetBookInsertRequestDTO();
         Book book = getBook();
         Set<Author> authors = book.getAuthors();
         Office office = new Office("Bristol");
 
-        //  when
+        // when
         Book result = bookConverter.toBookEntity(bookInsertRequestDTO, authors, office);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(book);
         assertThat(result.getIsbn()).isEqualTo(book.getIsbn());
         assertThat(result.getTitle()).isEqualTo(book.getTitle());
@@ -217,6 +217,7 @@ class BookConverterTest {
 
         return List.of(review1, review2, review3);
     }
+
     private List<User> getUsers() {
         Office office = new Office("Bristol");
 

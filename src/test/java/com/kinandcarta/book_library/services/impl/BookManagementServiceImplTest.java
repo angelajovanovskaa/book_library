@@ -46,7 +46,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -116,12 +115,10 @@ class BookManagementServiceImplTest {
 
         Author newAuthor = new Author();
         newAuthor.setFullName("Mark Manson");
-        given(authorRepository.save(any(Author.class))).willReturn(newAuthor);
 
-        given(bookConverter.toBookEntity(any(BookInsertRequestDTO.class), anySet(), any()))
-                .willReturn(bookToSave);
-        given(bookRepository.save(any(Book.class))).willReturn(bookToSave);
-        given(bookConverter.toBookDisplayDTO(any(Book.class))).willReturn(bookDisplayDTO);
+        given(bookConverter.toBookEntity(any(), anySet(), any())).willReturn(bookToSave);
+        given(bookRepository.save(any())).willReturn(bookToSave);
+        given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTO);
 
         // when
         BookDisplayDTO result = bookService.createBookWithAuthors(bookInsertRequestDTO);
@@ -137,7 +134,6 @@ class BookManagementServiceImplTest {
         Author capturedAuthor = authorArgumentCaptor.getValue();
         assertThat(capturedAuthor.getFullName()).isEqualTo("Mark Manson");
 
-        verify(authorRepository).save(argThat(author -> "Mark Manson".equals(author.getFullName())));
         verify(bookRepository).save(bookToSave);
     }
 
@@ -372,7 +368,7 @@ class BookManagementServiceImplTest {
                 0.0,
                 Set.of(authorDTO2),
                 "London"
-                );
+        );
 
         return List.of(bookInsertRequestDTO1, bookInsertRequestDTO2, bookInsertRequestDTO3);
     }
