@@ -112,10 +112,6 @@ class BookManagementServiceImplTest {
 
         given(officeRepository.findById(anyString())).willReturn(Optional.of(office));
         given(authorRepository.findByFullName(anyString())).willReturn(Optional.empty());
-
-        Author newAuthor = new Author();
-        newAuthor.setFullName("Mark Manson");
-
         given(bookConverter.toBookEntity(any(), anySet(), any())).willReturn(bookToSave);
         given(bookRepository.save(any())).willReturn(bookToSave);
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTO);

@@ -1,8 +1,6 @@
 package com.kinandcarta.book_library.dtos;
 
 import com.kinandcarta.book_library.enums.BookStatus;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,13 +9,10 @@ import java.util.Set;
 
 public record BookDetailsDTO(
         String isbn,
-        @NotBlank
         String title,
-        @NotBlank
         String description,
         String language,
         String[] genres,
-        @Positive
         int totalPages,
         BookStatus bookStatus,
         String image,
