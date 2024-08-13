@@ -396,7 +396,6 @@ class BookManagementServiceImplTest {
                 LocalDate.now(),
                 "message1",
                 1
-
         );
         ReviewResponseDTO review2 = new ReviewResponseDTO(
                 getBooks().get(1).getIsbn(),
@@ -404,7 +403,6 @@ class BookManagementServiceImplTest {
                 LocalDate.now(),
                 "message2",
                 2
-
         );
         ReviewResponseDTO review3 = new ReviewResponseDTO(
                 getBooks().get(1).getIsbn(),
@@ -412,7 +410,6 @@ class BookManagementServiceImplTest {
                 LocalDate.now(),
                 "message3",
                 3
-
         );
 
         return List.of(review1, review2, review3);

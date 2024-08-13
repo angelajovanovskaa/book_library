@@ -196,7 +196,6 @@ class BookConverterTest {
                 LocalDate.now(),
                 "message1",
                 1
-
         );
         ReviewResponseDTO review2 = new ReviewResponseDTO(
                 getBook().getIsbn(),
@@ -204,7 +203,6 @@ class BookConverterTest {
                 LocalDate.now(),
                 "message2",
                 2
-
         );
         ReviewResponseDTO review3 = new ReviewResponseDTO(
                 getBook().getIsbn(),
@@ -212,7 +210,6 @@ class BookConverterTest {
                 LocalDate.now(),
                 "message3",
                 3
-
         );
 
         return List.of(review1, review2, review3);
