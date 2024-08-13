@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/review-query")
+@RequestMapping("/reviews")
 public class ReviewQueryController {
 
     private final ReviewQueryService service;
 
-    @GetMapping("/book/{bookISBN}/reviews")
-    public ResponseEntity<List<ReviewResponseDTO>> findAllReviewsForBook(@PathVariable String bookISBN,
-                                                                         @RequestParam String officeName) {
+    @GetMapping("")
+    public ResponseEntity<List<ReviewResponseDTO>> findAllReviewsForBook(@RequestParam String officeName,
+                                                                         @RequestParam String bookISBN) {
         List<ReviewResponseDTO> result = service.getAllReviewsByBookIsbnAndByOfficeName(bookISBN, officeName);
 
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/{reviewId}/display")
+    @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewResponseDTO> findReviewById(@PathVariable String reviewId) {
         UUID uuid = UUID.fromString(reviewId);
         ReviewResponseDTO result = service.getReviewById(uuid);
@@ -33,9 +33,9 @@ public class ReviewQueryController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/book/{bookISBN}/top-reviews")
-    public ResponseEntity<List<ReviewResponseDTO>> getTopReviewsForBookView(@PathVariable String bookISBN,
-                                                                            @RequestParam String officeName) {
+    @GetMapping("/top-reviews")
+    public ResponseEntity<List<ReviewResponseDTO>> getTopReviewsForBookView(@RequestParam String officeName,
+                                                                            @RequestParam String bookISBN) {
         List<ReviewResponseDTO> result = service.getTopReviewsForDisplayInBookView(bookISBN, officeName);
 
         return ResponseEntity.ok(result);
