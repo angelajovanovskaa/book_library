@@ -5,8 +5,11 @@ import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
-import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,11 +20,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
-
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_TITLE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.DATE_NOW;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.PAGE_NUMBER;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.PAGE_SIZE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.SKOPJE_OFFICE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.USER_ID;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDTOs;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookItem;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,11 +38,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutQueryServiceImplTest {
-    private static final LocalDate DATE_NOW = LocalDate.now();
-    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-    private static final String BOOK_TITLE = "Homo Sapiens";
     private static final String BOOK_TITLE_SEARCH_TERM = "Homo ";
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
@@ -49,7 +54,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         given(bookCheckoutRepository.findAll(anyString())).willReturn(List.of(bookCheckout));
 
@@ -69,7 +74,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
@@ -86,9 +91,13 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllPastBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutOfUserAndBookItemInfoResponseDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
+        User user = getUser();
+        BookItem bookItem = getBookItem();
+        BookCheckout bookCheckout =
+                new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem,
+                        SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getLast();
 
         given(bookCheckoutRepository.findAllPastCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
@@ -106,7 +115,7 @@ class BookCheckoutQueryServiceImplTest {
     void getAllBookCheckoutsFromUserForBook_parametersAreValid_returnsListOfBookCheckoutDTO() {
         // given
         BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), anyString())).willReturn(
                 List.of(bookCheckout));
@@ -125,7 +134,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         given(bookCheckoutRepository.findByBookTitleContaining(anyString(), anyString())).willReturn(
                 List.of(bookCheckout));
@@ -145,7 +154,7 @@ class BookCheckoutQueryServiceImplTest {
     void getAllBookCheckoutsFromUser_UserIdIsValid_returnsListOfBookCheckoutDTO() {
         // given
         BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutRepository.findByUser(any())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutDTO);
@@ -180,12 +189,12 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsPaginated_bookCheckoutsArePresent_returnsAPageWithBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Page<BookCheckout> bookCheckoutsPages =
                 new PageImpl<>(List.of(getBookCheckout()));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
                 new PageImpl<>(List.of(bookCheckoutDTO));

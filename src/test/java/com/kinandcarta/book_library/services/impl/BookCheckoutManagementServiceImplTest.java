@@ -3,35 +3,50 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookCheckoutConverter;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
-import com.kinandcarta.book_library.entities.*;
+import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.BookCheckout;
+import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Language;
-import com.kinandcarta.book_library.exceptions.*;
+import com.kinandcarta.book_library.exceptions.BookAlreadyBorrowedByUserException;
+import com.kinandcarta.book_library.exceptions.BookItemAlreadyBorrowedException;
+import com.kinandcarta.book_library.exceptions.BookItemIsNotBorrowedException;
+import com.kinandcarta.book_library.exceptions.BookItemNotFoundException;
+import com.kinandcarta.book_library.exceptions.EntitiesInDifferentOfficesException;
+import com.kinandcarta.book_library.exceptions.LimitReachedForBorrowedBooksException;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDate;
-import java.util.*;
-
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.SOFIJA_OFFICE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.USER_ID;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookItem;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
-    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-    private static final String BOOK_ISBN = "1111";
-    private static final Office SOFIJA_OFFICE = new Office("Sofija");
-
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
 
@@ -186,7 +201,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         User user = getUser();
         BookItem bookItem = getBookItem();
-        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
         LocalDate dateNow = LocalDate.now();
 
         given(userRepository.getReferenceById(any())).willReturn(user);
@@ -209,7 +224,7 @@ class BookCheckoutManagementServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookItem bookItem = getBookItem();
-        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDto();
+        BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
         User user = getUser();
 
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));

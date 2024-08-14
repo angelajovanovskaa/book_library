@@ -7,6 +7,7 @@
 
     <include file="db/changelog/initial-schema.xml" />
     <include file="db/changelog/office-data.xml" />
+    <include file="db/changelog/test-data.xml" />
 
 
 </databaseChangeLog>
