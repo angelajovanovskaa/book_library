@@ -2,13 +2,18 @@ package com.kinandcarta.book_library.utils;
 
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
-import com.kinandcarta.book_library.entities.*;
+import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.BookCheckout;
+import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Language;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
@@ -41,11 +46,18 @@ public class BookCheckoutTestData {
                 SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
     }
 
-    public static BookCheckoutWithUserAndBookItemInfoResponseDTO getBookCheckoutWithUserAndBookItemInfoResponseDTO() {
+    public static List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         BookItem bookItem = getBookItem();
 
-        return new BookCheckoutWithUserAndBookItemInfoResponseDTO(USER_FULL_NAME, bookItem.getId(), BOOK_TITLE,
-                BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(14));
+        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO1 =
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO(USER_FULL_NAME, bookItem.getId(), BOOK_TITLE,
+                        BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(14));
+
+        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO2 =
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO("Martin Bojkovski", bookItem.getId(),
+                        BOOK_TITLE, "1111", DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
+
+        return List.of(bookCheckoutDTO1, bookCheckoutDTO2);
     }
 
     public static BookCheckoutResponseDTO getBookCheckoutResponseDTO() {

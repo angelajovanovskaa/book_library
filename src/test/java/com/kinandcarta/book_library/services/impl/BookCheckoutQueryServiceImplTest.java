@@ -22,7 +22,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.*;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookItem;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -50,7 +54,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
 
         given(bookCheckoutRepository.findAll(anyString())).willReturn(List.of(bookCheckout));
 
@@ -70,7 +74,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
 
         given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
@@ -93,8 +97,7 @@ class BookCheckoutQueryServiceImplTest {
                 new BookCheckout(UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf50"), user, bookItem,
                         SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                new BookCheckoutWithUserAndBookItemInfoResponseDTO("Martin Bojkovski", getBookItem().getId(),
-                        BOOK_TITLE, "1111", DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getLast();
 
         given(bookCheckoutRepository.findAllPastCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
@@ -131,7 +134,7 @@ class BookCheckoutQueryServiceImplTest {
         // given
         BookCheckout bookCheckout = getBookCheckout();
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
 
         given(bookCheckoutRepository.findByBookTitleContaining(anyString(), anyString())).willReturn(
                 List.of(bookCheckout));
@@ -191,7 +194,7 @@ class BookCheckoutQueryServiceImplTest {
                 new PageImpl<>(List.of(getBookCheckout()));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
 
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
                 new PageImpl<>(List.of(bookCheckoutDTO));
