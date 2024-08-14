@@ -1,8 +1,9 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
-import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
@@ -10,6 +11,7 @@ import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.BookQueryService;
 
+import com.kinandcarta.book_library.services.ReviewQueryService;
 import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -27,12 +29,13 @@ public class BookQueryServiceImpl implements BookQueryService {
 
     private final BookRepository bookRepository;
     private final BookConverter bookConverter;
+    private final ReviewQueryService reviewQueryService;
 
     /**
      * Retrieves all books, filtered by the office name.
      *
      * @param officeName The name of the office that the book is located.
-     * @return A list of all books represented as {@link BookDTO}.
+     * @return A list of all books represented as {@link BookDetailsDTO}.
      */
     @Override
     public List<BookDisplayDTO> getAllBooks(String officeName) {
@@ -46,15 +49,15 @@ public class BookQueryServiceImpl implements BookQueryService {
      *
      * @param isbn       isbn of the book to find.
      * @param officeName The name of the office that the book is located.
-     * @return converted BookDTO if book exists by the input isbn.
+     * @return A {@link BookDetailsDTO} representing the book and its top reviews if the book exists.
      * @throws BookNotFoundException if no book with the given ISBN is found.
      */
     @Override
-    public BookDTO getBookByIsbn(String isbn, String officeName) {
+    public BookDetailsDTO getBookByIsbn(String isbn, String officeName) {
         Book book = bookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
-
-        return bookConverter.toBookDTO(book);
+        List<ReviewResponseDTO> reviewResponseDTOS = reviewQueryService.getTopReviewsForDisplayInBookView(isbn, officeName);
+        return bookConverter.toBookDetailsDTO(book, reviewResponseDTOS);
     }
 
     /**

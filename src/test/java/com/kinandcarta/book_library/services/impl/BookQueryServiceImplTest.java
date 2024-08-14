@@ -2,12 +2,14 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.AuthorDTO;
-import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.entities.Office;
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
@@ -15,6 +17,8 @@ import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 
+import com.kinandcarta.book_library.services.ReviewQueryService;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -36,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BookQueryServiceImplTest {
@@ -44,6 +49,9 @@ class BookQueryServiceImplTest {
 
     @Mock
     private BookConverter bookConverter;
+
+    @Mock
+    private ReviewQueryService reviewQueryService;
 
     @InjectMocks
     private BookQueryServiceImpl bookService;
@@ -73,7 +81,6 @@ class BookQueryServiceImplTest {
         BookStatus bookStatus = BookStatus.IN_STOCK;
         BookItemState bookItemState = BookItemState.AVAILABLE;
         Office office = new Office("Bristol");
-
         List<Book> books = getBooks();
 
         given(bookRepository.pagingAvailableBooks(bookStatus, bookItemState, office.getName(), PageRequest.of(page,
@@ -135,19 +142,22 @@ class BookQueryServiceImplTest {
     void getBookByIsbn_isbnIsValid_bookIsFound() {
         // given
         Book book = getBooks().getFirst();
-        BookDTO expectedResult = getBookDTOs().getFirst();
+        BookDetailsDTO expectedResult = getBookDTOs().getFirst();
+        List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
 
         given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.of(book));
-        given(bookConverter.toBookDTO(book)).willReturn(expectedResult);
+        given(bookConverter.toBookDetailsDTO(any(), any())).willReturn(expectedResult);
+        given(reviewQueryService.getTopReviewsForDisplayInBookView(anyString(), anyString())).willReturn(reviewResponseDTOList);
 
         String isbn = "9412545414654";
         String officeName = "Bristol";
 
         // when
-        BookDTO result = bookService.getBookByIsbn(isbn, officeName);
+        BookDetailsDTO result = bookService.getBookByIsbn(isbn, officeName);
 
         // then
         assertThat(result).isEqualTo(expectedResult);
+        verify(bookConverter).toBookDetailsDTO(book, reviewResponseDTOList);
     }
 
     @Test
@@ -264,12 +274,13 @@ class BookQueryServiceImplTest {
         return List.of(book1, book2);
     }
 
-    public List<BookDTO> getBookDTOs() {
+    public List<BookDetailsDTO> getBookDTOs() {
         String[] genres = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
 
         AuthorDTO authorDTO1 = new AuthorDTO("Leah Thomas");
+        List<ReviewResponseDTO> reviewResponseDTOList = getReviewResponseDTOs();
 
-        BookDTO bookDTO1 = new BookDTO(
+        BookDetailsDTO bookDetailsDTO1 = new BookDetailsDTO(
                 "9412545414654",
                 "Last Summer of us being together",
                 "A book about summer love",
@@ -281,9 +292,10 @@ class BookQueryServiceImplTest {
                 10.0,
                 10.0,
                 Set.of(authorDTO1),
-                "Bristol");
+                "Bristol",
+                reviewResponseDTOList);
 
-        BookDTO bookDTO2 = new BookDTO(
+        BookDetailsDTO bookDetailsDTO2 = new BookDetailsDTO(
                 "9780545414654",
                 "The Mumbai of Us",
                 "book description",
@@ -295,9 +307,10 @@ class BookQueryServiceImplTest {
                 0.0,
                 10.0,
                 Set.of(authorDTO1),
-                "Bristol");
+                "Bristol",
+                reviewResponseDTOList);
 
-        return List.of(bookDTO1, bookDTO2);
+        return List.of(bookDetailsDTO1, bookDetailsDTO2);
     }
 
     private List<BookDisplayDTO> getBookDisplayDTOS() {
@@ -314,5 +327,56 @@ class BookQueryServiceImplTest {
                 "https://google.com/images");
 
         return List.of(bookDisplayDTO1, bookDisplayDTO2);
+    }
+
+    private List<ReviewResponseDTO> getReviewResponseDTOs() {
+        ReviewResponseDTO review1 = new ReviewResponseDTO(
+                getBooks().get(0).getIsbn(),
+                getUsers().get(0).getEmail(),
+                LocalDate.now(),
+                "message1",
+                1
+        );
+        ReviewResponseDTO review2 = new ReviewResponseDTO(
+                getBooks().get(1).getIsbn(),
+                getUsers().get(0).getEmail(),
+                LocalDate.now(),
+                "message2",
+                2
+        );
+        ReviewResponseDTO review3 = new ReviewResponseDTO(
+                getBooks().get(1).getIsbn(),
+                getUsers().get(1).getEmail(),
+                LocalDate.now(),
+                "message3",
+                3
+        );
+
+        return List.of(review1, review2, review3);
+    }
+
+    private List<User> getUsers() {
+        Office office = new Office("Bristol");
+
+        User user1 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-010000000000"),
+                "fullname1",
+                null,
+                "email1",
+                "USER",
+                "password1",
+                office
+        );
+        User user2 = new User(
+                UUID.fromString("123e4567-e89b-12d3-a456-020000000000"),
+                "fullname2",
+                null,
+                "email2",
+                "USER",
+                "password2",
+                office
+        );
+
+        return List.of(user1, user2);
     }
 }

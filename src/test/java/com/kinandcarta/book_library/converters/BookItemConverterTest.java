@@ -16,7 +16,7 @@ class BookItemConverterTest {
 
     @Test
     void toBookItemDTO_conversionIsDone_returnsBookItemDTO() {
-        //  given
+        // given
         Book book = new Book();
         BookItem bookItem = new BookItem();
 
@@ -28,10 +28,10 @@ class BookItemConverterTest {
         BookItemDTO bookItemDTO = new BookItemDTO("9780545414654",
                 UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
 
-        //  when
+        // when
         BookItemDTO result = bookItemConverter.toBookItemDTO(bookItem);
 
-        //  then
+        // then
         assertThat(result).isEqualTo(bookItemDTO);
     }
 }
