@@ -28,6 +28,7 @@ public class BookCheckoutTestData {
     public static final Office SOFIJA_OFFICE = new Office("Sofija");
     public static final int PAGE_NUMBER = 0;
     public static final int PAGE_SIZE = 2;
+    public static final UUID BOOK_ITEM_ID = UUID.fromString("2cc8b744-fab7-43d3-9279-c33351841c75");
 
     public static BookItem getBookItem() {
         Book book1 = new Book(BOOK_ISBN, SKOPJE_OFFICE, BOOK_TITLE, "book description", "some summary", 120,
