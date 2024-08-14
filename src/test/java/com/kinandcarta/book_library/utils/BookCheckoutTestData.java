@@ -25,6 +25,7 @@ public class BookCheckoutTestData {
     public static final String BOOK_ISBN = "1111";
     public static final String BOOK_TITLE = "Homo Sapiens";
     public static final Office SKOPJE_OFFICE = new Office("Skopje");
+    public static final Office SOFIJA_OFFICE = new Office("Sofija");
     public static final int PAGE_NUMBER = 0;
     public static final int PAGE_SIZE = 2;
 

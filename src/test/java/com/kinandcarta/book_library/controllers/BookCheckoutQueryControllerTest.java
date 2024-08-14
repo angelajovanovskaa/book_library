@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_TITLE;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.DATE_NOW;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.PAGE_SIZE;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.SKOPJE_OFFICE;
@@ -44,7 +45,6 @@ class BookCheckoutQueryControllerTest {
     private static final String BOOK_CHECKOUTS_PATH = "/book-checkouts";
     private static final String OFFICE_PARAM = "officeName";
     private static final String BOOK_TITLE_PARAM = "titleSearchTerm";
-    private static final String BOOK_TITLE = "Homo";
     private static final String USER_ID_PARAM = "userId";
     private static final String PAGE_SIZE_PARAM = "pageSize";
     private static final String CONTENT_KEY_VALUE = "content";
