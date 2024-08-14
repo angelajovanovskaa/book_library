@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
         byte[] image = userDTO.image();
 
         if (image != null && image.length != 0) {
-            user.setProfilePicture(userDTO.image());
+            user.setProfilePicture(image);
         }
 
         userRepository.save(user);
