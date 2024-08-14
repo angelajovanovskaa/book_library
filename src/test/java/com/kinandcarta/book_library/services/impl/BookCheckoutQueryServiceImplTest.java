@@ -6,10 +6,8 @@ import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -22,6 +20,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_TITLE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.DATE_NOW;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.PAGE_NUMBER;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.PAGE_SIZE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.SKOPJE_OFFICE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.USER_ID;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDTOs;
@@ -34,11 +38,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutQueryServiceImplTest {
-    private static final LocalDate DATE_NOW = LocalDate.now();
-    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-    private static final String BOOK_TITLE = "Homo Sapiens";
     private static final String BOOK_TITLE_SEARCH_TERM = "Homo ";
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
 
     @Mock
     private BookCheckoutRepository bookCheckoutRepository;
@@ -189,7 +189,7 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckoutsPaginated_bookCheckoutsArePresent_returnsAPageWithBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        Pageable pageable = PageRequest.of(0, 2);
+        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
         Page<BookCheckout> bookCheckoutsPages =
                 new PageImpl<>(List.of(getBookCheckout()));
 

@@ -32,6 +32,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.USER_ID;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookItem;
@@ -45,8 +47,6 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BookCheckoutManagementServiceImplTest {
-    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-    private static final String BOOK_ISBN = "1111";
     private static final Office SOFIJA_OFFICE = new Office("Sofija");
 
     @Mock

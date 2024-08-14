@@ -19,12 +19,14 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BookCheckoutTestData {
-    private static final LocalDate DATE_NOW = LocalDate.now();
-    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-    private static final String USER_FULL_NAME = "Martin Bojkovski";
-    private static final String BOOK_ISBN = "1111";
-    private static final String BOOK_TITLE = "Homo Sapiens";
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
+    public static final LocalDate DATE_NOW = LocalDate.now();
+    public static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
+    public static final String USER_FULL_NAME = "Martin Bojkovski";
+    public static final String BOOK_ISBN = "1111";
+    public static final String BOOK_TITLE = "Homo Sapiens";
+    public static final Office SKOPJE_OFFICE = new Office("Skopje");
+    public static final int PAGE_NUMBER = 0;
+    public static final int PAGE_SIZE = 2;
 
     public static BookItem getBookItem() {
         Book book1 = new Book(BOOK_ISBN, SKOPJE_OFFICE, BOOK_TITLE, "book description", "some summary", 120,

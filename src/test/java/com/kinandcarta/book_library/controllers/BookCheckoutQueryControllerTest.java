@@ -5,13 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,6 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.DATE_NOW;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.PAGE_SIZE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.SKOPJE_OFFICE;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.USER_ID;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDTOs;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,12 +45,8 @@ class BookCheckoutQueryControllerTest {
     private static final String OFFICE_PARAM = "officeName";
     private static final String BOOK_TITLE_PARAM = "titleSearchTerm";
     private static final String BOOK_TITLE = "Homo";
-    private static final LocalDate DATE_NOW = LocalDate.now();
     private static final String USER_ID_PARAM = "userId";
-    private static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142");
-    private static final Office SKOPJE_OFFICE = new Office("Skopje");
     private static final String PAGE_SIZE_PARAM = "pageSize";
-    private static final String PAGE_SZE = "3";
     private static final String CONTENT_KEY_VALUE = "content";
 
     @MockBean
@@ -208,7 +205,7 @@ class BookCheckoutQueryControllerTest {
 
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(OFFICE_PARAM, SKOPJE_OFFICE.getName());
-        queryParamsValues.add(PAGE_SIZE_PARAM, PAGE_SZE);
+        queryParamsValues.add(PAGE_SIZE_PARAM, String.valueOf(PAGE_SIZE));
 
         // when
         final String jsonResult =
