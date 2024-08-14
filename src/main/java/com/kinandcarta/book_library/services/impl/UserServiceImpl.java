@@ -1,7 +1,13 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.UserConverter;
-import com.kinandcarta.book_library.dtos.*;
+import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
+import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
+import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
+import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
@@ -12,16 +18,15 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Implementation of {@link UserService} that manages the registration and login of user.<br>
@@ -151,7 +156,9 @@ public class UserServiceImpl implements UserService {
             user.setFullName(userDTO.fullName());
         }
 
-        if (userDTO.image().length != 0) {
+        byte[] image = userDTO.image();
+
+        if (image != null && image.length != 0) {
             user.setProfilePicture(userDTO.image());
         }
 
