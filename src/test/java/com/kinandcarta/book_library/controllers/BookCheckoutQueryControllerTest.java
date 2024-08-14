@@ -28,7 +28,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDTO;
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDTOs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -174,7 +174,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/getAll";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         given(bookCheckoutQueryService.getAllBookCheckouts(anyString())).willReturn(List.of(bookCheckoutDTO));
 
@@ -199,7 +199,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/getAllPaginated";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPage =
                 new PageImpl<>(List.of(bookCheckoutDTO));
 
@@ -234,7 +234,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/getAllActive";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         given(bookCheckoutQueryService.getAllActiveBookCheckouts(anyString())).willReturn(List.of(bookCheckoutDTO));
 
@@ -259,7 +259,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/getAllPast";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getLast();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getLast();
 
         given(bookCheckoutQueryService.getAllPastBookCheckouts(anyString())).willReturn(List.of(bookCheckoutDTO));
 
@@ -312,7 +312,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getAllBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/getAllByTitleContaining";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDTO().getFirst();
+                getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
         given(bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(anyString(), anyString())).willReturn(
                 List.of(bookCheckoutDTO));

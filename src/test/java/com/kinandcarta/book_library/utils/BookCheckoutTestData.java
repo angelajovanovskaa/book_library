@@ -46,7 +46,7 @@ public class BookCheckoutTestData {
                 SKOPJE_OFFICE, DATE_NOW, null, DATE_NOW.plusDays(14));
     }
 
-    public static List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getBookCheckoutWithUserAndBookItemInfoResponseDTO() {
+    public static List<BookCheckoutWithUserAndBookItemInfoResponseDTO> getBookCheckoutWithUserAndBookItemInfoResponseDTOs() {
         BookItem bookItem = getBookItem();
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO1 =
@@ -54,8 +54,8 @@ public class BookCheckoutTestData {
                         BOOK_ISBN, DATE_NOW, null, DATE_NOW.plusDays(14));
 
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO2 =
-                new BookCheckoutWithUserAndBookItemInfoResponseDTO("Martin Bojkovski", bookItem.getId(),
-                        BOOK_TITLE, "1111", DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
+                new BookCheckoutWithUserAndBookItemInfoResponseDTO(USER_FULL_NAME, bookItem.getId(), BOOK_TITLE,
+                        BOOK_ISBN, DATE_NOW, DATE_NOW.plusDays(5), DATE_NOW.plusDays(14));
 
         return List.of(bookCheckoutDTO1, bookCheckoutDTO2);
     }
