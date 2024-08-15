@@ -2,23 +2,13 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
-import com.kinandcarta.book_library.dtos.BookIdDTO;
-import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
-import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
-import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
 import com.kinandcarta.book_library.utils.SharedTestData;
-import java.util.List;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.BookTestData.BOOK_AUTHORS;
-import static com.kinandcarta.book_library.utils.BookTestData.getBook;
-import static com.kinandcarta.book_library.utils.BookTestData.getBookDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookConverterTest {
@@ -26,79 +16,72 @@ class BookConverterTest {
     private final BookConverter bookConverter = new BookConverter();
 
     @Test
-    void toBookDetailsDTO_conversionIsDone_returnsBookDetailsDTO() {
+    void toBookDetailsDTO_convertsBookToBookDetailsDTOWithReviewsActionIsValid_returnsBookDetailsDTO() {
         // given
-        Book book = getBook();
-        BookDetailsDTO bookDetailsDTO = getBookDTO();
-        List<ReviewResponseDTO> reviewResponseDTOList = ReviewTestData.getReviewResponseDTOs();
 
         // when
-        BookDetailsDTO result = bookConverter.toBookDetailsDTO(book, reviewResponseDTOList);
+        BookDetailsDTO actualResult =
+                bookConverter.toBookDetailsDTO(BookTestData.getBook(), ReviewTestData.getReviewResponseDTOs());
 
         // then
-        assertThat(result).isEqualTo(bookDetailsDTO);
-        assertThat(result.isbn()).isEqualTo(book.getIsbn());
-        assertThat(result.title()).isEqualTo(book.getTitle());
-        assertThat(result.description()).isEqualTo(book.getDescription());
-        assertThat(result.language()).isEqualTo(book.getLanguage());
-        assertThat(result.genres()).isEqualTo(book.getGenres());
-        assertThat(result.totalPages()).isEqualTo(book.getTotalPages());
-        assertThat(result.ratingFromWeb()).isEqualTo(book.getRatingFromWeb());
-        assertThat(result.ratingFromFirm()).isEqualTo(book.getRatingFromFirm());
-        assertThat(result.officeName()).isEqualTo(book.getOffice().getName());
+        assertThat(actualResult).isEqualTo(BookTestData.getBookDetailsDTO());
+        assertThat(actualResult.isbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.title()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.description()).isEqualTo(BookTestData.BOOK_DESCRIPTION);
+        assertThat(actualResult.language()).isEqualTo(BookTestData.BOOK_LANGUAGE);
+        assertThat(actualResult.genres()).isEqualTo(BookTestData.BOOK_GENRES);
+        assertThat(actualResult.totalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
+        assertThat(actualResult.ratingFromWeb()).isEqualTo(BookTestData.BOOK_RATING_FROM_WEB);
+        assertThat(actualResult.ratingFromFirm()).isEqualTo(BookTestData.BOOK_RATING_FROM_FIRM);
+        assertThat(actualResult.officeName()).isEqualTo(SharedTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test
-    void toBookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
+    void toBookDetailsDTO_convertsBookToBookDetailsDTOActionIsValid_returnsBookDetailsDTO() {
         // given
-        Book book = BookTestData.getBook();
-        BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
 
         // when
-        BookDisplayDTO result = bookConverter.toBookDisplayDTO(book);
+        BookDisplayDTO actualResult = bookConverter.toBookDisplayDTO(BookTestData.getBook());
 
         // then
-        assertThat(result).isEqualTo(bookDisplayDTO);
-        assertThat(result.isbn()).isEqualTo(book.getIsbn());
-        assertThat(result.title()).isEqualTo(book.getTitle());
-        assertThat(result.language()).isEqualTo(book.getLanguage());
-        assertThat(result.image()).isEqualTo(book.getImage());
+        assertThat(actualResult).isEqualTo(BookTestData.getBookDisplayDTO());
+        assertThat(actualResult.isbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.title()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.language()).isEqualTo(BookTestData.BOOK_LANGUAGE);
+        assertThat(actualResult.image()).isEqualTo(BookTestData.BOOK_IMAGE);
     }
 
     @Test
-    void toBookId_conversionIsDone_returnsBookId() {
+    void toBookId_convertsBookIdToBookIdDTOActionIsValid_returnsBookId() {
         // given
-        BookIdDTO bookIdDTO = new BookIdDTO("9780545414654", "Bristol");
 
         // when
-        BookId result = bookConverter.toBookId(bookIdDTO);
+        BookId result = bookConverter.toBookId(BookTestData.BOOK_ID_DTO);
 
         // then
-        assertThat(result.getIsbn()).isEqualTo(bookIdDTO.isbn());
-        assertThat(result.getOffice()).isEqualTo(bookIdDTO.officeName());
+        assertThat(result.getIsbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(result.getOffice()).isEqualTo(SharedTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test
-    void toBookEntity_conversionIsDone_returnsBookEntity() {
+    void toBook_convertsBookInsertRequestDTOToBookActionIsValid_returnsBook() {
         // given
-        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.getBookInsertRequestDTOgetBookInsertRequestDTO();
-        Book book = getBook();
-        Set<Author> authors = book.getAuthors();
 
         // when
-        Book result = bookConverter.toBookEntity(bookInsertRequestDTO, authors, SharedTestData.SKOPJE_OFFICE);
+        Book actualResult = bookConverter.toBookEntity(BookTestData.getBookInsertRequestDTO(), BookTestData.AUTHORS,
+                SharedTestData.SKOPJE_OFFICE);
 
         // then
-        assertThat(result).isEqualTo(book);
-        assertThat(result.getIsbn()).isEqualTo(book.getIsbn());
-        assertThat(result.getTitle()).isEqualTo(book.getTitle());
-        assertThat(result.getDescription()).isEqualTo(book.getDescription());
-        assertThat(result.getLanguage()).isEqualTo(book.getLanguage());
-        assertThat(result.getGenres()).isEqualTo(book.getGenres());
-        assertThat(result.getTotalPages()).isEqualTo(book.getTotalPages());
-        assertThat(result.getRatingFromWeb()).isEqualTo(book.getRatingFromWeb());
-        assertThat(result.getRatingFromFirm()).isEqualTo(0.0);
-        assertThat(result.getOffice().getName()).isEqualTo(book.getOffice().getName());
-        assertThat(result).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "image", "bookItems");
+        assertThat(actualResult).isEqualTo(BookTestData.getBook());
+        assertThat(actualResult.getIsbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.getTitle()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.getDescription()).isEqualTo(BookTestData.BOOK_DESCRIPTION);
+        assertThat(actualResult.getLanguage()).isEqualTo(BookTestData.BOOK_LANGUAGE);
+        assertThat(actualResult.getGenres()).isEqualTo(BookTestData.BOOK_GENRES);
+        assertThat(actualResult.getTotalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
+        assertThat(actualResult.getRatingFromWeb()).isEqualTo(BookTestData.BOOK_RATING_FROM_WEB);
+        assertThat(actualResult.getRatingFromFirm()).isEqualTo(0.0);
+        assertThat(actualResult.getOffice()).isEqualTo(SharedTestData.SKOPJE_OFFICE);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "image", "bookItems");
     }
 }
