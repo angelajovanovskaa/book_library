@@ -21,8 +21,8 @@ import lombok.experimental.UtilityClass;
 public class BookTestData {
     public static final String BOOK_ISBN = "isbn1";
     public static final String BOOK_INVALID_ISBN = "invalidISBN";
-    public static final BookId BOOK_ID = new BookId(BOOK_ISBN, SharedTestData.SKOPJE_OFFICE.getName());
-    public static final BookIdDTO BOOK_ID_DTO = new BookIdDTO(BOOK_ISBN, SharedTestData.SKOPJE_OFFICE.getName());
+    public static final BookId BOOK_ID = new BookId(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
+    public static final BookIdDTO BOOK_ID_DTO = new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
     public static final String BOOK_TITLE = "title1";
     public static final String BOOK_TITLE_SEARCH_TERM = "ti";
     public static final String BOOK_DESCRIPTION = "description";
@@ -46,7 +46,7 @@ public class BookTestData {
         List<Book> books = new ArrayList<>();
         Book book1 = new Book(
                 BOOK_ISBN,
-                SharedTestData.SKOPJE_OFFICE,
+                SharedServiceTestData.SKOPJE_OFFICE,
                 BOOK_TITLE,
                 BOOK_DESCRIPTION,
                 BOOK_SUMMARY,
@@ -63,7 +63,7 @@ public class BookTestData {
         books.add(book1);
         Book book2 = new Book(
                 "isbn2",
-                SharedTestData.SOFIJA_OFFICE,
+                SharedServiceTestData.SOFIJA_OFFICE,
                 "title2",
                 BOOK_DESCRIPTION,
                 BOOK_SUMMARY,
@@ -99,7 +99,7 @@ public class BookTestData {
                 BOOK_RATING_FROM_WEB,
                 BOOK_RATING_FROM_FIRM,
                 AUTHOR_DTOS,
-                SharedTestData.SKOPJE_OFFICE.getName(),
+                SharedServiceTestData.SKOPJE_OFFICE.getName(),
                 ReviewTestData.getReviewResponseDTOs()
         );
         BookDetailsDTO bookDTO2 = new BookDetailsDTO(
@@ -114,7 +114,7 @@ public class BookTestData {
                 BOOK_RATING_FROM_WEB,
                 BOOK_RATING_FROM_FIRM,
                 AUTHOR_DTOS,
-                SharedTestData.SKOPJE_OFFICE.getName(),
+                SharedServiceTestData.SKOPJE_OFFICE.getName(),
                 ReviewTestData.getReviewResponseDTOs()
         );
 
@@ -158,7 +158,7 @@ public class BookTestData {
                 BOOK_IMAGE,
                 BOOK_RATING_FROM_WEB,
                 AUTHOR_DTOS,
-                SharedTestData.SKOPJE_OFFICE.getName()
+                SharedServiceTestData.SKOPJE_OFFICE.getName()
         );
     }
 }

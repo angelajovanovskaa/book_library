@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
-import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
-import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE_NAME;
+import static com.kinandcarta.book_library.utils.SharedServiceTestData.SKOPJE_OFFICE;
+import static com.kinandcarta.book_library.utils.SharedServiceTestData.SKOPJE_OFFICE_NAME;
 
 @UtilityClass
 public class UserTestData {

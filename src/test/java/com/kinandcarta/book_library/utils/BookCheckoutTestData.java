@@ -16,10 +16,10 @@ public class BookCheckoutTestData {
                 UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf51"),
                 UserTestData.getUser(),
                 BookItemTestData.getBookItem(),
-                SharedTestData.SKOPJE_OFFICE,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.SKOPJE_OFFICE,
+                SharedServiceTestData.DATE_NOW,
                 null,
-                SharedTestData.DATE_NOW.plusDays(14)
+                SharedServiceTestData.DATE_NOW.plusDays(14)
         );
     }
 
@@ -29,9 +29,9 @@ public class BookCheckoutTestData {
                 BookItemTestData.BOOK_ITEM_ID,
                 BookTestData.BOOK_TITLE,
                 BookTestData.BOOK_ISBN,
-                SharedTestData.DATE_NOW,
-                SharedTestData.DATE_NOW.plusDays(5),
-                SharedTestData.DATE_NOW.plusDays(14)
+                SharedServiceTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW.plusDays(5),
+                SharedServiceTestData.DATE_NOW.plusDays(14)
         );
     }
 
@@ -46,9 +46,9 @@ public class BookCheckoutTestData {
         return new BookCheckoutResponseDTO(
                 BookTestData.BOOK_TITLE,
                 BookTestData.BOOK_ISBN,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 null,
-                SharedTestData.DATE_NOW.plusDays(5)
+                SharedServiceTestData.DATE_NOW.plusDays(5)
         );
     }
 
@@ -56,7 +56,7 @@ public class BookCheckoutTestData {
         return new BookCheckoutReturnReminderResponseDTO(
                 UserTestData.USER_ID,
                 BookTestData.BOOK_TITLE,
-                SharedTestData.FUTURE_DATE_RETURN
+                SharedServiceTestData.FUTURE_DATE_RETURN
         );
     }
 }

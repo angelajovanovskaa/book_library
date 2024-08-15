@@ -12,7 +12,7 @@ import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import com.kinandcarta.book_library.utils.UserTestData;
 import java.io.IOException;
@@ -99,7 +99,7 @@ class UserServiceImplTest {
                 userWithRoleFieldResponseDTOs.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SharedTestData.SKOPJE_OFFICE_NAME);
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(result).isEqualTo(userWithRoleFieldResponseDTOs);
@@ -117,7 +117,7 @@ class UserServiceImplTest {
 
         // when
         List<UserWithRoleFieldResponseDTO> result =
-                userService.getAllUsersWithFullName(SharedTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_FULL_NAME);
+                userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_FULL_NAME);
 
         // then
         assertThat(result).isEqualTo(UserTestData.getUserWithRoleResponseDTOs());
@@ -143,7 +143,7 @@ class UserServiceImplTest {
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
 
-        given(officeRepository.getReferenceById(anyString())).willReturn(SharedTestData.SKOPJE_OFFICE);
+        given(officeRepository.getReferenceById(anyString())).willReturn(SharedServiceTestData.SKOPJE_OFFICE);
 
         Resource mockResource = mock(Resource.class);
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);

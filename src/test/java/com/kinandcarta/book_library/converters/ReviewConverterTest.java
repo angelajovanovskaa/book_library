@@ -4,7 +4,7 @@ import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ class ReviewConverterTest {
         // then
         assertThat(actualResult.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
         assertThat(actualResult.userEmail()).isEqualTo(UserTestData.USER_EMAIL);
-        assertThat(actualResult.date()).isEqualTo(SharedTestData.DATE_NOW);
+        assertThat(actualResult.date()).isEqualTo(SharedServiceTestData.DATE_NOW);
         assertThat(actualResult.message()).isEqualTo(ReviewTestData.REVIEW_MESSAGE);
         assertThat(actualResult.rating()).isEqualTo(ReviewTestData.REVIEW_RATING);
     }

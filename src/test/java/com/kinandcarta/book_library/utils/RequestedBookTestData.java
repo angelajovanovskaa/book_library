@@ -23,7 +23,7 @@ public class RequestedBookTestData {
         users.remove(UserTestData.getUsers().getLast());
         RequestedBook requestedBook1 = new RequestedBook(
                 REQUESTED_BOOK_ID,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookTestData.getBook(),
                 users
@@ -31,7 +31,7 @@ public class RequestedBookTestData {
         requestedBooks.add(requestedBook1);
         RequestedBook requestedBook2 = new RequestedBook(
                 UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a2"),
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookTestData.getBook(),
                 new HashSet<>(UserTestData.getUsers())
@@ -50,7 +50,7 @@ public class RequestedBookTestData {
         RequestedBookResponseDTO requestedBookResponseDTO1 = new RequestedBookResponseDTO(
                 REQUESTED_BOOK_ID,
                 BookTestData.BOOK_ISBN,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookTestData.BOOK_STATUS,
                 BookTestData.BOOK_TITLE,
@@ -60,7 +60,7 @@ public class RequestedBookTestData {
         RequestedBookResponseDTO requestedBookResponseDTO2 = new RequestedBookResponseDTO(
                 UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a2"),
                 BookTestData.BOOK_ISBN,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookTestData.BOOK_STATUS,
                 BookTestData.BOOK_TITLE,
@@ -75,7 +75,7 @@ public class RequestedBookTestData {
         return new RequestedBookResponseDTO(
                 REQUESTED_BOOK_ID,
                 BookTestData.BOOK_ISBN,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookTestData.BOOK_STATUS,
                 BookTestData.BOOK_TITLE,

@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +21,6 @@ class BookReturnDateCalculatorServiceImplTest {
                 bookReturnDateCalculatorService.calculateReturnDateOfBookItem(BookTestData.BOOK_TOTAL_PAGES);
 
         // then
-        assertThat(actualResult).isEqualTo(SharedTestData.FUTURE_DATE);
+        assertThat(actualResult).isEqualTo(SharedServiceTestData.FUTURE_DATE);
     }
 }

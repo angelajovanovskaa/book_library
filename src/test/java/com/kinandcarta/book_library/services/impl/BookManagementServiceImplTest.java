@@ -14,7 +14,7 @@ import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -61,7 +61,7 @@ class BookManagementServiceImplTest {
         // given
         given(bookConverter.toBookEntity(any(), any(), any())).willReturn(BookTestData.getBook());
         given(bookRepository.save(any())).willReturn(BookTestData.getBook());
-        given(officeRepository.findById(any())).willReturn(Optional.of(SharedTestData.SKOPJE_OFFICE));
+        given(officeRepository.findById(any())).willReturn(Optional.of(SharedServiceTestData.SKOPJE_OFFICE));
         given(bookConverter.toBookDisplayDTO(any())).willReturn(BookTestData.getBookDisplayDTO());
 
         // when
@@ -78,7 +78,7 @@ class BookManagementServiceImplTest {
     @Test
     void createBookWithAuthors_authorDoesNotExists_returnsBookDisplayDTO() {
         // given
-        given(officeRepository.findById(anyString())).willReturn(Optional.of(SharedTestData.SKOPJE_OFFICE));
+        given(officeRepository.findById(anyString())).willReturn(Optional.of(SharedServiceTestData.SKOPJE_OFFICE));
         given(authorRepository.findByFullName(anyString())).willReturn(Optional.empty());
         given(bookConverter.toBookEntity(any(), anySet(), any())).willReturn(BookTestData.getBook());
         given(bookRepository.save(any())).willReturn(BookTestData.getBook());
@@ -110,7 +110,7 @@ class BookManagementServiceImplTest {
         // when & then
         assertThatExceptionOfType(OfficeNotFoundException.class)
                 .isThrownBy(() -> bookService.createBookWithAuthors(bookInsertRequestDTO))
-                .withMessage("Office with name: " + SharedTestData.SKOPJE_OFFICE_NAME + " not found");
+                .withMessage("Office with name: " + SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
     }
 
     @Test
@@ -121,7 +121,7 @@ class BookManagementServiceImplTest {
 
         // when
         BookIdDTO actualResult =
-                bookService.deleteBook(BookTestData.BOOK_ISBN, SharedTestData.SKOPJE_OFFICE_NAME);
+                bookService.deleteBook(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult.isbn()).isEqualTo(BookTestData.BOOK_ISBN);
@@ -135,7 +135,7 @@ class BookManagementServiceImplTest {
 
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookService.deleteBook(BookTestData.BOOK_ISBN, SharedTestData.SKOPJE_OFFICE_NAME))
+                .isThrownBy(() -> bookService.deleteBook(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " not found");
     }
 

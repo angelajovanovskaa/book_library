@@ -6,7 +6,7 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +33,7 @@ class BookConverterTest {
         assertThat(actualResult.totalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
         assertThat(actualResult.ratingFromWeb()).isEqualTo(BookTestData.BOOK_RATING_FROM_WEB);
         assertThat(actualResult.ratingFromFirm()).isEqualTo(BookTestData.BOOK_RATING_FROM_FIRM);
-        assertThat(actualResult.officeName()).isEqualTo(SharedTestData.SKOPJE_OFFICE_NAME);
+        assertThat(actualResult.officeName()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test
@@ -60,7 +60,7 @@ class BookConverterTest {
 
         // then
         assertThat(result.getIsbn()).isEqualTo(BookTestData.BOOK_ISBN);
-        assertThat(result.getOffice()).isEqualTo(SharedTestData.SKOPJE_OFFICE_NAME);
+        assertThat(result.getOffice()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test
@@ -69,7 +69,7 @@ class BookConverterTest {
 
         // when
         Book actualResult = bookConverter.toBookEntity(BookTestData.getBookInsertRequestDTO(), BookTestData.AUTHORS,
-                SharedTestData.SKOPJE_OFFICE);
+                SharedServiceTestData.SKOPJE_OFFICE);
 
         // then
         assertThat(actualResult).isEqualTo(BookTestData.getBook());
@@ -81,7 +81,7 @@ class BookConverterTest {
         assertThat(actualResult.getTotalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
         assertThat(actualResult.getRatingFromWeb()).isEqualTo(BookTestData.BOOK_RATING_FROM_WEB);
         assertThat(actualResult.getRatingFromFirm()).isEqualTo(0.0);
-        assertThat(actualResult.getOffice()).isEqualTo(SharedTestData.SKOPJE_OFFICE);
+        assertThat(actualResult.getOffice()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE);
         assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "image", "bookItems");
     }
 }

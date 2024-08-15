@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,10 +39,10 @@ class OfficeServiceImplTest {
     }
 
     private List<Office> getOffices() {
-        return List.of(SharedTestData.SKOPJE_OFFICE, SharedTestData.SOFIJA_OFFICE);
+        return List.of(SharedServiceTestData.SKOPJE_OFFICE, SharedServiceTestData.SOFIJA_OFFICE);
     }
 
     private List<OfficeResponseDTO> getOfficeResponseDTOs() {
-        return List.of(SharedTestData.SKOPJE_OFFICE_DTO, SharedTestData.SOFIJA_OFFICE_DTO);
+        return List.of(SharedServiceTestData.SKOPJE_OFFICE_DTO, SharedServiceTestData.SOFIJA_OFFICE_DTO);
     }
 }

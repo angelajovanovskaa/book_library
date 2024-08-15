@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class SharedTestData {
+public class SharedServiceTestData {
     public static final Office SKOPJE_OFFICE = new Office("Skopje");
     public static final OfficeResponseDTO SKOPJE_OFFICE_DTO = new OfficeResponseDTO("Skopje");
     public static final String SKOPJE_OFFICE_NAME = SKOPJE_OFFICE.getName();

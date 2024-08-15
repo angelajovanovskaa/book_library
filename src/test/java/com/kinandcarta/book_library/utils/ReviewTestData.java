@@ -20,7 +20,7 @@ public class ReviewTestData {
         List<Review> reviews = new ArrayList<>();
         Review review1 = new Review(
                 REVIEW_ID,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING,
                 BookTestData.getBook(),
@@ -29,7 +29,7 @@ public class ReviewTestData {
         reviews.add(review1);
         Review review2 = new Review(
                 UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf842"),
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING,
                 BookTestData.getBook(),
@@ -49,7 +49,7 @@ public class ReviewTestData {
         ReviewResponseDTO review1 = new ReviewResponseDTO(
                 BookTestData.BOOK_ISBN,
                 UserTestData.USER_EMAIL,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING
         );
@@ -57,7 +57,7 @@ public class ReviewTestData {
         ReviewResponseDTO review2 = new ReviewResponseDTO(
                 BookTestData.BOOK_ISBN,
                 UserTestData.USER_EMAIL,
-                SharedTestData.DATE_NOW,
+                SharedServiceTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING
         );

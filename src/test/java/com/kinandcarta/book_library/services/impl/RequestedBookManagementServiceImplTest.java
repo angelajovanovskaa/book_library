@@ -14,7 +14,7 @@ import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.RequestedBookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import java.util.Optional;
@@ -64,7 +64,7 @@ class RequestedBookManagementServiceImplTest {
         // when
         String actualResult =
                 requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(BookTestData.BOOK_ISBN,
-                        SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(BookTestData.BOOK_ISBN);
@@ -78,9 +78,9 @@ class RequestedBookManagementServiceImplTest {
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(
-                        BookTestData.BOOK_ISBN, SharedTestData.SKOPJE_OFFICE_NAME))
+                        BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " in office: " +
-                        SharedTestData.SKOPJE_OFFICE_NAME + " not found");
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
     }
 
     @Test
@@ -241,6 +241,6 @@ class RequestedBookManagementServiceImplTest {
                 .isThrownBy(() -> requestedBookManagementService.handleRequestedBookLike(
                         RequestedBookTestData.getRequestedBookRequestDTO()))
                 .withMessage("RequestedBook with ISBN " + BookTestData.BOOK_ISBN + " for office " +
-                        SharedTestData.SKOPJE_OFFICE_NAME + " not found");
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
     }
 }

@@ -7,7 +7,7 @@ import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.utils.BookCheckoutTestData;
 import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,9 +29,9 @@ class BookCheckoutConverterTest {
         assertThat(result.userFullName()).isEqualTo(UserTestData.USER_FULL_NAME);
         assertThat(result.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
         assertThat(result.bookTitle()).isEqualTo(BookTestData.BOOK_TITLE);
-        assertThat(result.dateBorrowed()).isEqualTo(SharedTestData.DATE_NOW);
+        assertThat(result.dateBorrowed()).isEqualTo(SharedServiceTestData.DATE_NOW);
         assertThat(result.dateReturned()).isNull();
-        assertThat(result.scheduledReturnDate()).isEqualTo(SharedTestData.DATE_NOW.plusDays(14));
+        assertThat(result.scheduledReturnDate()).isEqualTo(SharedServiceTestData.DATE_NOW.plusDays(14));
     }
 
     @Test
@@ -44,9 +44,9 @@ class BookCheckoutConverterTest {
         // then
         assertThat(result.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
         assertThat(result.bookTitle()).isEqualTo(BookTestData.BOOK_TITLE);
-        assertThat(result.dateBorrowed()).isEqualTo(SharedTestData.DATE_NOW);
+        assertThat(result.dateBorrowed()).isEqualTo(SharedServiceTestData.DATE_NOW);
         assertThat(result.dateReturned()).isNull();
-        assertThat(result.scheduledReturnDate()).isEqualTo(SharedTestData.DATE_NOW.plusDays(14));
+        assertThat(result.scheduledReturnDate()).isEqualTo(SharedServiceTestData.DATE_NOW.plusDays(14));
     }
 
     @Test
@@ -61,6 +61,6 @@ class BookCheckoutConverterTest {
         // then
         assertThat(result.userId()).isEqualTo(UserTestData.USER_ID);
         assertThat(result.bookTitle()).isEqualTo(BookTestData.BOOK_TITLE);
-        assertThat(result.scheduledReturnDate()).isEqualTo(SharedTestData.DATE_NOW.plusDays(14));
+        assertThat(result.scheduledReturnDate()).isEqualTo(SharedServiceTestData.DATE_NOW.plusDays(14));
     }
 }

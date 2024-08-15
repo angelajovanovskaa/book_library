@@ -5,7 +5,7 @@ import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.List;
 import java.util.Optional;
 import lombok.SneakyThrows;
@@ -84,7 +84,7 @@ class ReviewQueryServiceImplTest {
         // when
         List<ReviewResponseDTO> actualResult =
                 reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(BookTestData.BOOK_ISBN,
-                        SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(reviewResponseDTOs);
@@ -102,7 +102,7 @@ class ReviewQueryServiceImplTest {
         // when
         List<ReviewResponseDTO> actualResult =
                 reviewQueryService.getTopReviewsForDisplayInBookView(BookTestData.BOOK_ISBN,
-                        SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(reviewResponseDTOs);

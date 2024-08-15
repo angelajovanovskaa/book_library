@@ -5,7 +5,7 @@ import com.kinandcarta.book_library.dtos.BookItemDTO;
 import com.kinandcarta.book_library.repositories.BookItemRepository;
 import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +40,7 @@ class BookItemQueryServiceImplTest {
 
         // when
         List<BookItemDTO> actualResult = bookItemService.getBookItemsByBookIsbn(BookTestData.BOOK_ISBN,
-                SharedTestData.SKOPJE_OFFICE.getName());
+                SharedServiceTestData.SKOPJE_OFFICE.getName());
 
         // then
         assertThat(actualResult).isEqualTo(bookItemDTOs);

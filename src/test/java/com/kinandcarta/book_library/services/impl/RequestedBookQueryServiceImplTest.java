@@ -6,7 +6,7 @@ import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.RequestedBookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -43,7 +43,7 @@ class RequestedBookQueryServiceImplTest {
 
         // when
         List<RequestedBookResponseDTO> actualResult =
-                requestedBookQueryService.getAllRequestedBooksByOfficeName(SharedTestData.SKOPJE_OFFICE_NAME);
+                requestedBookQueryService.getAllRequestedBooksByOfficeName(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(requestedBookResponseDTOs);
@@ -63,7 +63,7 @@ class RequestedBookQueryServiceImplTest {
         // when
         List<RequestedBookResponseDTO> actualResult =
                 requestedBookQueryService.getRequestedBooksByBookStatusAndOfficeName(BookTestData.BOOK_STATUS,
-                        SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(requestedBookResponseDTOs);
@@ -107,7 +107,7 @@ class RequestedBookQueryServiceImplTest {
         // when
         RequestedBookResponseDTO actualResult =
                 requestedBookQueryService.getRequestedBookByISBNAndOfficeName(BookTestData.BOOK_ISBN,
-                        SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(RequestedBookTestData.getRequestedBookResponseDTO());
@@ -122,6 +122,6 @@ class RequestedBookQueryServiceImplTest {
         Assertions.assertThatExceptionOfType(RequestedBookNotFoundException.class)
                 .isThrownBy(() -> requestedBookQueryService.getRequestedBookByISBNAndOfficeName(
                         BookTestData.BOOK_INVALID_ISBN,
-                        SharedTestData.SKOPJE_OFFICE_NAME));
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME));
     }
 }

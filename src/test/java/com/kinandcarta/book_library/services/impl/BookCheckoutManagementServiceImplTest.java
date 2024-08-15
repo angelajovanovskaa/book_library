@@ -3,13 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookCheckoutConverter;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.enums.BookItemState;
-import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Language;
 import com.kinandcarta.book_library.exceptions.BookAlreadyBorrowedByUserException;
 import com.kinandcarta.book_library.exceptions.BookItemAlreadyBorrowedException;
 import com.kinandcarta.book_library.exceptions.BookItemIsNotBorrowedException;
@@ -22,14 +16,8 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.utils.BookCheckoutTestData;
 import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -185,7 +173,7 @@ class BookCheckoutManagementServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookReturnDateCalculatorService.calculateReturnDateOfBookItem(anyInt())).willReturn(
-                SharedTestData.FUTURE_DATE);
+                SharedServiceTestData.FUTURE_DATE);
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
                 BookCheckoutTestData.getBookCheckoutResponseDTO());
 

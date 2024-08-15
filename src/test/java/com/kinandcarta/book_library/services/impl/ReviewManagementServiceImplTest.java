@@ -11,7 +11,7 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import java.util.List;
 import java.util.Optional;
@@ -94,7 +94,7 @@ class ReviewManagementServiceImplTest {
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(() -> reviewManagementService.insertReview(ReviewTestData.getReviewRequestDTO()))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " in office: " +
-                        SharedTestData.SKOPJE_OFFICE_NAME + " not found");
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
     }
 
     @Test
@@ -156,7 +156,7 @@ class ReviewManagementServiceImplTest {
 
         // then
         verify(bookRepository).updateRatingByIsbnAndOfficeName(ReviewTestData.REVIEWS_IS_EMPTY, BookTestData.BOOK_ISBN,
-                SharedTestData.SKOPJE_OFFICE_NAME);
+                SharedServiceTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test

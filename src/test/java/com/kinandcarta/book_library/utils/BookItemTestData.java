@@ -37,7 +37,7 @@ public class BookItemTestData {
 
     public static BookItem getBookItemFromDifferentOffice() {
         Book book = BookTestData.getBook();
-        book.setOffice(SharedTestData.SOFIJA_OFFICE);
+        book.setOffice(SharedServiceTestData.SOFIJA_OFFICE);
         return new BookItem(
                 BOOK_ITEM_DIFFERENT_OFFICE_ID,
                 BOOK_ITEM_BORROWED_STATE,

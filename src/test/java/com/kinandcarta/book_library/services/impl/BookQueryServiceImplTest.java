@@ -9,7 +9,7 @@ import com.kinandcarta.book_library.services.ReviewQueryService;
 import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ class BookQueryServiceImplTest {
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         // when
-        List<BookDisplayDTO> actualResult = bookService.getAllBooks(SharedTestData.SKOPJE_OFFICE_NAME);
+        List<BookDisplayDTO> actualResult = bookService.getAllBooks(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(bookDisplayDTOs);
@@ -62,8 +62,8 @@ class BookQueryServiceImplTest {
         List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
 
         given(bookRepository.pagingAvailableBooks(BookTestData.BOOK_STATUS, BookItemTestData.BOOK_ITEM_STATE,
-                SharedTestData.SKOPJE_OFFICE.getName(),
-                PageRequest.of(SharedTestData.PAGE_NUMBER, SharedTestData.PAGE_SIZE)))
+                SharedServiceTestData.SKOPJE_OFFICE.getName(),
+                PageRequest.of(SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE)))
                 .willReturn(new PageImpl<>(BookTestData.getBooks()));
 
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
@@ -71,7 +71,7 @@ class BookQueryServiceImplTest {
         // when
         Page<BookDisplayDTO> actualResult = bookService
                 .getPaginatedAvailableBooks(BookTestData.BOOK_STATUS, BookItemTestData.BOOK_ITEM_STATE,
-                        SharedTestData.PAGE_NUMBER, SharedTestData.PAGE_SIZE, SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         //  then
         assertThat(actualResult.getContent()).containsExactlyElementsOf(bookDisplayDTOs);
@@ -87,7 +87,7 @@ class BookQueryServiceImplTest {
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         // when
-        List<BookDisplayDTO> actualResult = bookService.getAvailableBooks(SharedTestData.SKOPJE_OFFICE_NAME);
+        List<BookDisplayDTO> actualResult = bookService.getAvailableBooks(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         //  then
         assertThat(actualResult).isNotNull().containsExactlyElementsOf(bookDisplayDTOs);
@@ -102,7 +102,7 @@ class BookQueryServiceImplTest {
         given(bookConverter.toBookDisplayDTO(any())).willReturn(bookDisplayDTOs.get(0), bookDisplayDTOs.get(1));
 
         // when
-        List<BookDisplayDTO> actualResult = bookService.getRequestedBooks(SharedTestData.SKOPJE_OFFICE_NAME);
+        List<BookDisplayDTO> actualResult = bookService.getRequestedBooks(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         //  then
         assertThat(actualResult).isNotNull().containsExactlyElementsOf(bookDisplayDTOs);
@@ -118,7 +118,7 @@ class BookQueryServiceImplTest {
 
         // when
         BookDetailsDTO actualResult =
-                bookService.getBookByIsbn(BookTestData.BOOK_ISBN, SharedTestData.SKOPJE_OFFICE_NAME);
+                bookService.getBookByIsbn(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(BookTestData.getBookDetailsDTO());
@@ -133,7 +133,7 @@ class BookQueryServiceImplTest {
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(
-                        () -> bookService.getBookByIsbn(BookTestData.BOOK_ISBN, SharedTestData.SKOPJE_OFFICE_NAME))
+                        () -> bookService.getBookByIsbn(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " not found");
     }
 
@@ -148,7 +148,7 @@ class BookQueryServiceImplTest {
 
         //when
         List<BookDisplayDTO> actualResult =
-                bookService.getBooksByTitle(BookTestData.BOOK_TITLE, SharedTestData.SKOPJE_OFFICE_NAME);
+                bookService.getBooksByTitle(BookTestData.BOOK_TITLE, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         //then
         assertThat(actualResult).isEqualTo(bookDisplayDTOs);
@@ -164,7 +164,7 @@ class BookQueryServiceImplTest {
 
         // when
         List<BookDisplayDTO> actualResult =
-                bookService.getBooksByLanguage(BookTestData.BOOK_LANGUAGE, SharedTestData.SKOPJE_OFFICE_NAME);
+                bookService.getBooksByLanguage(BookTestData.BOOK_LANGUAGE, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(bookDisplayDTOs);
@@ -180,7 +180,7 @@ class BookQueryServiceImplTest {
 
         // when
         List<BookDisplayDTO> actualResult =
-                bookService.getBooksByGenresContaining(BookTestData.BOOK_GENRES, SharedTestData.SKOPJE_OFFICE_NAME);
+                bookService.getBooksByGenresContaining(BookTestData.BOOK_GENRES, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(bookDisplayDTOs);

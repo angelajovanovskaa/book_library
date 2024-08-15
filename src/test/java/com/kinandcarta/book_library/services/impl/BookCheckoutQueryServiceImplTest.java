@@ -8,7 +8,7 @@ import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
 import com.kinandcarta.book_library.utils.BookCheckoutTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckouts(SharedTestData.SKOPJE_OFFICE_NAME);
+                bookCheckoutQueryService.getAllBookCheckouts(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).containsExactly(
@@ -61,7 +61,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllActiveBookCheckouts(SharedTestData.SKOPJE_OFFICE_NAME);
+                bookCheckoutQueryService.getAllActiveBookCheckouts(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).containsExactly(
@@ -78,7 +78,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllPastBookCheckouts(SharedTestData.SKOPJE_OFFICE_NAME);
+                bookCheckoutQueryService.getAllPastBookCheckouts(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).containsExactly(
@@ -113,7 +113,7 @@ class BookCheckoutQueryServiceImplTest {
         // when
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
                 bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(BookTestData.BOOK_TITLE_SEARCH_TERM,
-                        SharedTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).containsExactly(
@@ -139,14 +139,14 @@ class BookCheckoutQueryServiceImplTest {
     void getAllBookCheckoutsNearingReturnDate_ValidMatches_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
         BookCheckout bookCheckout = BookCheckoutTestData.getBookCheckout();
-        bookCheckout.setScheduledReturnDate(SharedTestData.FUTURE_DATE_RETURN);
+        bookCheckout.setScheduledReturnDate(SharedServiceTestData.FUTURE_DATE_RETURN);
 
         given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(any())).willReturn(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
 
         // when
         List<BookCheckoutReturnReminderResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(SharedTestData.SKOPJE_OFFICE_NAME);
+                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(result).containsExactly(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
@@ -166,8 +166,8 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
-                bookCheckoutQueryService.getAllBookCheckoutsPaginated(SharedTestData.PAGE_NUMBER,
-                        SharedTestData.PAGE_SIZE, SharedTestData.SKOPJE_OFFICE_NAME);
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(SharedServiceTestData.PAGE_NUMBER,
+                        SharedServiceTestData.PAGE_SIZE, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult.getContent()).containsExactlyElementsOf(bookCheckoutDTOsPage);
