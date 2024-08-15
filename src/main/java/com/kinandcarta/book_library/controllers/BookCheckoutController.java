@@ -29,7 +29,7 @@ public class BookCheckoutController {
     private final BookCheckoutQueryService bookCheckoutQueryService;
     private final BookCheckoutManagementService bookCheckoutManagementService;
 
-    @GetMapping()
+    @GetMapping
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getBookCheckouts(
             @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -75,7 +75,7 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/title-containing")
+    @GetMapping("/by-title")
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getBookCheckoutsByTitleContaining(
             @RequestParam @NotBlank String officeName, @RequestParam String titleSearchTerm) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -84,15 +84,15 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/user")
-    ResponseEntity<List<BookCheckoutResponseDTO>> getBookCheckoutsForUser(@RequestParam @NotNull UUID userId) {
+    @GetMapping("/by-user")
+    ResponseEntity<List<BookCheckoutResponseDTO>> getBookCheckoutsByUser(@RequestParam @NotNull UUID userId) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/user/title-containing")
-    ResponseEntity<List<BookCheckoutResponseDTO>> getBookCheckoutsForUserByTitleContaining(
+    @GetMapping("/by-user-and-title")
+    ResponseEntity<List<BookCheckoutResponseDTO>> getBookCheckoutsByUserAndTitleContaining(
             @RequestParam @NotNull UUID userId, @RequestParam String titleSearchTerm) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId,
                 titleSearchTerm);
