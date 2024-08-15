@@ -1,18 +1,11 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserResponseDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.UserTestData.USER_EMAIL;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_FULL_NAME;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_PASSWORD;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_ROLE;
-import static com.kinandcarta.book_library.utils.UserTestData.getUser;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserRegistrationDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserConverterTest {
@@ -22,45 +15,42 @@ class UserConverterTest {
     @Test
     void toUserWithRoleDTO_conversionIsDone_returnsUserWithRoleDTO() {
         // given
-        User user = getUser();
 
         // when
-        UserWithRoleFieldResponseDTO result = userConverter.toUserWithRoleDTO(user);
+        UserWithRoleFieldResponseDTO actualResult = userConverter.toUserWithRoleDTO(UserTestData.getUser());
 
         // then
-        assertThat(result.userId()).isEqualTo(USER_ID);
-        assertThat(result.fullName()).isEqualTo(USER_FULL_NAME);
-        assertThat(result.email()).isEqualTo(USER_EMAIL);
-        assertThat(result.role()).isEqualTo(USER_ROLE);
+        assertThat(actualResult.userId()).isEqualTo(UserTestData.USER_ID);
+        assertThat(actualResult.fullName()).isEqualTo(UserTestData.USER_FULL_NAME);
+        assertThat(actualResult.email()).isEqualTo(UserTestData.USER_EMAIL);
+        assertThat(actualResult.role()).isEqualTo(UserTestData.USER_ROLE);
     }
 
     @Test
     void toUserResponseDTO_conversionIsDone_returnsUserResponseDTO() {
         // given
-        User user = getUser();
 
         // when
-        UserResponseDTO result = userConverter.toUserResponseDTO(user);
+        UserResponseDTO actualResult = userConverter.toUserResponseDTO(UserTestData.getUser());
 
         // then
-        assertThat(result.userId()).isEqualTo(USER_ID);
-        assertThat(result.fullName()).isEqualTo(USER_FULL_NAME);
-        assertThat(result.email()).isEqualTo(USER_EMAIL);
-        assertThat(result.profilePicture()).isNull();
+        assertThat(actualResult.userId()).isEqualTo(UserTestData.USER_ID);
+        assertThat(actualResult.fullName()).isEqualTo(UserTestData.USER_FULL_NAME);
+        assertThat(actualResult.email()).isEqualTo(UserTestData.USER_EMAIL);
+        assertThat(actualResult.profilePicture()).isEqualTo(UserTestData.USER_IMAGE_BYTES);
     }
 
     @Test
     void toUserEntity_conversionIsDone_returnsUserEntity() {
         // given
-        UserRegistrationRequestDTO userRegistrationRequestDTO = getUserRegistrationDTO();
 
         // when
-        User result = userConverter.toUserEntity(userRegistrationRequestDTO);
+        User actualResult = userConverter.toUserEntity(UserTestData.getUserRegistrationDTO());
 
         // then
-        assertThat(result.getFullName()).isEqualTo(USER_FULL_NAME);
-        assertThat(result.getEmail()).isEqualTo(USER_EMAIL);
-        assertThat(result.getPassword()).isEqualTo(USER_PASSWORD);
-        assertThat(result).hasNoNullFieldsOrPropertiesExcept("id", "profilePicture", "role", "office");
+        assertThat(actualResult.getFullName()).isEqualTo(UserTestData.USER_FULL_NAME);
+        assertThat(actualResult.getEmail()).isEqualTo(UserTestData.USER_EMAIL);
+        assertThat(actualResult.getPassword()).isEqualTo(UserTestData.USER_PASSWORD);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("id", "profilePicture", "role", "office");
     }
 }

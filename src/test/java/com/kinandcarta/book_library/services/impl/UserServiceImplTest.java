@@ -5,8 +5,6 @@ import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserResponseDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
@@ -14,11 +12,12 @@ import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.utils.SharedTestData;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
+import com.kinandcarta.book_library.utils.UserTestData;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,21 +26,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
-import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_FULL_NAME;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_IMAGE_PATH;
-import static com.kinandcarta.book_library.utils.UserTestData.getUser;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserChangePasswordRequestDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserChangePasswordRequestDTOInvalid;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserLoginRequestDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserRegistrationDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserResponseDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserUpdateDataRequestDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserUpdateRoleRequestDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserWithRoleResponseDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserWithRoleResponseDTOs;
-import static com.kinandcarta.book_library.utils.UserTestData.getUsers;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,23 +53,21 @@ class UserServiceImplTest {
     @Test
     void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {
         // given
-        User user = getUser();
-        String email = user.getEmail();
-        UserRegistrationRequestDTO registrationRequestDTO = getUserRegistrationDTO();
+        UserRegistrationRequestDTO userRegistrationDTO = UserTestData.getUserRegistrationDTO();
 
         given(userRepository.findByEmail(anyString())).willReturn(
-                Optional.of(user));
+                Optional.of(UserTestData.getUser()));
 
         // when && then
         assertThatExceptionOfType(EmailAlreadyInUseException.class)
-                .isThrownBy(() -> userService.registerUser(registrationRequestDTO))
-                .withMessage("The email: " + email + " is already in use.");
+                .isThrownBy(() -> userService.registerUser(userRegistrationDTO))
+                .withMessage("The email: " + UserTestData.USER_EMAIL + " is already in use.");
     }
 
     @Test
     void loginUser_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
         // given
-        UserLoginRequestDTO userLoginRequestDTO = getUserLoginRequestDTO();
+        UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
 
         // when && then
         assertThatExceptionOfType(InvalidUserCredentialsException.class)
@@ -96,10 +78,10 @@ class UserServiceImplTest {
     @Test
     void changeUserPassword_oldPasswordDoesNotMatch_throwsIncorrectPasswordException() {
         // given
-        User user = getUser();
-        UserChangePasswordRequestDTO userChangePasswordRequestDTO = getUserChangePasswordRequestDTOInvalid();
+        UserChangePasswordRequestDTO userChangePasswordRequestDTO =
+                UserTestData.getUserChangePasswordRequestDTOInvalid();
 
-        given(userRepository.getReferenceById(any())).willReturn(user);
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when && then
         assertThatExceptionOfType(IncorrectPasswordException.class)
@@ -110,15 +92,14 @@ class UserServiceImplTest {
     @Test
     void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleFieldResponseDTO() {
         // given
-        List<User> users = getUsers();
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOs = getUserWithRoleResponseDTOs();
+        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
-        given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(users);
+        given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(UserTestData.getUsers());
         given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOs.get(0),
                 userWithRoleFieldResponseDTOs.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SKOPJE_OFFICE.getName());
+        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(result).isEqualTo(userWithRoleFieldResponseDTOs);
@@ -127,49 +108,45 @@ class UserServiceImplTest {
     @Test
     void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleFieldResponseDTO() {
         // given
-        List<User> users = List.of(getUser());
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOs = List.of(getUserWithRoleResponseDTO());
+        List<UserWithRoleFieldResponseDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
-        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(anyString(),
-                anyString())).willReturn(users);
-        given(userConverter.toUserWithRoleDTO(users.getFirst())).willReturn(userWithRoleFieldResponseDTOs.getFirst());
+        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(any(), any())).willReturn(
+                UserTestData.getUsers());
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleResponseDTOs.get(0),
+                userWithRoleResponseDTOs.get(1));
 
         // when
         List<UserWithRoleFieldResponseDTO> result =
-                userService.getAllUsersWithFullName(SKOPJE_OFFICE.getName(), USER_FULL_NAME);
+                userService.getAllUsersWithFullName(SharedTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_FULL_NAME);
 
         // then
-        assertThat(result).isEqualTo(userWithRoleFieldResponseDTOs);
+        assertThat(result).isEqualTo(UserTestData.getUserWithRoleResponseDTOs());
     }
 
     @Test
     void getUserProfile_userExist_returnsUserWithoutRoleDTO() {
         // given
-        User user = getUser();
-        UserResponseDTO userWithoutRoleDTOs = getUserResponseDTO();
-        UUID userId = user.getId();
-
-        given(userRepository.getReferenceById(any())).willReturn(user);
-        given(userConverter.toUserResponseDTO(any())).willReturn(userWithoutRoleDTOs);
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
+        given(userConverter.toUserResponseDTO(any())).willReturn(UserTestData.getUserResponseDTO());
 
         // when
-        UserResponseDTO result = userService.getUserProfile(userId);
+        UserResponseDTO result = userService.getUserProfile(UserTestData.USER_ID);
 
         // then
-        assertThat(result).isEqualTo(userWithoutRoleDTOs);
+        assertThat(result).isEqualTo(UserTestData.getUserResponseDTO());
     }
 
     @Test
     void registerUser_theRegistrationIsSuccessful_returnsConfirmationMessage() throws IOException {
         // given
-        UserRegistrationRequestDTO registrationRequestDTO = getUserRegistrationDTO();
+        UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
 
-        given(officeRepository.getReferenceById(anyString())).willReturn(SKOPJE_OFFICE);
+        given(officeRepository.getReferenceById(anyString())).willReturn(SharedTestData.SKOPJE_OFFICE);
 
         Resource mockResource = mock(Resource.class);
-        given(mockResource.getContentAsByteArray()).willReturn(USER_IMAGE_PATH.getBytes());
+        given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
         // when
@@ -182,28 +159,23 @@ class UserServiceImplTest {
     @Test
     void loginUser_loginIsValid_returnsConfirmationMessage() {
         // given
-        User user = getUsers().getFirst();
-        UserLoginRequestDTO userLoginRequestDTO = getUserLoginRequestDTO();
-
-        given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(Optional.of(user));
+        given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(
+                Optional.of(UserTestData.getUser()));
 
         // when
-        String result = userService.loginUser(userLoginRequestDTO);
+        String result = userService.loginUser(UserTestData.getUserLoginRequestDTO());
 
         // then
-        assertThat(result).isEqualTo(user.getFullName());
+        assertThat(result).isEqualTo(UserTestData.USER_FULL_NAME);
     }
 
     @Test
     void updateUserData_updateUserProfilePicture_returnsConfirmationMessage() {
         // given
-        User user = getUser();
-        UserUpdateDataRequestDTO userUpdateDataRequestDTO = getUserUpdateDataRequestDTO();
-
-        given(userRepository.getReferenceById(any())).willReturn(user);
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when
-        String result = userService.updateUserData(userUpdateDataRequestDTO);
+        String result = userService.updateUserData(UserTestData.getUserUpdateDataRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_DATA_UPDATED_RESPONSE);
@@ -212,13 +184,10 @@ class UserServiceImplTest {
     @Test
     void updateUserRole_userRoleUpdated_returnsConfirmationMessage() {
         // given
-        User user = getUser();
-        UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = getUserUpdateRoleRequestDTO();
-
-        given(userRepository.getReferenceById(any())).willReturn(user);
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when
-        String result = userService.updateUserRole(userUpdateRoleRequestDTO);
+        String result = userService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
@@ -229,7 +198,7 @@ class UserServiceImplTest {
         // given
 
         // when
-        String result = userService.deleteAccount(USER_ID);
+        String result = userService.deleteAccount(UserTestData.USER_ID);
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_DELETED_RESPONSE);
@@ -238,13 +207,10 @@ class UserServiceImplTest {
     @Test
     void changeUserPassword_passwordIsChanged_returnsConfirmationMessage() {
         // given
-        User user = getUser();
-        UserChangePasswordRequestDTO userDTO = getUserChangePasswordRequestDTO();
-
-        given(userRepository.getReferenceById(any())).willReturn(user);
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when
-        String result = userService.changeUserPassword(userDTO);
+        String result = userService.changeUserPassword(UserTestData.getUserChangePasswordRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
