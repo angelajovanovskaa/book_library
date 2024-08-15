@@ -51,45 +51,6 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {
-        // given
-        UserRegistrationRequestDTO userRegistrationDTO = UserTestData.getUserRegistrationDTO();
-
-        given(userRepository.findByEmail(anyString())).willReturn(
-                Optional.of(UserTestData.getUser()));
-
-        // when && then
-        assertThatExceptionOfType(EmailAlreadyInUseException.class)
-                .isThrownBy(() -> userService.registerUser(userRegistrationDTO))
-                .withMessage("The email: " + UserTestData.USER_EMAIL + " is already in use.");
-    }
-
-    @Test
-    void loginUser_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
-        // given
-        UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
-
-        // when && then
-        assertThatExceptionOfType(InvalidUserCredentialsException.class)
-                .isThrownBy(() -> userService.loginUser(userLoginRequestDTO))
-                .withMessage("The credentials that you have entered don't match.");
-    }
-
-    @Test
-    void changeUserPassword_oldPasswordDoesNotMatch_throwsIncorrectPasswordException() {
-        // given
-        UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.getUserChangePasswordRequestDTOInvalid();
-
-        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-
-        // when && then
-        assertThatExceptionOfType(IncorrectPasswordException.class)
-                .isThrownBy(() -> userService.changeUserPassword(userChangePasswordRequestDTO))
-                .withMessage("The password that you have entered is incorrect.");
-    }
-
-    @Test
     void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleFieldResponseDTO() {
         // given
         List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
@@ -117,7 +78,8 @@ class UserServiceImplTest {
 
         // when
         List<UserWithRoleFieldResponseDTO> result =
-                userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_FULL_NAME);
+                userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
+                        UserTestData.USER_FULL_NAME);
 
         // then
         assertThat(result).isEqualTo(UserTestData.getUserWithRoleResponseDTOs());
@@ -157,6 +119,20 @@ class UserServiceImplTest {
     }
 
     @Test
+    void registerUser_emailAlreadyExists_throwsEmailAlreadyInUseException() {
+        // given
+        UserRegistrationRequestDTO userRegistrationDTO = UserTestData.getUserRegistrationDTO();
+
+        given(userRepository.findByEmail(anyString())).willReturn(
+                Optional.of(UserTestData.getUser()));
+
+        // when && then
+        assertThatExceptionOfType(EmailAlreadyInUseException.class)
+                .isThrownBy(() -> userService.registerUser(userRegistrationDTO))
+                .withMessage("The email: " + UserTestData.USER_EMAIL + " is already in use.");
+    }
+
+    @Test
     void loginUser_loginIsValid_returnsConfirmationMessage() {
         // given
         given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(
@@ -167,6 +143,17 @@ class UserServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(UserTestData.USER_FULL_NAME);
+    }
+
+    @Test
+    void loginUser_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
+        // given
+        UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
+
+        // when && then
+        assertThatExceptionOfType(InvalidUserCredentialsException.class)
+                .isThrownBy(() -> userService.loginUser(userLoginRequestDTO))
+                .withMessage("The credentials that you have entered don't match.");
     }
 
     @Test
@@ -214,5 +201,19 @@ class UserServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
+    }
+
+    @Test
+    void changeUserPassword_oldPasswordDoesNotMatch_throwsIncorrectPasswordException() {
+        // given
+        UserChangePasswordRequestDTO userChangePasswordRequestDTO =
+                UserTestData.getUserChangePasswordRequestDTOInvalid();
+
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
+
+        // when && then
+        assertThatExceptionOfType(IncorrectPasswordException.class)
+                .isThrownBy(() -> userService.changeUserPassword(userChangePasswordRequestDTO))
+                .withMessage("The password that you have entered is incorrect.");
     }
 }
