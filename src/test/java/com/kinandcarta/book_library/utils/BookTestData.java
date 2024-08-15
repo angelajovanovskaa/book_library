@@ -27,7 +27,7 @@ public class BookTestData {
     public static final String BOOK_TITLE_SEARCH_TERM = "ti";
     public static final String BOOK_DESCRIPTION = "description";
     public static final String BOOK_SUMMARY = "summary";
-    public static final int BOOK_TOTAL_PAGES = 123;
+    public static final int BOOK_TOTAL_PAGES = 50;
     public static final String BOOK_LANGUAGE = "MK";
     public static final Double BOOK_RATING_FROM_WEB = 1.0;
     public static final Double BOOK_RATING_FROM_FIRM = 1.0;
