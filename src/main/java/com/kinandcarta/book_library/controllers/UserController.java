@@ -32,14 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/get")
+    @GetMapping
     ResponseEntity<List<UserWithRoleFieldResponseDTO>> getUsers(@RequestParam @NotBlank String officeName) {
         List<UserWithRoleFieldResponseDTO> response = userService.getAllUsers(officeName);
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/get-by-full-name")
+    @GetMapping("/by-full-name")
     ResponseEntity<List<UserWithRoleFieldResponseDTO>> getUsersByFullName(@RequestParam @NotBlank String officeName,
                                                                              @RequestParam String fullName) {
         List<UserWithRoleFieldResponseDTO> response = userService.getAllUsersWithFullName(officeName, fullName);
