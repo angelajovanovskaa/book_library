@@ -69,7 +69,6 @@ public class BookController {
         return ResponseEntity.ok(result);
     }
 
-
     @GetMapping("/get-requested")
     ResponseEntity<List<BookDisplayDTO>> getRequestedBooks(@RequestParam @NotBlank String officeName) {
         List<BookDisplayDTO> result = bookQueryService.getRequestedBooks(officeName);
