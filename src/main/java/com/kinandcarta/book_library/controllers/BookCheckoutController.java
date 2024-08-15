@@ -29,7 +29,7 @@ public class BookCheckoutController {
     private final BookCheckoutQueryService bookCheckoutQueryService;
     private final BookCheckoutManagementService bookCheckoutManagementService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/get")
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAll(
             @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -38,7 +38,7 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-paginated")
+    @GetMapping("/get-paginated")
     ResponseEntity<Page<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllPaginated(
             @RequestParam @NotBlank String officeName, @RequestParam(defaultValue = "0") int pageNumber,
             @RequestParam(defaultValue = "5") int pageSize) {
@@ -48,7 +48,7 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-active")
+    @GetMapping("/get-active")
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllActive(
             @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -57,7 +57,7 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-past")
+    @GetMapping("/get-past")
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllPast(
             @RequestParam @NotBlank String officeName) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -66,7 +66,7 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-near-return-date")
+    @GetMapping("/get-near-return-date")
     ResponseEntity<List<BookCheckoutReturnReminderResponseDTO>> getAllNearReturnDate(
             @RequestParam @NotBlank String officeName) {
         List<BookCheckoutReturnReminderResponseDTO> result =
@@ -75,7 +75,7 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-by-title-containing")
+    @GetMapping("/get-by-title-containing")
     ResponseEntity<List<BookCheckoutWithUserAndBookItemInfoResponseDTO>> getAllByTitleContaining(
             @RequestParam @NotBlank String officeName, @RequestParam String titleSearchTerm) {
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
@@ -84,14 +84,14 @@ public class BookCheckoutController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-books-for-user")
+    @GetMapping("/get-books-for-user")
     ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUser(@RequestParam @NotNull UUID userId) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(userId);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/get-all-books-for-user-by-title-containing")
+    @GetMapping("/get-books-for-user-by-title-containing")
     ResponseEntity<List<BookCheckoutResponseDTO>> getAllBooksForUserByTitleContaining(
             @RequestParam @NotNull UUID userId, @RequestParam String titleSearchTerm) {
         List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(userId,
