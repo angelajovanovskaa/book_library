@@ -139,7 +139,7 @@ class BookCheckoutQueryServiceImplTest {
     void getAllBookCheckoutsNearingReturnDate_ValidMatches_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
         BookCheckout bookCheckout = BookCheckoutTestData.getBookCheckout();
-        bookCheckout.setScheduledReturnDate(SharedServiceTestData.FUTURE_DATE_RETURN);
+        bookCheckout.setScheduledReturnDate(SharedServiceTestData.FUTURE_DATE);
 
         given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
         given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(any())).willReturn(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
