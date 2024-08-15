@@ -50,16 +50,16 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * This method is used to get a paginated list of all book checkouts ordered by date borrowed in descending order.<br>
      * Only admin users have access to this method.
      *
-     * @param numberOfPages the page number of the results to retrieve
+     * @param pageNumber the page number of the results to retrieve
      * @param pageSize      the maximum number of items per page
      * @param officeName    the name of the office where the user searching belongs.
      * @return A page containing {@link BookCheckoutWithUserAndBookItemInfoResponseDTO}
      */
     @Override
-    public Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int numberOfPages,
+    public Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> getAllBookCheckoutsPaginated(int pageNumber,
                                                                                              int pageSize,
                                                                                              String officeName) {
-        Pageable pageable = PageRequest.of(numberOfPages, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Page<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllPaginated(officeName, pageable);
 
         return bookCheckouts.map(bookCheckoutConverter::toBookCheckoutWithUserAndBookItemInfoResponseDTO);

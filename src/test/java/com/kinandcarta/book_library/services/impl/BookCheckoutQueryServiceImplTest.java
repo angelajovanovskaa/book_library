@@ -152,7 +152,6 @@ class BookCheckoutQueryServiceImplTest {
         assertThat(result).containsExactly(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
     }
 
-
     @Test
     void getAllBookCheckoutsPaginated_bookCheckoutsArePresent_returnsAPageWithBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
