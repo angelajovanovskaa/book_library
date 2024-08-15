@@ -94,7 +94,6 @@ public class BookQueryServiceImpl implements BookQueryService {
 
     /**
      * Retrieves a paginated list of available books based on the specified criteria, filtered by the office name.
-     * <p>
      *
      * @param page       The page number (zero-based) of the requested page.
      * @param size       The size of the page to be returned.
