@@ -20,15 +20,14 @@ import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
@@ -54,29 +53,49 @@ class BookCheckoutManagementServiceImplTest {
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
 
     @Test
+    void borrowBookItem_TheBorrowingIsSuccessful_returnsBookCheckoutResponseDTO() {
+        // given
+        BookItem bookItem = BookItemTestData.getBookItem();
+
+        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
+        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
+        given(bookReturnDateCalculatorService.calculateReturnDateOfBookItem(anyInt())).willReturn(
+                SharedServiceTestData.FUTURE_DATE);
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
+                BookCheckoutTestData.getBookCheckoutResponseDTO());
+
+        // when
+        BookCheckoutResponseDTO actualResult =
+                bookCheckoutManagementService.borrowBookItem(BookCheckoutTestData.getBookCheckoutRequestDTO());
+
+        // then
+        assertThat(actualResult).isEqualTo(BookCheckoutTestData.getBookCheckoutResponseDTO());
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemTestData.BOOK_ITEM_BORROWED_STATE);
+    }
+
+    @Test
     void borrowBookItem_theBookItemDoesNotExists_throwsBookItemNotFoundException() {
         // given
-        UUID bookItemId = UUID.fromString("aa74a33b-b394-447f-84c3-72220ecfcf23");
-
         given(bookItemRepository.findById(any())).willReturn(Optional.empty());
 
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO =
+                new BookCheckoutRequestDTO(UserTestData.USER_ID, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
         assertThatExceptionOfType(BookItemNotFoundException.class)
                 .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
-                .withMessage("The bookItem with id: " + bookItemId + " doesn't exist");
+                .withMessage("The bookItem with id: " + BookItemTestData.BOOK_ITEM_ID + " doesn't exist");
     }
 
     @Test
     void borrowBookItem_TheEntitiesAreFromDifferentOffices_throwsEntitiesInDifferentOfficesException() {
         // given
+        BookCheckoutRequestDTO bookCheckoutDTO =
+                new BookCheckoutRequestDTO(UserTestData.USER_ID, BookItemTestData.BOOK_ITEM_DIFFERENT_OFFICE_ID);
+
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
         given(bookItemRepository.findById(any())).willReturn(
                 Optional.of(BookItemTestData.getBookItemFromDifferentOffice()));
-
-        BookCheckoutRequestDTO bookCheckoutDTO =
-                new BookCheckoutRequestDTO(UserTestData.USER_ID, BookItemTestData.BOOK_ITEM_DIFFERENT_OFFICE_ID);
 
         // when && then
         assertThatExceptionOfType(EntitiesInDifferentOfficesException.class)
@@ -103,7 +122,7 @@ class BookCheckoutManagementServiceImplTest {
     @Test
     void borrowBookItem_BookAlreadyBorrowedByUser_throwsBookAlreadyBorrowedByUserException() {
         // given
-        BookCheckoutRequestDTO bookCheckoutDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
+        BookCheckoutRequestDTO bookCheckoutRequestDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
 
         given(bookCheckoutRepository.findFirstByBookItem_Book_IsbnAndUserIdAndDateReturnedIsNull(
                 any(), any())).willReturn(Optional.of(BookCheckoutTestData.getBookCheckout()));
@@ -112,7 +131,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // when && then
         assertThatExceptionOfType(BookAlreadyBorrowedByUserException.class)
-                .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutDTO))
+                .isThrownBy(() -> bookCheckoutManagementService.borrowBookItem(bookCheckoutRequestDTO))
                 .withMessage(
                         "The user already has an instance borrowed from the book with isbn: " + BookTestData.BOOK_ISBN);
     }
@@ -136,57 +155,6 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
-    void returnBookItem_BookItemDoesNotExists_throwsBookItemNotFoundException() {
-        // given
-        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
-
-        BookCheckoutRequestDTO bookCheckoutDTO =
-                new BookCheckoutRequestDTO(UserTestData.USER_ID, BookItemTestData.BOOK_ITEM_ID);
-
-        // when && then
-        assertThatExceptionOfType(BookItemNotFoundException.class)
-                .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
-                .withMessage("The bookItem with id: " + BookItemTestData.BOOK_ITEM_ID + " doesn't exist");
-    }
-
-    @Test
-    void returnBookItem_BookItemIsNotBorrowed_throwsBookItemIsNotBorrowedException() {
-        // given
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID,
-                BookItemTestData.BOOK_ITEM_ID);
-
-        given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(Optional.empty());
-        given(bookItemRepository.findById(any())).willReturn(Optional.of(BookItemTestData.getBookItem()));
-
-        // when && then
-        assertThatExceptionOfType(BookItemIsNotBorrowedException.class)
-                .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
-                .withMessage(
-                        "The bookItem with id " + BookItemTestData.BOOK_ITEM_ID + " can't be returned because it is not borrowed.");
-    }
-
-    @Test
-    void borrowBookItem_TheBorrowingIsSuccessful_returnsBookCheckoutResponseDTO() {
-        // given
-        BookItem bookItem = BookItemTestData.getBookItem();
-
-        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
-        given(bookReturnDateCalculatorService.calculateReturnDateOfBookItem(anyInt())).willReturn(
-                SharedServiceTestData.FUTURE_DATE);
-        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
-                BookCheckoutTestData.getBookCheckoutResponseDTO());
-
-        // when
-        BookCheckoutResponseDTO actualResult =
-                bookCheckoutManagementService.borrowBookItem(BookCheckoutTestData.getBookCheckoutRequestDTO());
-
-        // then
-        assertThat(actualResult).isEqualTo(BookCheckoutTestData.getBookCheckoutResponseDTO());
-        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemTestData.BOOK_ITEM_BORROWED_STATE);
-    }
-
-    @Test
     void returnBookItem_theBookItemReturnIsSuccessful_returnsBookCheckoutResponseDTO() {
         // given
         BookItem bookItem = BookItemTestData.getBookItem();
@@ -205,5 +173,34 @@ class BookCheckoutManagementServiceImplTest {
         // then
         assertThat(actualResult).isEqualTo(BookCheckoutTestData.getBookCheckoutResponseDTO());
         assertThat(bookItem.getBookItemState()).isEqualTo(BookItemTestData.BOOK_ITEM_STATE);
+    }
+
+    @Test
+    void returnBookItem_BookItemDoesNotExists_throwsBookItemNotFoundException() {
+        // given
+        BookCheckoutRequestDTO bookCheckoutDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
+
+        given(bookItemRepository.findById(any())).willReturn(Optional.empty());
+
+        // when && then
+        assertThatExceptionOfType(BookItemNotFoundException.class)
+                .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
+                .withMessage("The bookItem with id: " + BookItemTestData.BOOK_ITEM_ID + " doesn't exist");
+    }
+
+    @Test
+    void returnBookItem_BookItemIsNotBorrowed_throwsBookItemIsNotBorrowedException() {
+        // given
+        BookCheckoutRequestDTO bookCheckoutDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
+
+        given(bookCheckoutRepository.findFirstByBookItemIdAndDateReturnedIsNull(any())).willReturn(Optional.empty());
+        given(bookItemRepository.findById(any())).willReturn(Optional.of(BookItemTestData.getBookItem()));
+
+        // when && then
+        assertThatExceptionOfType(BookItemIsNotBorrowedException.class)
+                .isThrownBy(() -> bookCheckoutManagementService.returnBookItem(bookCheckoutDTO))
+                .withMessage(
+                        "The bookItem with id " + BookItemTestData.BOOK_ITEM_ID +
+                                " can't be returned because it is not borrowed.");
     }
 }
