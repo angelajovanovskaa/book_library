@@ -14,6 +14,7 @@ import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
 import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
+import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE_NAME;
 
 @UtilityClass
 public class UserTestData {
@@ -23,14 +24,16 @@ public class UserTestData {
     public static final String USER_PASSWORD = "password";
     public static final String USER_NEW_PASSWORD = "newPassword";
     public static final String USER_ROLE = "USER";
+    public static final String ADMIN_ROLE = "ADMIN";
     public static final String USER_IMAGE_PATH = "classpath:image/profile-picture.png";
+    public static final byte[] USER_IMAGE_BYTES = USER_IMAGE_PATH.getBytes();
 
     public static List<User> getUsers() {
         List<User> users = new ArrayList<>();
         User user1 = new User(
                 USER_ID,
                 USER_FULL_NAME,
-                null,
+                USER_IMAGE_BYTES,
                 USER_EMAIL,
                 USER_ROLE,
                 USER_PASSWORD,
@@ -40,7 +43,7 @@ public class UserTestData {
         User user2 = new User(
                 UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
                 "fullname2",
-                null,
+                USER_IMAGE_BYTES,
                 "user2@gmail.com",
                 USER_ROLE,
                 USER_PASSWORD,
@@ -75,10 +78,6 @@ public class UserTestData {
         return users;
     }
 
-    public static UserWithRoleFieldResponseDTO getUserWithRoleResponseDTO() {
-        return getUserWithRoleResponseDTOs().getFirst();
-    }
-
     public static List<UserResponseDTO> getUserResponseDTOs() {
         List<UserResponseDTO> users = new ArrayList<>();
         UserResponseDTO user1 = new UserResponseDTO(
@@ -107,7 +106,7 @@ public class UserTestData {
         return new UserRegistrationRequestDTO(
                 USER_FULL_NAME,
                 USER_EMAIL,
-                SKOPJE_OFFICE.getName(),
+                SKOPJE_OFFICE_NAME,
                 USER_PASSWORD
         );
     }
@@ -146,7 +145,7 @@ public class UserTestData {
     public static UserUpdateRoleRequestDTO getUserUpdateRoleRequestDTO() {
         return new UserUpdateRoleRequestDTO(
                 USER_ID,
-                "ADMIN"
+                ADMIN_ROLE
         );
     }
 }

@@ -8,34 +8,32 @@ import java.util.List;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
-import static com.kinandcarta.book_library.utils.BookTestData.getBook;
-import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
-import static com.kinandcarta.book_library.utils.UserTestData.getUser;
-
 @UtilityClass
 public class ReviewTestData {
     public static final UUID REVIEW_ID = UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf841");
     public static final String REVIEW_MESSAGE = "message";
     public static final int REVIEW_RATING = 1;
+    public static final double REVIEW_RATING_DOUBLE = 1.0;
+    public static final double REVIEWS_IS_EMPTY = 0.0;
 
     public static List<Review> getReviews() {
         List<Review> reviews = new ArrayList<>();
         Review review1 = new Review(
                 REVIEW_ID,
-                DATE_NOW,
+                SharedTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING,
-                getBook(),
-                getUser()
+                BookTestData.getBook(),
+                UserTestData.getUser()
         );
         reviews.add(review1);
         Review review2 = new Review(
                 UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf842"),
-                DATE_NOW,
+                SharedTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING,
-                getBook(),
-                getUser()
+                BookTestData.getBook(),
+                UserTestData.getUser()
         );
         reviews.add(review2);
 
@@ -49,21 +47,19 @@ public class ReviewTestData {
     public static List<ReviewResponseDTO> getReviewResponseDTOs() {
         List<ReviewResponseDTO> reviewResponseDTOs = new ArrayList<>();
         ReviewResponseDTO review1 = new ReviewResponseDTO(
-                getBook().getIsbn(),
-                getUser().getEmail(),
-                DATE_NOW,
+                BookTestData.BOOK_ISBN,
+                UserTestData.USER_EMAIL,
+                SharedTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING
-
         );
         reviewResponseDTOs.add(review1);
         ReviewResponseDTO review2 = new ReviewResponseDTO(
-                getBook().getIsbn(),
-                getUser().getEmail(),
-                DATE_NOW,
+                BookTestData.BOOK_ISBN,
+                UserTestData.USER_EMAIL,
+                SharedTestData.DATE_NOW,
                 REVIEW_MESSAGE,
                 REVIEW_RATING
-
         );
         reviewResponseDTOs.add(review2);
 
@@ -76,8 +72,8 @@ public class ReviewTestData {
 
     public static ReviewRequestDTO getReviewRequestDTO() {
         return new ReviewRequestDTO(
-                getBook().getIsbn(),
-                getUser().getEmail(),
+                BookTestData.BOOK_ISBN,
+                UserTestData.USER_EMAIL,
                 REVIEW_MESSAGE,
                 REVIEW_RATING
         );
