@@ -104,7 +104,7 @@ public class BookManagementServiceImpl implements BookManagementService {
      * Sets the status of the given book to "IN_STOCK".
      *
      * @param bookIdDTO A DTO containing the ISBN of the book and the name of the office where
-     *                         the book is located. Must not be {@code null}.
+     *                  the book is located. Must not be {@code null}.
      * @return A {@link BookDetailsDTO} containing the details of the updated book with status set to "IN_STOCK".
      * @throws BookNotFoundException If no book with the specified ISBN is found at the given office.
      */
@@ -113,7 +113,8 @@ public class BookManagementServiceImpl implements BookManagementService {
         Book foundBook = bookRepository.findByIsbnAndOfficeName(bookIdDTO.isbn(), bookIdDTO.officeName())
                 .orElseThrow(() -> new BookNotFoundException(bookIdDTO.isbn()));
 
-        List<ReviewResponseDTO> reviewResponseDTOS = reviewQueryService.getTopReviewsForDisplayInBookView(bookIdDTO.isbn(), bookIdDTO.officeName());
+        List<ReviewResponseDTO> reviewResponseDTOS =
+                reviewQueryService.getTopReviewsForDisplayInBookView(bookIdDTO.isbn(), bookIdDTO.officeName());
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
         bookRepository.save(foundBook);

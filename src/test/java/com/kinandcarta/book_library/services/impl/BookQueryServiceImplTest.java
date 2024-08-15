@@ -27,7 +27,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -78,13 +77,11 @@ class BookQueryServiceImplTest {
         // given
         int page = 0;
         int size = 2;
-        BookStatus bookStatus = BookStatus.IN_STOCK;
-        BookItemState bookItemState = BookItemState.AVAILABLE;
+
         Office office = new Office("Bristol");
         List<Book> books = getBooks();
 
-        given(bookRepository.pagingAvailableBooks(bookStatus, bookItemState, office.getName(), PageRequest.of(page,
-                size)))
+        given(bookRepository.pagingAvailableBooks(any(), any(), any(), any()))
                 .willReturn(new PageImpl<>(books));
 
         given(bookConverter.toBookDisplayDTO(any())).
@@ -92,7 +89,7 @@ class BookQueryServiceImplTest {
 
         // when
         Page<BookDisplayDTO> resultPage = bookService
-                .getPaginatedAvailableBooks(bookStatus, bookItemState, page, size, office.getName());
+                .getPaginatedAvailableBooks(page, size, office.getName());
 
         // then
         assertThat(resultPage).isNotNull();
