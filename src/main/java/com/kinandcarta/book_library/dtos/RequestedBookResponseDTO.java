@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public record RequestedBookResponseDTO(
         UUID id,
+        String bookISBN,
         LocalDate requestedDate,
         Long likeCounter,
-        String bookISBN,
         BookStatus bookStatus,
         String title,
         String image

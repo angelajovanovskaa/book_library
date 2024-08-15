@@ -1,16 +1,11 @@
 package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
-import com.kinandcarta.book_library.entities.RequestedBook;
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.RequestedBookTestData;
+import com.kinandcarta.book_library.utils.SharedTestData;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.BookTestData.BOOK_IMAGE;
-import static com.kinandcarta.book_library.utils.BookTestData.BOOK_STATUS;
-import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE;
-import static com.kinandcarta.book_library.utils.RequestedBookTestData.REQUESTED_BOOK_ID;
-import static com.kinandcarta.book_library.utils.RequestedBookTestData.REQUESTED_BOOK_LIKE_COUNTER;
-import static com.kinandcarta.book_library.utils.RequestedBookTestData.getRequestedBook;
-import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class RequestedBookConverterTest {
@@ -20,17 +15,18 @@ class RequestedBookConverterTest {
     @Test
     void toRequestedBookDTO_convertsRequestedBookToRequestedBookDTOActionIsValid_returnsRequestedBookResponseDTO() {
         // given
-        RequestedBook requestedBook = getRequestedBook();
 
         // when
-        RequestedBookResponseDTO actualResult = requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
+        RequestedBookResponseDTO actualResult =
+                requestedBookConverter.toRequestedBookResponseDTO(RequestedBookTestData.getRequestedBook());
 
         // then
-        assertThat(actualResult.id()).isEqualTo(REQUESTED_BOOK_ID);
-        assertThat(actualResult.requestedDate()).isEqualTo(DATE_NOW);
-        assertThat(actualResult.likeCounter()).isEqualTo(REQUESTED_BOOK_LIKE_COUNTER);
-        assertThat(actualResult.bookStatus()).isEqualTo(BOOK_STATUS);
-        assertThat(actualResult.title()).isEqualTo(BOOK_TITLE);
-        assertThat(actualResult.image()).isEqualTo(BOOK_IMAGE);
+        assertThat(actualResult.id()).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
+        assertThat(actualResult.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.requestedDate()).isEqualTo(SharedTestData.DATE_NOW);
+        assertThat(actualResult.likeCounter()).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_LIKE_COUNTER);
+        assertThat(actualResult.bookStatus()).isEqualTo(BookTestData.BOOK_STATUS);
+        assertThat(actualResult.title()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.image()).isEqualTo(BookTestData.BOOK_IMAGE);
     }
 }
