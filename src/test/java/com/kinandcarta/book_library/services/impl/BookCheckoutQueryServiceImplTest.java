@@ -6,6 +6,10 @@ import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
 import com.kinandcarta.book_library.repositories.BookCheckoutRepository;
+import com.kinandcarta.book_library.utils.BookCheckoutTestData;
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.UserTestData;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,19 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckout;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto;
-import static com.kinandcarta.book_library.utils.BookTestData.BOOK_TITLE_SEARCH_TERM;
-import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
-import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_NUMBER;
-import static com.kinandcarta.book_library.utils.SharedTestData.PAGE_SIZE;
-import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -46,154 +38,139 @@ class BookCheckoutQueryServiceImplTest {
     @Test
     void getAllBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
-
-        given(bookCheckoutRepository.findAll(anyString())).willReturn(List.of(bookCheckout));
+        given(bookCheckoutRepository.findAll(anyString())).willReturn(List.of(BookCheckoutTestData.getBookCheckout()));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
-                bookCheckoutDTO);
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckouts(SKOPJE_OFFICE.getName());
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckouts(SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(actualResult).containsExactly(
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
     }
 
     @Test
     void getAllActiveBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutOfUserAndBookItemInfoResponseDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
-
-        given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
+        given(bookCheckoutRepository.findAllActiveCheckouts(any())).willReturn(
+                List.of(BookCheckoutTestData.getBookCheckout()));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
-                bookCheckoutDTO);
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllActiveBookCheckouts(SKOPJE_OFFICE.getName());
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllActiveBookCheckouts(SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(actualResult).containsExactly(
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
     }
 
     @Test
     void getAllPastBookCheckouts_theListHasAtLeastOne_returnsListOfBookCheckoutOfUserAndBookItemInfoResponseDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
-
-        given(bookCheckoutRepository.findAllPastCheckouts(anyString())).willReturn(List.of(bookCheckout));
+        given(bookCheckoutRepository.findAllPastCheckouts(any())).willReturn(
+                List.of(BookCheckoutTestData.getBookCheckout()));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
-                bookCheckoutDTO);
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllPastBookCheckouts(SKOPJE_OFFICE.getName());
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllPastBookCheckouts(SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(actualResult).containsExactly(
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
     }
 
     @Test
     void getAllBookCheckoutsFromUserForBook_parametersAreValid_returnsListOfBookCheckoutDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
-
-        given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), anyString())).willReturn(
-                List.of(bookCheckout));
-        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutDTO);
+        given(bookCheckoutRepository.findByUserAndBookTitleContaining(any(), any())).willReturn(
+                List.of(BookCheckoutTestData.getBookCheckout()));
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
+                BookCheckoutTestData.getBookCheckoutResponseDTO());
 
         // when
-        List<BookCheckoutResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(USER_ID, BOOK_TITLE_SEARCH_TERM);
+        List<BookCheckoutResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(UserTestData.USER_ID,
+                        BookTestData.BOOK_TITLE_SEARCH_TERM);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(actualResult).containsExactly(BookCheckoutTestData.getBookCheckoutResponseDTO());
     }
 
     @Test
     void getAllBookCheckoutsForBookTitle_titleSearchTermIsValid_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
-
-        given(bookCheckoutRepository.findByBookTitleContaining(anyString(), anyString())).willReturn(
-                List.of(bookCheckout));
+        given(bookCheckoutRepository.findByBookTitleContaining(any(), any())).willReturn(
+                List.of(BookCheckoutTestData.getBookCheckout()));
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
-                bookCheckoutDTO);
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
 
         // when
-        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(BOOK_TITLE_SEARCH_TERM,
-                        SKOPJE_OFFICE.getName());
+        List<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckoutsForBookTitle(BookTestData.BOOK_TITLE_SEARCH_TERM,
+                        SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(actualResult).containsExactly(
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
     }
 
     @Test
     void getAllBookCheckoutsFromUser_UserIdIsValid_returnsListOfBookCheckoutDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
-
-        given(bookCheckoutRepository.findByUser(any())).willReturn(List.of(bookCheckout));
-        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(bookCheckoutDTO);
+        given(bookCheckoutRepository.findByUser(any())).willReturn(List.of(BookCheckoutTestData.getBookCheckout()));
+        given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
+                BookCheckoutTestData.getBookCheckoutResponseDTO());
 
         // when
-        List<BookCheckoutResponseDTO> result = bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(USER_ID);
+        List<BookCheckoutResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(UserTestData.USER_ID);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(actualResult).containsExactly(BookCheckoutTestData.getBookCheckoutResponseDTO());
     }
 
     @Test
     void getAllBookCheckoutsNearingReturnDate_ValidMatches_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
-        BookCheckout bookCheckout = getBookCheckout();
-        bookCheckout.setScheduledReturnDate(DATE_NOW.plusDays(2));
-        BookCheckoutReturnReminderResponseDTO bookCheckoutDTO = getBookCheckoutReturnReminderResponseDTO();
+        BookCheckout bookCheckout = BookCheckoutTestData.getBookCheckout();
+        bookCheckout.setScheduledReturnDate(SharedTestData.FUTURE_DATE_RETURN);
 
         given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
-        given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(bookCheckout)).willReturn(bookCheckoutDTO);
+        given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(any())).willReturn(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
 
         // when
         List<BookCheckoutReturnReminderResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(SKOPJE_OFFICE.getName());
+                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).containsExactly(bookCheckoutDTO);
+        assertThat(result).containsExactly(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
     }
+
 
     @Test
     void getAllBookCheckoutsPaginated_bookCheckoutsArePresent_returnsAPageWithBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        Pageable pageable = PageRequest.of(PAGE_NUMBER, PAGE_SIZE);
-        Page<BookCheckout> bookCheckoutsPages =
-                new PageImpl<>(List.of(getBookCheckout()));
-        BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
-                getBookCheckoutWithUserAndBookItemInfoResponseDto();
-        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPages =
-                new PageImpl<>(List.of(bookCheckoutDTO));
+        Page<BookCheckout> bookCheckoutPage =
+                new PageImpl<>(List.of(BookCheckoutTestData.getBookCheckout()));
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPage =
+                new PageImpl<>(List.of(BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto()));
 
-        given(bookCheckoutRepository.findAllPaginated(anyString(), any())).willReturn(bookCheckoutsPages);
+        given(bookCheckoutRepository.findAllPaginated(any(), any())).willReturn(bookCheckoutPage);
         given(bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(any())).willReturn(
-                bookCheckoutDTO);
+                BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto());
 
         // when
-        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsPaginated(pageable.getPageNumber(),
-                        pageable.getPageSize(), SKOPJE_OFFICE.getName());
+        Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> actualResult =
+                bookCheckoutQueryService.getAllBookCheckoutsPaginated(SharedTestData.PAGE_NUMBER,
+                        SharedTestData.PAGE_SIZE, SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).isEqualTo(bookCheckoutDTOsPages);
+        assertThat(actualResult.getContent()).containsExactlyElementsOf(bookCheckoutDTOsPage);
     }
 }
