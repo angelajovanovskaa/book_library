@@ -1,5 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.SharedTestData;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +15,12 @@ class BookReturnDateCalculatorServiceImplTest {
     @Test
     void calculateReturnDateOfBookItem_theCalculationIsDone_returnsLocalDate() {
         // given
-        int totalPages = 123;
 
         // when
-        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(totalPages);
+        LocalDate actualResult =
+                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(BookTestData.BOOK_TOTAL_PAGES);
 
         // then
-        assertThat(result).isEqualTo(LocalDate.now().plusDays(5));
+        assertThat(actualResult).isEqualTo(SharedTestData.FUTURE_DATE);
     }
 }
