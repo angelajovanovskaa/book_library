@@ -28,18 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("/getAll")
+    @GetMapping("/get-all")
     ResponseEntity<List<UserWithRoleFieldResponseDTO>> getAllUsers(@RequestParam @NotBlank String officeName) {
         List<UserWithRoleFieldResponseDTO> response = userService.getAllUsers(officeName);
 
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/getAllByFullName")
+    @GetMapping("/get-all-by-full-name")
     ResponseEntity<List<UserWithRoleFieldResponseDTO>> getAllUsersByFullName(@RequestParam @NotBlank String officeName,
                                                                              @RequestParam String fullName) {
         List<UserWithRoleFieldResponseDTO> response = userService.getAllUsersWithFullName(officeName, fullName);
@@ -69,14 +69,14 @@ public class UserController {
         return ResponseEntity.ok(userFullName);
     }
 
-    @PatchMapping("/updateData")
+    @PatchMapping("/update-data")
     ResponseEntity<String> updateUserData(@Valid @RequestBody UserUpdateDataRequestDTO userUpdateDataRequestDTO) {
         String response = userService.updateUserData(userUpdateDataRequestDTO);
 
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/updateRole")
+    @PatchMapping("/update-role")
     ResponseEntity<String> updateUserRole(@Valid @RequestBody UserUpdateRoleRequestDTO userUpdateRoleRequestDTO) {
         String response = userService.updateUserRole(userUpdateRoleRequestDTO);
 
@@ -90,7 +90,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/changePassword")
+    @PatchMapping("/change-password")
     ResponseEntity<String> changeUserPassword(
             @Valid @RequestBody UserChangePasswordRequestDTO userChangePasswordRequestDTO) {
         String response = userService.changeUserPassword(userChangePasswordRequestDTO);
