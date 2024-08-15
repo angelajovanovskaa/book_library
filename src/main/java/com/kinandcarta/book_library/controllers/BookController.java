@@ -35,7 +35,7 @@ public class BookController {
     private final BookManagementService bookManagementService;
 
     @GetMapping("/get")
-    ResponseEntity<List<BookDisplayDTO>> getAll(
+    ResponseEntity<List<BookDisplayDTO>> get(
             @RequestParam @NotBlank String officeName) {
         List<BookDisplayDTO> result =
                 bookQueryService.getAllBooks(officeName);

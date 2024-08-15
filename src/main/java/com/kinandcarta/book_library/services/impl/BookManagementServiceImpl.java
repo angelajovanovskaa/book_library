@@ -113,12 +113,12 @@ public class BookManagementServiceImpl implements BookManagementService {
         Book foundBook = bookRepository.findByIsbnAndOfficeName(bookIdDTO.isbn(), bookIdDTO.officeName())
                 .orElseThrow(() -> new BookNotFoundException(bookIdDTO.isbn()));
 
-        List<ReviewResponseDTO> reviewResponseDTOS =
+        List<ReviewResponseDTO> reviewResponseDTOs =
                 reviewQueryService.getTopReviewsForDisplayInBookView(bookIdDTO.isbn(), bookIdDTO.officeName());
 
         foundBook.setBookStatus(BookStatus.IN_STOCK);
         bookRepository.save(foundBook);
 
-        return bookConverter.toBookDetailsDTO(foundBook, reviewResponseDTOS);
+        return bookConverter.toBookDetailsDTO(foundBook, reviewResponseDTOs);
     }
 }
