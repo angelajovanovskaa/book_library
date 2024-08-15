@@ -1,11 +1,9 @@
 package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.BookItemDTO;
-import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.utils.BookItemTestData;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.BookItemTestData.getBookItem;
-import static com.kinandcarta.book_library.utils.BookItemTestData.getBookItemDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookItemConverterTest {
@@ -15,13 +13,11 @@ class BookItemConverterTest {
     @Test
     void toBookItemDTO_conversionIsDone_returnsBookItemDTO() {
         // given
-        BookItem bookItem = getBookItem();
-        BookItemDTO bookItemDTO = getBookItemDTO();
 
         // when
-        BookItemDTO result = bookItemConverter.toBookItemDTO(bookItem);
+        BookItemDTO actualResult = bookItemConverter.toBookItemDTO(BookItemTestData.getBookItem());
 
         // then
-        assertThat(result).isEqualTo(bookItemDTO);
+        assertThat(actualResult).isEqualTo(BookItemTestData.getBookItemDTO());
     }
 }
