@@ -17,7 +17,7 @@ class BookStatusTransitionValidatorTest {
     void isValid_testBookStatusTransitions_returnsBoolean(BookStatus currentBookStatus, BookStatus newBookStatus,
                                                           boolean expectedResult) {
         // when
-        final boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
+        boolean actualResult = bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus);
 
         // then
         assertThat(actualResult).isEqualTo(expectedResult);
