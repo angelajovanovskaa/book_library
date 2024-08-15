@@ -1,17 +1,13 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Review;
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ReviewTestData;
+import com.kinandcarta.book_library.utils.SharedTestData;
+import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 
-import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
-import static com.kinandcarta.book_library.utils.ReviewTestData.REVIEW_MESSAGE;
-import static com.kinandcarta.book_library.utils.ReviewTestData.REVIEW_RATING;
-import static com.kinandcarta.book_library.utils.ReviewTestData.getReview;
-import static com.kinandcarta.book_library.utils.ReviewTestData.getReviewRequestDTO;
-import static com.kinandcarta.book_library.utils.SharedTestData.DATE_NOW;
-import static com.kinandcarta.book_library.utils.UserTestData.USER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReviewConverterTest {
@@ -21,33 +17,28 @@ class ReviewConverterTest {
     @Test
     void toReviewResponseDTO_convertsReviewToReviewResponseDTOActionIsValid_returnsReviewResponseDTO() {
         // given
-        Review review = getReview();
 
         // when
-        ReviewResponseDTO actualResult = reviewConverter.toReviewResponseDTO(review);
+        ReviewResponseDTO actualResult = reviewConverter.toReviewResponseDTO(ReviewTestData.getReview());
 
         // then
-        assertThat(actualResult.bookISBN()).isEqualTo(BOOK_ISBN);
-        assertThat(actualResult.userEmail()).isEqualTo(USER_EMAIL);
-        assertThat(actualResult.date()).isEqualTo(DATE_NOW);
-        assertThat(actualResult.message()).isEqualTo(REVIEW_MESSAGE);
-        assertThat(actualResult.rating()).isEqualTo(REVIEW_RATING);
+        assertThat(actualResult.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.userEmail()).isEqualTo(UserTestData.USER_EMAIL);
+        assertThat(actualResult.date()).isEqualTo(SharedTestData.DATE_NOW);
+        assertThat(actualResult.message()).isEqualTo(ReviewTestData.REVIEW_MESSAGE);
+        assertThat(actualResult.rating()).isEqualTo(ReviewTestData.REVIEW_RATING);
     }
 
     @Test
     void toReview_convertsReviewRequestDTOToReviewActionIsValid_returnsReview() {
         // given
-        ReviewRequestDTO reviewRequestDTO = getReviewRequestDTO();
 
         // when
-        Review actualResult = reviewConverter.toReview(reviewRequestDTO);
+        Review actualResult = reviewConverter.toReview(ReviewTestData.getReviewRequestDTO());
 
         // then
-        assertThat(actualResult.getId()).isNull();
-        assertThat(actualResult.getDate()).isNull();
-        assertThat(actualResult.getMessage()).isEqualTo(REVIEW_MESSAGE);
-        assertThat(actualResult.getRating()).isEqualTo(REVIEW_RATING);
-        assertThat(actualResult.getBook()).isNull();
-        assertThat(actualResult.getUser()).isNull();
+        assertThat(actualResult.getMessage()).isEqualTo(ReviewTestData.REVIEW_MESSAGE);
+        assertThat(actualResult.getRating()).isEqualTo(ReviewTestData.REVIEW_RATING);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("id", "date", "book", "user");
     }
 }

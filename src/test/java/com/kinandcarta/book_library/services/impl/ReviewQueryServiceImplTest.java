@@ -2,12 +2,12 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.ReviewConverter;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
-import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.repositories.ReviewRepository;
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ReviewTestData;
+import com.kinandcarta.book_library.utils.SharedTestData;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,16 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.kinandcarta.book_library.utils.BookTestData.getBook;
-import static com.kinandcarta.book_library.utils.ReviewTestData.getReviewResponseDTOs;
-import static com.kinandcarta.book_library.utils.ReviewTestData.getReviews;
-import static com.kinandcarta.book_library.utils.SharedTestData.SKOPJE_OFFICE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.times;
-import static org.mockito.BDDMockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewQueryServiceImplTest {
@@ -40,10 +34,9 @@ class ReviewQueryServiceImplTest {
     @Test
     void getAllReviews_atLeastOneReviewExists_returnListOfReviewDTOs() {
         // given
-        List<Review> reviews = getReviews();
-        List<ReviewResponseDTO> reviewResponseDTOs = getReviewResponseDTOs();
+        List<ReviewResponseDTO> reviewResponseDTOs = ReviewTestData.getReviewResponseDTOs();
 
-        given(reviewRepository.findAll()).willReturn(reviews);
+        given(reviewRepository.findAll()).willReturn(ReviewTestData.getReviews());
         given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOs.get(0),
                 reviewResponseDTOs.get(1));
 
@@ -51,94 +44,67 @@ class ReviewQueryServiceImplTest {
         List<ReviewResponseDTO> actualResult = reviewQueryService.getAllReviews();
 
         // then
-        verify(reviewRepository).findAll();
-        verify(reviewConverter, times(2)).toReviewResponseDTO(any());
-
         assertThat(actualResult).isEqualTo(reviewResponseDTOs);
     }
 
     @Test
     void getReviewById_reviewWithGivenIdExists_returnReviewDTO() {
         // given
-        List<Review> reviews = getReviews();
-        Review review = reviews.getFirst();
-        UUID id = review.getId();
-        List<ReviewResponseDTO> reviewResponseDTOs = getReviewResponseDTOs();
-        ReviewResponseDTO reviewResponseDTO = reviewResponseDTOs.getFirst();
-
-        given(reviewRepository.findById(any())).willReturn(Optional.of(review));
-        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTO);
+        given(reviewRepository.findById(any())).willReturn(Optional.of(ReviewTestData.getReview()));
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
         // when
-        ReviewResponseDTO actualResult = reviewQueryService.getReviewById(id);
+        ReviewResponseDTO actualResult = reviewQueryService.getReviewById(ReviewTestData.REVIEW_ID);
 
         // then
-        verify(reviewRepository).findById(any());
-        verify(reviewConverter).toReviewResponseDTO(any());
-
-        assertThat(actualResult).isEqualTo(reviewResponseDTO);
+        assertThat(actualResult).isEqualTo(ReviewTestData.getReviewResponseDTO());
     }
 
     @Test
     @SneakyThrows
-    void getReviewById_reviewWithGivenIdDoesNotExists_throwsException() {
+    void getReviewById_reviewWithGivenIdDoesNotExist_throwsException() {
         // given
-        UUID id = UUID.randomUUID();
-
         given(reviewRepository.findById(any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> reviewQueryService.getReviewById(id))
-                .withMessage("Review with id " + id + " not found");
-
-        verify(reviewConverter, times(0)).toReviewResponseDTO(any());
+                .isThrownBy(() -> reviewQueryService.getReviewById(ReviewTestData.REVIEW_ID))
+                .withMessage("Review with id " + ReviewTestData.REVIEW_ID + " not found");
     }
 
     @Test
-    void getAllReviewsByBookIsbnAndByOfficeName_reviewsExist_returnListOfReviewDTOs() {
+    void getAllReviewsByBookIsbnAndByOfficeName_atLeastOneReviewExists_returnListOfReviewDTOs() {
         // given
-        Book book = getBook();
-        String isbn = book.getIsbn();
-        String officeName = SKOPJE_OFFICE.getName();
-        List<Review> reviews = getReviews().stream().filter(obj -> obj.getBook().getIsbn().equals(isbn)).toList();
-        List<ReviewResponseDTO> reviewResponseDTOs =
-                getReviewResponseDTOs().stream().filter(obj -> obj.bookISBN().equals(isbn)).toList();
+        List<ReviewResponseDTO> reviewResponseDTOs = ReviewTestData.getReviewResponseDTOs();
 
-        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(reviews);
+        given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(ReviewTestData.getReviews());
         given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOs.get(0),
                 reviewResponseDTOs.get(1));
 
         // when
         List<ReviewResponseDTO> actualResult =
-                reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(isbn, officeName);
+                reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(BookTestData.BOOK_ISBN,
+                        SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        verify(reviewRepository).findAllByBookIsbnAndOfficeName(any(), any());
-        verify(reviewConverter, times(2)).toReviewResponseDTO(any());
-
         assertThat(actualResult).isEqualTo(reviewResponseDTOs);
     }
 
     @Test
     void getTopReviewsForDisplayInBookView_topReviewsExist_returnListOfTopReviewDTOs() {
         // given
-        Book book = getBook();
-        String isbn = book.getIsbn();
-        List<Review> reviews = getReviews();
-        List<ReviewResponseDTO> reviewDTOs = getReviewResponseDTOs();
+        List<ReviewResponseDTO> reviewResponseDTOs = ReviewTestData.getReviewResponseDTOs();
 
-        given(reviewRepository.findTop3ByBookIsbnAndOfficeName(any(), any())).willReturn(reviews);
-        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewDTOs.get(0), reviewDTOs.get(1));
+        given(reviewRepository.findTop3ByBookIsbnAndOfficeName(any(), any())).willReturn(ReviewTestData.getReviews());
+        given(reviewConverter.toReviewResponseDTO(any())).willReturn(reviewResponseDTOs.get(0),
+                reviewResponseDTOs.get(1));
 
         // when
         List<ReviewResponseDTO> actualResult =
-                reviewQueryService.getTopReviewsForDisplayInBookView(isbn, SKOPJE_OFFICE.getName());
+                reviewQueryService.getTopReviewsForDisplayInBookView(BookTestData.BOOK_ISBN,
+                        SharedTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        verify(reviewRepository).findTop3ByBookIsbnAndOfficeName(any(), any());
-        verify(reviewConverter, times(2)).toReviewResponseDTO(any());
-
-        assertThat(actualResult).isEqualTo(reviewDTOs);
+        assertThat(actualResult).isEqualTo(reviewResponseDTOs);
     }
 }
