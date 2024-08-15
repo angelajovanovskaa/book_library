@@ -67,10 +67,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAll_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getAllBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get";
+        final String getBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get";
 
         // when && then
-        mockMvc.perform(get(getAllBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
+        mockMvc.perform(get(getBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
@@ -80,10 +80,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllPaginated_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getAllPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-paginated";
+        final String getPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-paginated";
 
         // when && then
-        mockMvc.perform(get(getAllPaginatedBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
+        mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
@@ -93,10 +93,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllActive_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getAllActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-active";
+        final String getActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-active";
 
         // when && then
-        mockMvc.perform(get(getAllActiveBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
+        mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
@@ -106,10 +106,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllPast_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getAllPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-past";
+        final String getPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-past";
 
         // when && then
-        mockMvc.perform(get(getAllPastBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
+        mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
@@ -119,10 +119,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllNearReturnDate_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getAllNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-near-return-date";
+        final String getNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-near-return-date";
 
         // when && then
-        mockMvc.perform(get(getAllNearReturnDateBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
+        mockMvc.perform(get(getNearReturnDateBookCheckoutsPath).queryParam(OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
@@ -132,10 +132,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllByTitleContaining_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getAllBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/get-by-title-containing";
+        final String getBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/get-by-title-containing";
 
         // when && then
-        mockMvc.perform(get(getAllBookCheckoutsByTitleContainingPath).queryParam(OFFICE_PARAM, officeName))
+        mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParam(OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
@@ -145,10 +145,10 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllBooksForUser_ParamUserIdMissingOrEmpty_returnsBadRequest(String userId) {
         // given
-        final String getAllUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/get-books-for-user";
+        final String getUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/get-books-for-user";
 
         // when && then
-        mockMvc.perform(get(getAllUsersBookCheckoutPath).queryParam(USER_ID_PARAM, userId))
+        mockMvc.perform(get(getUsersBookCheckoutPath).queryParam(USER_ID_PARAM, userId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -158,11 +158,11 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllBooksForUserByTitleContaining_ParamUserIdMissingOrEmpty_returnsBadRequest(String userId) {
         // given
-        final String getAllUsersBookCheckoutByTitlePath =
+        final String getUsersBookCheckoutByTitlePath =
                 BOOK_CHECKOUTS_PATH + "/get-books-for-user-by-title-containing";
 
         // when && then
-        mockMvc.perform(get(getAllUsersBookCheckoutByTitlePath).queryParam(USER_ID_PARAM, userId))
+        mockMvc.perform(get(getUsersBookCheckoutByTitlePath).queryParam(USER_ID_PARAM, userId))
                 .andExpect(status().isBadRequest());
     }
 
@@ -170,7 +170,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAll_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        final String getAllBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get";
+        final String getBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
@@ -178,7 +178,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllBookCheckoutsPath).queryParam(OFFICE_PARAM, SKOPJE_OFFICE.getName()))
+                mockMvc.perform(get(getBookCheckoutsPath).queryParam(OFFICE_PARAM, SKOPJE_OFFICE.getName()))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
@@ -195,7 +195,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllPaginated_atLeastOneCheckoutExists_returnsPageOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        final String getAllPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-paginated";
+        final String getPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-paginated";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
         Page<BookCheckoutWithUserAndBookItemInfoResponseDTO> bookCheckoutDTOsPage =
@@ -210,7 +210,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllPaginatedBookCheckoutsPath).queryParams(queryParamsValues))
+                mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParams(queryParamsValues))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
@@ -230,7 +230,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllActive_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        final String getAllActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-active";
+        final String getActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-active";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
@@ -238,7 +238,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllActiveBookCheckoutsPath).queryParam(OFFICE_PARAM, SKOPJE_OFFICE.getName()))
+                mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(OFFICE_PARAM, SKOPJE_OFFICE.getName()))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
@@ -255,7 +255,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllPast_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        final String getAllPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-past";
+        final String getPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-past";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getLast();
 
@@ -263,7 +263,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllPastBookCheckoutsPath).queryParam(OFFICE_PARAM, SKOPJE_OFFICE.getName()))
+                mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(OFFICE_PARAM, SKOPJE_OFFICE.getName()))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
@@ -280,7 +280,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllNearReturnDate_atLeastOneCheckoutExists_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
-        final String getAllNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-near-return-date";
+        final String getNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/get-near-return-date";
         BookCheckoutReturnReminderResponseDTO bookCheckoutDTO =
                 new BookCheckoutReturnReminderResponseDTO(USER_ID, BOOK_TITLE, DATE_NOW.plusDays(2));
 
@@ -290,7 +290,7 @@ class BookCheckoutQueryControllerTest {
         // when
         final String jsonResult =
                 mockMvc.perform(
-                                get(getAllNearReturnDateBookCheckoutsPath).queryParam(OFFICE_PARAM,
+                                get(getNearReturnDateBookCheckoutsPath).queryParam(OFFICE_PARAM,
                                         SKOPJE_OFFICE.getName()))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -308,7 +308,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllByTitleContaining_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
-        final String getAllBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/get-by-title-containing";
+        final String getBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/get-by-title-containing";
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 getBookCheckoutWithUserAndBookItemInfoResponseDTOs().getFirst();
 
@@ -321,7 +321,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllBookCheckoutsByTitleContainingPath).queryParams(queryParamsValues))
+                mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParams(queryParamsValues))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
@@ -338,7 +338,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllFromUser_atLeastOneCheckoutExists_returnsBookCheckoutResponseDTO() {
         // given
-        final String getAllUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/get-books-for-user";
+        final String getUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/get-books-for-user";
         BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(any())).willReturn(
@@ -346,7 +346,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllUsersBookCheckoutPath).queryParam(USER_ID_PARAM, USER_ID.toString()))
+                mockMvc.perform(get(getUsersBookCheckoutPath).queryParam(USER_ID_PARAM, USER_ID.toString()))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
@@ -362,7 +362,7 @@ class BookCheckoutQueryControllerTest {
     @SneakyThrows
     void getAllFromUserByBookTitle_atLeastOneCheckoutExists_returnsListOfBookCheckoutResponseDTO() {
         // given
-        final String getAllUsersBookCheckoutByTitlePath =
+        final String getUsersBookCheckoutByTitlePath =
                 BOOK_CHECKOUTS_PATH + "/get-books-for-user-by-title-containing";
         BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
 
@@ -375,7 +375,7 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAllUsersBookCheckoutByTitlePath).queryParams(queryParamsValues))
+                mockMvc.perform(get(getUsersBookCheckoutByTitlePath).queryParams(queryParamsValues))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();
