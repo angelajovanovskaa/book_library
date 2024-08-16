@@ -18,9 +18,9 @@ public record BookDetailsDTO(
         String image,
         double ratingFromWeb,
         double ratingFromFirm,
-        Set<AuthorDTO> authorDTOS,
+        Set<AuthorDTO> authorDTOs,
         String officeName,
-        List<ReviewResponseDTO> responseDTOS
+        List<ReviewResponseDTO> responseDTOs
 ) {
 
     @Override
@@ -33,13 +33,13 @@ public record BookDetailsDTO(
                 && Objects.equals(title, bookDetailsDTO.title) && Objects.equals(image, bookDetailsDTO.image)
                 && Objects.equals(language, bookDetailsDTO.language) && Objects.deepEquals(genres, bookDetailsDTO.genres)
                 && Objects.equals(description, bookDetailsDTO.description) && bookStatus == bookDetailsDTO.bookStatus
-                && Objects.equals(authorDTOS, bookDetailsDTO.authorDTOS);
+                && Objects.equals(authorDTOs, bookDetailsDTO.authorDTOs);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(isbn, title, description, language, Arrays.hashCode(genres), totalPages, bookStatus,
-                image, ratingFromWeb, ratingFromFirm, authorDTOS);
+                image, ratingFromWeb, ratingFromFirm, authorDTOs);
     }
 
     @Override
@@ -55,7 +55,7 @@ public record BookDetailsDTO(
                 ", image='" + image + '\'' +
                 ", ratingFromWeb=" + ratingFromWeb +
                 ", ratingFromFirm=" + ratingFromFirm +
-                ", authorDTOS=" + authorDTOS +
+                ", authorDTOS=" + authorDTOs +
                 ", officeName=" + officeName +
                 '}';
     }
