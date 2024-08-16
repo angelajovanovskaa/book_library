@@ -56,7 +56,7 @@ public class BookCheckoutTestData {
         return new BookCheckoutReturnReminderResponseDTO(
                 UserTestData.USER_ID,
                 BookTestData.BOOK_TITLE,
-                SharedServiceTestData.FUTURE_DATE
+                SharedServiceTestData.DATE_IN_2_DAYS
         );
     }
 }

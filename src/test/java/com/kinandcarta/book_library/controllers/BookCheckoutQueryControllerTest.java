@@ -160,7 +160,7 @@ class BookCheckoutQueryControllerTest {
 
     @Test
     @SneakyThrows
-    void getAll_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
+    void getBookCheckouts_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
         // given
         BookCheckoutWithUserAndBookItemInfoResponseDTO bookCheckoutDTO =
                 BookCheckoutTestData.getBookCheckoutWithUserAndBookItemInfoResponseDto();

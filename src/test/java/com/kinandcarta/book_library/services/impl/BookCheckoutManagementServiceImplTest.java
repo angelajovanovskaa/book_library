@@ -60,7 +60,7 @@ class BookCheckoutManagementServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
         given(bookItemRepository.findById(any())).willReturn(Optional.of(bookItem));
         given(bookReturnDateCalculatorService.calculateReturnDateOfBookItem(anyInt())).willReturn(
-                SharedServiceTestData.FUTURE_DATE);
+                SharedServiceTestData.DATE_IN_2_DAYS);
         given(bookCheckoutConverter.toBookCheckoutResponseDTO(any())).willReturn(
                 BookCheckoutTestData.getBookCheckoutResponseDTO());
 
