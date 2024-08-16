@@ -5,6 +5,7 @@ import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
@@ -122,7 +123,7 @@ class RequestedBookManagementServiceImplTest {
     }
 
     @Test
-    void changeBookStatus_requestedBookNotFound_throwsException() {
+    void changeBookStatus_requestedBookDoesNotExist_throwsException() {
         // given
         given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
 
@@ -138,7 +139,7 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = RequestedBookTestData.getRequestedBook();
         Book book = requestedBook.getBook();
-        book.setBookStatus(BookTestData.BOOK_STATUS_INVALID);
+        book.setBookStatus(BookStatus.CURRENTLY_UNAVAILABLE);
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
@@ -147,9 +148,8 @@ class RequestedBookManagementServiceImplTest {
         assertThatExceptionOfType(RequestedBookStatusException.class)
                 .isThrownBy(() -> requestedBookManagementService.changeBookStatus(
                         RequestedBookTestData.getRequestedBookChangeStatusRequestDTO()))
-                .withMessage("Transition from status " + BookTestData.BOOK_STATUS_INVALID + " to status " +
-                        BookTestData.BOOK_STATUS +
-                        " for requested book is not feasible");
+                .withMessage("Transition from status " + BookStatus.CURRENTLY_UNAVAILABLE + " to status " +
+                        BookTestData.BOOK_STATUS + " for requested book is not feasible");
     }
 
     @Test
@@ -219,7 +219,7 @@ class RequestedBookManagementServiceImplTest {
     }
 
     @Test
-    void handleRequestedBookLike_userNotFound_throwsException() {
+    void handleRequestedBookLike_userDoesNotExist_throwsException() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.empty());
 
@@ -231,7 +231,7 @@ class RequestedBookManagementServiceImplTest {
     }
 
     @Test
-    void handleRequestedBookLike_requestedBookNotFound_throwsException() {
+    void handleRequestedBookLike_requestedBookDoesNotExist_throwsException() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(UserTestData.getUser()));
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
