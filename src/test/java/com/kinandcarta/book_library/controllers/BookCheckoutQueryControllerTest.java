@@ -59,12 +59,9 @@ class BookCheckoutQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getAll_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getAllBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/getAll";
-
-        // when && then
-        mockMvc.perform(get(getAllBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
+    void getBookCheckouts_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+        // given && when && then
+        mockMvc.perform(get(BOOK_CHECKOUTS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
