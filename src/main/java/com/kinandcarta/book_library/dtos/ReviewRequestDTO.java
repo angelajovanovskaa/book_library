@@ -7,13 +7,10 @@ import jakarta.validation.constraints.NotBlank;
 public record ReviewRequestDTO(
         @NotBlank
         String bookISBN,
-
         @NotBlank
         String userEmail,
-
         @NotBlank
         String message,
-
         @Min(1)
         @Max(5)
         int rating

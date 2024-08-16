@@ -34,6 +34,6 @@ public class RequestedBookConverter {
         String title = book.getTitle();
         String image = book.getImage();
 
-        return new RequestedBookResponseDTO(id, requestedDate, likeCounter, bookISBN, bookStatus, title, image);
+        return new RequestedBookResponseDTO(id, bookISBN, requestedDate, likeCounter, bookStatus, title, image);
     }
 }

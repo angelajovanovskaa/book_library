@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record RequestedBookRequestDTO(
         @NotBlank
         String bookIsbn,
-
         @NotBlank
         String userEmail
 ) {

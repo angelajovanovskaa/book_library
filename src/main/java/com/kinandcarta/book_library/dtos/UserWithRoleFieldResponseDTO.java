@@ -8,5 +8,4 @@ public record UserWithRoleFieldResponseDTO(
         String email,
         String role
 ) {
-
 }
