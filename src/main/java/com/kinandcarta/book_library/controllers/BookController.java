@@ -96,7 +96,7 @@ public class BookController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/create-book")
+    @PostMapping("/insert-book")
     public ResponseEntity<BookDisplayDTO> createBook(
             @Valid @RequestBody BookInsertRequestDTO bookInsertRequestDTO) {
         BookDisplayDTO response = bookManagementService.createBookWithAuthors(bookInsertRequestDTO);
