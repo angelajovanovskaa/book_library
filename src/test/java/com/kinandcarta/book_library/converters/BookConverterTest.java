@@ -1,20 +1,14 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.AuthorDTO;
-import com.kinandcarta.book_library.dtos.BookDTO;
+import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
-import com.kinandcarta.book_library.entities.Author;
 import com.kinandcarta.book_library.entities.Book;
-import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.enums.BookItemState;
+import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.enums.Genre;
-import com.kinandcarta.book_library.enums.Language;
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ReviewTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,98 +17,73 @@ class BookConverterTest {
     private final BookConverter bookConverter = new BookConverter();
 
     @Test
-    void toBookDTO_conversionIsDone_returnsBookDTO() {
-        //  given
-        Book book = getBook();
-        BookDTO bookDTO = getBookDTO();
+    void toBookDetailsDTO_convertsBookToBookDetailsDTOWithReviewsActionIsValid_returnsBookDetailsDTO() {
+        // given
 
-        //  when
-        BookDTO result = bookConverter.toBookDTO(book);
+        // when
+        BookDetailsDTO actualResult =
+                bookConverter.toBookDetailsDTO(BookTestData.getBook(), ReviewTestData.getReviewResponseDTOs());
 
-        //  then
-        assertThat(result).isEqualTo(bookDTO);
+        // then
+        assertThat(actualResult.isbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.title()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.description()).isEqualTo(BookTestData.BOOK_DESCRIPTION);
+        assertThat(actualResult.language()).isEqualTo(BookTestData.BOOK_LANGUAGE);
+        assertThat(actualResult.genres()).isEqualTo(BookTestData.BOOK_GENRES);
+        assertThat(actualResult.totalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
+        assertThat(actualResult.bookStatus()).isEqualTo(BookStatus.REQUESTED);
+        assertThat(actualResult.image()).isEqualTo(BookTestData.BOOK_IMAGE);
+        assertThat(actualResult.ratingFromWeb()).isEqualTo(BookTestData.BOOK_RATING);
+        assertThat(actualResult.ratingFromFirm()).isEqualTo(BookTestData.BOOK_RATING);
+        assertThat(actualResult.authorDTOs()).isEqualTo(BookTestData.AUTHOR_DTOS);
+        assertThat(actualResult.officeName()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        assertThat(actualResult.responseDTOs()).isEqualTo(ReviewTestData.getReviewResponseDTOs());
     }
 
     @Test
-    void toBookEntity_conversionIsDone_returnsBookEntity() {
-        //  given
-        BookDTO bookDTO = getBookDTO();
-        Book book = getBook();
-        Set<Author> authors = book.getAuthors();
+    void toBookDetailsDTO_convertsBookToBookDetailsDTOActionIsValid_returnsBookDetailsDTO() {
+        // given
 
-        //  when
-        Book result = bookConverter.toBookEntity(bookDTO, authors);
+        // when
+        BookDisplayDTO actualResult = bookConverter.toBookDisplayDTO(BookTestData.getBook());
 
-        //  then
-        assertThat(result).isEqualTo(book);
+        // then
+        assertThat(actualResult.isbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.title()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.language()).isEqualTo(BookTestData.BOOK_LANGUAGE);
+        assertThat(actualResult.image()).isEqualTo(BookTestData.BOOK_IMAGE);
     }
 
     @Test
-    void bookDisplayDTO_conversionIsDone_returnsToBookDisplay() {
-        //  given
-        Book book = getBook();
-        BookDisplayDTO bookDisplayDTO = getToBookDisplayDTO();
+    void toBookId_convertsBookIdToBookIdDTOActionIsValid_returnsBookId() {
+        // given
 
-        //  when
-        BookDisplayDTO result = bookConverter.toBookDisplayDTO(book);
+        // when
+        BookId result = bookConverter.toBookId(BookTestData.BOOK_ID_DTO);
 
-        //  then
-        assertThat(result).isEqualTo(bookDisplayDTO);
+        // then
+        assertThat(result.getIsbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(result.getOffice()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE_NAME);
     }
 
-    private Book getBook() {
-        String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
+    @Test
+    void toBook_convertsBookInsertRequestDTOToBookActionIsValid_returnsBook() {
+        // given
 
-        Book book = new Book();
-        book.setIsbn("765612382412");
-        book.setTitle("The Doors of Eden");
-        book.setDescription("book description");
-        book.setLanguage(Language.ENGLISH.toString());
-        book.setSummary("something");
-        book.setBookStatus(BookStatus.IN_STOCK);
-        book.setTotalPages(120);
-        book.setImage("https://google.com/images");
-        book.setRatingFromFirm(10.0);
-        book.setGenres(genres);
+        // when
+        Book actualResult = bookConverter.toBookEntity(BookTestData.getBookInsertRequestDTO(), BookTestData.AUTHORS,
+                SharedServiceTestData.SKOPJE_OFFICE);
 
-        Author author = new Author();
-        author.setId(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507061"));
-        author.setFullName("Leah Thomas");
-
-        book.setAuthors(Set.of(author));
-
-        BookItem bookItem = new BookItem();
-        bookItem.setId(UUID.fromString("058edb04-38e7-43d8-991d-1df1cf829215"));
-        bookItem.setBookItemState(BookItemState.AVAILABLE);
-        bookItem.setBook(book);
-
-        book.setBookItems(List.of(bookItem));
-
-        return book;
-    }
-
-    public BookDTO getBookDTO() {
-        String[] genres = {Genre.LANGUAGE_ARTS_DISCIPLINES.name(), Genre.TECHNOLOGY.name()};
-
-        AuthorDTO authorDTO = new AuthorDTO("Leah Thomas");
-
-        return new BookDTO(
-                "765612382412",
-                "The Doors of Eden",
-                "book description",
-                Language.ENGLISH.toString(), genres,
-                120, BookStatus.IN_STOCK,
-                "https://google.com/images",
-                0.0,
-                10.0, Set.of(authorDTO));
-    }
-
-    private BookDisplayDTO getToBookDisplayDTO() {
-
-        return new BookDisplayDTO(
-                "765612382412",
-                "The Doors of Eden",
-                Language.ENGLISH.toString(),
-                "https://google.com/images");
+        // then
+        assertThat(actualResult.getIsbn()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.getTitle()).isEqualTo(BookTestData.BOOK_TITLE);
+        assertThat(actualResult.getDescription()).isEqualTo(BookTestData.BOOK_DESCRIPTION);
+        assertThat(actualResult.getLanguage()).isEqualTo(BookTestData.BOOK_LANGUAGE);
+        assertThat(actualResult.getGenres()).isEqualTo(BookTestData.BOOK_GENRES);
+        assertThat(actualResult.getTotalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
+        assertThat(actualResult.getRatingFromWeb()).isEqualTo(BookTestData.BOOK_RATING);
+        assertThat(actualResult.getRatingFromFirm()).isEqualTo(0.0);
+        assertThat(actualResult.getOffice()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "image", "bookItems");
     }
 }

@@ -2,10 +2,10 @@ package com.kinandcarta.book_library.dtos;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record RequestedBookRequestDTO(
+public record BookIdDTO(
         @NotBlank
-        String bookIsbn,
+        String isbn,
         @NotBlank
-        String userEmail
+        String officeName
 ) {
 }

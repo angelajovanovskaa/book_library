@@ -1,5 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
+import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -7,18 +9,19 @@ import java.time.LocalDate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookReturnDateCalculatorServiceImplTest {
+
     private final BookReturnDateCalculatorServiceImpl bookReturnDateCalculatorService =
             new BookReturnDateCalculatorServiceImpl();
 
     @Test
     void calculateReturnDateOfBookItem_theCalculationIsDone_returnsLocalDate() {
         // given
-        int totalPages = 123;
 
         // when
-        LocalDate result = bookReturnDateCalculatorService.calculateReturnDateOfBookItem(totalPages);
+        LocalDate actualResult =
+                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(BookTestData.BOOK_TOTAL_PAGES);
 
         // then
-        assertThat(result).isEqualTo(LocalDate.now().plusDays(5));
+        assertThat(actualResult).isEqualTo(SharedServiceTestData.DATE_IN_2_DAYS);
     }
 }

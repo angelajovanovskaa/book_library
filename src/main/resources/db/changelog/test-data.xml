@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="data-for-author-table" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM author WHERE id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="author">
+            <column name="id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+            <column name="full_name" value="Author1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-table-1" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '178-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book">
+            <column name="isbn" value="178-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="title" value="Title"/>
+            <column name="book_status" value="IN_STOCK"/>
+            <column name="description" value="description"/>
+            <column name="summary" value="summary"/>
+            <column name="total_pages" value="350"/>
+            <column name="rating_from_web" value="2.9"/>
+            <column name="rating_from_firm" value="1"/>
+            <column name="language" value="ENGLISH"/>
+            <column name="image" value="sample_image_url"/>
+            <column name="genres" value="{FICTION}"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-table-2" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '278-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book">
+            <column name="isbn" value="278-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="title" value="Title2"/>
+            <column name="book_status" value="IN_STOCK"/>
+            <column name="description" value="description"/>
+            <column name="summary" value="summary"/>
+            <column name="total_pages" value="232"/>
+            <column name="rating_from_web" value="3.1"/>
+            <column name="rating_from_firm" value="1"/>
+            <column name="language" value="ENGLISH"/>
+            <column name="image" value="sample_image_url"/>
+            <column name="genres" value="{ROMANCE}"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-table-3" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '378-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book">
+            <column name="isbn" value="378-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="title" value="Title3"/>
+            <column name="book_status" value="IN_STOCK"/>
+            <column name="description" value="description"/>
+            <column name="summary" value="summary"/>
+            <column name="total_pages" value="560"/>
+            <column name="rating_from_web" value="4.2"/>
+            <column name="rating_from_firm" value="5"/>
+            <column name="language" value="ENGLISH"/>
+            <column name="image" value="sample_image_url"/>
+            <column name="genres" value="{HEALTH}"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-table-4" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '478-3-16-148410-0' AND office_name = 'Skopje'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book">
+            <column name="isbn" value="478-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="title" value="Title4"/>
+            <column name="book_status" value="IN_STOCK"/>
+            <column name="description" value="description"/>
+            <column name="summary" value="summary"/>
+            <column name="total_pages" value="450"/>
+            <column name="rating_from_web" value="3.32"/>
+            <column name="rating_from_firm" value="1"/>
+            <column name="language" value="ENGLISH"/>
+            <column name="image" value="sample_image_url"/>
+            <column name="genres" value="{BUSINESS,ECONOMICS}"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-table-5" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '538-3-13-342310-0' AND office_name = 'Sofia'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book">
+            <column name="isbn" value="538-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="title" value="Title5"/>
+            <column name="book_status" value="IN_STOCK"/>
+            <column name="description" value="description"/>
+            <column name="summary" value="summary"/>
+            <column name="total_pages" value="124"/>
+            <column name="rating_from_web" value="2.93"/>
+            <column name="rating_from_firm" value="1"/>
+            <column name="language" value="ENGLISH"/>
+            <column name="image" value="sample_image_url"/>
+            <column name="genres" value="{HISTORY,BIOGRAPHY}"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-table-6" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book WHERE isbn = '638-3-13-342310-0' AND office_name = 'Sofia'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book">
+            <column name="isbn" value="638-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="title" value="Title5"/>
+            <column name="book_status" value="REQUESTED"/>
+            <column name="description" value="description"/>
+            <column name="summary" value="summary"/>
+            <column name="total_pages" value="124"/>
+            <column name="rating_from_web" value="4.13"/>
+            <column name="rating_from_firm" value="1"/>
+            <column name="language" value="ENGLISH"/>
+            <column name="image" value="sample_image_url"/>
+            <column name="genres" value="{HISTORY}"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-author-table-1" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '178-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_author">
+            <column name="book_isbn" value="178-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-author-table-2" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '278-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_author">
+            <column name="book_isbn" value="278-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-author-table-3" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '378-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_author">
+            <column name="book_isbn" value="378-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-author-table-4" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '478-3-16-148410-0' AND office_name = 'Skopje'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_author">
+            <column name="book_isbn" value="478-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-author-table-5" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '538-3-13-342310-0' AND office_name = 'Sofia'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_author">
+            <column name="book_isbn" value="538-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-author-table-6" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_author WHERE book_isbn = '638-3-13-342310-0' AND office_name = 'Sofia'
+                AND author_id = '2999f73c-8adf-4aeb-96ce-f9e39e06ac5b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_author">
+            <column name="book_isbn" value="638-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="author_id" value="2999f73c-8adf-4aeb-96ce-f9e39e06ac5b"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-1" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '265f63ce-9771-4a27-857d-f10c7791c987'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="265f63ce-9771-4a27-857d-f10c7791c987"/>
+            <column name="book_isbn" value="178-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="book_item_state" value="BORROWED"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-2" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '6786950e-5534-4988-a8b0-e89b013bbf39'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="6786950e-5534-4988-a8b0-e89b013bbf39"/>
+            <column name="book_isbn" value="178-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="book_item_state" value="AVAILABLE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-3" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '2bdd35c4-29c8-49ad-ac0e-9b019b9fdacf'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="2bdd35c4-29c8-49ad-ac0e-9b019b9fdacf"/>
+            <column name="book_isbn" value="278-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="book_item_state" value="AVAILABLE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-4" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '0422f10b-ca45-4cd1-b4c0-7b93093a9361'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="0422f10b-ca45-4cd1-b4c0-7b93093a9361"/>
+            <column name="book_isbn" value="378-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="book_item_state" value="AVAILABLE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-5" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = 'c07f289e-9a07-4415-851a-9e5f38c54740'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="c07f289e-9a07-4415-851a-9e5f38c54740"/>
+            <column name="book_isbn" value="478-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="book_item_state" value="AVAILABLE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-6" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '81090fbf-b668-46d3-8835-354754bca4f4'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="81090fbf-b668-46d3-8835-354754bca4f4"/>
+            <column name="book_isbn" value="538-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="book_item_state" value="AVAILABLE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-item-table-7" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_item WHERE id = '972b4463-26c0-4951-a982-93e2a9bd8c9b'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_item">
+            <column name="id" value="972b4463-26c0-4951-a982-93e2a9bd8c9b"/>
+            <column name="book_isbn" value="538-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="book_item_state" value="BORROWED"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-user-table-1" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM user_table WHERE id = '9146c7c0-0ac8-443f-a86d-de7039c44179'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="user_table">
+            <column name="id" value="9146c7c0-0ac8-443f-a86d-de7039c44179"/>
+            <column name="full_name" value="User1"/>
+            <column name="email" value="user@kinandcarta.com"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="password" value="password"/>
+            <column name="role" value="USER"/>
+            <column name="profile_picture"
+                    valueComputed="decode('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','base64')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-user-table-2" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM user_table WHERE id = '71a5d033-cfa1-41ca-90d1-0ce7b7287ca6'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="user_table">
+            <column name="id" value="71a5d033-cfa1-41ca-90d1-0ce7b7287ca6"/>
+            <column name="full_name" value="User2"/>
+            <column name="email" value="user@valtech.com"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="password" value="password"/>
+            <column name="role" value="ADMIN"/>
+            <column name="profile_picture"
+                    valueComputed="decode('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','base64')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-checkout-table-1" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_checkout WHERE id = 'e2f0ac5a-63df-4d49-abba-7e69f03931f9'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_checkout">
+            <column name="id" value="e2f0ac5a-63df-4d49-abba-7e69f03931f9"/>
+            <column name="user_id" value="9146c7c0-0ac8-443f-a86d-de7039c44179"/>
+            <column name="book_item_id" value="c07f289e-9a07-4415-851a-9e5f38c54740"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="date_borrowed" value="2024-07-13"/>
+            <column name="date_returned" value="2024-07-21"/>
+            <column name="scheduled_return_date" value="2024-07-25"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-checkout-table-2" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_checkout WHERE id = '0eb035a7-d907-4f6c-98e0-933f0609e340'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_checkout">
+            <column name="id" value="0eb035a7-d907-4f6c-98e0-933f0609e340"/>
+            <column name="user_id" value="9146c7c0-0ac8-443f-a86d-de7039c44179"/>
+            <column name="book_item_id" value="265f63ce-9771-4a27-857d-f10c7791c987"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="date_borrowed" value="2024-07-22"/>
+            <column name="scheduled_return_date" value="2024-08-01"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-book-checkout-table-3" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM book_checkout WHERE id = '04b480b4-3887-49de-9a29-a142b5d7e7db'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="book_checkout">
+            <column name="id" value="04b480b4-3887-49de-9a29-a142b5d7e7db"/>
+            <column name="user_id" value="71a5d033-cfa1-41ca-90d1-0ce7b7287ca6"/>
+            <column name="book_item_id" value="972b4463-26c0-4951-a982-93e2a9bd8c9b"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="date_borrowed" value="2024-07-18"/>
+            <column name="date_returned" value="2024-07-19"/>
+            <column name="scheduled_return_date" value="2024-07-23"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-requested-book-table" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM requested_book WHERE id = 'd36696e4-6c2a-4ad0-ae5a-ce199b010f83'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="requested_book">
+            <column name="id" value="d36696e4-6c2a-4ad0-ae5a-ce199b010f83"/>
+            <column name="book_isbn" value="638-3-13-342310-0"/>
+            <column name="office_name" value="Sofia"/>
+            <column name="requested_date" value="2024-08-01"/>
+            <column name="like_counter" value="1"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-liked-by-table" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM liked_by WHERE requested_book_id = 'd36696e4-6c2a-4ad0-ae5a-ce199b010f83'
+                AND user_id = '71a5d033-cfa1-41ca-90d1-0ce7b7287ca6'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="liked_by">
+            <column name="requested_book_id" value="d36696e4-6c2a-4ad0-ae5a-ce199b010f83"/>
+            <column name="user_id" value="71a5d033-cfa1-41ca-90d1-0ce7b7287ca6"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="data-for-review-table" author="mbojkovski" runAlways="true">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM review WHERE id = 'bb6df22d-86f0-44c8-9620-b2e375ba2cf4'
+            </sqlCheck>
+        </preConditions>
+
+        <insert tableName="review">
+            <column name="id" value="bb6df22d-86f0-44c8-9620-b2e375ba2cf4"/>
+            <column name="book_isbn" value="378-3-16-148410-0"/>
+            <column name="office_name" value="Skopje"/>
+            <column name="user_id" value="9146c7c0-0ac8-443f-a86d-de7039c44179"/>
+            <column name="date" value="2024-08-01"/>
+            <column name="message" value="Message1"/>
+            <column name="rating" value="5"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
