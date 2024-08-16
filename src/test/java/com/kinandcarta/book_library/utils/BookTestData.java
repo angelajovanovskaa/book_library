@@ -34,7 +34,6 @@ public class BookTestData {
     public static final String BOOK_IMAGE = "image1";
     public static final BookStatus BOOK_STATUS = BookStatus.PENDING_PURCHASE;
     public static final BookStatus BOOK_STATUS_VALID = BookStatus.REQUESTED;
-    public static final BookStatus BOOK_STATUS_INVALID = BookStatus.REQUESTED;
     public static final String[] BOOK_GENRES = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
     public static final Author AUTHOR = new Author(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507021"), "author1"
             , new HashSet<>(getBooks()));
