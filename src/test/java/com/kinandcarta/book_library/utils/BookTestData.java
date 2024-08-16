@@ -26,23 +26,19 @@ public class BookTestData {
     public static final String BOOK_TITLE = "title1";
     public static final String BOOK_TITLE_SEARCH_TERM = "ti";
     public static final String BOOK_DESCRIPTION = "description";
-    public static final String BOOK_SUMMARY = "summary";
+    private static final String BOOK_SUMMARY = "summary";
     public static final int BOOK_TOTAL_PAGES = 50;
     public static final String BOOK_LANGUAGE = "MK";
-    public static final Double BOOK_RATING_FROM_WEB = 1.0;
-    public static final Double BOOK_RATING_FROM_FIRM = 1.0;
+    public static final Double BOOK_RATING = 1.0;
     public static final String BOOK_IMAGE = "image1";
-    public static final BookStatus BOOK_STATUS = BookStatus.PENDING_PURCHASE;
-    public static final BookStatus BOOK_STATUS_VALID = BookStatus.REQUESTED;
     public static final String[] BOOK_GENRES = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
     public static final Author AUTHOR = new Author(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507021"), "author1"
             , new HashSet<>(getBooks()));
     public static final Set<Author> AUTHORS = new HashSet<>(List.of(AUTHOR));
-    public static final AuthorDTO AUTHOR_DTO = new AuthorDTO("author1");
+    private static final AuthorDTO AUTHOR_DTO = new AuthorDTO("author1");
     public static final Set<AuthorDTO> AUTHOR_DTOS = new HashSet<>(List.of(AUTHOR_DTO));
 
     public static List<Book> getBooks() {
-        List<Book> books = new ArrayList<>();
         Book book1 = new Book(
                 BOOK_ISBN,
                 SharedServiceTestData.SKOPJE_OFFICE,
@@ -51,15 +47,14 @@ public class BookTestData {
                 BOOK_SUMMARY,
                 BOOK_TOTAL_PAGES,
                 BOOK_LANGUAGE,
-                BOOK_RATING_FROM_WEB,
-                BOOK_RATING_FROM_FIRM,
+                BOOK_RATING,
+                BOOK_RATING,
                 BOOK_IMAGE,
-                BOOK_STATUS,
+                BookStatus.REQUESTED,
                 BOOK_GENRES,
                 AUTHORS,
                 new ArrayList<>()
         );
-        books.add(book1);
         Book book2 = new Book(
                 "isbn2",
                 SharedServiceTestData.SOFIJA_OFFICE,
@@ -68,17 +63,16 @@ public class BookTestData {
                 BOOK_SUMMARY,
                 BOOK_TOTAL_PAGES,
                 BOOK_LANGUAGE,
-                BOOK_RATING_FROM_WEB,
-                BOOK_RATING_FROM_FIRM,
+                BOOK_RATING,
+                BOOK_RATING,
                 BOOK_IMAGE,
-                BOOK_STATUS,
+                BookStatus.REQUESTED,
                 BOOK_GENRES,
                 AUTHORS,
                 new ArrayList<>()
         );
-        books.add(book2);
 
-        return books;
+        return List.of(book1, book2);
     }
 
     public static Book getBook() {
@@ -88,15 +82,15 @@ public class BookTestData {
     public static List<BookDetailsDTO> getBookDetailsDTOs() {
         BookDetailsDTO bookDTO1 = new BookDetailsDTO(
                 BOOK_ISBN,
-                "title1",
+                BOOK_TITLE,
                 BOOK_DESCRIPTION,
                 BOOK_LANGUAGE,
                 BOOK_GENRES,
                 BOOK_TOTAL_PAGES,
-                BOOK_STATUS,
+                BookStatus.REQUESTED,
                 BOOK_IMAGE,
-                BOOK_RATING_FROM_WEB,
-                BOOK_RATING_FROM_FIRM,
+                BOOK_RATING,
+                BOOK_RATING,
                 AUTHOR_DTOS,
                 SharedServiceTestData.SKOPJE_OFFICE.getName(),
                 ReviewTestData.getReviewResponseDTOs()
@@ -108,10 +102,10 @@ public class BookTestData {
                 BOOK_LANGUAGE,
                 BOOK_GENRES,
                 BOOK_TOTAL_PAGES,
-                BOOK_STATUS,
+                BookStatus.REQUESTED,
                 BOOK_IMAGE,
-                BOOK_RATING_FROM_WEB,
-                BOOK_RATING_FROM_FIRM,
+                BOOK_RATING,
+                BOOK_RATING,
                 AUTHOR_DTOS,
                 SharedServiceTestData.SKOPJE_OFFICE.getName(),
                 ReviewTestData.getReviewResponseDTOs()
@@ -127,7 +121,7 @@ public class BookTestData {
     public static List<BookDisplayDTO> getBookDisplayDTOs() {
         BookDisplayDTO bookDisplayDTO1 = new BookDisplayDTO(
                 BOOK_ISBN,
-                "title1",
+                BOOK_TITLE,
                 BOOK_LANGUAGE,
                 BOOK_IMAGE
         );
@@ -155,7 +149,7 @@ public class BookTestData {
                 BOOK_GENRES,
                 BOOK_TOTAL_PAGES,
                 BOOK_IMAGE,
-                BOOK_RATING_FROM_WEB,
+                BOOK_RATING,
                 AUTHOR_DTOS,
                 SharedServiceTestData.SKOPJE_OFFICE.getName()
         );
