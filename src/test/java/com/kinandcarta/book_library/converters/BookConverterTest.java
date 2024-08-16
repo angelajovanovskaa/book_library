@@ -84,6 +84,7 @@ class BookConverterTest {
         assertThat(actualResult.getImage()).isEqualTo(BookTestData.BOOK_IMAGE);
         assertThat(actualResult.getRatingFromWeb()).isEqualTo(BookTestData.BOOK_RATING);
         assertThat(actualResult.getOffice()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE);
-        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "bookItems","ratingFromFirm");
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "bookItems",
+                "ratingFromFirm", "authors");
     }
 }
