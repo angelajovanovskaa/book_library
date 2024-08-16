@@ -20,6 +20,8 @@ import java.util.UUID;
 
 @UtilityClass
 public class BookTestData {
+    private static final String BOOK_SUMMARY = "summary";
+    private static final AuthorDTO AUTHOR_DTO = new AuthorDTO("author1");
     public static final String BOOK_ISBN = "isbn1";
     public static final String BOOK_INVALID_ISBN = "invalidISBN";
     public static final BookId BOOK_ID = new BookId(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
@@ -27,16 +29,14 @@ public class BookTestData {
     public static final String BOOK_TITLE = "title1";
     public static final String BOOK_TITLE_SEARCH_TERM = "ti";
     public static final String BOOK_DESCRIPTION = "description";
-    private static final String BOOK_SUMMARY = "summary";
     public static final int BOOK_TOTAL_PAGES = 50;
-    public static final String BOOK_LANGUAGE = "MK";
+    public static final String BOOK_LANGUAGE = "Macedonian";
     public static final Double BOOK_RATING = 1.0;
     public static final String BOOK_IMAGE = "image1";
     public static final String[] BOOK_GENRES = {Genre.MEMOIR.name(), Genre.ROMANCE.name()};
     public static final Author AUTHOR = new Author(UUID.fromString("cdaa6a7e-c933-43b7-b58d-d48054507021"), "author1"
             , new HashSet<>(getBooks()));
     public static final Set<Author> AUTHORS = new HashSet<>(List.of(AUTHOR));
-    private static final AuthorDTO AUTHOR_DTO = new AuthorDTO("author1");
     public static final Set<AuthorDTO> AUTHOR_DTOS = new HashSet<>(List.of(AUTHOR_DTO));
 
     public static List<Book> getBooks() {

@@ -18,14 +18,14 @@ import static com.kinandcarta.book_library.utils.SharedServiceTestData.SKOPJE_OF
 
 @UtilityClass
 public class UserTestData {
+    private static final String USER_NEW_PASSWORD = "newPassword";
+    private static final String ADMIN_ROLE = "ADMIN";
+    private static final String USER_IMAGE_PATH = "classpath:image/profile-picture.png";
     public static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c141");
     public static final String USER_FULL_NAME = "fullname1";
     public static final String USER_EMAIL = "user1@gmail.com";
     public static final String USER_PASSWORD = "password";
-    private static final String USER_NEW_PASSWORD = "newPassword";
     public static final String USER_ROLE = "USER";
-    private static final String ADMIN_ROLE = "ADMIN";
-    private static final String USER_IMAGE_PATH = "classpath:image/profile-picture.png";
     public static final byte[] USER_IMAGE_BYTES = USER_IMAGE_PATH.getBytes();
 
     public static List<User> getUsers() {
