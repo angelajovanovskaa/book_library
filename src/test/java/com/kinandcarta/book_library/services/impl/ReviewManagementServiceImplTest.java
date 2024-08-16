@@ -146,7 +146,7 @@ class ReviewManagementServiceImplTest {
     }
 
     @Test
-    void deleteReviewById_reviewsListIsEmpty_return0() {
+    void deleteReviewById_reviewsListIsEmpty_returnReviewUUID() {
         // given
         given(reviewRepository.findById(any())).willReturn(Optional.of(ReviewTestData.getReview()));
         given(reviewRepository.findAllByBookIsbnAndOfficeName(any(), any())).willReturn(List.of());
@@ -161,7 +161,7 @@ class ReviewManagementServiceImplTest {
 
     @Test
     @SneakyThrows
-    void deleteReviewById_reviewWithIdNotFound_throwsException() {
+    void deleteReviewById_reviewWithIdDoesNotExist_throwsException() {
         // given
         given(reviewRepository.findById(any())).willReturn(Optional.empty());
 

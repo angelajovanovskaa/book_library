@@ -76,7 +76,7 @@ class BookManagementServiceImplTest {
     }
 
     @Test
-    void createBookWithAuthors_authorDoesNotExists_returnsBookDisplayDTO() {
+    void createBookWithAuthors_authorDoesNotExist_returnsBookDisplayDTO() {
         // given
         given(officeRepository.findById(anyString())).willReturn(Optional.of(SharedServiceTestData.SKOPJE_OFFICE));
         given(authorRepository.findByFullName(anyString())).willReturn(Optional.empty());

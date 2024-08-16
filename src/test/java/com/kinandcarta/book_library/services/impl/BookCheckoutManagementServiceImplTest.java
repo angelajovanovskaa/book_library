@@ -176,7 +176,7 @@ class BookCheckoutManagementServiceImplTest {
     }
 
     @Test
-    void returnBookItem_BookItemDoesNotExists_throwsBookItemNotFoundException() {
+    void returnBookItem_BookItemDoesNotExist_throwsBookItemNotFoundException() {
         // given
         BookCheckoutRequestDTO bookCheckoutDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
 

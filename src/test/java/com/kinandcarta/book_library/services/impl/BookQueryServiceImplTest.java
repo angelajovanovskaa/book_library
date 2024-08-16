@@ -155,7 +155,7 @@ class BookQueryServiceImplTest {
     }
 
     @Test
-    void getBooksByLanguage_atLeastOneBookExistsWithGivenLanguage_returnsListOfBookDisplayDTO() {
+    void getBooksByLanguage_atLeastOneBookWithGivenLanguageExists_returnsListOfBookDisplayDTO() {
         // given
         List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
 
@@ -171,7 +171,7 @@ class BookQueryServiceImplTest {
     }
 
     @Test
-    void getBooksByGenresContaining_atLeastOneBookExistsForGivenGenres_returnsListBookDisplayDTOs() {
+    void getBooksByGenresContaining_atLeastOneBookForGivenGenresExists_returnsListBookDisplayDTOs() {
         // given
         List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
 
