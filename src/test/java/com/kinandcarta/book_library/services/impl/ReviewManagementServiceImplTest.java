@@ -155,8 +155,8 @@ class ReviewManagementServiceImplTest {
         reviewManagementService.deleteReviewById(ReviewTestData.REVIEW_ID);
 
         // then
-        verify(bookRepository).updateRatingByIsbnAndOfficeName(ReviewTestData.REVIEWS_IS_EMPTY, BookTestData.BOOK_ISBN,
-                SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        verify(bookRepository).updateRatingByIsbnAndOfficeName(ReviewTestData.REVIEW_RATING_ZERO,
+                BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test
