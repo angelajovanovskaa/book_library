@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.ReviewQueryService;
@@ -61,7 +62,7 @@ class BookQueryServiceImplTest {
         // given
         List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
 
-        given(bookRepository.pagingAvailableBooks(BookTestData.BOOK_STATUS, BookItemTestData.BOOK_ITEM_STATE,
+        given(bookRepository.pagingAvailableBooks(BookStatus.REQUESTED, BookItemTestData.BOOK_ITEM_STATE,
                 SharedServiceTestData.SKOPJE_OFFICE.getName(),
                 PageRequest.of(SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE)))
                 .willReturn(new PageImpl<>(BookTestData.getBooks()));
@@ -70,7 +71,7 @@ class BookQueryServiceImplTest {
 
         // when
         Page<BookDisplayDTO> actualResult = bookService
-                .getPaginatedAvailableBooks(BookTestData.BOOK_STATUS, BookItemTestData.BOOK_ITEM_STATE,
+                .getPaginatedAvailableBooks(BookStatus.REQUESTED, BookItemTestData.BOOK_ITEM_STATE,
                         SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
