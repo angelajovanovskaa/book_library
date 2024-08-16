@@ -7,7 +7,6 @@ import java.util.UUID;
 public record RequestedBookChangeStatusRequestDTO(
         @NotNull
         UUID requestedBookId,
-
         @NotNull
         BookStatus newBookStatus
 ) {
