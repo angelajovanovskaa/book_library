@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import java.util.List;
@@ -26,23 +25,14 @@ class OfficeServiceImplTest {
     @Test
     void getAllOffices_atLeastOneOfficeExists_returnsListOfOfficeResponseDTO() {
         // given
-        List<Office> offices = getOffices();
-        List<OfficeResponseDTO> officeResponseDTOs = getOfficeResponseDTOs();
-
-        given(officeRepository.findAll()).willReturn(offices);
+        given(officeRepository.findAll()).willReturn(
+                List.of(SharedServiceTestData.SKOPJE_OFFICE, SharedServiceTestData.SOFIJA_OFFICE));
 
         // when
         List<OfficeResponseDTO> actualResult = officeService.getAllOffices();
 
         //then
-        assertThat(actualResult).isEqualTo(officeResponseDTOs);
-    }
-
-    private List<Office> getOffices() {
-        return List.of(SharedServiceTestData.SKOPJE_OFFICE, SharedServiceTestData.SOFIJA_OFFICE);
-    }
-
-    private List<OfficeResponseDTO> getOfficeResponseDTOs() {
-        return List.of(SharedServiceTestData.SKOPJE_OFFICE_DTO, SharedServiceTestData.SOFIJA_OFFICE_DTO);
+        assertThat(actualResult).containsExactly(SharedServiceTestData.SKOPJE_OFFICE_DTO,
+                SharedServiceTestData.SOFIJA_OFFICE_DTO);
     }
 }
