@@ -142,7 +142,8 @@ class BookCheckoutQueryServiceImplTest {
         bookCheckout.setScheduledReturnDate(SharedServiceTestData.FUTURE_DATE);
 
         given(bookCheckoutRepository.findAllActiveCheckouts(anyString())).willReturn(List.of(bookCheckout));
-        given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(any())).willReturn(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
+        given(bookCheckoutConverter.toBookCheckoutReturnReminderResponseDTO(any())).willReturn(
+                BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
 
         // when
         List<BookCheckoutReturnReminderResponseDTO> result =

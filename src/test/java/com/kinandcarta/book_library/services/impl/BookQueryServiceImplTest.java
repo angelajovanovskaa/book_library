@@ -71,7 +71,8 @@ class BookQueryServiceImplTest {
         // when
         Page<BookDisplayDTO> actualResult = bookService
                 .getPaginatedAvailableBooks(BookTestData.BOOK_STATUS, BookItemTestData.BOOK_ITEM_STATE,
-                        SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+                        SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE,
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         //  then
         assertThat(actualResult.getContent()).containsExactlyElementsOf(bookDisplayDTOs);
@@ -133,7 +134,8 @@ class BookQueryServiceImplTest {
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
                 .isThrownBy(
-                        () -> bookService.getBookByIsbn(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                        () -> bookService.getBookByIsbn(BookTestData.BOOK_ISBN,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " not found");
     }
 
@@ -180,7 +182,8 @@ class BookQueryServiceImplTest {
 
         // when
         List<BookDisplayDTO> actualResult =
-                bookService.getBooksByGenresContaining(BookTestData.BOOK_GENRES, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+                bookService.getBooksByGenresContaining(BookTestData.BOOK_GENRES,
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(bookDisplayDTOs);

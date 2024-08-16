@@ -135,7 +135,8 @@ class BookManagementServiceImplTest {
 
         // when & then
         assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> bookService.deleteBook(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                .isThrownBy(
+                        () -> bookService.deleteBook(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " not found");
     }
 
