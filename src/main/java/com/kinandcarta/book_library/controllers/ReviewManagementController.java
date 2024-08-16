@@ -35,13 +35,13 @@ public class ReviewManagementController {
     public ResponseEntity<ReviewResponseDTO> updateReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
         ReviewResponseDTO result = service.updateReview(reviewRequestDTO);
 
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/delete/{reviewId}")
     public ResponseEntity<String> deleteReview(@PathVariable String reviewId) {
         UUID result = service.deleteReviewById(UUID.fromString(reviewId));
 
-        return ResponseEntity.status(HttpStatus.OK).body("Successfully deleted review with id " + result);
+        return ResponseEntity.ok("Successfully deleted review with id " + result);
     }
 }
