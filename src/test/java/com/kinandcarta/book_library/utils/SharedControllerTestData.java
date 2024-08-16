@@ -1,5 +1,8 @@
 package com.kinandcarta.book_library.utils;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class SharedControllerTestData {
     public static final String OFFICE_PARAM = "officeName";
     public static final String BOOK_TITLE_PARAM = "titleSearchTerm";
