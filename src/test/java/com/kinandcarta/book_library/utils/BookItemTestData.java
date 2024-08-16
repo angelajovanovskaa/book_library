@@ -4,9 +4,10 @@ import com.kinandcarta.book_library.dtos.BookItemDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.BookItem;
 import com.kinandcarta.book_library.enums.BookItemState;
+import lombok.experimental.UtilityClass;
+
 import java.util.List;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BookItemTestData {

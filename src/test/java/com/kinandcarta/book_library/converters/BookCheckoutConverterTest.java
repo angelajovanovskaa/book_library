@@ -10,6 +10,7 @@ import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class BookCheckoutConverterTest {
@@ -22,7 +23,8 @@ class BookCheckoutConverterTest {
 
         // when
         BookCheckoutWithUserAndBookItemInfoResponseDTO result =
-                bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(BookCheckoutTestData.getBookCheckout());
+                bookCheckoutConverter.toBookCheckoutWithUserAndBookItemInfoResponseDTO(
+                        BookCheckoutTestData.getBookCheckout());
 
         // then
         assertThat(result.bookItemId()).isEqualTo(BookItemTestData.BOOK_ITEM_ID);
@@ -39,7 +41,8 @@ class BookCheckoutConverterTest {
         // given
 
         // when
-        BookCheckoutResponseDTO result = bookCheckoutConverter.toBookCheckoutResponseDTO(BookCheckoutTestData.getBookCheckout());
+        BookCheckoutResponseDTO result =
+                bookCheckoutConverter.toBookCheckoutResponseDTO(BookCheckoutTestData.getBookCheckout());
 
         // then
         assertThat(result.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);

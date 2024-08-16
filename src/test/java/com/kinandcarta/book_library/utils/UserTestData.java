@@ -8,9 +8,10 @@ import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
+import lombok.experimental.UtilityClass;
+
 import java.util.List;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
 import static com.kinandcarta.book_library.utils.SharedServiceTestData.SKOPJE_OFFICE;
 import static com.kinandcarta.book_library.utils.SharedServiceTestData.SKOPJE_OFFICE_NAME;

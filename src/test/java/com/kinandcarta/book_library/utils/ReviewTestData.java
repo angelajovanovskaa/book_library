@@ -3,9 +3,10 @@ package com.kinandcarta.book_library.utils;
 import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.entities.Review;
+import lombok.experimental.UtilityClass;
+
 import java.util.List;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class ReviewTestData {

@@ -10,12 +10,13 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
+import lombok.experimental.UtilityClass;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BookTestData {

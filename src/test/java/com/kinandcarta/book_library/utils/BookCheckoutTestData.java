@@ -5,8 +5,9 @@ import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutReturnReminderResponseDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutWithUserAndBookItemInfoResponseDTO;
 import com.kinandcarta.book_library.entities.BookCheckout;
-import java.util.UUID;
 import lombok.experimental.UtilityClass;
+
+import java.util.UUID;
 
 @UtilityClass
 public class BookCheckoutTestData {
