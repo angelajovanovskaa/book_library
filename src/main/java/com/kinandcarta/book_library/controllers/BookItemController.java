@@ -38,7 +38,7 @@ public class BookItemController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/create")
+    @PostMapping("/insert")
     ResponseEntity<BookItemDTO> createBookItem(@Valid @RequestBody BookIdDTO bookIdDTO) {
         BookItemDTO result = bookItemManagementService.insertBookItem(bookIdDTO);
 
