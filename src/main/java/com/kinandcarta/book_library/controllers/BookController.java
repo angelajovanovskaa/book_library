@@ -6,11 +6,10 @@ import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
 import com.kinandcarta.book_library.services.BookManagementService;
 import com.kinandcarta.book_library.services.BookQueryService;
-
 import jakarta.validation.Valid;
-
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,11 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.constraints.NotBlank;
-
 import java.util.List;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,14 +32,14 @@ public class BookController {
     private final BookManagementService bookManagementService;
 
     @GetMapping
-    ResponseEntity<List<BookDisplayDTO>> get(@RequestParam @NotBlank String officeName) {
+    ResponseEntity<List<BookDisplayDTO>> getBooks(@RequestParam @NotBlank String officeName) {
         List<BookDisplayDTO> result =
                 bookQueryService.getAllBooks(officeName);
 
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/book")
+    @GetMapping("/get-book")
     ResponseEntity<BookDetailsDTO> getBook(@RequestParam @NotBlank String isbn,
                                            @RequestParam @NotBlank String officeName) {
         BookDetailsDTO result = bookQueryService.getBookByIsbn(isbn, officeName);
@@ -77,7 +72,7 @@ public class BookController {
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/by-search-title")
+    @GetMapping("/by-title")
     ResponseEntity<List<BookDisplayDTO>> getBooksBySearchTitle(@RequestParam @NotBlank String titleSearchTerm,
                                                                @RequestParam @NotBlank String officeName) {
         List<BookDisplayDTO> result = bookQueryService.getBooksByTitle(titleSearchTerm, officeName);
@@ -94,7 +89,7 @@ public class BookController {
     }
 
     @GetMapping("/by-genres")
-    ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(@RequestParam(value = "genres") @NotEmpty String[] genres,
+    ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(@RequestParam @NotEmpty String[] genres,
                                                           @RequestParam @NotBlank String officeName) {
         List<BookDisplayDTO> result = bookQueryService.getBooksByGenresContaining(genres, officeName);
 
@@ -117,7 +112,7 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/set-status")
+    @PatchMapping("/set-book-in-stock")
     public ResponseEntity<BookDetailsDTO> setBookStatus(@RequestParam @NotBlank String isbn,
                                                         @RequestParam @NotBlank String officeName) {
         BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
