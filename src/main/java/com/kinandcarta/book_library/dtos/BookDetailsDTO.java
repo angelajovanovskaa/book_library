@@ -20,7 +20,7 @@ public record BookDetailsDTO(
         double ratingFromFirm,
         Set<AuthorDTO> authorDTOs,
         String officeName,
-        List<ReviewResponseDTO> responseDTOS
+        List<ReviewResponseDTO> responseDTOs
 ) {
 
     @Override
