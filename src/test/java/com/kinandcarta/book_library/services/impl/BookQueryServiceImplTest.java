@@ -3,11 +3,11 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.BookConverter;
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.ReviewQueryService;
-import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,7 @@ class BookQueryServiceImplTest {
         // given
         List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
 
-        given(bookRepository.pagingAvailableBooks(BookStatus.IN_STOCK, BookItemTestData.BOOK_ITEM_STATE,
+        given(bookRepository.pagingAvailableBooks(BookStatus.IN_STOCK, BookItemState.AVAILABLE,
                 SharedServiceTestData.SKOPJE_OFFICE.getName(),
                 PageRequest.of(SharedServiceTestData.PAGE_NUMBER, SharedServiceTestData.PAGE_SIZE)))
                 .willReturn(new PageImpl<>(BookTestData.getBooks()));
