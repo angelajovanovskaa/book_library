@@ -21,6 +21,6 @@ class BookReturnDateCalculatorServiceImplTest {
                 bookReturnDateCalculatorService.calculateReturnDateOfBookItem(BookTestData.BOOK_TOTAL_PAGES);
 
         // then
-        assertThat(actualResult).isEqualTo(SharedServiceTestData.FUTURE_DATE);
+        assertThat(actualResult).isEqualTo(SharedServiceTestData.DATE_IN_2_DAYS);
     }
 }
