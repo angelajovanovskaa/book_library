@@ -10,7 +10,6 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class BookItemTestData {
-
     public static final BookItemState BOOK_ITEM_STATE = BookItemState.AVAILABLE;
     public static final BookItemState BOOK_ITEM_BORROWED_STATE = BookItemState.BORROWED;
     public static final UUID BOOK_ITEM_ID = UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc51");
