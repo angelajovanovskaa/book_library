@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
+import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -50,7 +51,7 @@ class RequestedBookQueryServiceImplTest {
     }
 
     @Test
-    void getRequestedBooksByBookStatus_givenStatus_returnListOfRequestedBookDTOs() {
+    void getRequestedBooksByBookStatus_atLeastOneRequestedBookWithGivenBookStatusExists_returnListOfRequestedBookDTOs() {
         // given
         List<RequestedBookResponseDTO> requestedBookResponseDTOs =
                 RequestedBookTestData.getRequestedBookResponseDTOs();
@@ -62,7 +63,7 @@ class RequestedBookQueryServiceImplTest {
 
         // when
         List<RequestedBookResponseDTO> actualResult =
-                requestedBookQueryService.getRequestedBooksByBookStatusAndOfficeName(BookTestData.BOOK_STATUS,
+                requestedBookQueryService.getRequestedBooksByBookStatusAndOfficeName(BookStatus.REQUESTED,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
@@ -70,7 +71,7 @@ class RequestedBookQueryServiceImplTest {
     }
 
     @Test
-    void getRequestedBookById_givenValidId_returnRequestedBookDTO() {
+    void getRequestedBookById_requestedBookWithGivenIdExists_returnRequestedBookDTO() {
         // given
         given(requestedBookRepository.findById(any())).willReturn(
                 Optional.of(RequestedBookTestData.getRequestedBook()));
@@ -86,7 +87,7 @@ class RequestedBookQueryServiceImplTest {
     }
 
     @Test
-    void getRequestedBookById_givenInvalidId_throwsException() {
+    void getRequestedBookById_requestedBookWithGivenIdDoesNotExist_throwsException() {
         // given
         given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
 
@@ -97,7 +98,7 @@ class RequestedBookQueryServiceImplTest {
     }
 
     @Test
-    void getRequestedBookByISBN_givenValidISBN_returnRequestedBookDTO() {
+    void getRequestedBookByISBN_requestedBookWithGivenBookISBNExists_returnRequestedBookDTO() {
         // given
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
                 Optional.of(RequestedBookTestData.getRequestedBook()));
@@ -114,7 +115,7 @@ class RequestedBookQueryServiceImplTest {
     }
 
     @Test
-    void getRequestedBookByISBN_givenInvalidISBN_throwsException() {
+    void getRequestedBookByISBN_requestedBookWithGivenBookISBNDoesNotExist_throwsException() {
         // given
         given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
 

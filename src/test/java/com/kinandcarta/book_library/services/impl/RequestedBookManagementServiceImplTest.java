@@ -89,7 +89,7 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = RequestedBookTestData.getRequestedBook();
         Book book = requestedBook.getBook();
-        book.setBookStatus(BookTestData.BOOK_STATUS_VALID);
+        book.setBookStatus(BookStatus.PENDING_PURCHASE);
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
@@ -149,7 +149,7 @@ class RequestedBookManagementServiceImplTest {
                 .isThrownBy(() -> requestedBookManagementService.changeBookStatus(
                         RequestedBookTestData.getRequestedBookChangeStatusRequestDTO()))
                 .withMessage("Transition from status " + BookStatus.CURRENTLY_UNAVAILABLE + " to status " +
-                        BookTestData.BOOK_STATUS + " for requested book is not feasible");
+                        BookStatus.REQUESTED + " for requested book is not feasible");
     }
 
     @Test

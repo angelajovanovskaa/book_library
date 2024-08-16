@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
+import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.RequestedBookTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -25,7 +26,7 @@ class RequestedBookConverterTest {
         assertThat(actualResult.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
         assertThat(actualResult.requestedDate()).isEqualTo(SharedServiceTestData.DATE_NOW);
         assertThat(actualResult.likeCounter()).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_LIKE_COUNTER);
-        assertThat(actualResult.bookStatus()).isEqualTo(BookTestData.BOOK_STATUS);
+        assertThat(actualResult.bookStatus()).isEqualTo(BookStatus.REQUESTED);
         assertThat(actualResult.title()).isEqualTo(BookTestData.BOOK_TITLE);
         assertThat(actualResult.image()).isEqualTo(BookTestData.BOOK_IMAGE);
     }
