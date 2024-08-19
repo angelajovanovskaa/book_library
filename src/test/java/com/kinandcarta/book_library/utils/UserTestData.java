@@ -2,11 +2,11 @@ package com.kinandcarta.book_library.utils;
 
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
-import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
+import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import lombok.experimental.UtilityClass;
 
@@ -55,14 +55,14 @@ public class UserTestData {
         return getUsers().getFirst();
     }
 
-    public static List<UserWithRoleFieldResponseDTO> getUserWithRoleResponseDTOs() {
-        UserWithRoleFieldResponseDTO user1 = new UserWithRoleFieldResponseDTO(
+    public static List<UserWithRoleDTO> getUserWithRoleResponseDTOs() {
+        UserWithRoleDTO user1 = new UserWithRoleDTO(
                 USER_ID,
                 USER_FULL_NAME,
                 USER_EMAIL,
                 USER_ROLE
         );
-        UserWithRoleFieldResponseDTO user2 = new UserWithRoleFieldResponseDTO(
+        UserWithRoleDTO user2 = new UserWithRoleDTO(
                 UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
                 "user2",
                 "user2@gmail.com",
@@ -72,7 +72,7 @@ public class UserTestData {
         return List.of(user1, user2);
     }
 
-    public static List<UserProfileDTO> getUserResponseDTOs() {
+    public static List<UserProfileDTO> getUserProfileDTOs() {
         UserProfileDTO user1 = new UserProfileDTO(
                 USER_ID,
                 USER_FULL_NAME,
@@ -90,7 +90,7 @@ public class UserTestData {
     }
 
     public static UserProfileDTO getUserProfileDTO() {
-        return getUserResponseDTOs().getFirst();
+        return getUserProfileDTOs().getFirst();
     }
 
     public static UserRegistrationRequestDTO getUserRegistrationDTO() {

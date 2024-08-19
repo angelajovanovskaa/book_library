@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ class UserConverterTest {
         // given
 
         // when
-        UserWithRoleFieldResponseDTO actualResult = userConverter.toUserWithRoleDTO(UserTestData.getUser());
+        UserWithRoleDTO actualResult = userConverter.toUserWithRoleDTO(UserTestData.getUser());
 
         // then
         assertThat(actualResult.userId()).isEqualTo(UserTestData.USER_ID);
@@ -27,7 +27,7 @@ class UserConverterTest {
     }
 
     @Test
-    void toUserResponseDTO_conversionIsDone_returnsUserResponseDTO() {
+    void toUserResponseDTO_conversionIsDone_returnsUserProfileDTO() {
         // given
 
         // when
