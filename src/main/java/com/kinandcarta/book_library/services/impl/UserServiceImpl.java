@@ -4,7 +4,7 @@ import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
@@ -18,15 +18,16 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of {@link UserService} that manages the registration and login of user.<br>
@@ -82,13 +83,13 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method, so they can view their profile.
      *
      * @param userId UUID for the id of the user that we are trying to get details for.
-     * @return {@link UserResponseDTO}
+     * @return {@link UserProfileDTO}
      */
     @Override
-    public UserResponseDTO getUserProfile(UUID userId) {
+    public UserProfileDTO getUserProfile(UUID userId) {
         User user = userRepository.getReferenceById(userId);
 
-        return userConverter.toUserResponseDTO(user);
+        return userConverter.toUserProfileDTO(user);
     }
 
     /**
@@ -96,12 +97,12 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method.
      *
      * @param userDTO the DTO where we have data needed for registering new account.
-     * @return A message for the user that the account is successfully created.
+     * @return {@link UserWithRoleFieldResponseDTO}
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
     @Transactional
-    public String registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
+    public UserWithRoleFieldResponseDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
         String userEmail = userDTO.email();
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
@@ -118,7 +119,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePicture(userProfilePicture);
 
         userRepository.save(user);
-        return UserResponseMessages.USER_REGISTERED_RESPONSE;
+        return userConverter.toUserWithRoleDTO(user);
     }
 
     /**
