@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 public record UserRegistrationRequestDTO(
         @NotBlank
         String fullName,
-        @Email(regexp = "\\w+@(kinandcarta|valtech)\\.com")
+        @Email(regexp = "\\w+\\.\\w+@(kinandcarta|valtech)\\.com")
         String email,
         @NotBlank
         String officeName,

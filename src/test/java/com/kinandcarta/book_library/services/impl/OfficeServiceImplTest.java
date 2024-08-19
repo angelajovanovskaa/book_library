@@ -1,8 +1,8 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
-import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,6 +16,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class OfficeServiceImplTest {
+
     @Mock
     private OfficeRepository officeRepository;
 
@@ -23,31 +24,16 @@ class OfficeServiceImplTest {
     private OfficeServiceImpl officeService;
 
     @Test
-    void getAllOffices_theListHasAtLeastOne_returnsListOfOfficeResponseDTO() {
+    void getAllOffices_atLeastOneOfficeExists_returnsListOfOfficeResponseDTO() {
         // given
-        List<Office> offices = getOffices();
-        List<OfficeResponseDTO> officeResponseDTOS = getOfficeResponseDTOs();
-
-        given(officeRepository.findAll()).willReturn(offices);
+        given(officeRepository.findAll()).willReturn(
+                List.of(SharedServiceTestData.SKOPJE_OFFICE, SharedServiceTestData.SOFIJA_OFFICE));
 
         // when
-        List<OfficeResponseDTO> result = officeService.getAllOffices();
+        List<OfficeResponseDTO> actualResult = officeService.getAllOffices();
 
         //then
-        assertThat(result).isEqualTo(officeResponseDTOS);
-    }
-
-    private List<Office> getOffices() {
-        Office office1 = new Office("Skopje");
-        Office office2 = new Office("Sofija");
-
-        return List.of(office1, office2);
-    }
-
-    private List<OfficeResponseDTO> getOfficeResponseDTOs() {
-        OfficeResponseDTO office1 = new OfficeResponseDTO("Skopje");
-        OfficeResponseDTO office2 = new OfficeResponseDTO("Sofija");
-
-        return List.of(office1, office2);
+        assertThat(actualResult).containsExactly(SharedServiceTestData.SKOPJE_OFFICE_DTO,
+                SharedServiceTestData.SOFIJA_OFFICE_DTO);
     }
 }
