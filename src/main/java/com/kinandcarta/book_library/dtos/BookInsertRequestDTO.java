@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.dtos;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
 import java.util.Arrays;
@@ -18,9 +19,8 @@ public record BookInsertRequestDTO(
         String description,
         @NotBlank
         String language,
-        @NotBlank
+        @NotEmpty
         String[] genres,
-        @NotBlank
         @Positive
         int totalPages,
         @NotBlank
@@ -28,7 +28,7 @@ public record BookInsertRequestDTO(
         @Min(1)
         @Max(5)
         double ratingFromWeb,
-        @NotBlank
+        @NotEmpty
         Set<AuthorDTO> authorDTOS,
         @NotBlank
         String officeName
