@@ -73,7 +73,12 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
 
         validateBorrowingConditions(bookItem, user, userOffice, book);
 
-        BookCheckout bookCheckout = createAndSaveBookCheckout(bookItem, user, userOffice);
+        BookCheckout bookCheckout = createBookCheckout(bookItem, user, userOffice);
+
+        bookCheckoutRepository.save(bookCheckout);
+
+        bookItem.setBookItemState(BookItemState.BORROWED);
+        bookItemRepository.save(bookItem);
 
         return bookCheckoutConverter.toBookCheckoutResponseDTO(bookCheckout);
     }
@@ -148,7 +153,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         }
     }
 
-    private BookCheckout createAndSaveBookCheckout(BookItem bookItem, User user, Office userOffice) {
+    private BookCheckout createBookCheckout(BookItem bookItem, User user, Office userOffice) {
         BookCheckout bookCheckout = new BookCheckout();
         bookCheckout.setUser(user);
         bookCheckout.setBookItem(bookItem);
@@ -159,10 +164,6 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
                 bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem.getBook().getTotalPages());
 
         bookCheckout.setScheduledReturnDate(scheduledReturnDate);
-        bookCheckoutRepository.save(bookCheckout);
-
-        bookItem.setBookItemState(BookItemState.BORROWED);
-        bookItemRepository.save(bookItem);
 
         return bookCheckout;
     }
