@@ -19,6 +19,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.kinandcarta.book_library.utils.BookCheckoutTestData.MAX_NUMBER_OF_BORROWED_BOOKS;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
 import static com.kinandcarta.book_library.utils.BookItemTestData.BOOK_ITEM_ID;
 import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
@@ -77,7 +78,6 @@ class BookCheckoutManagementControllerTest {
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorFields.bookItemId").value("must not be null"));
     }
-
 
     @Test
     @SneakyThrows
@@ -138,8 +138,9 @@ class BookCheckoutManagementControllerTest {
     void borrowBookItem_hasReachedBorrowLimit_returnsUnprocessableEntity() {
         // given
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
+
         given(bookCheckoutManagementService.borrowBookItem(any())).willThrow(
-                new LimitReachedForBorrowedBooksException(3));
+                new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS));
 
         // when && then
         mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
