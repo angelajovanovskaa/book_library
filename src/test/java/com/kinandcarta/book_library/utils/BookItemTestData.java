@@ -11,20 +11,18 @@ import java.util.UUID;
 
 @UtilityClass
 public class BookItemTestData {
-    public static final BookItemState BOOK_ITEM_STATE = BookItemState.AVAILABLE;
-    public static final BookItemState BOOK_ITEM_BORROWED_STATE = BookItemState.BORROWED;
     public static final UUID BOOK_ITEM_ID = UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc51");
     public static final UUID BOOK_ITEM_DIFFERENT_OFFICE_ID = UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc53");
 
     public static List<BookItem> getBookItems() {
         BookItem bookItem1 = new BookItem(
                 BOOK_ITEM_ID,
-                BOOK_ITEM_STATE,
+                BookItemState.AVAILABLE,
                 BookTestData.getBook()
         );
         BookItem bookItem2 = new BookItem(
                 UUID.fromString("d8f6930a-43e4-4668-a8b2-6e1e208cfc52"),
-                BOOK_ITEM_STATE,
+                BookItemState.AVAILABLE,
                 BookTestData.getBook()
         );
 
@@ -40,7 +38,7 @@ public class BookItemTestData {
         book.setOffice(SharedServiceTestData.SOFIJA_OFFICE);
         return new BookItem(
                 BOOK_ITEM_DIFFERENT_OFFICE_ID,
-                BOOK_ITEM_BORROWED_STATE,
+                BookItemState.BORROWED,
                 book
         );
     }
