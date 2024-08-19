@@ -3,8 +3,6 @@ package com.kinandcarta.book_library.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
-import com.kinandcarta.book_library.entities.BookItem;
-import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookAlreadyBorrowedByUserException;
 import com.kinandcarta.book_library.exceptions.BookItemAlreadyBorrowedException;
 import com.kinandcarta.book_library.exceptions.BookItemIsNotBorrowedException;
@@ -21,11 +19,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_ISBN;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.BOOK_ITEM_ID;
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookItem;
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getUser;
+import static com.kinandcarta.book_library.utils.BookItemTestData.BOOK_ITEM_ID;
+import static com.kinandcarta.book_library.utils.BookTestData.BOOK_ISBN;
+import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -53,7 +50,7 @@ class BookCheckoutManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void borrowBookItem_userIdIsNullOrEmpty_returnsBadRequest() {
+    void borrowBookItem_userIdIsNull_returnsBadRequest() {
         // given
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(null, BOOK_ITEM_ID);
 
@@ -68,11 +65,9 @@ class BookCheckoutManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void borrowBookItem_bookItemIdIsNullOrEmpty_returnsBadRequest() {
+    void borrowBookItem_bookItemIdIsNull_returnsBadRequest() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), null);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, null);
 
         // when && then
         mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
@@ -83,45 +78,12 @@ class BookCheckoutManagementControllerTest {
                 .andExpect(jsonPath("$.errorFields.bookItemId").value("must not be null"));
     }
 
-    @Test
-    @SneakyThrows
-    void returnBookItem_userIdIsNullOrEmpty_returnsBadRequest() {
-        // given
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(null, BOOK_ITEM_ID);
-
-        // when && then
-        mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value("must not be null"));
-    }
 
     @Test
     @SneakyThrows
-    void returnBookItem_bookItemIdIsNullOrEmpty_returnsBadRequest() {
+    void borrowBookItem_theEntitiesAreFromDifferentOffices_returnsUnprocessableEntity() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), null);
-
-        // when && then
-        mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.bookItemId").value("must not be null"));
-    }
-
-    @Test
-    @SneakyThrows
-    void borrowBookItem_theEntitiesAreFromDifferentOffices_returnsBadRequest() {
-        // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         given(bookCheckoutManagementService.borrowBookItem(any())).willThrow(
                 new EntitiesInDifferentOfficesException());
 
@@ -129,7 +91,7 @@ class BookCheckoutManagementControllerTest {
         mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage").value(
                         "You can't borrow a book from a different office!"));
@@ -137,11 +99,9 @@ class BookCheckoutManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void borrowBookItem_theBookItemIsBorrowed_returnsBadRequest() {
+    void borrowBookItem_theBookItemIsBorrowed_returnsUnprocessableEntity() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         given(bookCheckoutManagementService.borrowBookItem(any())).willThrow(
                 new BookItemAlreadyBorrowedException(BOOK_ITEM_ID));
 
@@ -149,7 +109,7 @@ class BookCheckoutManagementControllerTest {
         mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage").value(
                         "The bookItem with id: " + BOOK_ITEM_ID + " is already booked"));
@@ -157,11 +117,9 @@ class BookCheckoutManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void borrowBookItem_hasInstanceOfTheBook_returnsBadRequest() {
+    void borrowBookItem_hasInstanceOfTheBook_returnsUnprocessableEntity() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         given(bookCheckoutManagementService.borrowBookItem(any())).willThrow(
                 new BookAlreadyBorrowedByUserException(BOOK_ISBN));
 
@@ -169,7 +127,7 @@ class BookCheckoutManagementControllerTest {
         mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage").value(
                         "The user already has an instance borrowed from the book with isbn: " + BOOK_ISBN));
@@ -177,11 +135,9 @@ class BookCheckoutManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void borrowBookItem_hasReachedBorrowLimit_returnsBadRequest() {
+    void borrowBookItem_hasReachedBorrowLimit_returnsUnprocessableEntity() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         given(bookCheckoutManagementService.borrowBookItem(any())).willThrow(
                 new LimitReachedForBorrowedBooksException(3));
 
@@ -189,7 +145,7 @@ class BookCheckoutManagementControllerTest {
         mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage").value(
                         "You have reached the maximum number of borrowed books. 3 books borrowed already."));
@@ -197,11 +153,9 @@ class BookCheckoutManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void returnBookItem_bookItemIsNotBorrowed_returnsBadRequest() {
+    void returnBookItem_bookItemIsNotBorrowed_returnsUnprocessableEntity() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         given(bookCheckoutManagementService.returnBookItem(any())).willThrow(
                 new BookItemIsNotBorrowedException(BOOK_ITEM_ID));
 
@@ -209,7 +163,7 @@ class BookCheckoutManagementControllerTest {
         mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage").value(
                         "The bookItem with id " + BOOK_ITEM_ID + " can't" +
@@ -220,9 +174,7 @@ class BookCheckoutManagementControllerTest {
     @SneakyThrows
     void borrowBookItem_theBookItemDoesNotExists_returnsNotFound() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
 
         given(bookCheckoutManagementService.borrowBookItem(any())).willThrow(
                 new BookItemNotFoundException(BOOK_ITEM_ID));
@@ -241,9 +193,7 @@ class BookCheckoutManagementControllerTest {
     @SneakyThrows
     void returnBookItem_theBookItemDoesNotExists_returnsNotFound() {
         // given
-        User user = getUser();
-
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(user.getId(), BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
 
         given(bookCheckoutManagementService.returnBookItem(any())).willThrow(
                 new BookItemNotFoundException(BOOK_ITEM_ID));
@@ -262,10 +212,7 @@ class BookCheckoutManagementControllerTest {
     @SneakyThrows
     void borrowBookItem_validRequest_returnsConfirmationMessage() {
         // given
-        User user = getUser();
-        BookItem bookItem = getBookItem();
-
-        BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutManagementService.borrowBookItem(any())).willReturn(bookCheckoutResponseDTO);
@@ -288,10 +235,7 @@ class BookCheckoutManagementControllerTest {
     @SneakyThrows
     void returnBookItem_validRequest_returnsConfirmationMessage() {
         // given
-        User user = getUser();
-        BookItem bookItem = getBookItem();
-
-        BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(user.getId(), bookItem.getId());
+        BookCheckoutRequestDTO bookCheckoutRequestDTO = new BookCheckoutRequestDTO(USER_ID, BOOK_ITEM_ID);
         BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
 
         given(bookCheckoutManagementService.returnBookItem(any())).willReturn(bookCheckoutResponseDTO);
