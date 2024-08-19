@@ -29,7 +29,7 @@ public class ReviewController {
     private final ReviewQueryService reviewQueryService;
     private final ReviewManagementService reviewManagementService;
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsForBook(@RequestParam @NotBlank String officeName,
                                                                         @RequestParam @NotBlank String bookISBN) {
         List<ReviewResponseDTO> result =
