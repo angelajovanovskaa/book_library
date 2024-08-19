@@ -62,41 +62,19 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
     @Transactional
     public BookCheckoutResponseDTO borrowBookItem(BookCheckoutRequestDTO bookCheckoutDTO) {
         UUID bookItemId = bookCheckoutDTO.bookItemId();
+        UUID userId = bookCheckoutDTO.userId();
+
         BookItem bookItem = bookItemRepository.findById(bookItemId)
                 .orElseThrow(() -> new BookItemNotFoundException(bookItemId));
 
-        UUID userId = bookCheckoutDTO.userId();
         User user = userRepository.getReferenceById(userId);
-
         Office userOffice = user.getOffice();
         Book book = bookItem.getBook();
 
-        if (userOffice != book.getOffice()) {
-            throw new EntitiesInDifferentOfficesException();
-        }
+        validateBookCheckoutConditions(bookItem, user, userOffice, book);
 
-        if (bookItem.getBookItemState() == BookItemState.BORROWED) {
-            throw new BookItemAlreadyBorrowedException(bookItemId);
-        }
+        BookCheckout bookCheckout = createBookCheckout(bookItem, user, userOffice);
 
-        if (hasInstanceOfBookBorrowed(userId, book)) {
-            throw new BookAlreadyBorrowedByUserException(book.getIsbn());
-        }
-
-        if (isBorrowedBooksLimitReached(userId)) {
-            throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
-        }
-
-        BookCheckout bookCheckout = new BookCheckout();
-        bookCheckout.setUser(user);
-        bookCheckout.setBookItem(bookItem);
-        bookCheckout.setOffice(userOffice);
-        bookCheckout.setDateBorrowed(LocalDate.now());
-
-        LocalDate scheduledReturnDate =
-                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(book.getTotalPages());
-
-        bookCheckout.setScheduledReturnDate(scheduledReturnDate);
         bookCheckoutRepository.save(bookCheckout);
 
         bookItem.setBookItemState(BookItemState.BORROWED);
@@ -143,7 +121,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
                 .filter(bookCheckout -> bookCheckout.getDateReturned() == null)
                 .count();
 
-        return countInstancesOfUser == MAX_NUMBER_OF_BORROWED_BOOKS;
+        return countInstancesOfUser >= MAX_NUMBER_OF_BORROWED_BOOKS;
     }
 
     private boolean hasInstanceOfBookBorrowed(UUID userId, Book book) {
@@ -152,5 +130,41 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
                         book.getIsbn(), userId);
 
         return bookCheckoutOptional.isPresent();
+    }
+
+    private void validateBookCheckoutConditions(BookItem bookItem, User user, Office userOffice, Book book) {
+        UUID bookItemId = bookItem.getId();
+        UUID userId = user.getId();
+
+        if (userOffice != book.getOffice()) {
+            throw new EntitiesInDifferentOfficesException();
+        }
+
+        if (bookItem.getBookItemState() == BookItemState.BORROWED) {
+            throw new BookItemAlreadyBorrowedException(bookItemId);
+        }
+
+        if (hasInstanceOfBookBorrowed(userId, book)) {
+            throw new BookAlreadyBorrowedByUserException(book.getIsbn());
+        }
+
+        if (isBorrowedBooksLimitReached(userId)) {
+            throw new LimitReachedForBorrowedBooksException(MAX_NUMBER_OF_BORROWED_BOOKS);
+        }
+    }
+
+    private BookCheckout createBookCheckout(BookItem bookItem, User user, Office userOffice) {
+        BookCheckout bookCheckout = new BookCheckout();
+        bookCheckout.setUser(user);
+        bookCheckout.setBookItem(bookItem);
+        bookCheckout.setOffice(userOffice);
+        bookCheckout.setDateBorrowed(LocalDate.now());
+
+        LocalDate scheduledReturnDate =
+                bookReturnDateCalculatorService.calculateReturnDateOfBookItem(bookItem.getBook().getTotalPages());
+
+        bookCheckout.setScheduledReturnDate(scheduledReturnDate);
+
+        return bookCheckout;
     }
 }
