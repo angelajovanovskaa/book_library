@@ -2,8 +2,6 @@ package com.kinandcarta.book_library.services;
 
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
-import com.kinandcarta.book_library.enums.BookItemState;
-import com.kinandcarta.book_library.enums.BookStatus;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -23,6 +21,5 @@ public interface BookQueryService {
 
     List<BookDisplayDTO> getBooksByGenresContaining(String[] genres, String officeName);
 
-    Page<BookDisplayDTO> getPaginatedAvailableBooks(BookStatus bookStatus, BookItemState bookItemState,
-                                                    int page, int size, String officeName);
+    Page<BookDisplayDTO> getPaginatedAvailableBooks(int page, int size, String officeName);
 }

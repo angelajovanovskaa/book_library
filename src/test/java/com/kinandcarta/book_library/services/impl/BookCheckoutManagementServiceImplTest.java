@@ -4,6 +4,7 @@ import com.kinandcarta.book_library.converters.BookCheckoutConverter;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.dtos.BookCheckoutResponseDTO;
 import com.kinandcarta.book_library.entities.BookItem;
+import com.kinandcarta.book_library.enums.BookItemState;
 import com.kinandcarta.book_library.exceptions.BookAlreadyBorrowedByUserException;
 import com.kinandcarta.book_library.exceptions.BookItemAlreadyBorrowedException;
 import com.kinandcarta.book_library.exceptions.BookItemIsNotBorrowedException;
@@ -71,7 +72,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // then
         assertThat(actualResult).isEqualTo(BookCheckoutTestData.getBookCheckoutResponseDTO());
-        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemTestData.BOOK_ITEM_BORROWED_STATE);
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.BORROWED);
     }
 
     @Test
@@ -108,7 +109,7 @@ class BookCheckoutManagementServiceImplTest {
     void borrowBookItem_BookItemAlreadyBorrowed_throwsBookItemAlreadyBorrowedException() {
         // given
         BookItem bookItem = BookItemTestData.getBookItem();
-        bookItem.setBookItemState(BookItemTestData.BOOK_ITEM_BORROWED_STATE);
+        bookItem.setBookItemState(BookItemState.BORROWED);
         BookCheckoutRequestDTO bookCheckoutRequestDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
 
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
@@ -173,7 +174,7 @@ class BookCheckoutManagementServiceImplTest {
 
         // then
         assertThat(actualResult).isEqualTo(BookCheckoutTestData.getBookCheckoutResponseDTO());
-        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemTestData.BOOK_ITEM_STATE);
+        assertThat(bookItem.getBookItemState()).isEqualTo(BookItemState.AVAILABLE);
     }
 
     @Test

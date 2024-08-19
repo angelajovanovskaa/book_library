@@ -56,8 +56,8 @@ public class BookQueryServiceImpl implements BookQueryService {
     public BookDetailsDTO getBookByIsbn(String isbn, String officeName) {
         Book book = bookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
-        List<ReviewResponseDTO> reviewResponseDTOS = reviewQueryService.getTopReviewsForBook(isbn, officeName);
-        return bookConverter.toBookDetailsDTO(book, reviewResponseDTOS);
+        List<ReviewResponseDTO> reviewResponseDTOs = reviewQueryService.getTopReviewsForBook(isbn, officeName);
+        return bookConverter.toBookDetailsDTO(book, reviewResponseDTOs);
     }
 
     /**
@@ -92,23 +92,21 @@ public class BookQueryServiceImpl implements BookQueryService {
     /**
      * Retrieves a paginated list of available books based on the specified criteria, filtered by the office name.
      *
-     * @param bookStatus    The status of the books to filter by.
-     * @param bookItemState The state of the book items to filter by.
-     * @param page          The page number (zero-based) of the requested page.
-     * @param size          The size of the page to be returned.
-     * @param officeName    The name of the office that the book is located.
+     * @param page       The page number (zero-based) of the requested page.
+     * @param size       The size of the page to be returned.
+     * @param officeName The name of the office that the book is located.
      * @return A {@link org.springframework.data.domain.Page} containing {@link BookDisplayDTO} objects
      * representing the available books matching the given criteria.
      * If no books are found, an empty Page will be returned.
      */
     @Override
-    public Page<BookDisplayDTO> getPaginatedAvailableBooks(BookStatus bookStatus,
-                                                           BookItemState bookItemState,
-                                                           int page,
-                                                           int size,
-                                                           String officeName) {
+    public Page<BookDisplayDTO> getPaginatedAvailableBooks(
+            int page,
+            int size,
+            String officeName) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Book> bookPage = bookRepository.pagingAvailableBooks(bookStatus, bookItemState, officeName, pageRequest);
+        Page<Book> bookPage = bookRepository.pagingAvailableBooks(BookStatus.IN_STOCK,
+                BookItemState.AVAILABLE, officeName, pageRequest);
 
         return bookPage.map(bookConverter::toBookDisplayDTO);
     }
