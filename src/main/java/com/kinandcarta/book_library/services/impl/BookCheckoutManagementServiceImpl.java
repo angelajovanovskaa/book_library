@@ -71,7 +71,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         Office userOffice = user.getOffice();
         Book book = bookItem.getBook();
 
-        validateBorrowingConditions(bookItem, user, userOffice, book);
+        validateBookCheckoutConditions(bookItem, user, userOffice, book);
 
         BookCheckout bookCheckout = createBookCheckout(bookItem, user, userOffice);
 
@@ -132,7 +132,7 @@ public class BookCheckoutManagementServiceImpl implements BookCheckoutManagement
         return bookCheckoutOptional.isPresent();
     }
 
-    private void validateBorrowingConditions(BookItem bookItem, User user, Office userOffice, Book book) {
+    private void validateBookCheckoutConditions(BookItem bookItem, User user, Office userOffice, Book book) {
         UUID bookItemId = bookItem.getId();
         UUID userId = user.getId();
 
