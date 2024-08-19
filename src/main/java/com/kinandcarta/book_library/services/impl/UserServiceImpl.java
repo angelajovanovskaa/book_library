@@ -4,7 +4,7 @@ import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
@@ -83,13 +83,13 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method, so they can view their profile.
      *
      * @param userId UUID for the id of the user that we are trying to get details for.
-     * @return {@link UserResponseDTO}
+     * @return {@link UserProfileDTO}
      */
     @Override
-    public UserResponseDTO getUserProfile(UUID userId) {
+    public UserProfileDTO getUserProfile(UUID userId) {
         User user = userRepository.getReferenceById(userId);
 
-        return userConverter.toUserResponseDTO(user);
+        return userConverter.toUserProfileDTO(user);
     }
 
     /**
@@ -97,12 +97,12 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method.
      *
      * @param userDTO the DTO where we have data needed for registering new account.
-     * @return A message for the user that the account is successfully created.
+     * @return {@link UserWithRoleFieldResponseDTO}
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
     @Transactional
-    public UserResponseDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
+    public UserWithRoleFieldResponseDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
         String userEmail = userDTO.email();
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePicture(userProfilePicture);
 
         userRepository.save(user);
-        return userConverter.toUserResponseDTO(user);
+        return userConverter.toUserWithRoleDTO(user);
     }
 
     /**

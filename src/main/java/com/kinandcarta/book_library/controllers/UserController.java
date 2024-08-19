@@ -2,8 +2,8 @@ package com.kinandcarta.book_library.controllers;
 
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
@@ -49,16 +49,16 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    ResponseEntity<UserResponseDTO> getUserProfile(@RequestParam @NotNull UUID userId) {
-        UserResponseDTO response = userService.getUserProfile(userId);
+    ResponseEntity<UserProfileDTO> getUserProfile(@RequestParam @NotNull UUID userId) {
+        UserProfileDTO response = userService.getUserProfile(userId);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserRegistrationRequestDTO userRegistrationDTO)
-            throws IOException {
-        UserResponseDTO response = userService.registerUser(userRegistrationDTO);
+    ResponseEntity<UserWithRoleFieldResponseDTO> registerUser(
+            @Valid @RequestBody UserRegistrationRequestDTO userRegistrationDTO) throws IOException {
+        UserWithRoleFieldResponseDTO response = userService.registerUser(userRegistrationDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.converters;
 
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
 import org.springframework.stereotype.Component;
@@ -34,11 +34,11 @@ public class UserConverter {
      * This response will be accessible by all the users when they look at their profile.
      *
      * @param user The {@link User} entity to convert
-     * @return a {@link UserResponseDTO}
+     * @return a {@link UserProfileDTO}
      */
-    public UserResponseDTO toUserResponseDTO(User user) {
+    public UserProfileDTO toUserProfileDTO(User user) {
 
-        return new UserResponseDTO(
+        return new UserProfileDTO(
                 user.getId(),
                 user.getFullName(),
                 user.getEmail(),
