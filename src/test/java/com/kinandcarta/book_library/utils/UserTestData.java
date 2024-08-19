@@ -20,7 +20,7 @@ import static com.kinandcarta.book_library.utils.SharedServiceTestData.SKOPJE_OF
 @UtilityClass
 public class UserTestData {
     private static final String USER_NEW_PASSWORD = "newPassword";
-    private static final String ADMIN_ROLE = "ADMIN";
+    private static final UserRole ADMIN_ROLE = UserRole.ADMIN;
     private static final String USER_IMAGE_PATH = "classpath:image/profile-picture.png";
     public static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c141");
     public static final String USER_FULL_NAME = "fullname1";
