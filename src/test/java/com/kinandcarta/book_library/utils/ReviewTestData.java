@@ -43,6 +43,7 @@ public class ReviewTestData {
 
     public static List<ReviewResponseDTO> getReviewResponseDTOs() {
         ReviewResponseDTO review1 = new ReviewResponseDTO(
+                ReviewTestData.REVIEW_ID,
                 BookTestData.BOOK_ISBN,
                 UserTestData.USER_EMAIL,
                 SharedServiceTestData.DATE_NOW,
@@ -50,6 +51,7 @@ public class ReviewTestData {
                 REVIEW_RATING
         );
         ReviewResponseDTO review2 = new ReviewResponseDTO(
+                UUID.fromString("6a3e9932-4802-4815-8de8-2f1e99bdf842"),
                 BookTestData.BOOK_ISBN,
                 UserTestData.USER_EMAIL,
                 SharedServiceTestData.DATE_NOW,
