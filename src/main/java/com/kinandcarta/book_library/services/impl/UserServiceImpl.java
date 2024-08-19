@@ -18,15 +18,16 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of {@link UserService} that manages the registration and login of user.<br>
@@ -101,7 +102,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public String registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
+    public UserResponseDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
         String userEmail = userDTO.email();
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
@@ -118,7 +119,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePicture(userProfilePicture);
 
         userRepository.save(user);
-        return UserResponseMessages.USER_REGISTERED_RESPONSE;
+        return userConverter.toUserResponseDTO(user);
     }
 
     /**

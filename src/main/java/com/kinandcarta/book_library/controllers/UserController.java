@@ -56,9 +56,9 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    ResponseEntity<String> registerUser(@Valid @RequestBody UserRegistrationRequestDTO userRegistrationDTO)
+    ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserRegistrationRequestDTO userRegistrationDTO)
             throws IOException {
-        String response = userService.registerUser(userRegistrationDTO);
+        UserResponseDTO response = userService.registerUser(userRegistrationDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

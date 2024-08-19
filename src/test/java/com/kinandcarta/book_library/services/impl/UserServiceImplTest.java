@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.kinandcarta.book_library.utils.UserTestData.getUser;
+import static com.kinandcarta.book_library.utils.UserTestData.getUserResponseDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -90,21 +92,22 @@ class UserServiceImplTest {
     void getUserProfile_userExist_returnsUserWithoutRoleDTO() {
         // given
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(userConverter.toUserResponseDTO(any())).willReturn(UserTestData.getUserResponseDTO());
+        given(userConverter.toUserResponseDTO(any())).willReturn(getUserResponseDTO());
 
         // when
         UserResponseDTO result = userService.getUserProfile(UserTestData.USER_ID);
 
         // then
-        assertThat(result).isEqualTo(UserTestData.getUserResponseDTO());
+        assertThat(result).isEqualTo(getUserResponseDTO());
     }
 
     @Test
     void registerUser_theRegistrationIsSuccessful_returnsConfirmationMessage() throws IOException {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
+        User user = getUser();
 
-        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
+        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
 
         given(officeRepository.getReferenceById(anyString())).willReturn(SharedServiceTestData.SKOPJE_OFFICE);
 
@@ -112,11 +115,13 @@ class UserServiceImplTest {
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
+        given(userConverter.toUserResponseDTO(user)).willReturn(getUserResponseDTO());
+
         // when
-        String result = userService.registerUser(registrationRequestDTO);
+        UserResponseDTO result = userService.registerUser(registrationRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(UserResponseMessages.USER_REGISTERED_RESPONSE);
+        assertThat(result).isEqualTo(getUserResponseDTO());
     }
 
     @Test
