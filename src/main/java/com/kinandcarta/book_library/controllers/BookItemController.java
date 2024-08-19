@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.services.BookItemManagementService;
 import com.kinandcarta.book_library.services.BookItemQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +31,7 @@ public class BookItemController {
 
     @GetMapping
     ResponseEntity<List<BookItemDTO>> getBookItems(@RequestParam @NotBlank String isbn,
-                                          @RequestParam @NotBlank String officeName) {
+                                                   @RequestParam @NotBlank String officeName) {
         List<BookItemDTO> result = bookItemQueryService.getBookItemsByBookIsbn(isbn, officeName);
 
         return ResponseEntity.ok(result);
@@ -46,21 +45,21 @@ public class BookItemController {
     }
 
     @DeleteMapping("/delete/{bookItemId}")
-    ResponseEntity<UUID> deleteBookItem(@PathVariable @NotNull UUID bookItemId) {
+    ResponseEntity<UUID> deleteBookItem(@PathVariable UUID bookItemId) {
         UUID response = bookItemManagementService.deleteById(bookItemId);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/report-damage/{bookItemId}")
-    ResponseEntity<String> reportBookItemAsDamaged(@PathVariable @NotNull UUID bookItemId) {
+    ResponseEntity<String> reportBookItemAsDamaged(@PathVariable UUID bookItemId) {
         String response = bookItemManagementService.reportBookItemAsDamaged(bookItemId);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/report-lost/{bookItemId}")
-    ResponseEntity<String> reportBookItemAsLost(@PathVariable @NotNull UUID bookItemId) {
+    ResponseEntity<String> reportBookItemAsLost(@PathVariable UUID bookItemId) {
         String response = bookItemManagementService.reportBookItemAsLost(bookItemId);
 
         return ResponseEntity.ok(response);
