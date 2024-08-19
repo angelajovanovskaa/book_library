@@ -147,7 +147,7 @@ class BookManagementServiceImplTest {
         given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(
                 Optional.of(BookTestData.getBook()));
         given(bookConverter.toBookDetailsDTO(any(), any())).willReturn(BookTestData.getBookDetailsDTO());
-        given(reviewQueryService.getTopReviewsForDisplayInBookView(anyString(), anyString())).willReturn(
+        given(reviewQueryService.getTopReviewsForBook(anyString(), anyString())).willReturn(
                 ReviewTestData.getReviewResponseDTOs());
 
         // when

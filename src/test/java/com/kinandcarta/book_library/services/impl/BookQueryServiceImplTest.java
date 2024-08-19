@@ -116,7 +116,7 @@ class BookQueryServiceImplTest {
         // given
         given(bookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(Optional.of(BookTestData.getBook()));
         given(bookConverter.toBookDetailsDTO(any(), any())).willReturn(BookTestData.getBookDetailsDTO());
-        given(reviewQueryService.getTopReviewsForDisplayInBookView(any(), any())).willReturn(
+        given(reviewQueryService.getTopReviewsForBook(any(), any())).willReturn(
                 ReviewTestData.getReviewResponseDTOs());
 
         // when
