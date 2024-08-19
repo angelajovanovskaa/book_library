@@ -10,6 +10,7 @@ import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
@@ -18,15 +19,16 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of {@link UserService} that manages the registration and login of user.<br>
@@ -179,7 +181,9 @@ public class UserServiceImpl implements UserService {
         UUID userId = userDTO.userId();
         User user = userRepository.getReferenceById(userId);
 
-        user.setRole(userDTO.role());
+        UserRole userRole = UserRole.valueOf(userDTO.role());
+
+        user.setRole(userRole);
         userRepository.save(user);
 
         return UserResponseMessages.USER_ROLE_UPDATED_RESPONSE;

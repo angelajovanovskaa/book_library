@@ -8,6 +8,7 @@ import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class UserTestData {
     public static final String USER_FULL_NAME = "fullname1";
     public static final String USER_EMAIL = "user1@gmail.com";
     public static final String USER_PASSWORD = "password";
-    public static final String USER_ROLE = "USER";
+    public static final UserRole USER_ROLE = UserRole.USER;
     public static final byte[] USER_IMAGE_BYTES = USER_IMAGE_PATH.getBytes();
 
     public static List<User> getUsers() {
