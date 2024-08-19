@@ -3,8 +3,8 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
-import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
+import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
@@ -27,9 +27,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.kinandcarta.book_library.utils.UserTestData.getUser;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserProfileDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserWithRoleResponseDTOs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -93,21 +90,22 @@ class UserServiceImplTest {
     void getUserProfile_userExist_returnsUserProfileDTO() {
         // given
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(userConverter.toUserProfileDTO(any())).willReturn(getUserProfileDTO());
+        given(userConverter.toUserProfileDTO(any())).willReturn(UserTestData.getUserProfileDTO());
 
         // when
         UserProfileDTO result = userService.getUserProfile(UserTestData.USER_ID);
 
         // then
-        assertThat(result).isEqualTo(getUserProfileDTO());
+        assertThat(result).isEqualTo(UserTestData.getUserProfileDTO());
     }
 
     @Test
     void registerUser_theRegistrationIsSuccessful_returnsUserWithRoleFieldResponseDTO() throws IOException {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
-        User user = getUser();
-        UserWithRoleFieldResponseDTO userWithRoleFieldResponseDTO = getUserWithRoleResponseDTOs().getFirst();
+        User user = UserTestData.getUser();
+        UserWithRoleFieldResponseDTO userWithRoleFieldResponseDTO =
+                UserTestData.getUserWithRoleResponseDTOs().getFirst();
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
 
