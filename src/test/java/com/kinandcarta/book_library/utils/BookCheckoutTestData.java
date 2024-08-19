@@ -11,6 +11,7 @@ import java.util.UUID;
 
 @UtilityClass
 public class BookCheckoutTestData {
+    public static final int MAX_NUMBER_OF_BORROWED_BOOKS = 3;
 
     public static BookCheckout getBookCheckout() {
         return new BookCheckout(

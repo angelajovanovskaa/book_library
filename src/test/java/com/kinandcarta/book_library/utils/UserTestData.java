@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.utils;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
@@ -73,14 +73,14 @@ public class UserTestData {
         return List.of(user1, user2);
     }
 
-    public static List<UserResponseDTO> getUserResponseDTOs() {
-        UserResponseDTO user1 = new UserResponseDTO(
+    public static List<UserProfileDTO> getUserResponseDTOs() {
+        UserProfileDTO user1 = new UserProfileDTO(
                 USER_ID,
                 USER_FULL_NAME,
                 USER_EMAIL,
                 null
         );
-        UserResponseDTO user2 = new UserResponseDTO(
+        UserProfileDTO user2 = new UserProfileDTO(
                 UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c142"),
                 "user2",
                 "user2@gmail.com",
@@ -90,7 +90,7 @@ public class UserTestData {
         return List.of(user1, user2);
     }
 
-    public static UserResponseDTO getUserResponseDTO() {
+    public static UserProfileDTO getUserProfileDTO() {
         return getUserResponseDTOs().getFirst();
     }
 

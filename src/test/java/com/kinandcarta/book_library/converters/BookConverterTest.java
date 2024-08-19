@@ -81,9 +81,11 @@ class BookConverterTest {
         assertThat(actualResult.getLanguage()).isEqualTo(BookTestData.BOOK_LANGUAGE);
         assertThat(actualResult.getGenres()).isEqualTo(BookTestData.BOOK_GENRES);
         assertThat(actualResult.getTotalPages()).isEqualTo(BookTestData.BOOK_TOTAL_PAGES);
+        assertThat(actualResult.getImage()).isEqualTo(BookTestData.BOOK_IMAGE);
         assertThat(actualResult.getRatingFromWeb()).isEqualTo(BookTestData.BOOK_RATING);
-        assertThat(actualResult.getRatingFromFirm()).isEqualTo(0.0);
         assertThat(actualResult.getOffice()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE);
-        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "image", "bookItems");
+        assertThat(actualResult.getAuthors()).isEqualTo(BookTestData.AUTHORS);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("summary", "bookStatus", "bookItems",
+                "ratingFromFirm");
     }
 }
