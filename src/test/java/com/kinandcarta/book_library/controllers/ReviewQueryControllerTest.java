@@ -143,7 +143,7 @@ public class ReviewQueryControllerTest {
         given(reviewQueryService.getReviewById(ReviewTestData.REVIEW_ID)).willThrow(
                 new ReviewNotFoundException(ReviewTestData.REVIEW_ID));
 
-        //
+        //when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/" + ReviewTestData.REVIEW_ID))
                 .andExpect(status().isNotFound());
     }
