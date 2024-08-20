@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.converters;
 
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.utils.UserTestData;
@@ -31,7 +31,7 @@ class UserConverterTest {
         // given
 
         // when
-        UserResponseDTO actualResult = userConverter.toUserResponseDTO(UserTestData.getUser());
+        UserProfileDTO actualResult = userConverter.toUserProfileDTO(UserTestData.getUser());
 
         // then
         assertThat(actualResult.userId()).isEqualTo(UserTestData.USER_ID);

@@ -4,7 +4,7 @@ import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
@@ -27,6 +27,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.kinandcarta.book_library.utils.UserTestData.getUser;
+import static com.kinandcarta.book_library.utils.UserTestData.getUserProfileDTO;
+import static com.kinandcarta.book_library.utils.UserTestData.getUserWithRoleResponseDTOs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -87,24 +90,26 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserProfile_userExist_returnsUserWithoutRoleDTO() {
+    void getUserProfile_userExist_returnsUserProfileDTO() {
         // given
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(userConverter.toUserResponseDTO(any())).willReturn(UserTestData.getUserResponseDTO());
+        given(userConverter.toUserProfileDTO(any())).willReturn(getUserProfileDTO());
 
         // when
-        UserResponseDTO result = userService.getUserProfile(UserTestData.USER_ID);
+        UserProfileDTO result = userService.getUserProfile(UserTestData.USER_ID);
 
         // then
-        assertThat(result).isEqualTo(UserTestData.getUserResponseDTO());
+        assertThat(result).isEqualTo(getUserProfileDTO());
     }
 
     @Test
-    void registerUser_theRegistrationIsSuccessful_returnsConfirmationMessage() throws IOException {
+    void registerUser_theRegistrationIsSuccessful_returnsUserWithRoleFieldResponseDTO() throws IOException {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
+        User user = getUser();
+        UserWithRoleFieldResponseDTO userWithRoleFieldResponseDTO = getUserWithRoleResponseDTOs().getFirst();
 
-        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
+        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
 
         given(officeRepository.getReferenceById(anyString())).willReturn(SharedServiceTestData.SKOPJE_OFFICE);
 
@@ -112,11 +117,13 @@ class UserServiceImplTest {
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
+        given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleFieldResponseDTO);
+
         // when
-        String result = userService.registerUser(registrationRequestDTO);
+        UserWithRoleFieldResponseDTO result = userService.registerUser(registrationRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(UserResponseMessages.USER_REGISTERED_RESPONSE);
+        assertThat(result).isEqualTo(userWithRoleFieldResponseDTO);
     }
 
     @Test
