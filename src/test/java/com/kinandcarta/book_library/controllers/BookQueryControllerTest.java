@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
+import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -40,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookQueryControllerTest {
     private static final String BOOK_PATH = "/books";
+    private static final String GENRES_PARAM = "genres";
+    private static final String LANGUAGE_PARAM = "language";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -57,7 +60,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooks_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given & when & then
         mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
@@ -67,7 +70,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBook_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getBook_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getBookPath = BOOK_PATH + "/get-book";
 
@@ -81,7 +84,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBook_paramIsbnMissingOrEmpty_returnsBadRequest(String isbn) {
+    void getBook_paramIsbnBlankOrNull_returnsBadRequest(String isbn) {
         // given
         final String getBookPath = BOOK_PATH + "/get-book";
 
@@ -92,11 +95,28 @@ class BookQueryControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @SneakyThrows
+    void getBook_bookDoesNotExists_returnsNotFoundRequest() {
+        // given
+        final String getBookPath = BOOK_PATH + "/get-book";
+        final String isbn = BookTestData.BOOK_INVALID_ISBN;
+
+        given(bookQueryService.getBookByIsbn(anyString(), anyString()))
+                .willThrow(new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN));
+
+        // when & then
+        mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME)
+                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
+                .andExpect(status().isNotFound());
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getAvailableBooks_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getAvailableBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getAvailableBooksPath = BOOK_PATH + "/available";
 
@@ -109,7 +129,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getRequestedBooks_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getRequestedBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getRequestedBooksPath = BOOK_PATH + "/requested";
 
@@ -122,7 +142,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getPaginatedAvailableBooks_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getPaginatedAvailableBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getAvailablePaginatedBooksPath = BOOK_PATH + "/paginated";
 
@@ -137,7 +157,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksBySearchTitle_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getBooksBySearchTitle_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getByTitleBooksPath = BOOK_PATH + "/by-title";
 
@@ -153,7 +173,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksBySearchTitle_paramSearchTitleMissingOrEmpty_returnsBadRequest(String searchTermTitle) {
+    void getBooksBySearchTitle_paramSearchTitleBlankOrNull_returnsBadRequest(String searchTermTitle) {
         // given
         final String getByTitleBooksPath = BOOK_PATH + "/by-title";
 
@@ -169,7 +189,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksByLanguage_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getBooksByLanguage_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getByLanguageBooksPath = BOOK_PATH + "/by-language";
 
@@ -185,7 +205,7 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksByLanguage_paramLanguageMissingOrEmpty_returnsBadRequest(String language) {
+    void getBooksByLanguage_paramLanguageBlankOrNull_returnsBadRequest(String language) {
         // given
         final String getByLanguageBooksPath = BOOK_PATH + "/by-language";
 
@@ -201,14 +221,14 @@ class BookQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksByGenres_paramOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
+    void getBooksByGenres_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
 
         // when & then
         mockMvc.perform(get(getByGenresBooksPath)
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
-                        .queryParam("genres", BookTestData.BOOK_GENRES)
+                        .queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES)
                 )
                 .andExpect(status().isBadRequest());
     }
@@ -225,7 +245,7 @@ class BookQueryControllerTest {
         // when & then
         mockMvc.perform(get(getByGenresBooksPath)
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam("genres", genres)
+                        .queryParam(GENRES_PARAM, genres)
                 )
                 .andExpect(status().isBadRequest());
     }
@@ -240,7 +260,7 @@ class BookQueryControllerTest {
         // when & then
         mockMvc.perform(get(getByGenresBooksPath)
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam("genres", genre)
+                        .queryParam(GENRES_PARAM, genre)
                 )
                 .andExpect(status().isBadRequest());
     }
@@ -393,7 +413,7 @@ class BookQueryControllerTest {
 
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add("language", BookTestData.BOOK_LANGUAGE);
+        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
 
         // when
         final String jsonResult =
@@ -420,7 +440,7 @@ class BookQueryControllerTest {
 
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add("genres", Arrays.toString(BookTestData.BOOK_GENRES));
+        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BookTestData.BOOK_GENRES));
 
         // when
         final String jsonResult =
