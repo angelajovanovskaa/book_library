@@ -53,7 +53,7 @@
     <changeSet id="create-book-table-constraint-for-rating-from-web" author="dlozanovska">
         <sql>
             ALTER TABLE book
-            ADD CONSTRAINT check_rating_from_web
+            ADD CONSTRAINT check_rating_from_web_in_book
             CHECK (rating_from_web &gt;=1 AND rating_from_web &lt;=5)
         </sql>
     </changeSet>
@@ -61,7 +61,7 @@
     <changeSet id="create-book-table-constraint-for-rating-from-firm" author="dlozanovska">
         <sql>
             ALTER TABLE book
-            ADD CONSTRAINT check_rating_from_firm
+            ADD CONSTRAINT check_rating_from_firm_in_book
             CHECK (rating_from_firm &gt;=1 AND rating_from_firm &lt;=5)
         </sql>
     </changeSet>
@@ -245,7 +245,7 @@
     <changeSet id="create-review-table-constraint-for-rating" author="dlozanovska">
         <sql>
             ALTER TABLE review
-            ADD CONSTRAINT check_rating
+            ADD CONSTRAINT check_rating_in_review
             CHECK (rating &gt;=1 AND rating &lt;=5)
         </sql>
     </changeSet>
