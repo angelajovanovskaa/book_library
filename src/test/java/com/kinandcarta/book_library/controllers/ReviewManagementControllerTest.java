@@ -6,7 +6,9 @@ import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
+import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
+import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -142,6 +144,82 @@ class ReviewManagementControllerTest {
 
         // then
         assertThat(actualResponse).isEqualTo(expectedResponse);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "\t", "\n"})
+    @SneakyThrows
+    void updateReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
+        // given
+        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(invalidIsbn, "email", "message", 5);
+
+        // when & then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "\t", "\n"})
+    @SneakyThrows
+    void updateReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
+        // given
+        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", invalidEmail, "message", 5);
+
+        // when & then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "\t", "\n"})
+    @SneakyThrows
+    void updateReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
+        // given
+        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", invalidMessage, 5);
+
+        // when & then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateReview_ratingIsInvalid_returnsBadRequest() {
+        // given
+        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", "message", 0);
+
+        // when, then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateReview_reviewNotFound_returnsNotFound() {
+        // given
+        ReviewRequestDTO reviewRequestDTO = ReviewTestData.getReviewRequestDTO();
+
+        given(reviewManagementService.updateReview(any()))
+                .willThrow(new ReviewNotFoundException(UserTestData.USER_EMAIL, BookTestData.BOOK_ISBN));
+
+        // when & then
+        String jsonContent = new ObjectMapper().writeValueAsString(reviewRequestDTO);
+
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent))
+                .andExpect(status().isNotFound());
     }
 
     @Test
