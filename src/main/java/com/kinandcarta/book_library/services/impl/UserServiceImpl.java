@@ -169,11 +169,13 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used for updating users role<br>
+     * This method is used for updating user's role.If user is already assigned to the provided role, update is not
+     * done and only a corresponding message is returned.<br>
      * This method will only be accessible by the admin.
      *
      * @param userDTO the DTO where we have data needed for updating {@link User} role.
-     * @return A message for the user that the role is successfully changed or that the user already has that role.
+     * @return A response message stating that the user role has been successfully changed or that user has already
+     * been assigned to the provided role.
      */
     @Override
     @Transactional
@@ -182,8 +184,8 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.getReferenceById(userId);
         UserRole roleFromDTO = userDTO.role();
 
-        if(user.getRole() == roleFromDTO){
-            return UserResponseMessages.USER_ROLE_NOT_UPDATED_RESPONSE;
+        if (user.getRole() == roleFromDTO) {
+            return UserResponseMessages.USER_ROLE_ALREADY_ASSIGNED_RESPONSE;
         }
 
         user.setRole(roleFromDTO);

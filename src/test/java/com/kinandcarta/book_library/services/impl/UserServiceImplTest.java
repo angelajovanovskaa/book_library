@@ -187,7 +187,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void updateUserRole_userRoleNotUpdated_returnsMessage() {
+    void updateUserRole_userRoleAlreadyAssignedToUser_returnsMessage() {
         // given
         User user = UserTestData.getUser();
         user.setRole(UserRole.ADMIN);
@@ -197,7 +197,7 @@ class UserServiceImplTest {
         String result = userService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
 
         // then
-        assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_NOT_UPDATED_RESPONSE);
+        assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_ALREADY_ASSIGNED_RESPONSE);
     }
 
     @Test
