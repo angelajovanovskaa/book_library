@@ -143,10 +143,10 @@ class UserQueryControllerTest {
     @SneakyThrows
     void getUserProfile_ParamUserIdNullOrEmpty_returnsBadRequest(String userId) {
         // given
-        final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
+        final String getUserProfilePath = USERS_PATH + "/profile";
 
         // when & then
-        mockMvc.perform(get(getUsersByFullNamePath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
+        mockMvc.perform(get(getUserProfilePath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
                 .andExpect(status().isBadRequest());
     }
 }
