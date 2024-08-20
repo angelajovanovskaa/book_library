@@ -236,7 +236,7 @@ class BookQueryControllerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @SneakyThrows
-    void getBooksByGenres_paramGenresMissingOrEmpty_returnsBadRequest(String genre) {
+    void getBooksByGenres_paramGenresBlankOrNull_returnsBadRequest(String genre) {
         // given
         final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
 
