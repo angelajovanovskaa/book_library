@@ -1,14 +1,14 @@
 package com.kinandcarta.book_library.dtos;
 
+import com.kinandcarta.book_library.enums.UserRole;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 import java.util.UUID;
 
 public record UserUpdateRoleRequestDTO(
         @NotNull
         UUID userId,
-        @Pattern(regexp = "ADMIN|USER", message = "Role must be either ADMIN or USER")
-        String role
+        @NotNull
+        UserRole role
 ) {
 }

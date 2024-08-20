@@ -3,13 +3,14 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
@@ -18,15 +19,16 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Implementation of {@link UserService} that manages the registration and login of user.<br>
@@ -50,10 +52,10 @@ public class UserServiceImpl implements UserService {
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
      * @param officeName the name of the office where the user searching belongs.
-     * @return A list of {@link UserWithRoleFieldResponseDTO}
+     * @return A list of {@link UserWithRoleDTO}
      */
     @Override
-    public List<UserWithRoleFieldResponseDTO> getAllUsers(String officeName) {
+    public List<UserWithRoleDTO> getAllUsers(String officeName) {
         List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
@@ -66,10 +68,10 @@ public class UserServiceImpl implements UserService {
      *
      * @param officeName         the name of the office where the user searching belongs.
      * @param fullNameSearchTerm String value for the fullName of User.
-     * @return A list of {@link UserWithRoleFieldResponseDTO}
+     * @return A list of {@link UserWithRoleDTO}
      */
     @Override
-    public List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
+    public List<UserWithRoleDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
         List<User> users =
                 userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
                         fullNameSearchTerm);
@@ -82,13 +84,13 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method, so they can view their profile.
      *
      * @param userId UUID for the id of the user that we are trying to get details for.
-     * @return {@link UserResponseDTO}
+     * @return {@link UserProfileDTO}
      */
     @Override
-    public UserResponseDTO getUserProfile(UUID userId) {
+    public UserProfileDTO getUserProfile(UUID userId) {
         User user = userRepository.getReferenceById(userId);
 
-        return userConverter.toUserResponseDTO(user);
+        return userConverter.toUserProfileDTO(user);
     }
 
     /**
@@ -96,12 +98,12 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method.
      *
      * @param userDTO the DTO where we have data needed for registering new account.
-     * @return A message for the user that the account is successfully created.
+     * @return {@link UserWithRoleDTO}
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
     @Transactional
-    public String registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
+    public UserWithRoleDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
         String userEmail = userDTO.email();
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
@@ -118,7 +120,7 @@ public class UserServiceImpl implements UserService {
         user.setProfilePicture(userProfilePicture);
 
         userRepository.save(user);
-        return UserResponseMessages.USER_REGISTERED_RESPONSE;
+        return userConverter.toUserWithRoleDTO(user);
     }
 
     /**
@@ -167,19 +169,26 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used for updating users role<br>
+     * This method is used for updating user's role. If a user is already assigned to the provided role, update is not
+     * done and only a corresponding message is returned.<br>
      * This method will only be accessible by the admin.
      *
      * @param userDTO the DTO where we have data needed for updating {@link User} role.
-     * @return A message for the user that the role is successfully changed.
+     * @return A response message stating that the user role has been successfully changed or that user has already
+     * been assigned to the provided role.
      */
     @Override
     @Transactional
     public String updateUserRole(UserUpdateRoleRequestDTO userDTO) {
         UUID userId = userDTO.userId();
         User user = userRepository.getReferenceById(userId);
+        UserRole roleFromDTO = userDTO.role();
 
-        user.setRole(userDTO.role());
+        if (user.getRole() == roleFromDTO) {
+            return UserResponseMessages.USER_ROLE_ALREADY_ASSIGNED_RESPONSE;
+        }
+
+        user.setRole(roleFromDTO);
         userRepository.save(user);
 
         return UserResponseMessages.USER_ROLE_UPDATED_RESPONSE;

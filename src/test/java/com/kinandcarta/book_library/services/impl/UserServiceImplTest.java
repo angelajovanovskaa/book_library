@@ -3,10 +3,11 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
+import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserResponseDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
@@ -52,25 +53,25 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleFieldResponseDTO() {
+    void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleDTO() {
         // given
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
+        List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
         given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(UserTestData.getUsers());
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOs.get(0),
-                userWithRoleFieldResponseDTOs.get(1));
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleDTOs.get(0),
+                userWithRoleDTOs.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        List<UserWithRoleDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).isEqualTo(userWithRoleFieldResponseDTOs);
+        assertThat(result).isEqualTo(userWithRoleDTOs);
     }
 
     @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleFieldResponseDTO() {
+    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleDTO() {
         // given
-        List<UserWithRoleFieldResponseDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
+        List<UserWithRoleDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
         given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(any(), any())).willReturn(
                 UserTestData.getUsers());
@@ -78,7 +79,7 @@ class UserServiceImplTest {
                 userWithRoleResponseDTOs.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result =
+        List<UserWithRoleDTO> result =
                 userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
                         UserTestData.USER_FULL_NAME);
 
@@ -87,24 +88,26 @@ class UserServiceImplTest {
     }
 
     @Test
-    void getUserProfile_userExist_returnsUserWithoutRoleDTO() {
+    void getUserProfile_userExist_returnsUserProfileDTO() {
         // given
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(userConverter.toUserResponseDTO(any())).willReturn(UserTestData.getUserResponseDTO());
+        given(userConverter.toUserProfileDTO(any())).willReturn(UserTestData.getUserProfileDTO());
 
         // when
-        UserResponseDTO result = userService.getUserProfile(UserTestData.USER_ID);
+        UserProfileDTO result = userService.getUserProfile(UserTestData.USER_ID);
 
         // then
-        assertThat(result).isEqualTo(UserTestData.getUserResponseDTO());
+        assertThat(result).isEqualTo(UserTestData.getUserProfileDTO());
     }
 
     @Test
-    void registerUser_theRegistrationIsSuccessful_returnsConfirmationMessage() throws IOException {
+    void registerUser_theRegistrationIsSuccessful_returnsUserWithRoleDTO() throws IOException {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
+        User user = UserTestData.getUser();
+        UserWithRoleDTO userWithRoleDTO = UserTestData.getUserWithRoleResponseDTOs().getFirst();
 
-        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(new User());
+        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
 
         given(officeRepository.getReferenceById(anyString())).willReturn(SharedServiceTestData.SKOPJE_OFFICE);
 
@@ -112,11 +115,13 @@ class UserServiceImplTest {
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
+        given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleDTO);
+
         // when
-        String result = userService.registerUser(registrationRequestDTO);
+        UserWithRoleDTO result = userService.registerUser(registrationRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(UserResponseMessages.USER_REGISTERED_RESPONSE);
+        assertThat(result).isEqualTo(userWithRoleDTO);
     }
 
     @Test
@@ -179,6 +184,20 @@ class UserServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
+    }
+
+    @Test
+    void updateUserRole_userRoleAlreadyAssignedToUser_returnsMessage() {
+        // given
+        User user = UserTestData.getUser();
+        user.setRole(UserRole.ADMIN);
+        given(userRepository.getReferenceById(any())).willReturn(user);
+
+        // when
+        String result = userService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
+
+        // then
+        assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_ALREADY_ASSIGNED_RESPONSE);
     }
 
     @Test

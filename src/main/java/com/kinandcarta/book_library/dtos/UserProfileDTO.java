@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.UUID;
 
-public record UserResponseDTO(
+public record UserProfileDTO(
         UUID userId,
         String fullName,
         String email,
@@ -14,7 +14,7 @@ public record UserResponseDTO(
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserResponseDTO that = (UserResponseDTO) o;
+        UserProfileDTO that = (UserProfileDTO) o;
         return Objects.equals(email,
                 that.email) && Objects.equals(userId, that.userId) && Objects.equals(fullName,
                 that.fullName) && Objects.deepEquals(profilePicture, that.profilePicture);
@@ -27,7 +27,7 @@ public record UserResponseDTO(
 
     @Override
     public String toString() {
-        return "UserResponseDTO{" +
+        return "UserProfileDTO{" +
                 "userId='" + userId + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", profilePicture=" + Arrays.toString(profilePicture) +
