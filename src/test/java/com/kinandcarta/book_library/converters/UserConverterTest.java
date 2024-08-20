@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.converters;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +24,7 @@ class UserConverterTest {
         assertThat(actualResult.userId()).isEqualTo(UserTestData.USER_ID);
         assertThat(actualResult.fullName()).isEqualTo(UserTestData.USER_FULL_NAME);
         assertThat(actualResult.email()).isEqualTo(UserTestData.USER_EMAIL);
-        assertThat(actualResult.role()).isEqualTo(UserTestData.USER_ROLE);
+        assertThat(actualResult.role()).isEqualTo(UserRole.USER);
     }
 
     @Test

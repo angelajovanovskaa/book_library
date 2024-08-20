@@ -7,6 +7,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -40,6 +41,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ExceptionMessage exceptionMessage = new ExceptionMessage(errorFields);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            @NonNull HttpMessageNotReadableException ex, @NonNull HttpHeaders headers, @NonNull HttpStatusCode status,
+            @NonNull WebRequest request) {
+        ExceptionMessage exceptionMessage = new ExceptionMessage(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
