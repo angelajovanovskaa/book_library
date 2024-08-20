@@ -31,7 +31,7 @@
             <column name="summary" type="VARCHAR(1024)"/>
             <column name="total_pages" type="INT NOT NULL"/>
             <column name="rating_from_web" type="DOUBLE NOT NULL"/>
-            <column name="rating_from_firm" type="DOUBLE DEFAULT 0.0"/>
+            <column name="rating_from_firm" type="DOUBLE DEFAULT 1.0"/>
             <column name="language" type="VARCHAR(255) NOT NULL"/>
             <column name="image" type="VARCHAR(1024) NOT NULL"/>
             <column name="genres" type="TEXT[] NOT NULL"/>
@@ -48,6 +48,22 @@
                                  referencedColumnNames="name"
                                  onDelete="RESTRICT"
                                  onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="create-book-table-constraint-for-rating-from-web" author="dlozanovska">
+        <sql>
+            ALTER TABLE book
+            ADD CONSTRAINT check_rating_from_web_in_book
+            CHECK (rating_from_web &gt;=1 AND rating_from_web &lt;=5)
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-book-table-constraint-for-rating-from-firm" author="dlozanovska">
+        <sql>
+            ALTER TABLE book
+            ADD CONSTRAINT check_rating_from_firm_in_book
+            CHECK (rating_from_firm &gt;=1 AND rating_from_firm &lt;=5)
+        </sql>
     </changeSet>
 
     <changeSet id="create-book-item-table" author="ajovanovska">
@@ -73,7 +89,6 @@
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
     </changeSet>
-
 
     <changeSet id="create-author-table" author="ajovanovska">
         <preConditions onFail="MARK_RAN">
@@ -225,6 +240,14 @@
                                  referencedColumnNames="id"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="create-review-table-constraint-for-rating" author="dlozanovska">
+        <sql>
+            ALTER TABLE review
+            ADD CONSTRAINT check_rating_in_review
+            CHECK (rating &gt;=1 AND rating &lt;=5)
+        </sql>
     </changeSet>
 
     <changeSet id="create-requested-book-table" author="ljupcoristov02">
