@@ -31,11 +31,15 @@
             <column name="summary" type="VARCHAR(1024)"/>
             <column name="total_pages" type="INT NOT NULL"/>
             <column name="rating_from_web" type="DOUBLE NOT NULL"/>
-            <column name="rating_from_firm" type="DOUBLE DEFAULT 0.0"/>
+            <column name="rating_from_firm" type="DOUBLE DEFAULT 1.0">
+                <constraints checkConstraint="rating_from_firm &gt;=1 AND rating_from_firm &lt;=5"/>
+            </column>
+
             <column name="language" type="VARCHAR(255) NOT NULL"/>
             <column name="image" type="VARCHAR(1024) NOT NULL"/>
             <column name="genres" type="TEXT[] NOT NULL"/>
         </createTable>
+
 
         <addPrimaryKey tableName="book"
                        columnNames="isbn, office_name"
@@ -49,6 +53,25 @@
                                  onDelete="RESTRICT"
                                  onUpdate="CASCADE"/>
     </changeSet>
+
+    <changeSet id="create-book-table-constraint" author="dlozanovska">
+        <sql>
+            ALTER TABLE book
+            ADD CONSTRAINT check_rating_from_web
+            CHECK (rating_from_web &gt;=1 AND rating_from_web &lt;=5)
+        </sql>
+    </changeSet>
+
+    <changeSet id="create-book-table-constraint1" author="dlozanovska">
+        <sql>
+            ALTER TABLE book
+            ADD CONSTRAINT check_rating_from_firm
+            CHECK (rating_from_firm &gt;=1 AND rating_from_firm &lt;=5)
+        </sql>
+    </changeSet>
+
+
+
 
     <changeSet id="create-book-item-table" author="ajovanovska">
         <preConditions onFail="MARK_RAN">
@@ -210,6 +233,7 @@
             <column name="rating" type="INT NOT NULL"/>
         </createTable>
 
+
         <addForeignKeyConstraint baseTableName="review"
                                  baseColumnNames="book_isbn, office_name"
                                  constraintName="fk_review_book"
@@ -226,6 +250,15 @@
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"/>
     </changeSet>
+
+    <changeSet id="create-review-table-constraint" author="dlozanovska">
+        <sql>
+            ALTER TABLE review
+            ADD CONSTRAINT check_rating
+            CHECK (rating &gt;=1 AND rating &lt;=5)
+        </sql>
+    </changeSet>
+
 
     <changeSet id="create-requested-book-table" author="ljupcoristov02">
         <preConditions onFail="MARK_RAN">
