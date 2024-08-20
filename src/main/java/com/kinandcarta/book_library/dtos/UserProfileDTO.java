@@ -27,7 +27,7 @@ public record UserProfileDTO(
 
     @Override
     public String toString() {
-        return "UserResponseDTO{" +
+        return "UserProfileDTO{" +
                 "userId='" + userId + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", profilePicture=" + Arrays.toString(profilePicture) +

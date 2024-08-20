@@ -7,7 +7,7 @@ import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.UserRole;
@@ -52,10 +52,10 @@ public class UserServiceImpl implements UserService {
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
      * @param officeName the name of the office where the user searching belongs.
-     * @return A list of {@link UserWithRoleFieldResponseDTO}
+     * @return A list of {@link UserWithRoleDTO}
      */
     @Override
-    public List<UserWithRoleFieldResponseDTO> getAllUsers(String officeName) {
+    public List<UserWithRoleDTO> getAllUsers(String officeName) {
         List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
@@ -68,10 +68,10 @@ public class UserServiceImpl implements UserService {
      *
      * @param officeName         the name of the office where the user searching belongs.
      * @param fullNameSearchTerm String value for the fullName of User.
-     * @return A list of {@link UserWithRoleFieldResponseDTO}
+     * @return A list of {@link UserWithRoleDTO}
      */
     @Override
-    public List<UserWithRoleFieldResponseDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
+    public List<UserWithRoleDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
         List<User> users =
                 userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
                         fullNameSearchTerm);
@@ -98,12 +98,12 @@ public class UserServiceImpl implements UserService {
      * All the users will have access to this method.
      *
      * @param userDTO the DTO where we have data needed for registering new account.
-     * @return {@link UserWithRoleFieldResponseDTO}
+     * @return {@link UserWithRoleDTO}
      * @throws EmailAlreadyInUseException If the email that we are trying to use to create an account is already is use.
      */
     @Override
     @Transactional
-    public UserWithRoleFieldResponseDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
+    public UserWithRoleDTO registerUser(UserRegistrationRequestDTO userDTO) throws IOException {
         String userEmail = userDTO.email();
         Optional<User> userOptional = userRepository.findByEmail(userEmail);
 
