@@ -9,4 +9,5 @@ public class SharedControllerTestData {
     public static final String USER_ID_PARAM = "userId";
     public static final String PAGE_SIZE_PARAM = "pageSize";
     public static final String CONTENT_KEY_VALUE = "content";
+    public static final String FULL_NAME_PARAM = "fullName";
 }
