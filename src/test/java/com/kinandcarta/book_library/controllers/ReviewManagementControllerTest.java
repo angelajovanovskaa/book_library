@@ -48,7 +48,7 @@ class ReviewManagementControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void insertNewReview_insertIsValid_returnsReviewResponseDTO() throws Exception {
+    void insertReview_insertIsValid_returnsReviewResponseDTO() throws Exception {
         // given
         given(reviewManagementService.insertReview(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
@@ -71,7 +71,7 @@ class ReviewManagementControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertNewReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
+    void insertReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
         // given
         ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(invalidIsbn, "email", "message", 5);
 
@@ -86,7 +86,7 @@ class ReviewManagementControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertNewReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
+    void insertReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
         // given
         ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", invalidEmail, "message", 5);
 
@@ -101,7 +101,7 @@ class ReviewManagementControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertNewReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
+    void insertReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
         // given
         ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", invalidMessage, 5);
 
@@ -114,7 +114,7 @@ class ReviewManagementControllerTest {
 
     @Test
     @SneakyThrows
-    void insertNewReview_ratingIsInvalid_returnsBadRequest() {
+    void insertReview_ratingIsInvalid_returnsBadRequest() {
         // given
         ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", "message", 0);
 

@@ -54,7 +54,7 @@ public class ReviewController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<ReviewResponseDTO> insertNewReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
+    public ResponseEntity<ReviewResponseDTO> insertReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
         ReviewResponseDTO result = reviewManagementService.insertReview(reviewRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
