@@ -9,9 +9,9 @@ import com.kinandcarta.book_library.services.BookQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -91,7 +91,7 @@ public class BookController {
 
     @GetMapping("/by-genres")
     ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(
-            @RequestParam @NotEmpty @Size(min = 1) List<@NotBlank String> genres,
+            @RequestParam @NotEmpty List<@NotBlank String> genres,
             @RequestParam @NotBlank String officeName) {
         String[] genresArray = genres.toArray(new String[0]);
 
@@ -105,7 +105,7 @@ public class BookController {
             @Valid @RequestBody BookInsertRequestDTO bookInsertRequestDTO) {
         BookDisplayDTO response = bookManagementService.createBookWithAuthors(bookInsertRequestDTO);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/delete")
