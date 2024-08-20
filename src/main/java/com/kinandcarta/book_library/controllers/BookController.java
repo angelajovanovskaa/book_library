@@ -9,6 +9,7 @@ import com.kinandcarta.book_library.services.BookQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -89,9 +90,11 @@ public class BookController {
     }
 
     @GetMapping("/by-genres")
-    ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(@RequestParam @NotEmpty String[] genres,
+    ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(@RequestParam @NotEmpty @Size(min = 1) List< @NotBlank String> genres,
                                                           @RequestParam @NotBlank String officeName) {
-        List<BookDisplayDTO> result = bookQueryService.getBooksByGenresContaining(genres, officeName);
+        String[] genresArray = genres.toArray(new String[0]);
+
+        List<BookDisplayDTO> result = bookQueryService.getBooksByGenresContaining(genresArray, officeName);
 
         return ResponseEntity.ok(result);
     }
