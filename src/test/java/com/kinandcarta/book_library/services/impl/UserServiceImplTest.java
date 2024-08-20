@@ -3,9 +3,9 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
-import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
-import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
+import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
+import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
@@ -27,9 +27,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.kinandcarta.book_library.utils.UserTestData.getUser;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserProfileDTO;
-import static com.kinandcarta.book_library.utils.UserTestData.getUserWithRoleResponseDTOs;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
@@ -55,25 +52,25 @@ class UserServiceImplTest {
     private UserServiceImpl userService;
 
     @Test
-    void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleFieldResponseDTO() {
+    void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleDTO() {
         // given
-        List<UserWithRoleFieldResponseDTO> userWithRoleFieldResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
+        List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
         given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(UserTestData.getUsers());
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOs.get(0),
-                userWithRoleFieldResponseDTOs.get(1));
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleDTOs.get(0),
+                userWithRoleDTOs.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        List<UserWithRoleDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).isEqualTo(userWithRoleFieldResponseDTOs);
+        assertThat(result).isEqualTo(userWithRoleDTOs);
     }
 
     @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleFieldResponseDTO() {
+    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleDTO() {
         // given
-        List<UserWithRoleFieldResponseDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
+        List<UserWithRoleDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
         given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(any(), any())).willReturn(
                 UserTestData.getUsers());
@@ -81,7 +78,7 @@ class UserServiceImplTest {
                 userWithRoleResponseDTOs.get(1));
 
         // when
-        List<UserWithRoleFieldResponseDTO> result =
+        List<UserWithRoleDTO> result =
                 userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
                         UserTestData.USER_FULL_NAME);
 
@@ -93,21 +90,21 @@ class UserServiceImplTest {
     void getUserProfile_userExist_returnsUserProfileDTO() {
         // given
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(userConverter.toUserProfileDTO(any())).willReturn(getUserProfileDTO());
+        given(userConverter.toUserProfileDTO(any())).willReturn(UserTestData.getUserProfileDTO());
 
         // when
         UserProfileDTO result = userService.getUserProfile(UserTestData.USER_ID);
 
         // then
-        assertThat(result).isEqualTo(getUserProfileDTO());
+        assertThat(result).isEqualTo(UserTestData.getUserProfileDTO());
     }
 
     @Test
-    void registerUser_theRegistrationIsSuccessful_returnsUserWithRoleFieldResponseDTO() throws IOException {
+    void registerUser_theRegistrationIsSuccessful_returnsUserWithRoleDTO() throws IOException {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
-        User user = getUser();
-        UserWithRoleFieldResponseDTO userWithRoleFieldResponseDTO = getUserWithRoleResponseDTOs().getFirst();
+        User user = UserTestData.getUser();
+        UserWithRoleDTO userWithRoleDTO = UserTestData.getUserWithRoleResponseDTOs().getFirst();
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
 
@@ -117,13 +114,13 @@ class UserServiceImplTest {
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
-        given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleFieldResponseDTO);
+        given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleDTO);
 
         // when
-        UserWithRoleFieldResponseDTO result = userService.registerUser(registrationRequestDTO);
+        UserWithRoleDTO result = userService.registerUser(registrationRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(userWithRoleFieldResponseDTO);
+        assertThat(result).isEqualTo(userWithRoleDTO);
     }
 
     @Test
