@@ -10,6 +10,7 @@ import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
@@ -168,19 +169,26 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used for updating users role<br>
+     * This method is used for updating user's role. If a user is already assigned to the provided role, update is not
+     * done and only a corresponding message is returned.<br>
      * This method will only be accessible by the admin.
      *
      * @param userDTO the DTO where we have data needed for updating {@link User} role.
-     * @return A message for the user that the role is successfully changed.
+     * @return A response message stating that the user role has been successfully changed or that user has already
+     * been assigned to the provided role.
      */
     @Override
     @Transactional
     public String updateUserRole(UserUpdateRoleRequestDTO userDTO) {
         UUID userId = userDTO.userId();
         User user = userRepository.getReferenceById(userId);
+        UserRole roleFromDTO = userDTO.role();
 
-        user.setRole(userDTO.role());
+        if (user.getRole() == roleFromDTO) {
+            return UserResponseMessages.USER_ROLE_ALREADY_ASSIGNED_RESPONSE;
+        }
+
+        user.setRole(roleFromDTO);
         userRepository.save(user);
 
         return UserResponseMessages.USER_ROLE_UPDATED_RESPONSE;
