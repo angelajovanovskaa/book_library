@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    ResponseEntity<UserProfileDTO>  getUserProfile(@RequestParam @NotNull UUID userId) {
+    ResponseEntity<UserProfileDTO> getUserProfile(@RequestParam @NotNull UUID userId) {
         UserProfileDTO response = userService.getUserProfile(userId);
 
         return ResponseEntity.ok(response);
