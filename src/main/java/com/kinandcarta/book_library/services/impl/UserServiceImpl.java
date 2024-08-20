@@ -169,7 +169,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * This method is used for updating user's role.If user is already assigned to the provided role, update is not
+     * This method is used for updating user's role. If a user is already assigned to the provided role, update is not
      * done and only a corresponding message is returned.<br>
      * This method will only be accessible by the admin.
      *
