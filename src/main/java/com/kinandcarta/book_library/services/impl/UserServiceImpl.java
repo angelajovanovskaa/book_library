@@ -10,6 +10,7 @@ import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
@@ -172,15 +173,20 @@ public class UserServiceImpl implements UserService {
      * This method will only be accessible by the admin.
      *
      * @param userDTO the DTO where we have data needed for updating {@link User} role.
-     * @return A message for the user that the role is successfully changed.
+     * @return A message for the user that the role is successfully changed or that the user already has that role.
      */
     @Override
     @Transactional
     public String updateUserRole(UserUpdateRoleRequestDTO userDTO) {
         UUID userId = userDTO.userId();
         User user = userRepository.getReferenceById(userId);
+        UserRole roleFromDTO = userDTO.role();
 
-        user.setRole(userDTO.role());
+        if(user.getRole() == roleFromDTO){
+            return UserResponseMessages.USER_ROLE_NOT_UPDATED_RESPONSE;
+        }
+
+        user.setRole(roleFromDTO);
         userRepository.save(user);
 
         return UserResponseMessages.USER_ROLE_UPDATED_RESPONSE;

@@ -7,6 +7,7 @@ import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleFieldResponseDTO;
 import com.kinandcarta.book_library.entities.User;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
@@ -184,6 +185,20 @@ class UserServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
+    }
+
+    @Test
+    void updateUserRole_userRoleNotUpdated_returnsMessage() {
+        // given
+        User user = UserTestData.getUser();
+        user.setRole(UserRole.ADMIN);
+        given(userRepository.getReferenceById(any())).willReturn(user);
+
+        // when
+        String result = userService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
+
+        // then
+        assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_NOT_UPDATED_RESPONSE);
     }
 
     @Test

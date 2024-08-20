@@ -7,8 +7,6 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class UserResponseMessages {
-    public static final String USER_REGISTERED_RESPONSE = "You have successfully created your account";
-
     public static final String USER_DATA_UPDATED_RESPONSE = "Users data successfully updated";
 
     public static final String USER_ROLE_UPDATED_RESPONSE = "Role successfully changed";
@@ -16,4 +14,6 @@ public class UserResponseMessages {
     public static final String USER_DELETED_RESPONSE = "The user has been successfully deleted";
 
     public static final String USER_PASSWORD_UPDATED_RESPONSE = "The password has been successfully updated.";
+
+    public static final String USER_ROLE_NOT_UPDATED_RESPONSE = "User already has this role";
 }
