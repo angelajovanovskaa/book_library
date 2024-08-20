@@ -30,10 +30,10 @@ public class ReviewController {
     private final ReviewManagementService reviewManagementService;
 
     @GetMapping
-    public ResponseEntity<List<ReviewResponseDTO>> getAllReviewsForBook(@RequestParam @NotBlank String officeName,
-                                                                        @RequestParam @NotBlank String bookISBN) {
+    public ResponseEntity<List<ReviewResponseDTO>> getReviewsForBook(@RequestParam @NotBlank String officeName,
+                                                                     @RequestParam @NotBlank String isbn) {
         List<ReviewResponseDTO> result =
-                reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(bookISBN, officeName);
+                reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(isbn, officeName);
 
         return ResponseEntity.ok(result);
     }
@@ -46,9 +46,9 @@ public class ReviewController {
     }
 
     @GetMapping("/top-reviews")
-    public ResponseEntity<List<ReviewResponseDTO>> getTopReviewsForBookView(@RequestParam @NotBlank String officeName,
-                                                                            @RequestParam @NotBlank String bookISBN) {
-        List<ReviewResponseDTO> result = reviewQueryService.getTopReviewsForBook(bookISBN, officeName);
+    public ResponseEntity<List<ReviewResponseDTO>> getTopReviewsForBook(@RequestParam @NotBlank String officeName,
+                                                                        @RequestParam @NotBlank String isbn) {
+        List<ReviewResponseDTO> result = reviewQueryService.getTopReviewsForBook(isbn, officeName);
 
         return ResponseEntity.ok(result);
     }
