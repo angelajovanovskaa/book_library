@@ -27,7 +27,7 @@ class UserConverterTest {
     }
 
     @Test
-    void toUserResponseDTO_conversionIsDone_returnsUserProfileDTO() {
+    void toUserProfileDTO_conversionIsDone_returnsUserProfileDTO() {
         // given
 
         // when

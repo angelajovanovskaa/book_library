@@ -57,17 +57,17 @@ class UserServiceImplTest {
     @Test
     void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleDTO() {
         // given
-        List<UserWithRoleDTO> userWithRoleFieldResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
+        List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
         given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(UserTestData.getUsers());
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleFieldResponseDTOs.get(0),
-                userWithRoleFieldResponseDTOs.get(1));
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleDTOs.get(0),
+                userWithRoleDTOs.get(1));
 
         // when
         List<UserWithRoleDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
-        assertThat(result).isEqualTo(userWithRoleFieldResponseDTOs);
+        assertThat(result).isEqualTo(userWithRoleDTOs);
     }
 
     @Test
@@ -107,7 +107,7 @@ class UserServiceImplTest {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = UserTestData.getUserRegistrationDTO();
         User user = getUser();
-        UserWithRoleDTO userWithRoleFieldResponseDTO = getUserWithRoleResponseDTOs().getFirst();
+        UserWithRoleDTO userWithRoleDTO = getUserWithRoleResponseDTOs().getFirst();
 
         given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
 
@@ -117,13 +117,13 @@ class UserServiceImplTest {
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
 
-        given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleFieldResponseDTO);
+        given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleDTO);
 
         // when
         UserWithRoleDTO result = userService.registerUser(registrationRequestDTO);
 
         // then
-        assertThat(result).isEqualTo(userWithRoleFieldResponseDTO);
+        assertThat(result).isEqualTo(userWithRoleDTO);
     }
 
     @Test
