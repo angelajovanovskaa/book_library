@@ -27,7 +27,7 @@ public class RequestedBookController {
     private final RequestedBookQueryService requestedBookQueryService;
     private final RequestedBookManagementService requestedBookManagementService;
 
-    @GetMapping()
+    @GetMapping
     ResponseEntity<List<RequestedBookResponseDTO>> getRequestedBooks(@RequestParam @NotBlank String officeName) {
         List<RequestedBookResponseDTO> response =
                 requestedBookQueryService.getRequestedBooksByOfficeName(officeName);
