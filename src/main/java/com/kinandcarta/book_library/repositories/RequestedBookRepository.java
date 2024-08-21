@@ -10,10 +10,10 @@ import java.util.UUID;
 
 public interface RequestedBookRepository extends JpaRepository<RequestedBook, UUID> {
 
-    List<RequestedBook> findAllByBookOfficeName(String bookOfficeName);
+    List<RequestedBook> findAllByBookOfficeNameOrderByRequestedDateDescBookTitleAsc(String bookOfficeName);
 
     Optional<RequestedBook> findByBookIsbnAndBookOfficeName(String isbn, String officeName);
 
-    List<RequestedBook> findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(BookStatus status,
-                                                                                                   String officeName);
+    List<RequestedBook> findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescRequestedDateDesc(
+            BookStatus status, String officeName);
 }
