@@ -1,97 +1,51 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.converters.UserConverter;
-import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
+
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
-import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
+import com.kinandcarta.book_library.services.UserManagementService;
+import jakarta.transaction.Transactional;
+import com.kinandcarta.book_library.converters.UserConverter;
+import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
+import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
 import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
-import com.kinandcarta.book_library.services.UserService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Implementation of {@link UserService} that manages the registration and login of user.<br>
- * This service includes methods for operations with users account, like updating and deleting users account.
- * Includes methods for retrieving views of all users and their filtering.
- * Access controls are specified for different operations.
+ * Implementation of {@link UserManagementService} that manages user account operations such as registration, login,
+ * updating, and deleting user accounts.<br>
+ * This service includes methods for operations involving user data changes, like inserting new users, updating user
+ * roles, and deleting accounts.<br>
+ * All operations in this service involve insert, update, or delete logic and correspond to non-GET HTTP methods.
+ * Access controls are specified for different management operations.
  */
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserManagementServiceImpl implements UserManagementService {
     private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
     private final OfficeRepository officeRepository;
-
-    /**
-     * This method is used to get all the registered users.<br>
-     * This method will only be accessible by the admin.
-     * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
-     *
-     * @param officeName the name of the office where the user searching belongs.
-     * @return A list of {@link UserWithRoleDTO}
-     */
-    @Override
-    public List<UserWithRoleDTO> getAllUsers(String officeName) {
-        List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
-
-        return users.stream().map(userConverter::toUserWithRoleDTO).toList();
-    }
-
-    /**
-     * This method is used to filter the registered users by their fullName
-     * This method will only be accessible by the admin.
-     * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
-     *
-     * @param officeName         the name of the office where the user searching belongs.
-     * @param fullNameSearchTerm String value for the fullName of User.
-     * @return A list of {@link UserWithRoleDTO}
-     */
-    @Override
-    public List<UserWithRoleDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
-        List<User> users =
-                userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
-                        fullNameSearchTerm);
-
-        return users.stream().map(userConverter::toUserWithRoleDTO).toList();
-    }
-
-    /**
-     * This method is used to get all the information for users profile<br>
-     * All the users will have access to this method, so they can view their profile.
-     *
-     * @param userId UUID for the id of the user that we are trying to get details for.
-     * @return {@link UserProfileDTO}
-     */
-    @Override
-    public UserProfileDTO getUserProfile(UUID userId) {
-        User user = userRepository.getReferenceById(userId);
-
-        return userConverter.toUserProfileDTO(user);
-    }
 
     /**
      * This method is used for registering a new user<br>

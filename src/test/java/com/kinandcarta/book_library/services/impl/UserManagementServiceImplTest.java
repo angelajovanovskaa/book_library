@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
-import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
@@ -25,7 +24,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +34,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class UserServiceImplTest {
+class UserManagementServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
@@ -50,55 +48,7 @@ class UserServiceImplTest {
     private OfficeRepository officeRepository;
 
     @InjectMocks
-    private UserServiceImpl userService;
-
-    @Test
-    void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleDTO() {
-        // given
-        List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
-
-        given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(UserTestData.getUsers());
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleDTOs.get(0),
-                userWithRoleDTOs.get(1));
-
-        // when
-        List<UserWithRoleDTO> result = userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
-
-        // then
-        assertThat(result).isEqualTo(userWithRoleDTOs);
-    }
-
-    @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleDTO() {
-        // given
-        List<UserWithRoleDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
-
-        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(any(), any())).willReturn(
-                UserTestData.getUsers());
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleResponseDTOs.get(0),
-                userWithRoleResponseDTOs.get(1));
-
-        // when
-        List<UserWithRoleDTO> result =
-                userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
-                        UserTestData.USER_FULL_NAME);
-
-        // then
-        assertThat(result).isEqualTo(UserTestData.getUserWithRoleResponseDTOs());
-    }
-
-    @Test
-    void getUserProfile_userExist_returnsUserProfileDTO() {
-        // given
-        given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
-        given(userConverter.toUserProfileDTO(any())).willReturn(UserTestData.getUserProfileDTO());
-
-        // when
-        UserProfileDTO result = userService.getUserProfile(UserTestData.USER_ID);
-
-        // then
-        assertThat(result).isEqualTo(UserTestData.getUserProfileDTO());
-    }
+    private UserManagementServiceImpl userManagementService;
 
     @Test
     void registerUser_theRegistrationIsSuccessful_returnsUserWithRoleDTO() throws IOException {
@@ -118,7 +68,7 @@ class UserServiceImplTest {
         given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleDTO);
 
         // when
-        UserWithRoleDTO result = userService.registerUser(registrationRequestDTO);
+        UserWithRoleDTO result = userManagementService.registerUser(registrationRequestDTO);
 
         // then
         assertThat(result).isEqualTo(userWithRoleDTO);
@@ -134,7 +84,7 @@ class UserServiceImplTest {
 
         // when && then
         assertThatExceptionOfType(EmailAlreadyInUseException.class)
-                .isThrownBy(() -> userService.registerUser(userRegistrationDTO))
+                .isThrownBy(() -> userManagementService.registerUser(userRegistrationDTO))
                 .withMessage("The email: " + UserTestData.USER_EMAIL + " is already in use.");
     }
 
@@ -145,7 +95,7 @@ class UserServiceImplTest {
                 Optional.of(UserTestData.getUser()));
 
         // when
-        String result = userService.loginUser(UserTestData.getUserLoginRequestDTO());
+        String result = userManagementService.loginUser(UserTestData.getUserLoginRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserTestData.USER_FULL_NAME);
@@ -158,7 +108,7 @@ class UserServiceImplTest {
 
         // when && then
         assertThatExceptionOfType(InvalidUserCredentialsException.class)
-                .isThrownBy(() -> userService.loginUser(userLoginRequestDTO))
+                .isThrownBy(() -> userManagementService.loginUser(userLoginRequestDTO))
                 .withMessage("The credentials that you have entered don't match.");
     }
 
@@ -168,7 +118,7 @@ class UserServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when
-        String result = userService.updateUserData(UserTestData.getUserUpdateDataRequestDTO());
+        String result = userManagementService.updateUserData(UserTestData.getUserUpdateDataRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_DATA_UPDATED_RESPONSE);
@@ -180,7 +130,7 @@ class UserServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when
-        String result = userService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
+        String result = userManagementService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
@@ -194,7 +144,7 @@ class UserServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(user);
 
         // when
-        String result = userService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
+        String result = userManagementService.updateUserRole(UserTestData.getUserUpdateRoleRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_ALREADY_ASSIGNED_RESPONSE);
@@ -205,7 +155,7 @@ class UserServiceImplTest {
         // given
 
         // when
-        String result = userService.deleteAccount(UserTestData.USER_ID);
+        String result = userManagementService.deleteAccount(UserTestData.USER_ID);
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_DELETED_RESPONSE);
@@ -217,7 +167,7 @@ class UserServiceImplTest {
         given(userRepository.getReferenceById(any())).willReturn(UserTestData.getUser());
 
         // when
-        String result = userService.changeUserPassword(UserTestData.getUserChangePasswordRequestDTO());
+        String result = userManagementService.changeUserPassword(UserTestData.getUserChangePasswordRequestDTO());
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
@@ -233,7 +183,7 @@ class UserServiceImplTest {
 
         // when && then
         assertThatExceptionOfType(IncorrectPasswordException.class)
-                .isThrownBy(() -> userService.changeUserPassword(userChangePasswordRequestDTO))
+                .isThrownBy(() -> userManagementService.changeUserPassword(userChangePasswordRequestDTO))
                 .withMessage("The password that you have entered is incorrect.");
     }
 }
