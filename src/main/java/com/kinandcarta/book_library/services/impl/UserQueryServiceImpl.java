@@ -8,13 +8,16 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Implementation of {@link UserQueryService} that handles query operations for user data.<br>
- * This service includes methods for retrieving user views, such as getting all users, filtering users by name, and fetching user profiles.<br>
- * All operations in this service correspond to GET HTTP methods and are primarily used for fetching and displaying user information.
+ * This service includes methods for retrieving user views, such as getting all users, filtering users by name, and
+ * fetching user profiles.<br>
+ * All operations in this service correspond to GET HTTP methods and are primarily used for fetching and displaying
+ * user information.
  * Access controls are specified for different query operations.
  */
 @Service
@@ -33,14 +36,14 @@ public class UserQueryServiceImpl implements UserQueryService {
      * @return A list of {@link UserWithRoleDTO}
      */
     @Override
-    public List<UserWithRoleDTO> getAllUsers(String officeName) {
+    public List<UserWithRoleDTO> getUsers(String officeName) {
         List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
 
     /**
-     * This method is used to filter the registered users by their fullName
+     * This method is used to filter the registered users by their fullName.
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
@@ -49,7 +52,7 @@ public class UserQueryServiceImpl implements UserQueryService {
      * @return A list of {@link UserWithRoleDTO}
      */
     @Override
-    public List<UserWithRoleDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm) {
+    public List<UserWithRoleDTO> getUsersWithFullName(String officeName, String fullNameSearchTerm) {
         List<User> users =
                 userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
                         fullNameSearchTerm);

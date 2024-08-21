@@ -31,7 +31,7 @@ class UserQueryServiceImplTest {
     private UserQueryServiceImpl userQueryService;
 
     @Test
-    void getAllUsers_theListHasAtLeastOne_returnsListOfUserWithRoleDTO() {
+    void getUsers_theListHasAtLeastOne_returnsListOfUserWithRoleDTO() {
         // given
         List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
@@ -40,14 +40,14 @@ class UserQueryServiceImplTest {
                 userWithRoleDTOs.get(1));
 
         // when
-        List<UserWithRoleDTO> result = userQueryService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        List<UserWithRoleDTO> result = userQueryService.getUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(result).isEqualTo(userWithRoleDTOs);
     }
 
     @Test
-    void getAllUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleDTO() {
+    void getUsersWithFullName_HasMatchesWithSearchTerm_returnsListOfUserWithRoleDTO() {
         // given
         List<UserWithRoleDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
@@ -58,7 +58,7 @@ class UserQueryServiceImplTest {
 
         // when
         List<UserWithRoleDTO> result =
-                userQueryService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
+                userQueryService.getUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
                         UserTestData.USER_FULL_NAME);
 
         // then

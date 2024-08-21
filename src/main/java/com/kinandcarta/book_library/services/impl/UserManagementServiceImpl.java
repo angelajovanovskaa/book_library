@@ -30,8 +30,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Implementation of {@link UserManagementService} that manages user account operations such as registration, login, updating, and deleting user accounts.<br>
- * This service includes methods for operations involving user data changes, like inserting new users, updating user roles, and deleting accounts.<br>
+ * Implementation of {@link UserManagementService} that manages user account operations such as registration, login,
+ * updating, and deleting user accounts.<br>
+ * This service includes methods for operations involving user data changes, like inserting new users, updating user
+ * roles, and deleting accounts.<br>
  * All operations in this service involve insert, update, or delete logic and correspond to non-GET HTTP methods.
  * Access controls are specified for different management operations.
  */

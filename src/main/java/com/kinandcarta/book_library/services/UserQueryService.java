@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public interface UserQueryService {
 
-    List<UserWithRoleDTO> getAllUsers(String officeName);
+    List<UserWithRoleDTO> getUsers(String officeName);
 
-    List<UserWithRoleDTO> getAllUsersWithFullName(String officeName, String fullNameSearchTerm);
+    List<UserWithRoleDTO> getUsersWithFullName(String officeName, String fullNameSearchTerm);
 
     UserProfileDTO getUserProfile(UUID userId);
 }

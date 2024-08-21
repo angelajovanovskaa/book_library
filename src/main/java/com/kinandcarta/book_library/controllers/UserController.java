@@ -37,7 +37,7 @@ public class UserController {
 
     @GetMapping
     ResponseEntity<List<UserWithRoleDTO>> getUsers(@RequestParam @NotBlank String officeName) {
-        List<UserWithRoleDTO> response = userQueryService.getAllUsers(officeName);
+        List<UserWithRoleDTO> response = userQueryService.getUsers(officeName);
 
         return ResponseEntity.ok(response);
     }
@@ -45,7 +45,7 @@ public class UserController {
     @GetMapping("/by-full-name")
     ResponseEntity<List<UserWithRoleDTO>> getUsersByFullName(@RequestParam @NotBlank String officeName,
                                                              @RequestParam String fullName) {
-        List<UserWithRoleDTO> response = userQueryService.getAllUsersWithFullName(officeName, fullName);
+        List<UserWithRoleDTO> response = userQueryService.getUsersWithFullName(officeName, fullName);
 
         return ResponseEntity.ok(response);
     }
