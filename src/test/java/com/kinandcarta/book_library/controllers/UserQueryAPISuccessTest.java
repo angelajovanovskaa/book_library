@@ -8,11 +8,7 @@ import com.kinandcarta.book_library.services.impl.UserServiceImpl;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
-class UserQueryControllerTest {
+class UserQueryAPISuccessTest {
     private static final String USERS_PATH = "/users";
 
     @MockBean
@@ -64,16 +60,6 @@ class UserQueryControllerTest {
         assertThat(result).isEqualTo(userWithRoleDTOs);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getUsers_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given & when & then
-        mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
     void getUsersByFullName_atLeastOneUserExists_returnsListOfUserWithRoleDTO() throws Exception {
         // given
@@ -101,19 +87,6 @@ class UserQueryControllerTest {
         assertThat(result).containsExactly(userWithRoleDTO);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getUsersByFullName_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
-
-        // when & then
-        mockMvc.perform(get(getUsersByFullNamePath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
     void getUserProfile_userExists_returnsUserProfileDTO() throws Exception {
         // given
@@ -134,19 +107,5 @@ class UserQueryControllerTest {
 
         // then
         assertThat(result).isEqualTo(userProfileDTO);
-
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getUserProfile_paramUserIdBlankOrNull_returnsBadRequest(String userId) {
-        // given
-        final String getUserProfilePath = USERS_PATH + "/profile";
-
-        // when & then
-        mockMvc.perform(get(getUserProfilePath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
-                .andExpect(status().isBadRequest());
     }
 }
