@@ -13,8 +13,7 @@ import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,6 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
@@ -74,11 +74,23 @@ public class ReviewQueryControllerTest {
         assertThat(actualResult).containsExactly(ReviewTestData.getReviewResponseDTO());
     }
 
+    @Test
+    @SneakyThrows
+    void getReviewsForBook_officeNameParamIsMissing_returnsBadRequest() {
+        // when & then
+        mockMvc.perform(
+                        get(REVIEW_BASE_PATH).queryParam(SharedControllerTestData.BOOK_ISBN_PARAM,
+                                BookTestData.BOOK_ISBN))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+    }
+
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewsForBook_invalidOfficeNameParam_returnsBadRequest(String officeName) {
+    void getReviewsForBook_officeNameParamIsEmpty_returnsBadRequest(String officeName) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, officeName);
@@ -86,14 +98,40 @@ public class ReviewQueryControllerTest {
 
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Validation failure"));
+    }
+
+    @Test
+    @SneakyThrows
+    void getReviewsForBook_officeNameParamIsNull_returnsBadRequest() {
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.OFFICE_PARAM, null);
+        params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+    }
+
+    @Test
+    @SneakyThrows
+    void getReviewsForBook_isbnParamIsMissing_returnsBadRequest() {
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewsForBook_invalidIsbnParam_returnsBadRequest(String isbn) {
+    void getReviewsForBook_isbnParamIsEmpty_returnsBadRequest(String isbn) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -101,7 +139,22 @@ public class ReviewQueryControllerTest {
 
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Validation failure"));
+    }
+
+    @Test
+    @SneakyThrows
+    void getReviewsForBook_isbnParamIsNull_returnsBadRequest() {
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        params.add(SharedControllerTestData.BOOK_ISBN_PARAM, null);
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
     }
 
     @Test
@@ -125,15 +178,38 @@ public class ReviewQueryControllerTest {
     }
 
     @ParameterizedTest
-    @NullSource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewById_invalidReviewIdParam_returnsBadRequest(String reviewId) {
+    void getReviewById_reviewIdParamIsNotValid_returnsBadRequest(String reviewId) {
         // given
 
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/" + reviewId))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required path variable 'reviewId' is not present."));
+    }
+
+    @Test
+    @SneakyThrows
+    void getReviewById_reviewIdParamIsEmpty_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("No static resource reviews."));
+    }
+
+    @Test
+    @SneakyThrows
+    void getReviewById_reviewIdParamIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + null))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("$.detail").value("Failed to convert 'reviewId' with value: 'null'"));
     }
 
     @Test
@@ -173,11 +249,21 @@ public class ReviewQueryControllerTest {
         assertThat(actualResult).containsExactly(ReviewTestData.getReviewResponseDTO());
     }
 
+    @Test
+    @SneakyThrows
+    void getTopReviewsForBook_officeNameParamIsMissing_returnsBadRequest() {
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+    }
+
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getTopReviewsForBook_invalidOfficeNameParam_returnsBadRequest(String officeName) {
+    void getTopReviewsForBook_officeNameParamIsEmpty_returnsBadRequest(String officeName) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, officeName);
@@ -185,14 +271,40 @@ public class ReviewQueryControllerTest {
 
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Validation failure"));
+    }
+
+    @Test
+    @SneakyThrows
+    void getTopReviewsForBook_officeNameParamIsNull_returnsBadRequest() {
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.OFFICE_PARAM, null);
+        params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+    }
+
+    @Test
+    @SneakyThrows
+    void getTopReviewsForBook_isbnParamIsMissing_returnsBadRequest() {
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews")
+                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
+    @EmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getTopReviewsForBook_invalidIsbnParam_returnsBadRequest(String isbn) {
+    void getTopReviewsForBook_isbnParamIsEmpty_returnsBadRequest(String isbn) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -200,6 +312,21 @@ public class ReviewQueryControllerTest {
 
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Validation failure"));
+    }
+
+    @Test
+    @SneakyThrows
+    void getTopReviewsForBook_isbnParamIsNull_returnsBadRequest() {
+        // given
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        params.add(SharedControllerTestData.BOOK_ISBN_PARAM, null);
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
     }
 }

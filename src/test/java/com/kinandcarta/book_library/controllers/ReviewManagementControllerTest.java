@@ -3,19 +3,20 @@ package com.kinandcarta.book_library.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
+import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
+import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
@@ -48,7 +50,8 @@ class ReviewManagementControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void insertReview_insertIsValid_returnsReviewResponseDTO() throws Exception {
+    @SneakyThrows
+    void insertReview_insertIsValid_returnsReviewResponseDTO() {
         // given
         given(reviewManagementService.insertReview(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
@@ -71,66 +74,97 @@ class ReviewManagementControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
+    void insertReview_bookIsbnIsNullOrEmpty_returnsBadRequest(String invalidIsbn) {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(invalidIsbn, "email", "message", 5);
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.bookISBN").value("must not be blank"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
+    void insertReview_userEmailIsNullOrEmpty_returnsBadRequest(String invalidEmail) {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", invalidEmail, "message", 5);
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be blank"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
+    void insertReview_messageIsNullOrEmpty_returnsBadRequest(String invalidMessage) {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", invalidMessage, 5);
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.message").value("must not be blank"));
     }
 
     @Test
     @SneakyThrows
-    void insertReview_ratingIsInvalid_returnsBadRequest() {
+    void insertReview_ratingIsOutOfBounds_returnsBadRequest() {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", "message", 0);
 
-        // when, then
+        // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content("{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", " +
+                                "\"rating\": 0}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.rating").value("must be greater than or equal to 1"));
     }
 
     @Test
-    void updateReview_validRequest_returnsUpdatedReviewResponseDTO() throws Exception {
+    @SneakyThrows
+    void insertReview_userNotFound_returnsBadRequest() {
         // given
-        ReviewResponseDTO expectedResponse = ReviewTestData.getReviewResponseDTO();
-        Mockito.when(reviewManagementService.updateReview(any(ReviewRequestDTO.class)))
-                .thenReturn(expectedResponse);
+        given(reviewManagementService.insertReview(any())).willThrow(
+                new UserNotFoundException(UserTestData.USER_EMAIL));
+
+        // when & then
+        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
+    void insertReview_bookNotFound_returnsBadRequest() {
+        // given
+        given(reviewManagementService.insertReview(any())).willThrow(new BookNotFoundException(BookTestData.BOOK_ISBN
+                , SharedServiceTestData.SKOPJE_OFFICE_NAME));
+
+        // when & then
+        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @SneakyThrows
+    void updateReview_validRequest_returnsUpdatedReviewResponseDTO() {
+        // given
+        given(reviewManagementService.updateReview(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
         // when
         String jsonResult = mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
@@ -143,65 +177,69 @@ class ReviewManagementControllerTest {
         ReviewResponseDTO actualResponse = objectMapper.readValue(jsonResult, ReviewResponseDTO.class);
 
         // then
-        assertThat(actualResponse).isEqualTo(expectedResponse);
+        assertThat(actualResponse).isEqualTo(ReviewTestData.getReviewResponseDTO());
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
+    void updateReview_bookIsbnIsNullOrEmpty_returnsBadRequest(String invalidIsbn) {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO(invalidIsbn, "email", "message", 5);
 
         // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.bookISBN").value("must not be blank"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
+    void updateReview_userEmailIsNullOrEmpty_returnsBadRequest(String invalidEmail) {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", invalidEmail, "message", 5);
 
         // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be blank"));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
+    void updateReview_messageIsNullOrEmpty_returnsBadRequest(String invalidMessage) {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", invalidMessage, 5);
 
         // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.message").value("must not be blank"));
     }
 
     @Test
     @SneakyThrows
-    void updateReview_ratingIsInvalid_returnsBadRequest() {
+    void updateReview_ratingIsOutOfBounds_returnsBadRequest() {
         // given
-        ReviewRequestDTO reviewRequestDTO = new ReviewRequestDTO("isbn", "email", "message", 0);
 
-        // when, then
+        // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
-                .andExpect(status().isBadRequest());
+                        .content("{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", " +
+                                "\"rating\": 0}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.rating").value("must be greater than or equal to 1"));
     }
 
     @Test
@@ -223,7 +261,8 @@ class ReviewManagementControllerTest {
     }
 
     @Test
-    void deleteReview_validReviewId_returnsSuccessMessage() throws Exception {
+    @SneakyThrows
+    void deleteReview_validReviewId_returnsSuccessMessage() {
         // given
         given(reviewManagementService.deleteReviewById(any())).willReturn(ReviewTestData.REVIEW_ID);
 
@@ -239,18 +278,43 @@ class ReviewManagementControllerTest {
     }
 
     @ParameterizedTest
-    @NullSource
-    @ValueSource(strings = {" ", "\t", "\n", "invalid-uuid"})
-    void deleteReview_invalidReviewId_returnsBadRequest(String reviewId) throws Exception {
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    @SneakyThrows
+    void deleteReview_reviewIdIsNotValid_returnsBadRequest(String reviewId) {
         // given
 
         // when & then
         mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + reviewId))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required path variable 'reviewId' is not present."));
     }
 
     @Test
-    void deleteReview_reviewDoesNotExist_returnsBadRequest() throws Exception {
+    @SneakyThrows
+    void deleteReview_reviewIdIsEmpty_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.detail").value("No static resource reviews/delete."));
+    }
+
+    @Test
+    @SneakyThrows
+    void deleteReview_reviewIdIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + null))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("$.detail").value("Failed to convert 'reviewId' with value: 'null'"));
+    }
+
+    @Test
+    @SneakyThrows
+    void deleteReview_reviewDoesNotExist_returnsNotFound() {
         // given
         given(reviewManagementService.deleteReviewById(ReviewTestData.REVIEW_ID)).willThrow(
                 new ReviewNotFoundException(ReviewTestData.REVIEW_ID));
