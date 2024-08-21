@@ -68,14 +68,14 @@ class UserQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getUsers_ParamOfficeNameNullOrEmpty_returnsBadRequest(String officeName) {
+    void getUsers_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given & when & then
         mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void getUsersByFullName_AtLeastOneUserExists_returnsListOfUserWithRoleDTO() throws Exception {
+    void getUsersByFullName_atLeastOneUserExists_returnsListOfUserWithRoleDTO() throws Exception {
         // given
         final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
         UserWithRoleDTO userWithRoleDTO = UserTestData.getUserWithRoleResponseDTOs().getFirst();
@@ -105,7 +105,7 @@ class UserQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getUsersByFullName_ParamOfficeNameNullOrEmpty_returnsBadRequest(String officeName) {
+    void getUsersByFullName_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
         // given
         final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
 
@@ -141,7 +141,7 @@ class UserQueryControllerTest {
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getUserProfile_ParamUserIdNullOrEmpty_returnsBadRequest(String userId) {
+    void getUserProfile_paramUserIdBlankOrNull_returnsBadRequest(String userId) {
         // given
         final String getUserProfilePath = USERS_PATH + "/profile";
 
