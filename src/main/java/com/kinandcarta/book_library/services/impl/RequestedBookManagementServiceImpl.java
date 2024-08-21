@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * This service provides methods for managing {@link RequestedBook} entities.
@@ -85,6 +86,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
      */
     @Override
+    @Transactional
     public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
         if (!bookRepository.existsByIsbnAndOfficeName(bookIsbn, officeName)) {
             throw new BookNotFoundException(bookIsbn, officeName);
