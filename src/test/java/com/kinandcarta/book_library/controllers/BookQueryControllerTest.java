@@ -56,6 +56,29 @@ class BookQueryControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Test
+    @SneakyThrows
+    void getBooks_atLeastOnBookExists_returnsListOfBookDisplayDTOs() {
+        // given
+        List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
+
+        given(bookQueryService.getAllBooks(anyString())).willReturn(bookDisplayDTOs);
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
+        });
+
+        // then
+        assertThat(result).isEqualTo(bookDisplayDTOs);
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
@@ -64,6 +87,32 @@ class BookQueryControllerTest {
         // given & when & then
         mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void getBook_atLeastOneBookExists_returnsBookDetailsDTO() {
+        // given
+        final String getBookPath = BOOK_PATH + "/get-book";
+        final BookDetailsDTO bookDetailsDTO = BookTestData.getBookDetailsDTO();
+
+        given(bookQueryService.getBookByIsbn(anyString(), anyString())).willReturn(bookDetailsDTO);
+
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getBookPath).queryParams(queryParamsValues))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        BookDetailsDTO content = objectMapper.readValue(jsonResult, BookDetailsDTO.class);
+
+        //then
+        assertThat(content).isEqualTo(bookDetailsDTO);
     }
 
     @ParameterizedTest
@@ -112,6 +161,30 @@ class BookQueryControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @SneakyThrows
+    void getAvailableBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
+        // given
+        final String getAvailableBooksPath = BOOK_PATH + "/available";
+        final List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
+
+        given(bookQueryService.getAvailableBooks(anyString())).willReturn(bookDisplayDTOs);
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
+        });
+
+        // then
+        assertThat(result).isEqualTo(bookDisplayDTOs);
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
@@ -123,6 +196,30 @@ class BookQueryControllerTest {
         //when & then
         mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void getRequestedBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
+        // given
+        final String getAvailableBooksPath = BOOK_PATH + "/requested";
+        final List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
+
+        given(bookQueryService.getRequestedBooks(anyString())).willReturn(bookDisplayDTOs);
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
+        });
+
+        // then
+        assertThat(result).isEqualTo(bookDisplayDTOs);
     }
 
     @ParameterizedTest
@@ -138,6 +235,42 @@ class BookQueryControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @SneakyThrows
+    void getPaginatedAvailableBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
+        // given
+        final String getAvailableBooksPath = BOOK_PATH + "/paginated";
+        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
+
+        Page<BookDisplayDTO> bookDisplayDTOsPaginated = new PageImpl<>(List.of(bookDisplayDTO));
+
+        given(bookQueryService.getPaginatedAvailableBooks(anyInt(), anyInt(), anyString())).willReturn(
+                bookDisplayDTOsPaginated);
+
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.PAGE_SIZE_PARAM,
+                String.valueOf(SharedServiceTestData.PAGE_SIZE));
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getAvailableBooksPath).queryParams(queryParamsValues))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        Map<String, Object> resultMap = objectMapper.readValue(jsonResult, new TypeReference<>() {
+        });
+
+        List<BookDisplayDTO> content =
+                objectMapper.convertValue(resultMap.get(SharedControllerTestData.CONTENT_KEY_VALUE),
+                        new TypeReference<>() {
+                        });
+
+        // then
+        assertThat(content).isEqualTo(bookDisplayDTOsPaginated.getContent());
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
@@ -151,6 +284,33 @@ class BookQueryControllerTest {
                         get(getAvailablePaginatedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
                                 officeName))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void getBooksBySearchTitle_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
+        // given
+        final String getBooksBySearchTitlePath = BOOK_PATH + "/by-title";
+        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
+
+        given(bookQueryService.getBooksByTitle(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
+
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE);
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getBooksBySearchTitlePath).queryParams(queryParamsValues))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
+
+        //then
+        assertThat(content).containsExactly(bookDisplayDTO);
     }
 
     @ParameterizedTest
@@ -185,6 +345,33 @@ class BookQueryControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @SneakyThrows
+    void getBooksByLanguage_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
+        // given
+        final String getBooksByLanguagePath = BOOK_PATH + "/by-language";
+        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
+
+        given(bookQueryService.getBooksByLanguage(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
+
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getBooksByLanguagePath).queryParams(queryParamsValues))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
+
+        //then
+        assertThat(content).containsExactly(bookDisplayDTO);
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
@@ -215,6 +402,33 @@ class BookQueryControllerTest {
                         .queryParam(BookTestData.BOOK_LANGUAGE, language)
                 )
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @SneakyThrows
+    void getBooksByGenres_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
+        // given
+        final String getBooksByGenresPath = BOOK_PATH + "/by-genres";
+        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
+
+        given(bookQueryService.getBooksByGenresContaining(any(), anyString())).willReturn(List.of(bookDisplayDTO));
+
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BookTestData.BOOK_GENRES));
+
+        // when
+        final String jsonResult =
+                mockMvc.perform(get(getBooksByGenresPath).queryParams(queryParamsValues))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andReturn().getResponse().getContentAsString();
+
+        List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
+                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
+
+        //then
+        assertThat(content).containsExactly(bookDisplayDTO);
     }
 
     @ParameterizedTest
@@ -263,196 +477,5 @@ class BookQueryControllerTest {
                         .queryParam(GENRES_PARAM, genre)
                 )
                 .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @SneakyThrows
-    void getAvailableBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
-        // given
-        final String getAvailableBooksPath = BOOK_PATH + "/available";
-        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
-
-        given(bookQueryService.getAvailableBooks(anyString())).willReturn(List.of(bookDisplayDTO));
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
-        });
-
-        // then
-        assertThat(result).containsExactly(bookDisplayDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    void getBook_atLeastOneBookExists_returnsListOfBookDetailsDTO() {
-        // given
-        final String getBookPath = BOOK_PATH + "/get-book";
-        final BookDetailsDTO bookDetailsDTO = BookTestData.getBookDetailsDTO();
-
-        given(bookQueryService.getBookByIsbn(anyString(), anyString())).willReturn(bookDetailsDTO);
-
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getBookPath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        BookDetailsDTO content = objectMapper.readValue(jsonResult, BookDetailsDTO.class);
-
-        //then
-        assertThat(content).isEqualTo(bookDetailsDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    void getRequestedBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
-        // given
-        final String getAvailableBooksPath = BOOK_PATH + "/requested";
-        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
-
-        given(bookQueryService.getRequestedBooks(anyString())).willReturn(List.of(bookDisplayDTO));
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
-        });
-
-        // then
-        assertThat(result).containsExactly(bookDisplayDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    void getPaginatedAvailableBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
-        // given
-        final String getAvailableBooksPath = BOOK_PATH + "/paginated";
-        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
-
-        Page<BookDisplayDTO> bookDisplayDTOsPaginated = new PageImpl<>(List.of(bookDisplayDTO));
-
-        given(bookQueryService.getPaginatedAvailableBooks(anyInt(), anyInt(), anyString())).willReturn(
-                bookDisplayDTOsPaginated);
-
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.PAGE_SIZE_PARAM,
-                String.valueOf(SharedServiceTestData.PAGE_SIZE));
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getAvailableBooksPath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        Map<String, Object> resultMap = objectMapper.readValue(jsonResult, new TypeReference<>() {
-        });
-
-        List<BookDisplayDTO> content =
-                objectMapper.convertValue(resultMap.get(SharedControllerTestData.CONTENT_KEY_VALUE),
-                        new TypeReference<>() {
-                        });
-
-        // then
-        assertThat(content).isEqualTo(bookDisplayDTOsPaginated.getContent());
-    }
-
-    @Test
-    @SneakyThrows
-    void getBooksBySearchTitle_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
-        // given
-        final String getBooksBySearchTitlePath = BOOK_PATH + "/by-title";
-        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
-
-        given(bookQueryService.getBooksByTitle(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
-
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE);
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getBooksBySearchTitlePath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
-
-        //then
-        assertThat(content).containsExactly(bookDisplayDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    void getBooksByLanguage_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
-        // given
-        final String getBooksByLanguagePath = BOOK_PATH + "/by-language";
-        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
-
-        given(bookQueryService.getBooksByLanguage(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
-
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getBooksByLanguagePath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
-
-        //then
-        assertThat(content).containsExactly(bookDisplayDTO);
-    }
-
-    @Test
-    @SneakyThrows
-    void getBooksByGenres_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
-        // given
-        final String getBooksByGenresPath = BOOK_PATH + "/by-genres";
-        final BookDisplayDTO bookDisplayDTO = BookTestData.getBookDisplayDTO();
-
-        given(bookQueryService.getBooksByGenresContaining(any(), anyString())).willReturn(List.of(bookDisplayDTO));
-
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BookTestData.BOOK_GENRES));
-
-        // when
-        final String jsonResult =
-                mockMvc.perform(get(getBooksByGenresPath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
-
-        List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
-
-        //then
-        assertThat(content).containsExactly(bookDisplayDTO);
     }
 }
