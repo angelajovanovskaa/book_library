@@ -6,6 +6,7 @@ import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,45 +33,45 @@ public class ReviewController {
     @GetMapping
     public ResponseEntity<List<ReviewResponseDTO>> getReviewsForBook(@RequestParam @NotBlank String officeName,
                                                                      @RequestParam @NotBlank String isbn) {
-        List<ReviewResponseDTO> result =
+        List<ReviewResponseDTO> response =
                 reviewQueryService.getAllReviewsByBookIsbnAndByOfficeName(isbn, officeName);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{reviewId}")
-    public ResponseEntity<ReviewResponseDTO> getReviewById(@PathVariable @NotBlank String reviewId) {
-        ReviewResponseDTO result = reviewQueryService.getReviewById(UUID.fromString(reviewId));
+    public ResponseEntity<ReviewResponseDTO> getReviewById(@PathVariable @NotNull UUID reviewId) {
+        ReviewResponseDTO response = reviewQueryService.getReviewById(reviewId);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/top-reviews")
     public ResponseEntity<List<ReviewResponseDTO>> getTopReviewsForBook(@RequestParam @NotBlank String officeName,
                                                                         @RequestParam @NotBlank String isbn) {
-        List<ReviewResponseDTO> result = reviewQueryService.getTopReviewsForBook(isbn, officeName);
+        List<ReviewResponseDTO> response = reviewQueryService.getTopReviewsForBook(isbn, officeName);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/insert")
     public ResponseEntity<ReviewResponseDTO> insertReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
-        ReviewResponseDTO result = reviewManagementService.insertReview(reviewRequestDTO);
+        ReviewResponseDTO response = reviewManagementService.insertReview(reviewRequestDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
     public ResponseEntity<ReviewResponseDTO> updateReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
-        ReviewResponseDTO result = reviewManagementService.updateReview(reviewRequestDTO);
+        ReviewResponseDTO response = reviewManagementService.updateReview(reviewRequestDTO);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/delete/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable String reviewId) {
-        UUID result = reviewManagementService.deleteReviewById(UUID.fromString(reviewId));
+    public ResponseEntity<String> deleteReview(@PathVariable @NotNull UUID reviewId) {
+        UUID response = reviewManagementService.deleteReviewById(reviewId);
 
-        return ResponseEntity.ok("Successfully deleted review with id " + result);
+        return ResponseEntity.ok("Successfully deleted review with id " + response);
     }
 }
