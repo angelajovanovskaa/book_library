@@ -12,7 +12,7 @@ public interface RequestedBookManagementService {
 
     String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName);
 
-    String deleteRequestedBookWhenTransitioningToInStock(UUID requestedBookId);
+    UUID deleteRequestedBook(UUID requestedBookId);
 
     RequestedBookResponseDTO changeBookStatus(RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO);
 

@@ -103,24 +103,23 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     /**
      * Deletes a requested book it's ID.
      * <p>
-     * This method is used when adding {@link RequestedBook} object to IN_STOCK.
-     * Only the RequestedBook tuple is deleted with it's tuples in liked_by table.
+     * With the deletion of the {@link RequestedBook} tuple.
+     * The tuples in table liked_by where foreign key to that {@link RequestedBook} tuple is present, are deleted as
+     * well.
      * </p>
      *
      * @param requestedBookId ID of the {@link RequestedBook}
-     * @return {@code String} the ISBN of the deleted requested book.
+     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      */
     @Transactional
     @Override
-    public String deleteRequestedBookWhenTransitioningToInStock(UUID requestedBookId) {
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
-        Book book = requestedBook.getBook();
-        String bookIsbn = book.getIsbn();
+    public UUID deleteRequestedBook(UUID requestedBookId) {
+        getRequestedBook(requestedBookId);
 
         requestedBookRepository.deleteById(requestedBookId);
 
-        return bookIsbn;
+        return requestedBookId;
     }
 
     /**
