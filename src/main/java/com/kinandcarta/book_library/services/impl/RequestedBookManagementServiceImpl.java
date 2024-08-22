@@ -74,27 +74,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Deletes a requested book by its ISBN and {@link Office} name.
-     * <p>
-     * With the deletion of the {@link Book} tuple, the {@link RequestedBook} tuple is also deleted as well.
-     * </p>
-     *
-     * @param bookIsbn   ISBN of the requested book to be deleted.
-     * @param officeName Name of the office where the requested book belongs.
-     * @return {@code String} the ISBN of the deleted requested book.
-     * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
-     */
-    @Override
-    public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
-        if (!bookRepository.existsByIsbnAndOfficeName(bookIsbn, officeName)) {
-            throw new BookNotFoundException(bookIsbn, officeName);
-        }
-
-        bookRepository.deleteByIsbnAndOfficeName(bookIsbn, officeName);
-        return bookIsbn;
-    }
-
-    /**
      * Changes the status of a {@link RequestedBook}.
      * <p>
      * The method updates the status of the book associated with the requested book and validates the transition.
