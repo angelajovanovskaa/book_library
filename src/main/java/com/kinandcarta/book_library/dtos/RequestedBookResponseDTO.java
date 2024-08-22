@@ -8,6 +8,7 @@ import java.util.UUID;
 public record RequestedBookResponseDTO(
         UUID id,
         String bookISBN,
+        String officeName,
         LocalDate requestedDate,
         Long likeCounter,
         BookStatus bookStatus,
@@ -25,9 +26,10 @@ public record RequestedBookResponseDTO(
         }
         RequestedBookResponseDTO that = (RequestedBookResponseDTO) obj;
         return Objects.equals(id, that.id) &&
+                Objects.equals(bookISBN, that.bookISBN) &&
+                Objects.equals(officeName, that.officeName) &&
                 Objects.equals(requestedDate, that.requestedDate) &&
                 Objects.equals(likeCounter, that.likeCounter) &&
-                Objects.equals(bookISBN, that.bookISBN) &&
                 Objects.equals(title, that.title) &&
                 Objects.equals(image, that.image);
     }
@@ -41,6 +43,8 @@ public record RequestedBookResponseDTO(
     public String toString() {
         return "RequestedBookDTO(" +
                 "id=" + id +
+                ", bookISBN=" + bookISBN +
+                ", officeName=" + officeName +
                 ", requestedDate=" + requestedDate +
                 ", likeCounter=" + likeCounter +
                 ", bookISBN='" + bookISBN + '\'' +
