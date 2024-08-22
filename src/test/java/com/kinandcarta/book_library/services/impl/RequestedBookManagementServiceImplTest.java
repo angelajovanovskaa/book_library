@@ -137,7 +137,7 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = RequestedBookTestData.getRequestedBook();
         Book book = requestedBook.getBook();
-        book.setBookStatus(BookStatus.CURRENTLY_UNAVAILABLE);
+        book.setBookStatus(BookStatus.PENDING_PURCHASE);
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
@@ -146,7 +146,7 @@ class RequestedBookManagementServiceImplTest {
         assertThatExceptionOfType(RequestedBookStatusException.class)
                 .isThrownBy(() -> requestedBookManagementService.changeBookStatus(
                         RequestedBookTestData.getRequestedBookChangeStatusRequestDTO()))
-                .withMessage("Transition from status " + BookStatus.CURRENTLY_UNAVAILABLE + " to status " +
+                .withMessage("Transition from status " + BookStatus.PENDING_PURCHASE + " to status " +
                         BookStatus.REQUESTED + " for requested book is not feasible");
     }
 
