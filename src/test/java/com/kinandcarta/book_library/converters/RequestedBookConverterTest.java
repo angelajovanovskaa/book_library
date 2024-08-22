@@ -24,6 +24,7 @@ class RequestedBookConverterTest {
         // then
         assertThat(actualResult.id()).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
         assertThat(actualResult.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult.officeName()).isEqualTo(SharedServiceTestData.SKOPJE_OFFICE_NAME);
         assertThat(actualResult.requestedDate()).isEqualTo(SharedServiceTestData.DATE_NOW);
         assertThat(actualResult.likeCounter()).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_LIKE_COUNTER);
         assertThat(actualResult.bookStatus()).isEqualTo(BookStatus.REQUESTED);

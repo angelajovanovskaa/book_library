@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.enums.BookStatus;
 import org.springframework.stereotype.Component;
@@ -30,10 +31,12 @@ public class RequestedBookConverter {
 
         Book book = requestedBook.getBook();
         String bookISBN = book.getIsbn();
+        Office office = book.getOffice();
+        String officeName = office.getName();
         BookStatus bookStatus = book.getBookStatus();
         String title = book.getTitle();
         String image = book.getImage();
 
-        return new RequestedBookResponseDTO(id, bookISBN, requestedDate, likeCounter, bookStatus, title, image);
+        return new RequestedBookResponseDTO(id, bookISBN, officeName, requestedDate, likeCounter, bookStatus, title, image);
     }
 }
