@@ -28,6 +28,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -83,6 +84,30 @@ class RequestedBookManagementServiceImplTest {
                         BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " in office: " +
                         SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
+    }
+
+    @Test
+    void deleteRequestedBook_requestedBookDeleteValid_returnUUID() {
+        // given
+        given(requestedBookRepository.existsById(any())).willReturn(true);
+
+        // when
+        UUID actualResult = requestedBookManagementService.deleteRequestedBook(RequestedBookTestData.REQUESTED_BOOK_ID);
+
+        // then
+        assertThat(actualResult).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
+    }
+
+    @Test
+    void deleteRequestedBook_requestedBookDoesNotExist_throwsException() {
+        // given
+        given(requestedBookRepository.existsById(any())).willReturn(false);
+
+        // when & then
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBook(
+                        RequestedBookTestData.REQUESTED_BOOK_ID))
+                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
     }
 
     @Test
