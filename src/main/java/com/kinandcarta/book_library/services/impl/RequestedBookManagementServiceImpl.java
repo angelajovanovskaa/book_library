@@ -9,17 +9,21 @@ import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.exceptions.*;
+import com.kinandcarta.book_library.exceptions.BookAlreadyPresentException;
+import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
+import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
+import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 /**
  * This service provides methods for managing {@link RequestedBook} entities.
@@ -71,27 +75,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         // the books liked_by
 
         return null;
-    }
-
-    /**
-     * Deletes a requested book by its ISBN and {@link Office} name.
-     * <p>
-     * With the deletion of the {@link Book} tuple, the {@link RequestedBook} tuple is also deleted as well.
-     * </p>
-     *
-     * @param bookIsbn   ISBN of the requested book to be deleted.
-     * @param officeName Name of the office where the requested book belongs.
-     * @return {@code String} the ISBN of the deleted requested book.
-     * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
-     */
-    @Override
-    public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
-        if (!bookRepository.existsByIsbnAndOfficeName(bookIsbn, officeName)) {
-            throw new BookNotFoundException(bookIsbn, officeName);
-        }
-
-        bookRepository.deleteByIsbnAndOfficeName(bookIsbn, officeName);
-        return bookIsbn;
     }
 
     /**
