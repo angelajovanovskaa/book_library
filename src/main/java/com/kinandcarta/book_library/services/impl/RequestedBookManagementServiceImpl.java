@@ -115,7 +115,9 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     @Transactional
     @Override
     public UUID deleteRequestedBook(UUID requestedBookId) {
-        getRequestedBook(requestedBookId);
+        if (!requestedBookRepository.existsById(requestedBookId)) {
+            throw new RequestedBookNotFoundException(requestedBookId);
+        }
 
         requestedBookRepository.deleteById(requestedBookId);
 
