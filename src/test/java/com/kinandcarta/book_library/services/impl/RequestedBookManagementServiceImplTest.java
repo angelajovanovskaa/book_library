@@ -59,7 +59,7 @@ class RequestedBookManagementServiceImplTest {
     private ArgumentCaptor<RequestedBook> requestedBookCaptor;
 
     @Test
-    void deleteRequestedBook_requestedBookDeleteValid_returnUUID() {
+    void deleteRequestedBook_requestedBookExists_returnUUID() {
         // given
         given(requestedBookRepository.existsById(any())).willReturn(true);
 
