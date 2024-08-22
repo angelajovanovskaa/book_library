@@ -79,11 +79,10 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Deletes a requested book it's ID.
+     * Deletes a requested book by the provided ID.
      * <p>
-     * With the deletion of the {@link RequestedBook} tuple.
-     * The tuples in table liked_by where foreign key to that {@link RequestedBook} tuple is present, are deleted as
-     * well.
+     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
+     * {@link RequestedBook} are deleted as well.
      * </p>
      *
      * @param requestedBookId ID of the {@link RequestedBook}
