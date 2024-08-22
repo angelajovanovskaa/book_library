@@ -13,20 +13,12 @@ import com.kinandcarta.book_library.exceptions.BookAlreadyPresentException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
-import com.kinandcarta.book_library.exceptions.BookAlreadyPresentException;
-import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
-import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
-import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
