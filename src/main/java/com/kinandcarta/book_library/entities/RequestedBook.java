@@ -23,16 +23,17 @@ public class RequestedBook {
 
     private Long likeCounter = 1L;
 
-    @ToString.Exclude
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "book_isbn")
     @JoinColumn(name = "office_name")
+    @ToString.Exclude
     private Book book;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "liked_by",
             joinColumns = @JoinColumn(name = "requested_book_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @ToString.Exclude
     private Set<User> users;
 
     public void refreshLikeCounter() {
