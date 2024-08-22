@@ -10,8 +10,6 @@ public interface RequestedBookManagementService {
     //todo: create test for method saveRequestedBook()
     RequestedBookResponseDTO saveRequestedBook(RequestedBookRequestDTO requestedBookRequestDTO);
 
-    String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName);
-
     UUID deleteRequestedBook(UUID requestedBookId);
 
     RequestedBookResponseDTO changeBookStatus(RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO);
