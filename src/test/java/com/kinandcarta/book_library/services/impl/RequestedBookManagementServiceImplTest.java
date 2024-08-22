@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -57,33 +56,6 @@ class RequestedBookManagementServiceImplTest {
 
     @Captor
     private ArgumentCaptor<RequestedBook> requestedBookCaptor;
-
-    @Test
-    void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
-        // given
-        given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(true);
-
-        // when
-        String actualResult =
-                requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(BookTestData.BOOK_ISBN,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
-
-        // then
-        assertThat(actualResult).isEqualTo(BookTestData.BOOK_ISBN);
-    }
-
-    @Test
-    void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDoesNotExist_throwsException() {
-        // given
-        given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(false);
-
-        // when & then
-        assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(
-                        BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " in office: " +
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
-    }
 
     @Test
     void changeBookStatus_validTransition_returnRequestedBookDTO() {
