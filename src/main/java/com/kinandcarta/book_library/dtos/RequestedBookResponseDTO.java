@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.dtos;
 
 import com.kinandcarta.book_library.enums.BookStatus;
+
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,7 +42,7 @@ public record RequestedBookResponseDTO(
 
     @Override
     public String toString() {
-        return "RequestedBookDTO(" +
+        return "RequestedBookResponseDTO(" +
                 "id=" + id +
                 ", bookISBN=" + bookISBN +
                 ", officeName=" + officeName +
