@@ -3,6 +3,8 @@ package com.kinandcarta.book_library.exceptions.handling;
 import com.kinandcarta.book_library.exceptions.CustomBadRequestException;
 import com.kinandcarta.book_library.exceptions.CustomNotFoundException;
 import com.kinandcarta.book_library.exceptions.CustomUnprocessableEntityException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -22,6 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -66,6 +69,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomIllegalArgumentException(
             IllegalArgumentException illegalArgumentException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(illegalArgumentException.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ExceptionMessage> handleConstraintViolationException(
+            ConstraintViolationException constraintViolationException) {
+
+        Set<ConstraintViolation<?>> constraintViolations = constraintViolationException.getConstraintViolations();
+        Map<String, String> errorFields = new HashMap<>();
+
+        for (ConstraintViolation<?> constraintViolation : constraintViolations) {
+            String fieldName = constraintViolation.getPropertyPath().toString();
+            String errorMessage = constraintViolation.getMessage();
+            errorFields.put(fieldName, errorMessage);
+        }
+
+        ExceptionMessage exceptionMessage = new ExceptionMessage(errorFields);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
