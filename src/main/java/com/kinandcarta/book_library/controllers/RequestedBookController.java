@@ -35,7 +35,7 @@ public class RequestedBookController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/filtered")
+    @GetMapping("/by-book-status")
     ResponseEntity<List<RequestedBookResponseDTO>> getRequestedBooksByBookStatusAndOfficeName(
             @RequestParam @NotBlank String status, @RequestParam @NotBlank String officeName) {
         List<RequestedBookResponseDTO> response =
@@ -54,7 +54,7 @@ public class RequestedBookController {
         return ResponseEntity.ok(deletedBookIsbn);
     }
 
-    @PatchMapping("/change-status")
+    @PatchMapping("/change-book-status")
     ResponseEntity<RequestedBookResponseDTO> changeBookStatus(
             @RequestBody RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
         RequestedBookResponseDTO response =
