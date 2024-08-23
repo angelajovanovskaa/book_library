@@ -37,7 +37,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      * @return List of {@link RequestedBookResponseDTO} representing all requested books.
      */
     @Override
-    public List<RequestedBookResponseDTO> getAllRequestedBooksByOfficeName(String officeName) {
+    public List<RequestedBookResponseDTO> getRequestedBooksByOfficeName(String officeName) {
         List<RequestedBook> requestedBooks = requestedBookRepository.findAllByOfficeName(officeName);
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookResponseDTO)
