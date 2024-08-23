@@ -8,7 +8,7 @@ import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.exceptions.DuplicateReviewException;
+import com.kinandcarta.book_library.exceptions.DuplicateUserReviewException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
@@ -63,7 +63,7 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
 
         Optional<Review> existingReview = reviewRepository.findByUserEmailAndBookIsbn(email, isbn);
         if (existingReview.isPresent()) {
-            throw new DuplicateReviewException();
+            throw new DuplicateUserReviewException();
         }
 
         Review review = reviewConverter.toReview(reviewRequestDTO);
