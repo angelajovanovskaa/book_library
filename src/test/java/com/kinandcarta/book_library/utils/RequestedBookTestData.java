@@ -47,6 +47,7 @@ public class RequestedBookTestData {
         RequestedBookResponseDTO requestedBookResponseDTO1 = new RequestedBookResponseDTO(
                 REQUESTED_BOOK_ID,
                 BookTestData.BOOK_ISBN,
+                SharedServiceTestData.SKOPJE_OFFICE_NAME,
                 SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookStatus.REQUESTED,
@@ -56,6 +57,7 @@ public class RequestedBookTestData {
         RequestedBookResponseDTO requestedBookResponseDTO2 = new RequestedBookResponseDTO(
                 UUID.fromString("5f672b1d-b205-4f5d-9498-b1e1d5d5e4a2"),
                 BookTestData.BOOK_ISBN,
+                SharedServiceTestData.SKOPJE_OFFICE_NAME,
                 SharedServiceTestData.DATE_NOW,
                 REQUESTED_BOOK_LIKE_COUNTER,
                 BookStatus.REQUESTED,
