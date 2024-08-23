@@ -18,6 +18,7 @@ import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.validators.BookStatusTransitionValidator;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -75,6 +76,29 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         // the books liked_by
 
         return null;
+    }
+
+    /**
+     * Deletes a requested book by the provided ID.
+     * <p>
+     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
+     * {@link RequestedBook} are deleted as well.
+     * </p>
+     *
+     * @param requestedBookId ID of the {@link RequestedBook}
+     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
+     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
+     */
+    @Transactional
+    @Override
+    public UUID deleteRequestedBook(UUID requestedBookId) {
+        if (!requestedBookRepository.existsById(requestedBookId)) {
+            throw new RequestedBookNotFoundException(requestedBookId);
+        }
+
+        requestedBookRepository.deleteById(requestedBookId);
+
+        return requestedBookId;
     }
 
     /**
