@@ -8,6 +8,7 @@ import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.Review;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
+import com.kinandcarta.book_library.exceptions.DuplicateUserReviewException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
@@ -16,9 +17,12 @@ import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.BookAverageRatingCalculator;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import jakarta.transaction.Transactional;
+
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,16 +58,22 @@ public class ReviewManagementServiceImpl implements ReviewManagementService {
     @Override
     @Transactional
     public ReviewResponseDTO insertReview(ReviewRequestDTO reviewRequestDTO) {
+        String email = reviewRequestDTO.userEmail();
+        String isbn = reviewRequestDTO.bookISBN();
+
+        Optional<Review> existingReview = reviewRepository.findByUserEmailAndBookIsbn(email, isbn);
+        if (existingReview.isPresent()) {
+            throw new DuplicateUserReviewException();
+        }
+
         Review review = reviewConverter.toReview(reviewRequestDTO);
 
         LocalDate date = LocalDate.now();
         review.setDate(date);
-        String email = reviewRequestDTO.userEmail();
         User user = getUser(email);
         review.setUser(user);
         Office office = user.getOffice();
         String officeName = office.getName();
-        String isbn = reviewRequestDTO.bookISBN();
         Book book = getBook(isbn, officeName);
         review.setBook(book);
         reviewRepository.save(review);
