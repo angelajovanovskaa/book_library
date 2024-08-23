@@ -7,10 +7,11 @@ import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +26,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/requested-books")
+@Validated
 public class RequestedBookController {
     private final RequestedBookQueryService requestedBookQueryService;
     private final RequestedBookManagementService requestedBookManagementService;
@@ -38,11 +40,10 @@ public class RequestedBookController {
     }
 
     @GetMapping("/by-book-status")
-    ResponseEntity<List<RequestedBookResponseDTO>> getRequestedBooksByBookStatusAndOfficeName(
-            @RequestParam @NotBlank String status, @RequestParam @NotBlank String officeName) {
+    ResponseEntity<List<RequestedBookResponseDTO>> getRequestedBooksByStatusAndOffice(
+            @RequestParam @NotBlank String officeName, @RequestParam @NotNull BookStatus status) {
         List<RequestedBookResponseDTO> response =
-                requestedBookQueryService.getRequestedBooksByBookStatusAndOfficeName(BookStatus.valueOf(status),
-                        officeName);
+                requestedBookQueryService.getRequestedBooksByBookStatusAndOfficeName(status, officeName);
 
         return ResponseEntity.ok(response);
     }
@@ -57,7 +58,7 @@ public class RequestedBookController {
     }
 
     @PostMapping("/set-in-stock")
-    ResponseEntity<BookIdDTO> setRequestedBookInStock(@RequestParam @Valid UUID requestedBookId) {
+    ResponseEntity<BookIdDTO> setRequestedBookInStock(@RequestParam @NotNull UUID requestedBookId) {
         //todo: uncomment when dev (issue #48) is merged
 //        BookIdDTO response = requestedBookManagementService.setRequestedBookToInStock(requestedBookId);
 //
