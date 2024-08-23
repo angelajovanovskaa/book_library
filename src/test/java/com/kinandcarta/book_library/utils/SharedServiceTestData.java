@@ -1,5 +1,6 @@
 package com.kinandcarta.book_library.utils;
 
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import lombok.experimental.UtilityClass;
@@ -11,6 +12,7 @@ public class SharedServiceTestData {
     public static final Office SKOPJE_OFFICE = new Office("Skopje");
     public static final OfficeResponseDTO SKOPJE_OFFICE_DTO = new OfficeResponseDTO("Skopje");
     public static final String SKOPJE_OFFICE_NAME = SKOPJE_OFFICE.getName();
+    public static final BookIdDTO BOOK_ID_DTO = new BookIdDTO(BookTestData.BOOK_ISBN, SKOPJE_OFFICE_NAME);
     public static final Office SOFIJA_OFFICE = new Office("Sofija");
     public static final OfficeResponseDTO SOFIJA_OFFICE_DTO = new OfficeResponseDTO("Sofija");
     public static final LocalDate DATE_NOW = LocalDate.now();
