@@ -34,7 +34,7 @@ class RequestedBookQueryServiceImplTest {
     private RequestedBookQueryServiceImpl requestedBookQueryService;
 
     @Test
-    void getAllRequestedBooksByOfficeName_atLeastOneRequestedBookExists_returnListOfRequestedBookDTOs() {
+    void getRequestedBooksByOfficeName_atLeastOneRequestedBookExists_returnListOfRequestedBookDTOs() {
         // given
         List<RequestedBookResponseDTO> requestedBookResponseDTOs = RequestedBookTestData.getRequestedBookResponseDTOs();
 
@@ -45,7 +45,7 @@ class RequestedBookQueryServiceImplTest {
 
         // when
         List<RequestedBookResponseDTO> actualResult =
-                requestedBookQueryService.getAllRequestedBooksByOfficeName(SharedServiceTestData.SKOPJE_OFFICE_NAME);
+                requestedBookQueryService.getRequestedBooksByOfficeName(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(actualResult).isEqualTo(requestedBookResponseDTOs);
