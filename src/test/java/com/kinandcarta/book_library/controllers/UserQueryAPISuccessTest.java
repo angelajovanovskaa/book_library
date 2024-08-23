@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
-import com.kinandcarta.book_library.services.impl.UserServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
@@ -30,7 +31,10 @@ class UserQueryAPISuccessTest {
     private static final String USERS_PATH = "/users";
 
     @MockBean
-    private UserServiceImpl userService;
+    private UserQueryServiceImpl userService;
+
+    @MockBean
+    private UserManagementServiceImpl userManagementService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,7 +47,7 @@ class UserQueryAPISuccessTest {
         // given
         List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
-        given(userService.getAllUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME)).willReturn(userWithRoleDTOs);
+        given(userService.getUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME)).willReturn(userWithRoleDTOs);
 
         // when
         final String jsonResult =
@@ -66,7 +70,7 @@ class UserQueryAPISuccessTest {
         final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
         UserWithRoleDTO userWithRoleDTO = UserTestData.getUserWithRoleResponseDTOs().getFirst();
 
-        given(userService.getAllUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
+        given(userService.getUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
                 UserTestData.USER_FULL_NAME)).willReturn(List.of(userWithRoleDTO));
 
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();

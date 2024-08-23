@@ -1,7 +1,8 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kinandcarta.book_library.services.impl.UserServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
@@ -29,7 +30,10 @@ class UserQueryAPIInvalidQueryParamsTest {
     private static final String USERS_PATH = "/users";
 
     @MockBean
-    private UserServiceImpl userService;
+    private UserQueryServiceImpl userService;
+
+    @MockBean
+    private UserManagementServiceImpl userManagementService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -45,8 +49,8 @@ class UserQueryAPIInvalidQueryParamsTest {
         // given & when & then
         mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorFields['getUsers.officeName']").value("must not be blank"));
     }
 
     @ParameterizedTest
@@ -74,8 +78,8 @@ class UserQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorFields['getUsersByFullName.officeName']").value("must not be blank"));
     }
 
     @ParameterizedTest

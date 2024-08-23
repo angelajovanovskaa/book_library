@@ -1,7 +1,8 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kinandcarta.book_library.services.impl.UserServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -22,7 +23,10 @@ class UserQueryAPIQueryParamsMissingTest {
     private static final String USERS_PATH = "/users";
 
     @MockBean
-    private UserServiceImpl userService;
+    private UserQueryServiceImpl userService;
+
+    @MockBean
+    private UserManagementServiceImpl userManagementService;
 
     @Autowired
     private MockMvc mockMvc;
