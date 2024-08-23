@@ -95,7 +95,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         if (!requestedBookRepository.existsById(requestedBookId)) {
             throw new RequestedBookNotFoundException(requestedBookId);
         }
-
         requestedBookRepository.deleteById(requestedBookId);
 
         return requestedBookId;
