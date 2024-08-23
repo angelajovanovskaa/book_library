@@ -79,24 +79,26 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Deletes a requested book by its ISBN and {@link Office} name.
+     * Deletes a requested book by the provided ID.
      * <p>
-     * With the deletion of the {@link Book} tuple, the {@link RequestedBook} tuple is also deleted as well.
+     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
+     * {@link RequestedBook} are deleted as well.
      * </p>
      *
-     * @param bookIsbn   ISBN of the requested book to be deleted.
-     * @param officeName Name of the office where the requested book belongs.
-     * @return {@code String} the ISBN of the deleted requested book.
-     * @throws RequestedBookNotFoundException If a requested book with the given ISBN does not exist.
+     * @param requestedBookId ID of the {@link RequestedBook}
+     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
+     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      */
+    @Transactional
     @Override
-    public String deleteRequestedBookByBookIsbnAndOfficeName(String bookIsbn, String officeName) {
-        if (!bookRepository.existsByIsbnAndOfficeName(bookIsbn, officeName)) {
-            throw new BookNotFoundException(bookIsbn, officeName);
+    public UUID deleteRequestedBook(UUID requestedBookId) {
+        if (!requestedBookRepository.existsById(requestedBookId)) {
+            throw new RequestedBookNotFoundException(requestedBookId);
         }
 
-        bookRepository.deleteByIsbnAndOfficeName(bookIsbn, officeName);
-        return bookIsbn;
+        requestedBookRepository.deleteById(requestedBookId);
+
+        return requestedBookId;
     }
 
     /**

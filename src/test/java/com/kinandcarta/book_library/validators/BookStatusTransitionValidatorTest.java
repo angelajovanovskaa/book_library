@@ -29,23 +29,15 @@ class BookStatusTransitionValidatorTest {
                 Arguments.of(BookStatus.REQUESTED, BookStatus.PENDING_PURCHASE, true),
                 Arguments.of(BookStatus.REQUESTED, BookStatus.REJECTED, true),
                 Arguments.of(BookStatus.REQUESTED, BookStatus.IN_STOCK, false),
-                Arguments.of(BookStatus.REQUESTED, BookStatus.CURRENTLY_UNAVAILABLE, false),
                 Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.REJECTED, true),
                 Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.IN_STOCK, true),
                 Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.REQUESTED, false),
-                Arguments.of(BookStatus.PENDING_PURCHASE, BookStatus.CURRENTLY_UNAVAILABLE, false),
                 Arguments.of(BookStatus.REJECTED, BookStatus.PENDING_PURCHASE, true),
                 Arguments.of(BookStatus.REJECTED, BookStatus.REQUESTED, false),
                 Arguments.of(BookStatus.REJECTED, BookStatus.IN_STOCK, false),
-                Arguments.of(BookStatus.REJECTED, BookStatus.CURRENTLY_UNAVAILABLE, false),
-                Arguments.of(BookStatus.IN_STOCK, BookStatus.CURRENTLY_UNAVAILABLE, true),
                 Arguments.of(BookStatus.IN_STOCK, BookStatus.REQUESTED, false),
                 Arguments.of(BookStatus.IN_STOCK, BookStatus.PENDING_PURCHASE, false),
-                Arguments.of(BookStatus.IN_STOCK, BookStatus.REJECTED, false),
-                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.IN_STOCK, true),
-                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.REQUESTED, false),
-                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.PENDING_PURCHASE, false),
-                Arguments.of(BookStatus.CURRENTLY_UNAVAILABLE, BookStatus.REJECTED, false)
+                Arguments.of(BookStatus.IN_STOCK, BookStatus.REJECTED, false)
         );
     }
 }
