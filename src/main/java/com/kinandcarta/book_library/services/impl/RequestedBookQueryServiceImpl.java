@@ -8,10 +8,11 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service implementation for querying {@link RequestedBook} data.
