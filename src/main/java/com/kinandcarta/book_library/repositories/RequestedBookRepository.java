@@ -14,12 +14,7 @@ public interface RequestedBookRepository extends JpaRepository<RequestedBook, UU
     @Query("select rb from RequestedBook rb " +
             "join fetch rb.book b " +
             "where b.office.name = :officeName " +
-            "order by case b.bookStatus " +
-            "    when com.kinandcarta.book_library.enums.BookStatus.REQUESTED then 1 " +
-            "    when com.kinandcarta.book_library.enums.BookStatus.PENDING_PURCHASE then 2 " +
-            "    when com.kinandcarta.book_library.enums.BookStatus.REJECTED then 3 " +
-            "end, " +
-            "rb.requestedDate asc")
+            "order by rb.requestedDate desc")
     List<RequestedBook> findAllByOfficeName(String officeName);
 
     @Query("select rb from RequestedBook rb " +
@@ -30,6 +25,6 @@ public interface RequestedBookRepository extends JpaRepository<RequestedBook, UU
     @Query("select rb from RequestedBook rb " +
             "join fetch rb.book b " +
             "where b.bookStatus = :status and b.office.name = :officeName " +
-            "order by rb.likeCounter desc, b.title asc")
+            "order by rb.likeCounter desc, rb.requestedDate desc")
     List<RequestedBook> findAllByBookStatusAndOfficeName(BookStatus status, String officeName);
 }
