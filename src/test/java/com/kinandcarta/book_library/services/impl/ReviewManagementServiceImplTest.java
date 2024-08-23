@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.converters.ReviewConverter;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
+import com.kinandcarta.book_library.exceptions.DuplicateUserReviewException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
@@ -96,6 +97,19 @@ class ReviewManagementServiceImplTest {
                 .isThrownBy(() -> reviewManagementService.insertReview(ReviewTestData.getReviewRequestDTO()))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " in office: " +
                         SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
+    }
+
+    @Test
+    @SneakyThrows
+    void insertReview_userAlreadyReviewedBook_throwsException(){
+        //given
+        given(reviewRepository.findByUserEmailAndBookIsbn(UserTestData.USER_EMAIL, BookTestData.BOOK_ISBN)).willReturn(
+                Optional.of(ReviewTestData.getReview()));
+
+        //when & then
+        assertThatExceptionOfType(DuplicateUserReviewException.class)
+                .isThrownBy(() -> reviewManagementService.insertReview(ReviewTestData.getReviewRequestDTO()))
+                .withMessage("The user has already left a review for this book.");
     }
 
     @Test
