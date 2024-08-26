@@ -11,7 +11,6 @@ import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.BookAlreadyPresentException;
-import com.kinandcarta.book_library.exceptions.BookStatusChangeBadRequestException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -102,15 +101,14 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     public BookIdDTO setRequestedBookToInStock(UUID requestedBookId) {
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
         Book book = requestedBook.getBook();
-
-        checkAndApplyNewBookStatus(book, BookStatus.IN_STOCK);
+        Book bookWithUpdatedBookStatus = updateBookStatus(book, BookStatus.IN_STOCK);
 
         deleteRequestedBook(requestedBookId);
 
-        Office office = book.getOffice();
+        Office office = bookWithUpdatedBookStatus.getOffice();
         String officeName = office.getName();
 
-        return new BookIdDTO(book.getIsbn(), officeName);
+        return new BookIdDTO(bookWithUpdatedBookStatus.getIsbn(), officeName);
     }
 
     /**
@@ -136,13 +134,10 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     public RequestedBookResponseDTO changeBookStatus(
             RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
         BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
-        if (newBookStatus == BookStatus.IN_STOCK) {
-            throw new BookStatusChangeBadRequestException();
-        }
         UUID requestedBookId = requestedBookChangeStatusRequestDTO.requestedBookId();
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
         Book book = requestedBook.getBook();
-        checkAndApplyNewBookStatus(book, newBookStatus);
+        updateBookStatus(book, newBookStatus);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
@@ -205,7 +200,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Updates and saves {@link BookStatus}.
+     * Updates and saves {@link BookStatus} of a provided {@link Book}.
      * <p>
      * This method check if the {@link BookStatus} transitions are valid and if so updates and saves the targeted
      * book with the new {@link BookStatus}.
@@ -213,32 +208,24 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      *
      * @param book          Targeted {@link Book} object.
      * @param newBookStatus New status to transition to.
+     * @return The {@link Book} that we added to IN_STOCK.
      * @throws RequestedBookStatusException If the status transition is not valid.
      */
-    private void checkAndApplyNewBookStatus(Book book, BookStatus newBookStatus) {
+    private Book updateBookStatus(Book book, BookStatus newBookStatus) {
         BookStatus currentBookStatus = book.getBookStatus();
 
-        if (currentBookStatus != newBookStatus) {
-            validateBookStatusTransition(currentBookStatus, newBookStatus);
-            book.setBookStatus(newBookStatus);
-            bookRepository.save(book);
+        if (currentBookStatus == newBookStatus) {
+            return book;
         }
-    }
 
-    /**
-     * Validates the transition between book statuses.
-     * <p>
-     * Ensures that the transition from the current status to the new status is allowed based on predefined rules.
-     * </p>
-     *
-     * @param currentBookStatus Current status of the book.
-     * @param newBookStatus     New status to transition to.
-     * @throws RequestedBookStatusException If the status transition is not valid.
-     */
-    private void validateBookStatusTransition(BookStatus currentBookStatus, BookStatus newBookStatus) {
         if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
             throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
         }
+        book.setBookStatus(newBookStatus);
+
+        bookRepository.save(book);
+
+        return book;
     }
 
     private RequestedBook getRequestedBook(UUID requestedBookId) {

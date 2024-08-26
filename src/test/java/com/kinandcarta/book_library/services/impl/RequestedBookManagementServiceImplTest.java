@@ -2,13 +2,11 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
-import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.exceptions.BookStatusChangeBadRequestException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -138,18 +136,6 @@ class RequestedBookManagementServiceImplTest {
 
         // then
         assertThat(actualResult).isEqualTo(RequestedBookTestData.getRequestedBookResponseDTO());
-    }
-
-    @Test
-    void changeBookStatus_newBookStatusIsInStock_returnRequestedBookDTO() {
-        // given
-
-        // when & then
-        assertThatExceptionOfType(BookStatusChangeBadRequestException.class)
-                .isThrownBy(() -> requestedBookManagementService.changeBookStatus(
-                        new RequestedBookChangeStatusRequestDTO(RequestedBookTestData.REQUESTED_BOOK_ID,
-                                BookStatus.IN_STOCK)))
-                .withMessage("Book status change failed, cannot use IN_STOCK as new book status");
     }
 
     @Test
