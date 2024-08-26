@@ -1,7 +1,7 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
-import com.kinandcarta.book_library.services.OfficeService;
+import com.kinandcarta.book_library.services.OfficeQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,11 +17,11 @@ import java.util.List;
 @Validated
 public class OfficeController {
 
-    private final OfficeService officeService;
+    private final OfficeQueryService officeQueryService;
 
     @GetMapping
     ResponseEntity<List<OfficeResponseDTO>> getOffices(){
-        List<OfficeResponseDTO> response = officeService.getOffices();
+        List<OfficeResponseDTO> response = officeQueryService.getOffices();
 
         return ResponseEntity.ok(response);
     }

@@ -3,7 +3,7 @@ package com.kinandcarta.book_library.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
-import com.kinandcarta.book_library.services.impl.OfficeServiceImpl;
+import com.kinandcarta.book_library.services.impl.OfficeQueryServiceImpl;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ class OfficeControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private OfficeServiceImpl officeService;
+    private OfficeQueryServiceImpl officeQueryService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -37,8 +37,8 @@ class OfficeControllerTest {
     @SneakyThrows
     void getOffices_atLeastOneOffice_Exists_returnListOfOffices() {
         // given
-        final List<OfficeResponseDTO> officeResponseDTOS = officeService.getOffices();
-        given(officeService.getOffices()).willReturn(officeResponseDTOS);
+        final List<OfficeResponseDTO> officeResponseDTOS = officeQueryService.getOffices();
+        given(officeQueryService.getOffices()).willReturn(officeResponseDTOS);
 
         // when
         final String jsonResult = mockMvc.perform(get(OFFICES_PATH))
