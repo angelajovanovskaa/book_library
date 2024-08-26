@@ -61,6 +61,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * @return {@link RequestedBookResponseDTO} of the newly saved requested book.
      * @throws BookAlreadyPresentException If a book with the given ISBN already exists in the database.
      */
+    @Transactional
     @Override
     public RequestedBookResponseDTO saveRequestedBook(RequestedBookRequestDTO requestedBookRequestDTO) {
         String userEmail = requestedBookRequestDTO.userEmail();
@@ -154,6 +155,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      * @throws UserNotFoundException          If a user with the given email does not exist.
      */
+    @Transactional
     @Override
     public RequestedBookResponseDTO handleRequestedBookLike(RequestedBookRequestDTO requestedBookRequestDTO) {
         String userEmail = requestedBookRequestDTO.userEmail();
