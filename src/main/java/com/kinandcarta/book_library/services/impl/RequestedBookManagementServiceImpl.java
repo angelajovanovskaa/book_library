@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
@@ -79,25 +80,35 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Deletes a requested book by the provided ID.
+     * Sets the status of a requested book to "IN_STOCK" and removes the requested book record.
      * <p>
-     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
-     * {@link RequestedBook} are deleted as well.
+     * This method performs the following operations within a single transaction:
+     * <ul>
+     *     <li>Retrieves the {@link RequestedBook} associated with the given ID.</li>
+     *     <li>Changes the status of the associated {@link Book} to {@link BookStatus#IN_STOCK} if it is not already
+     *     set to that status.</li>
+     *     <li>Deletes the {@link RequestedBook} record from the database.</li>
+     * </ul>
      * </p>
      *
-     * @param requestedBookId ID of the {@link RequestedBook}
-     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
-     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
+     * @param requestedBookId the unique identifier of the requested book to be set to "IN_STOCK"
+     * @return {@link BookIdDTO} containing the ISBN of the book and the name of the associated office
+     * @throws RequestedBookNotFoundException if no {@link RequestedBook} exists with the provided ID
+     * @throws RequestedBookStatusException   if the status transition to "IN_STOCK" is not allowed
      */
     @Transactional
     @Override
-    public UUID deleteRequestedBook(UUID requestedBookId) {
-        if (!requestedBookRepository.existsById(requestedBookId)) {
-            throw new RequestedBookNotFoundException(requestedBookId);
-        }
-        requestedBookRepository.deleteById(requestedBookId);
+    public BookIdDTO setRequestedBookToInStock(UUID requestedBookId) {
+        RequestedBook requestedBook = getRequestedBook(requestedBookId);
+        Book book = requestedBook.getBook();
+        Book bookWithUpdatedBookStatus = updateBookStatus(book, BookStatus.IN_STOCK);
 
-        return requestedBookId;
+        deleteRequestedBook(requestedBookId);
+
+        Office office = bookWithUpdatedBookStatus.getOffice();
+        String officeName = office.getName();
+
+        return new BookIdDTO(bookWithUpdatedBookStatus.getIsbn(), officeName);
     }
 
     /**
@@ -118,23 +129,15 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
      * @throws RequestedBookStatusException   If the status transition is not allowed.
      */
+    @Transactional
     @Override
     public RequestedBookResponseDTO changeBookStatus(
             RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
+        BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
         UUID requestedBookId = requestedBookChangeStatusRequestDTO.requestedBookId();
         RequestedBook requestedBook = getRequestedBook(requestedBookId);
-
         Book book = requestedBook.getBook();
-        BookStatus currentBookStatus = book.getBookStatus();
-
-        BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
-        if (currentBookStatus == newBookStatus) {
-            return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
-        }
-
-        validateBookStatusTransition(currentBookStatus, newBookStatus);
-        book.setBookStatus(newBookStatus);
-        bookRepository.save(book);
+        updateBookStatus(book, newBookStatus);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
@@ -174,19 +177,55 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Validates the transition between book statuses.
+     * Deletes a requested book by the provided ID.
      * <p>
-     * Ensures that the transition from the current status to the new status is allowed based on predefined rules.
+     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
+     * {@link RequestedBook} are deleted as well.
      * </p>
      *
-     * @param currentBookStatus Current status of the book.
-     * @param newBookStatus     New status to transition to.
+     * @param requestedBookId ID of the {@link RequestedBook}
+     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
+     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
+     */
+    @Transactional
+    @Override
+    public UUID deleteRequestedBook(UUID requestedBookId) {
+        if (!requestedBookRepository.existsById(requestedBookId)) {
+            throw new RequestedBookNotFoundException(requestedBookId);
+        }
+
+        requestedBookRepository.deleteById(requestedBookId);
+
+        return requestedBookId;
+    }
+
+    /**
+     * Updates and saves {@link BookStatus} of a provided {@link Book}.
+     * <p>
+     * This method check if the {@link BookStatus} transitions are valid and if so updates and saves the targeted
+     * book with the new {@link BookStatus}.
+     * </p>
+     *
+     * @param book          Targeted {@link Book} object.
+     * @param newBookStatus New status to transition to.
+     * @return The {@link Book} that we added to IN_STOCK.
      * @throws RequestedBookStatusException If the status transition is not valid.
      */
-    private void validateBookStatusTransition(BookStatus currentBookStatus, BookStatus newBookStatus) {
+    private Book updateBookStatus(Book book, BookStatus newBookStatus) {
+        BookStatus currentBookStatus = book.getBookStatus();
+
+        if (currentBookStatus == newBookStatus) {
+            return book;
+        }
+
         if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
             throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
         }
+        book.setBookStatus(newBookStatus);
+
+        bookRepository.save(book);
+
+        return book;
     }
 
     private RequestedBook getRequestedBook(UUID requestedBookId) {

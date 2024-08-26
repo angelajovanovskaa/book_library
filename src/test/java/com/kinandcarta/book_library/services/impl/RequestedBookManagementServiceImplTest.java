@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
+import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -59,25 +60,59 @@ class RequestedBookManagementServiceImplTest {
     private ArgumentCaptor<RequestedBook> requestedBookCaptor;
 
     @Test
-    void deleteRequestedBook_requestedBookExists_returnUUID() {
+    void setRequestedBookToInStock_validTransition_returnBookIdDTO() {
         // given
+        given(requestedBookRepository.findById(any())).willReturn(
+                Optional.of(RequestedBookTestData.getRequestedBook()));
+        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
         given(requestedBookRepository.existsById(any())).willReturn(true);
 
         // when
-        UUID actualResult = requestedBookManagementService.deleteRequestedBook(RequestedBookTestData.REQUESTED_BOOK_ID);
+        BookIdDTO actualResult =
+                requestedBookManagementService.setRequestedBookToInStock(RequestedBookTestData.REQUESTED_BOOK_ID);
 
         // then
-        assertThat(actualResult).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
+        assertThat(actualResult).isEqualTo(SharedServiceTestData.BOOK_ID_DTO);
     }
 
     @Test
-    void deleteRequestedBook_requestedBookDoesNotExist_throwsException() {
+    void setRequestedBookToInStock_requestedBookDoesNotExist_throwsException() {
         // given
+        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
+
+        // when & then
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
+                        RequestedBookTestData.REQUESTED_BOOK_ID))
+                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
+    }
+
+    @Test
+    void setRequestedBookToInStock_bookStatusIsNotPendingPurchase_throwsException() {
+        // given
+        given(requestedBookRepository.findById(any())).willReturn(
+                Optional.of(RequestedBookTestData.getRequestedBook()));
+        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
+
+        // when & then
+        assertThatExceptionOfType(RequestedBookStatusException.class)
+                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
+                        RequestedBookTestData.REQUESTED_BOOK_ID))
+                .withMessage("Transition from status " + BookStatus.REQUESTED + " to status " + BookStatus.IN_STOCK +
+                        " for requested book is not feasible");
+    }
+
+    @Test
+    void setRequestedBookToInStock_requestedBookIsNotPresent_throwsException() {
+        // given
+        given(requestedBookRepository.findById(any())).willReturn(
+                Optional.of(RequestedBookTestData.getRequestedBook()));
+        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
         given(requestedBookRepository.existsById(any())).willReturn(false);
 
         // when & then
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBook(
+                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
                         RequestedBookTestData.REQUESTED_BOOK_ID))
                 .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
     }
@@ -240,5 +275,29 @@ class RequestedBookManagementServiceImplTest {
                         RequestedBookTestData.getRequestedBookRequestDTO()))
                 .withMessage("RequestedBook with ISBN " + BookTestData.BOOK_ISBN + " for office " +
                         SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
+    }
+
+    @Test
+    void deleteRequestedBook_requestedBookExists_returnUUID() {
+        // given
+        given(requestedBookRepository.existsById(any())).willReturn(true);
+
+        // when
+        UUID actualResult = requestedBookManagementService.deleteRequestedBook(RequestedBookTestData.REQUESTED_BOOK_ID);
+
+        // then
+        assertThat(actualResult).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
+    }
+
+    @Test
+    void deleteRequestedBook_requestedBookDoesNotExist_throwsException() {
+        // given
+        given(requestedBookRepository.existsById(any())).willReturn(false);
+
+        // when & then
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBook(
+                        RequestedBookTestData.REQUESTED_BOOK_ID))
+                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
     }
 }
