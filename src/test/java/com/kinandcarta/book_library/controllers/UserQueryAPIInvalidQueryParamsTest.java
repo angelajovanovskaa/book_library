@@ -42,10 +42,20 @@ class UserQueryAPIInvalidQueryParamsTest {
     private ObjectMapper objectMapper;
 
     @ParameterizedTest
-    @EmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getUsers_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getUsers_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
+        // given & when & then
+        mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorFields['getUsers.officeName']").value("must not be blank"));
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @SneakyThrows
+    void getUsers_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
         // given & when & then
         mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
@@ -65,10 +75,26 @@ class UserQueryAPIInvalidQueryParamsTest {
     }
 
     @ParameterizedTest
-    @EmptySource
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getUsersByFullName_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getUsersByFullName_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
+        // given
+        final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
+
+        // when & then
+        mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorFields['getUsersByFullName.officeName']").value("must not be blank"));
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @SneakyThrows
+    void getUsersByFullName_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
         // given
         final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
