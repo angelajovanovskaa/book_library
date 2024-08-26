@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
-import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -12,9 +11,6 @@ import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -39,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-class BookQueryControllerTest {
+class BookQueryAPISuccessTest {
     private static final String BOOK_PATH = "/books";
     private static final String GENRES_PARAM = "genres";
     private static final String LANGUAGE_PARAM = "language";
@@ -79,16 +75,6 @@ class BookQueryControllerTest {
         assertThat(result).isEqualTo(bookDisplayDTOs);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given & when & then
-        mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
     @SneakyThrows
     void getBook_atLeastOneBookExists_returnsBookDetailsDTO() {
@@ -115,52 +101,6 @@ class BookQueryControllerTest {
         assertThat(content).isEqualTo(bookDetailsDTO);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBook_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getBookPath = BOOK_PATH + "/get-book";
-
-        // when & then
-        mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
-                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBook_paramIsbnBlankOrNull_returnsBadRequest(String isbn) {
-        // given
-        final String getBookPath = BOOK_PATH + "/get-book";
-
-        // when & then
-        mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @SneakyThrows
-    void getBook_bookDoesNotExists_returnsNotFoundRequest() {
-        // given
-        final String getBookPath = BOOK_PATH + "/get-book";
-        final String isbn = BookTestData.BOOK_INVALID_ISBN;
-
-        given(bookQueryService.getBookByIsbn(anyString(), anyString()))
-                .willThrow(new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN));
-
-        // when & then
-        mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
-                .andExpect(status().isNotFound());
-    }
-
     @Test
     @SneakyThrows
     void getAvailableBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
@@ -185,31 +125,18 @@ class BookQueryControllerTest {
         assertThat(result).isEqualTo(bookDisplayDTOs);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getAvailableBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getAvailableBooksPath = BOOK_PATH + "/available";
-
-        //when & then
-        mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
     @SneakyThrows
     void getRequestedBooks_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
         // given
-        final String getAvailableBooksPath = BOOK_PATH + "/requested";
+        final String getRequestedBooksPath = BOOK_PATH + "/requested";
         final List<BookDisplayDTO> bookDisplayDTOs = BookTestData.getBookDisplayDTOs();
 
         given(bookQueryService.getRequestedBooks(anyString())).willReturn(bookDisplayDTOs);
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                mockMvc.perform(get(getRequestedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -220,19 +147,6 @@ class BookQueryControllerTest {
 
         // then
         assertThat(result).isEqualTo(bookDisplayDTOs);
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getRequestedBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getRequestedBooksPath = BOOK_PATH + "/requested";
-
-        // when & then
-        mockMvc.perform(get(getRequestedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -271,21 +185,6 @@ class BookQueryControllerTest {
         assertThat(content).isEqualTo(bookDisplayDTOsPaginated.getContent());
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getPaginatedAvailableBooks_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getAvailablePaginatedBooksPath = BOOK_PATH + "/paginated";
-
-        // when & then
-        mockMvc.perform(
-                        get(getAvailablePaginatedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                officeName))
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
     @SneakyThrows
     void getBooksBySearchTitle_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
@@ -311,38 +210,6 @@ class BookQueryControllerTest {
 
         //then
         assertThat(content).containsExactly(bookDisplayDTO);
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBooksBySearchTitle_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getByTitleBooksPath = BOOK_PATH + "/by-title";
-
-        // when & then
-        mockMvc.perform(get(getByTitleBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
-                        .queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM)
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBooksBySearchTitle_paramSearchTitleBlankOrNull_returnsBadRequest(String searchTermTitle) {
-        // given
-        final String getByTitleBooksPath = BOOK_PATH + "/by-title";
-
-        // when & then
-        mockMvc.perform(get(getByTitleBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, searchTermTitle)
-                )
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -372,38 +239,6 @@ class BookQueryControllerTest {
         assertThat(content).containsExactly(bookDisplayDTO);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBooksByLanguage_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getByLanguageBooksPath = BOOK_PATH + "/by-language";
-
-        // when & then
-        mockMvc.perform(get(getByLanguageBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
-                        .queryParam(BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_LANGUAGE)
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBooksByLanguage_paramLanguageBlankOrNull_returnsBadRequest(String language) {
-        // given
-        final String getByLanguageBooksPath = BOOK_PATH + "/by-language";
-
-        // when & then
-        mockMvc.perform(get(getByLanguageBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(BookTestData.BOOK_LANGUAGE, language)
-                )
-                .andExpect(status().isBadRequest());
-    }
-
     @Test
     @SneakyThrows
     void getBooksByGenres_atLeastOneBookExists_returnsListOfBookDisplayDTO() {
@@ -429,53 +264,5 @@ class BookQueryControllerTest {
 
         //then
         assertThat(content).containsExactly(bookDisplayDTO);
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBooksByGenres_paramOfficeNameBlankOrNull_returnsBadRequest(String officeName) {
-        // given
-        final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
-
-        // when & then
-        mockMvc.perform(get(getByGenresBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
-                        .queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES)
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @SneakyThrows
-    void getBooksByGenres_paramGenresNullOrEmpty_returnsBadRequest(String genre) {
-        // given
-        final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
-
-        String[] genres = {genre};
-
-        // when & then
-        mockMvc.perform(get(getByGenresBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(GENRES_PARAM, genres)
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {" ", "   "})
-    @SneakyThrows
-    void getBooksByGenres_blankGenres_returnsBadRequest(String genre) {
-        // given
-        final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
-
-        // when & then
-        mockMvc.perform(get(getByGenresBooksPath)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(GENRES_PARAM, genre)
-                )
-                .andExpect(status().isBadRequest());
     }
 }
