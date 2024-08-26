@@ -23,7 +23,7 @@ public class OfficeServiceImpl implements OfficeService {
      *
      * @return A list of {@link OfficeResponseDTO} objects, each containing the office name.
      */
-    public List<OfficeResponseDTO> getAllOffices() {
+    public List<OfficeResponseDTO> getOffices() {
         List<Office> offices = officeRepository.findAll();
         return offices.stream().map(office -> new OfficeResponseDTO(office.getName())).toList();
     }

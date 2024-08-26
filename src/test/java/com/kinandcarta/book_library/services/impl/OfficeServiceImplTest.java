@@ -30,7 +30,7 @@ class OfficeServiceImplTest {
                 List.of(SharedServiceTestData.SKOPJE_OFFICE, SharedServiceTestData.SOFIJA_OFFICE));
 
         // when
-        List<OfficeResponseDTO> actualResult = officeService.getAllOffices();
+        List<OfficeResponseDTO> actualResult = officeService.getOffices();
 
         //then
         assertThat(actualResult).containsExactly(SharedServiceTestData.SKOPJE_OFFICE_DTO,
