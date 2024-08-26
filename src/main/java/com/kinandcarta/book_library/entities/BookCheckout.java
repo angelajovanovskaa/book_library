@@ -1,38 +1,56 @@
 package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.UUID;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@ToString
+@Getter
+@Setter
 @Entity
 @Table(name = "book_checkout")
 public class BookCheckout {
 
     @Id
-    @SequenceGenerator(name = "book_checkout_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_checkout_id_sequence")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @ToString.Exclude
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_item_id")
+    @ToString.Exclude
     private BookItem bookItem;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "office_name")
+    @ToString.Exclude
+    private Office office;
 
     private LocalDate dateBorrowed;
 
     private LocalDate dateReturned;
 
-    private LocalDate scheduledReturn;
+    private LocalDate scheduledReturnDate;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookCheckout that = (BookCheckout) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

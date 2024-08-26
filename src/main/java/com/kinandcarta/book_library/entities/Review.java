@@ -1,50 +1,50 @@
 package com.kinandcarta.book_library.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.UUID;
+import lombok.*;
 
-import java.util.Date;
-
-import static java.util.Objects.nonNull;
-
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Getter
+@Setter
+@ToString
 @Entity
 public class Review {
-    @Id
-    @SequenceGenerator(name = "review_id_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "review_id_sequence")
-    private Long id;
 
-    private Date date;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    private LocalDate date;
 
     private String message;
 
     private Integer rating;
 
-    @ManyToOne
     @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_isbn")
+    @JoinColumn(name = "office_name")
     private Book book;
 
-    @ManyToOne
     @ToString.Exclude
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    public void addBook(Book book) {
-        if (nonNull(book)) {
-            this.book = book;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return Objects.equals(id, review.id);
     }
 
-    public void addUser(User user) {
-        if (nonNull(user)) {
-            this.user = user;
-        }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
