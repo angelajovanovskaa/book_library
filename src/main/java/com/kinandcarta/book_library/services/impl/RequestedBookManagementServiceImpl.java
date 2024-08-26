@@ -161,7 +161,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         Office office = user.getOffice();
         String officeName = office.getName();
         String isbn = requestedBookRequestDTO.bookIsbn();
-        RequestedBook requestedBook = requestedBookRepository.findByBookIsbnAndBookOfficeName(isbn,
+        RequestedBook requestedBook = requestedBookRepository.findByIsbnAndOfficeName(isbn,
                 officeName).orElseThrow(() -> new RequestedBookNotFoundException(isbn, officeName));
 
         Set<User> likedByUsers = requestedBook.getUsers();

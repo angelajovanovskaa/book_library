@@ -37,8 +37,8 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      * @return List of {@link RequestedBookResponseDTO} representing all requested books.
      */
     @Override
-    public List<RequestedBookResponseDTO> getAllRequestedBooksByOfficeName(String officeName) {
-        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookOfficeName(officeName);
+    public List<RequestedBookResponseDTO> getRequestedBooksByOfficeName(String officeName) {
+        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByOfficeName(officeName);
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookResponseDTO)
                 .toList();
@@ -56,7 +56,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
     public List<RequestedBookResponseDTO> getRequestedBooksByBookStatusAndOfficeName(BookStatus bookStatus,
                                                                                      String officeName) {
         List<RequestedBook> requestedBooks = requestedBookRepository
-                .findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescBookTitleAsc(bookStatus, officeName);
+                .findAllByBookStatusAndOfficeName(bookStatus, officeName);
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookResponseDTO)
                 .toList();
@@ -88,7 +88,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      */
     @Override
     public RequestedBookResponseDTO getRequestedBookByISBNAndOfficeName(String isbn, String officeName) {
-        RequestedBook requestedBook = requestedBookRepository.findByBookIsbnAndBookOfficeName(isbn, officeName)
+        RequestedBook requestedBook = requestedBookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new RequestedBookNotFoundException(isbn, officeName));
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }

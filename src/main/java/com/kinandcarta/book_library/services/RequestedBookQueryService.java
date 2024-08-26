@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface RequestedBookQueryService {
-    List<RequestedBookResponseDTO> getAllRequestedBooksByOfficeName(String officeName);
+    List<RequestedBookResponseDTO> getRequestedBooksByOfficeName(String officeName);
 
     List<RequestedBookResponseDTO> getRequestedBooksByBookStatusAndOfficeName(BookStatus status, String officeName);
 

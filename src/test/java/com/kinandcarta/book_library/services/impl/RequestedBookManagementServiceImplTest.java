@@ -192,7 +192,7 @@ class RequestedBookManagementServiceImplTest {
         User user = UserTestData.getUser();
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(
                 Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
@@ -210,7 +210,7 @@ class RequestedBookManagementServiceImplTest {
     void handleRequestedBookLike_userNotInLikedBy_returnRequestedBookDTO() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(UserTestData.getUsers().getLast()));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(
                 Optional.of(RequestedBookTestData.getRequestedBook()));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
@@ -235,7 +235,7 @@ class RequestedBookManagementServiceImplTest {
         users.add(user);
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(
                 Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
@@ -267,7 +267,7 @@ class RequestedBookManagementServiceImplTest {
     void handleRequestedBookLike_requestedBookDoesNotExist_throwsException() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(UserTestData.getUser()));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
