@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.BookStatus;
-import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.exceptions.RequestedBookStatusException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -28,6 +27,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -59,30 +59,27 @@ class RequestedBookManagementServiceImplTest {
     private ArgumentCaptor<RequestedBook> requestedBookCaptor;
 
     @Test
-    void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDeleteValid_returnISBN() {
+    void deleteRequestedBook_requestedBookExists_returnUUID() {
         // given
-        given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(true);
+        given(requestedBookRepository.existsById(any())).willReturn(true);
 
         // when
-        String actualResult =
-                requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(BookTestData.BOOK_ISBN,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        UUID actualResult = requestedBookManagementService.deleteRequestedBook(RequestedBookTestData.REQUESTED_BOOK_ID);
 
         // then
-        assertThat(actualResult).isEqualTo(BookTestData.BOOK_ISBN);
+        assertThat(actualResult).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
     }
 
     @Test
-    void deleteRequestedBookByBookIsbnAndOfficeName_requestedBookDoesNotExist_throwsException() {
+    void deleteRequestedBook_requestedBookDoesNotExist_throwsException() {
         // given
-        given(bookRepository.existsByIsbnAndOfficeName(any(), any())).willReturn(false);
+        given(requestedBookRepository.existsById(any())).willReturn(false);
 
         // when & then
-        assertThatExceptionOfType(BookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBookByBookIsbnAndOfficeName(
-                        BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " in office: " +
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
+        assertThatExceptionOfType(RequestedBookNotFoundException.class)
+                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBook(
+                        RequestedBookTestData.REQUESTED_BOOK_ID))
+                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
     }
 
     @Test
@@ -140,7 +137,7 @@ class RequestedBookManagementServiceImplTest {
         // given
         RequestedBook requestedBook = RequestedBookTestData.getRequestedBook();
         Book book = requestedBook.getBook();
-        book.setBookStatus(BookStatus.CURRENTLY_UNAVAILABLE);
+        book.setBookStatus(BookStatus.PENDING_PURCHASE);
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
@@ -149,7 +146,7 @@ class RequestedBookManagementServiceImplTest {
         assertThatExceptionOfType(RequestedBookStatusException.class)
                 .isThrownBy(() -> requestedBookManagementService.changeBookStatus(
                         RequestedBookTestData.getRequestedBookChangeStatusRequestDTO()))
-                .withMessage("Transition from status " + BookStatus.CURRENTLY_UNAVAILABLE + " to status " +
+                .withMessage("Transition from status " + BookStatus.PENDING_PURCHASE + " to status " +
                         BookStatus.REQUESTED + " for requested book is not feasible");
     }
 
@@ -160,7 +157,7 @@ class RequestedBookManagementServiceImplTest {
         User user = UserTestData.getUser();
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(
                 Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
@@ -178,7 +175,7 @@ class RequestedBookManagementServiceImplTest {
     void handleRequestedBookLike_userNotInLikedBy_returnRequestedBookDTO() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(UserTestData.getUsers().getLast()));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(
                 Optional.of(RequestedBookTestData.getRequestedBook()));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
@@ -203,7 +200,7 @@ class RequestedBookManagementServiceImplTest {
         users.add(user);
 
         given(userRepository.findByEmail(any())).willReturn(Optional.of(user));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(
                 Optional.of(requestedBook));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
@@ -235,7 +232,7 @@ class RequestedBookManagementServiceImplTest {
     void handleRequestedBookLike_requestedBookDoesNotExist_throwsException() {
         // given
         given(userRepository.findByEmail(any())).willReturn(Optional.of(UserTestData.getUser()));
-        given(requestedBookRepository.findByBookIsbnAndBookOfficeName(any(), any())).willReturn(Optional.empty());
+        given(requestedBookRepository.findByIsbnAndOfficeName(any(), any())).willReturn(Optional.empty());
 
         // when & then
         assertThatExceptionOfType(RequestedBookNotFoundException.class)
