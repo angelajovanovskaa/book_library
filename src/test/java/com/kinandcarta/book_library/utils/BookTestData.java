@@ -155,4 +155,8 @@ public class BookTestData {
                 SharedServiceTestData.SKOPJE_OFFICE.getName()
         );
     }
+
+    public BookIdDTO getBookIdDto() {
+        return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
+    }
 }
