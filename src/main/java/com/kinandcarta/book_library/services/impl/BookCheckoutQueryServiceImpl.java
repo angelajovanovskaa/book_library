@@ -26,7 +26,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
-    private static final int DAYS_NEARING_THE_SCHEDULED_RETURN_DATE = 3;
+    private static final int RETURN_DATE_REMINDER_THRESHOLD = 3;
 
     private final BookCheckoutRepository bookCheckoutRepository;
     private final BookCheckoutConverter bookCheckoutConverter;
@@ -150,18 +150,18 @@ public class BookCheckoutQueryServiceImpl implements BookCheckoutQueryService {
      * @return A list containing {@link BookCheckoutReturnReminderResponseDTO}
      */
     @Override
-    public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate(String officeName) {
+    public List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearReturnDate(String officeName) {
         List<BookCheckout> bookCheckouts = bookCheckoutRepository.findAllActiveCheckouts(officeName);
 
         return bookCheckouts.stream()
-                .filter(bookCheckout -> isBookCheckoutNearingReturnDate(bookCheckout.getScheduledReturnDate()))
+                .filter(bookCheckout -> isBookCheckoutNearReturnDate(bookCheckout.getScheduledReturnDate()))
                 .map(bookCheckoutConverter::toBookCheckoutReturnReminderResponseDTO)
                 .toList();
     }
 
-    private boolean isBookCheckoutNearingReturnDate(LocalDate scheduledReturnDate) {
+    private boolean isBookCheckoutNearReturnDate(LocalDate scheduledReturnDate) {
         int daysBeforeReturn = (int) ChronoUnit.DAYS.between(LocalDate.now(), scheduledReturnDate);
 
-        return daysBeforeReturn <= DAYS_NEARING_THE_SCHEDULED_RETURN_DATE;
+        return daysBeforeReturn <= RETURN_DATE_REMINDER_THRESHOLD;
     }
 }
