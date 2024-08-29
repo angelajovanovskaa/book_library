@@ -73,7 +73,7 @@ public class BookCheckoutController {
     ResponseEntity<List<BookCheckoutReturnReminderResponseDTO>> getBookCheckoutsNearReturnDate(
             @RequestParam @NotBlank String officeName) {
         List<BookCheckoutReturnReminderResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(officeName);
+                bookCheckoutQueryService.getAllBookCheckoutsNearReturnDate(officeName);
 
         return ResponseEntity.ok(result);
     }
