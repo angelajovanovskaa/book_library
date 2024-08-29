@@ -5,7 +5,6 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -46,11 +45,13 @@ class BookManagementAPINotFoundTest {
     void deleteBook_isbnNotFound_returnsNotFoundRequest() {
         // given
         final String deleteBookPath = BOOK_PATH + "/delete";
+        BookNotFoundException bookNotFoundException = new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN);
+
+        given(bookManagementService.deleteBook(anyString(), anyString())).willThrow(bookNotFoundException);
+
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN);
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-
-        given(bookManagementService.deleteBook(anyString(), anyString())).willThrow(new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN));
 
         // when
         mockMvc.perform(delete(deleteBookPath)
@@ -58,6 +59,6 @@ class BookManagementAPINotFoundTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage")
-                        .value(ErrorMessages.BOOK_NOT_FOUND_EXCEPTION_MESSAGE));
+                        .value(bookNotFoundException.getMessage()));
     }
 }
