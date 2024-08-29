@@ -1,9 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -34,9 +34,6 @@ class BookQueryAPIQueryParamsMissingTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @SneakyThrows
     void getBooks_paramOfficeNameIsMissing_returnsBadRequest() {
@@ -44,7 +41,7 @@ class BookQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(BOOK_PATH))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -57,7 +54,7 @@ class BookQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(getAvailableBooksPath))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -70,7 +67,7 @@ class BookQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(getRequestedBooksPath))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -83,7 +80,7 @@ class BookQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(getPaginatedAvailableBooksPath))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -97,7 +94,7 @@ class BookQueryAPIQueryParamsMissingTest {
                         SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'titleSearchTerm' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT));
     }
 
     @Test
@@ -111,7 +108,7 @@ class BookQueryAPIQueryParamsMissingTest {
                         BookTestData.BOOK_TITLE))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -125,7 +122,7 @@ class BookQueryAPIQueryParamsMissingTest {
                         SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'language' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.LANGUAGE_NOT_PRESENT));
     }
 
     @Test
@@ -139,7 +136,7 @@ class BookQueryAPIQueryParamsMissingTest {
                         BookTestData.BOOK_LANGUAGE))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -149,11 +146,10 @@ class BookQueryAPIQueryParamsMissingTest {
         final String getBooksByGenresPath = BOOK_PATH + "/by-genres";
 
         // when & then
-        mockMvc.perform(get(getBooksByGenresPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
+        mockMvc.perform(get(getBooksByGenresPath).queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'genres' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -163,9 +159,10 @@ class BookQueryAPIQueryParamsMissingTest {
         final String getBooksByGenresPath = BOOK_PATH + "/by-genres";
 
         // when & then
-        mockMvc.perform(get(getBooksByGenresPath).queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES))
+        mockMvc.perform(get(getBooksByGenresPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.GENRES_NOT_PRESENT));
     }
 }

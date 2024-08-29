@@ -1,9 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -35,17 +35,14 @@ class BookQueryAPIInvalidQueryParamsTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooks_paramOfficeNameBlank_returnsBadRequest(String officeName) {
+    void getBooks_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given & when & then
         mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooks.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -56,7 +53,7 @@ class BookQueryAPIInvalidQueryParamsTest {
         // given & when & then
         mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooks.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -67,14 +64,14 @@ class BookQueryAPIInvalidQueryParamsTest {
         // given & when & then
         mockMvc.perform(get(BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBook_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getBook_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String getBookPath = BOOK_PATH + "/get-book";
 
@@ -82,7 +79,7 @@ class BookQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBook.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBook.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -97,7 +94,7 @@ class BookQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM, isbn)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBook.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBook.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -112,14 +109,14 @@ class BookQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBook_paramIsbnBlank_returnsBadRequest(String isbn) {
+    void getBook_paramIsbnIsInvalid_returnsBadRequest(String isbn) {
         // given
         final String getBookPath = BOOK_PATH + "/get-book";
 
@@ -128,7 +125,7 @@ class BookQueryAPIInvalidQueryParamsTest {
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBook.isbn']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -144,7 +141,7 @@ class BookQueryAPIInvalidQueryParamsTest {
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBook.isbn']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -160,21 +157,22 @@ class BookQueryAPIInvalidQueryParamsTest {
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getAvailableBooks_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getAvailableBooks_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String getAvailableBooksPath = BOOK_PATH + "/available";
 
         //when & then
         mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getAvailableBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getAvailableBooks.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -188,7 +186,8 @@ class BookQueryAPIInvalidQueryParamsTest {
         //when & then
         mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getAvailableBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getAvailableBooks.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -202,21 +201,22 @@ class BookQueryAPIInvalidQueryParamsTest {
         //when & then
         mockMvc.perform(get(getAvailableBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getRequestedBooks_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getRequestedBooks_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String getRequestedBooksPath = BOOK_PATH + "/requested";
 
         // when & then
         mockMvc.perform(get(getRequestedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getRequestedBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getRequestedBooks.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -230,7 +230,8 @@ class BookQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(getRequestedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getRequestedBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getRequestedBooks.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -244,14 +245,14 @@ class BookQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(getRequestedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getPaginatedAvailableBooks_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getPaginatedAvailableBooks_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String getAvailablePaginatedBooksPath = BOOK_PATH + "/paginated";
 
@@ -260,7 +261,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         get(getAvailablePaginatedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
                                 officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getPaginatedBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getPaginatedBooks.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -276,7 +278,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         get(getAvailablePaginatedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
                                 officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getPaginatedBooks.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getPaginatedBooks.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -292,7 +295,7 @@ class BookQueryAPIInvalidQueryParamsTest {
                         get(getAvailablePaginatedBooksPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
                                 officeName))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
 
     }
@@ -300,7 +303,7 @@ class BookQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksBySearchTitle_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getBooksBySearchTitle_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String getByTitleBooksPath = BOOK_PATH + "/by-title";
 
@@ -310,7 +313,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksBySearchTitle.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksBySearchTitle.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
 
     }
@@ -328,7 +332,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksBySearchTitle.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksBySearchTitle.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -345,14 +350,14 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksBySearchTitle_paramSearchTitleIsBlank_returnsBadRequest(String titleSearchTerm) {
+    void getBooksBySearchTitle_paramSearchTitleIsInvalid_returnsBadRequest(String titleSearchTerm) {
         // given
         final String getByTitleBooksPath = BOOK_PATH + "/by-title";
 
@@ -363,7 +368,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(
-                        jsonPath("$.errorFields['getBooksBySearchTitle.titleSearchTerm']").value("must not be blank"))
+                        jsonPath("$.errorFields['getBooksBySearchTitle.titleSearchTerm']").value(
+                                ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -381,7 +387,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(
-                        jsonPath("$.errorFields['getBooksBySearchTitle.titleSearchTerm']").value("must not be blank"))
+                        jsonPath("$.errorFields['getBooksBySearchTitle.titleSearchTerm']").value(
+                                ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -398,14 +405,14 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, titleSearchTerm)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'titleSearchTerm' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksByLanguage_paramOfficeNameIsBlank(String officeName) {
+    void getBooksByLanguage_paramOfficeNameIsInvalid(String officeName) {
         // given
         final String getByLanguageBooksPath = BOOK_PATH + "/by-language";
 
@@ -415,7 +422,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -432,7 +440,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -449,14 +458,14 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksByLanguage_paramLanguageIsBlank_returnsBadRequest(String language) {
+    void getBooksByLanguage_paramLanguageIsInvalid_returnsBadRequest(String language) {
         // given
         final String getByLanguageBooksPath = BOOK_PATH + "/by-language";
 
@@ -466,7 +475,9 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(LANGUAGE_PARAM, language)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.language']").value("must not be blank"))
+                .andExpect(
+                        jsonPath("$.errorFields['getBooksByLanguage.language']").value(
+                                ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -483,7 +494,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(LANGUAGE_PARAM, language)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.language']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksByLanguage.language']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
         ;
     }
 
@@ -500,14 +512,14 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(LANGUAGE_PARAM, language)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'language' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.LANGUAGE_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void getBooksByGenres_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
+    void getBooksByGenres_paramOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
 
@@ -517,7 +529,9 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByGenres.officeName']").value("must not be blank"))
+                .andExpect(
+                        jsonPath("$.errorFields['getBooksByGenres.officeName']").value(
+                                ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -534,7 +548,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByGenres.officeName']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksByGenres.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -551,14 +566,14 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT))
         ;
     }
 
     @ParameterizedTest
     @ValueSource(strings = {" ", "   "})
     @SneakyThrows
-    void getBooksByGenres_paramGenresIsBlank_returnsBadRequest(String genre) {
+    void getBooksByGenres_paramGenresIsInvalid_returnsBadRequest(String genre) {
         // given
         final String getByGenresBooksPath = BOOK_PATH + "/by-genres";
 
@@ -570,7 +585,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(GENRES_PARAM, genres)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByGenres.genres[0].<list element>']").value("must not be blank"))
+                .andExpect(jsonPath("$.errorFields['getBooksByGenres.genres[0].<list element>']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK))
         ;
     }
 
@@ -589,7 +605,8 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(GENRES_PARAM, genres)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getBooksByGenres.genres']").value("must not be empty"))
+                .andExpect(jsonPath("$.errorFields['getBooksByGenres.genres']").value(
+                        ErrorMessages.MUST_NOT_BE_EMPTY))
         ;
     }
 
@@ -608,7 +625,7 @@ class BookQueryAPIInvalidQueryParamsTest {
                         .queryParam(GENRES_PARAM, genres)
                 )
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'genres' is not present."))
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.GENRES_NOT_PRESENT))
         ;
     }
 }

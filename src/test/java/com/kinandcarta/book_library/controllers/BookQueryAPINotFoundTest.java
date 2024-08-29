@@ -1,10 +1,10 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -33,12 +33,9 @@ class BookQueryAPINotFoundTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @SneakyThrows
-    void getBook_bookDoesNotExists_returnsNotFoundRequest() {
+    void getBook_bookDoesNotExists_returnsNotFound() {
         // given
         final String getBookPath = BOOK_PATH + "/get-book";
         final String isbn = BookTestData.BOOK_INVALID_ISBN;
@@ -51,6 +48,6 @@ class BookQueryAPINotFoundTest {
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value("Book with ISBN: invalidISBN not found"));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(ErrorMessages.BOOK_NOT_FOUND_EXCEPTION_MESSAGE));
     }
 }
