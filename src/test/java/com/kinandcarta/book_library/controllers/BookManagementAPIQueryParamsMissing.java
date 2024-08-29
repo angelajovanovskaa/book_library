@@ -1,9 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -40,9 +40,6 @@ class BookManagementAPIQueryParamsMissing {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
@@ -61,7 +58,7 @@ class BookManagementAPIQueryParamsMissing {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorFields['deleteBook.isbn']")
-                        .value("must not be blank"));
+                        .value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -82,7 +79,7 @@ class BookManagementAPIQueryParamsMissing {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorFields['deleteBook.isbn']")
-                        .value("must not be blank"));
+                        .value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -103,6 +100,6 @@ class BookManagementAPIQueryParamsMissing {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.detail")
-                        .value("Required parameter 'isbn' is not present."));
+                        .value(ErrorMessages.ISBN_NOT_PRESENT));
     }
 }

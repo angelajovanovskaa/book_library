@@ -1,11 +1,11 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -41,9 +41,6 @@ class BookManagementAPINotFoundTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @SneakyThrows
     void deleteBook_isbnNotFound_returnsNotFoundRequest() {
@@ -61,6 +58,6 @@ class BookManagementAPINotFoundTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage")
-                        .value("Book with ISBN: invalidISBN not found"));
+                        .value(ErrorMessages.BOOK_NOT_FOUND_EXCEPTION_MESSAGE));
     }
 }

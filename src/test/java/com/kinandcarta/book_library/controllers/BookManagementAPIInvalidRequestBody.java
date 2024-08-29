@@ -6,6 +6,7 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,7 +60,7 @@ class BookManagementAPIInvalidRequestBody {
                         .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -79,7 +80,7 @@ class BookManagementAPIInvalidRequestBody {
                         .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -99,7 +100,7 @@ class BookManagementAPIInvalidRequestBody {
                         .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -120,7 +121,7 @@ class BookManagementAPIInvalidRequestBody {
                         .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -141,7 +142,7 @@ class BookManagementAPIInvalidRequestBody {
                         .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -162,6 +163,6 @@ class BookManagementAPIInvalidRequestBody {
                         .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 }
