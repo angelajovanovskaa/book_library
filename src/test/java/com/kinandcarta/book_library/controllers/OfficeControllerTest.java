@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
 import com.kinandcarta.book_library.services.impl.OfficeQueryServiceImpl;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,10 @@ class OfficeControllerTest {
     @SneakyThrows
     void getOffices_atLeastOneOffice_Exists_returnListOfOffices() {
         // given
-        final List<OfficeResponseDTO> officeResponseDTOS = officeQueryService.getOffices();
+        final List<OfficeResponseDTO> officeResponseDTOS = List.of(
+                SharedServiceTestData.SKOPJE_OFFICE_DTO,
+                SharedServiceTestData.SOFIJA_OFFICE_DTO
+        );
         given(officeQueryService.getOffices()).willReturn(officeResponseDTOS);
 
         // when
