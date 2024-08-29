@@ -42,9 +42,9 @@ class UserManagementAPIUnprocessableEntityTest {
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 UserTestData.getUserChangePasswordRequestDTOInvalid();
+        IncorrectPasswordException incorrectPasswordException = new IncorrectPasswordException();
 
-        given(userManagementService.changeUserPassword(any())).willThrow(
-                new IncorrectPasswordException());
+        given(userManagementService.changeUserPassword(any())).willThrow(incorrectPasswordException);
 
         // when && then
         mockMvc.perform(patch(changePasswordUserPath)
@@ -52,7 +52,6 @@ class UserManagementAPIUnprocessableEntityTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The password that you have entered is incorrect."));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(incorrectPasswordException.getMessage()));
     }
 }

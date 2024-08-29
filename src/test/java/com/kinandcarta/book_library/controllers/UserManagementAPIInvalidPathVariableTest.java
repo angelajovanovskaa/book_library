@@ -1,8 +1,8 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
@@ -28,9 +28,6 @@ class UserManagementAPIInvalidPathVariableTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @ParameterizedTest
     @NullSource
     @SneakyThrows
@@ -41,7 +38,7 @@ class UserManagementAPIInvalidPathVariableTest {
         // when & then
         mockMvc.perform(post(deleteUserPath, userId))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Failed to convert 'userId' with value: 'null'"));
+                .andExpect(jsonPath("$.detail").value(String.format(ErrorMessages.USER_ID_FAIL_CONVERT, userId)));
 
     }
 }

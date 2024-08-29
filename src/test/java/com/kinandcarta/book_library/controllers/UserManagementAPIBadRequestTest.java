@@ -42,9 +42,9 @@ class UserManagementAPIBadRequestTest {
         final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO userRegistrationRequestDTO = UserTestData.getUserRegistrationDTO();
         String email = userRegistrationRequestDTO.email();
+        EmailAlreadyInUseException emailAlreadyInUseException = new EmailAlreadyInUseException(email);
 
-        given(userManagementService.registerUser(any())).willThrow(
-                new EmailAlreadyInUseException(email));
+        given(userManagementService.registerUser(any())).willThrow(emailAlreadyInUseException);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -52,7 +52,6 @@ class UserManagementAPIBadRequestTest {
                         .content(objectMapper.writeValueAsString(userRegistrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The email: " + email + " is already in use."));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(emailAlreadyInUseException.getMessage()));
     }
 }

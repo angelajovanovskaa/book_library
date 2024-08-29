@@ -9,6 +9,7 @@ import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
@@ -61,7 +62,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.fullName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.fullName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -79,7 +80,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.fullName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.fullName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -97,7 +98,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.fullName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.fullName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -115,7 +116,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.email").value("must be a well-formed email address"));
+                .andExpect(jsonPath("$.errorFields.email").value(ErrorMessages.EMAIL_BAD_FORMAT));
     }
 
     @ParameterizedTest
@@ -133,7 +134,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.email").value("must be a well-formed email address"));
+                .andExpect(jsonPath("$.errorFields.email").value(ErrorMessages.EMAIL_BAD_FORMAT));
     }
 
     @ParameterizedTest
@@ -151,7 +152,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.email").value("must not be null"));
+                .andExpect(jsonPath("$.errorFields.email").value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 
     @ParameterizedTest
@@ -169,7 +170,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -187,7 +188,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -205,7 +206,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -223,7 +224,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.password").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.password").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -241,7 +242,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.password").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.password").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -259,7 +260,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(registrationRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.password").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.password").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -276,7 +277,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must be a well-formed email address"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.EMAIL_BAD_FORMAT));
     }
 
     @ParameterizedTest
@@ -293,7 +294,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must be a well-formed email address"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.EMAIL_BAD_FORMAT));
     }
 
     @ParameterizedTest
@@ -310,7 +311,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be null"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 
     @ParameterizedTest
@@ -327,7 +328,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -344,7 +345,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -361,7 +362,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -379,7 +380,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userUpdateDataRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value("must not be null"));
+                .andExpect(jsonPath("$.errorFields.userId").value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 
     @ParameterizedTest
@@ -396,7 +397,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userUpdateRoleRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value("must not be null"));
+                .andExpect(jsonPath("$.errorFields.userId").value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 
     @ParameterizedTest
@@ -413,7 +414,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userUpdateRoleRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.role").value("must not be null"));
+                .andExpect(jsonPath("$.errorFields.role").value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 
     @ParameterizedTest
@@ -431,7 +432,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value("must not be null"));
+                .andExpect(jsonPath("$.errorFields.userId").value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 
     @ParameterizedTest
@@ -449,7 +450,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.oldPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.oldPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -467,7 +468,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.oldPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.oldPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -485,7 +486,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.oldPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.oldPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -503,7 +504,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.newPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.newPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -521,7 +522,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.newPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.newPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -539,6 +540,6 @@ class UserManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.newPassword").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.newPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 }

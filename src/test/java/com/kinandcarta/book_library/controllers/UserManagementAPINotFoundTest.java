@@ -41,9 +41,10 @@ class UserManagementAPINotFoundTest {
         // given
         final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
+        InvalidUserCredentialsException invalidUserCredentialsException = new InvalidUserCredentialsException();
 
-        given(userManagementService.loginUser(any())).willThrow(
-                new InvalidUserCredentialsException());
+        given(userManagementService.loginUser(any())).willThrow(invalidUserCredentialsException);
+
 
         // when && then
         mockMvc.perform(post(loginUserPath)
@@ -51,7 +52,6 @@ class UserManagementAPINotFoundTest {
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The credentials that you have entered don't match."));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(invalidUserCredentialsException.getMessage()));
     }
 }
