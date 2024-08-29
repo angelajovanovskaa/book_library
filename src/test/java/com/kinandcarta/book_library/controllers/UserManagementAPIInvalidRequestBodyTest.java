@@ -10,7 +10,6 @@ import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
-import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -234,7 +233,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingPassword(password);;
+                UserTestData.createUserRegistrationRequestPassingPassword(password);
+        ;
 
         // when & then
         mockMvc.perform(post(registerUserPath)
