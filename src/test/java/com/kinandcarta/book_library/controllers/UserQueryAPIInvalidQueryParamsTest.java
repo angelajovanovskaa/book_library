@@ -1,8 +1,8 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
@@ -38,9 +38,6 @@ class UserQueryAPIInvalidQueryParamsTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
@@ -49,7 +46,7 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getUsers.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getUsers.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -60,7 +57,7 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getUsers.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getUsers.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -71,7 +68,7 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @ParameterizedTest
@@ -88,7 +85,8 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getUsersByFullName.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getUsersByFullName.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -105,7 +103,8 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getUsersByFullName.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getUsersByFullName.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -122,7 +121,7 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @ParameterizedTest
@@ -139,7 +138,7 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'fullName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.FULL_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -147,13 +146,13 @@ class UserQueryAPIInvalidQueryParamsTest {
     void getUserProfile_paramUserIdIsInvalid_returnsBadRequest() {
         // given
         final String getUserProfilePath = USERS_PATH + "/profile";
-        String userIdInput = "ABCD";
+        String userIdInput = "wrongUserIdInput";
 
         // when & then
         mockMvc.perform(get(getUserProfilePath).queryParam(SharedControllerTestData.USER_ID_PARAM, userIdInput))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(String.format("Failed to convert 'userId' with value: '%s'",
+                .andExpect(jsonPath("$.detail").value(String.format(ErrorMessages.USER_ID_FAIL_CONVERT,
                         userIdInput)));
     }
 
@@ -168,6 +167,6 @@ class UserQueryAPIInvalidQueryParamsTest {
         mockMvc.perform(get(getUserProfilePath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'userId' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.USER_ID_NOT_PRESENT));
     }
 }

@@ -1,8 +1,8 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -31,9 +31,6 @@ class UserQueryAPIQueryParamsMissingTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @SneakyThrows
     void getUsers_paramOfficeNameIsMissing_returnsBadRequest() {
@@ -41,7 +38,7 @@ class UserQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(USERS_PATH))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -54,7 +51,7 @@ class UserQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(getUsersByFullNamePath))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -68,7 +65,7 @@ class UserQueryAPIQueryParamsMissingTest {
                         SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'fullName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.FULL_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -81,6 +78,6 @@ class UserQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(getUserProfilePath))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'userId' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.USER_ID_NOT_PRESENT));
     }
 }
