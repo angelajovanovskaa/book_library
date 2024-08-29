@@ -3,9 +3,8 @@ package com.kinandcarta.book_library.controllers;
 import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
-import com.kinandcarta.book_library.utils.SharedControllerTestData;
-import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -16,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -47,9 +45,7 @@ class BookManagementAPIQueryParamsMissing {
         // given
         final String deleteBookPath = BOOK_PATH + "/delete";
 
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
         mockMvc.perform(delete(deleteBookPath)
@@ -68,9 +64,7 @@ class BookManagementAPIQueryParamsMissing {
         // given
         final String deleteBookPath = BOOK_PATH + "/delete";
 
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
         mockMvc.perform(delete(deleteBookPath)
@@ -89,9 +83,7 @@ class BookManagementAPIQueryParamsMissing {
         // given
         final String deleteBookPath = BOOK_PATH + "/delete";
 
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
         mockMvc.perform(delete(deleteBookPath)

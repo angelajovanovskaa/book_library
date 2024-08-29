@@ -5,8 +5,6 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedControllerTestData;
-import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -49,9 +46,7 @@ class BookManagementAPINotFoundTest {
 
         given(bookManagementService.deleteBook(anyString(), anyString())).willThrow(bookNotFoundException);
 
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN);
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsInvalidIsbn();
 
         // when
         mockMvc.perform(delete(deleteBookPath)

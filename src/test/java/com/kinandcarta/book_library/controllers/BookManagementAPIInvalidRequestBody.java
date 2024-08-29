@@ -7,7 +7,6 @@ import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
-import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
@@ -49,10 +48,7 @@ class BookManagementAPIInvalidRequestBody {
     void insertBook_paramIsbnIsBlank_returnsBadRequest(String isbn) {
         // given
         final String postBookPath = BOOK_PATH + "/insert-book";
-        BookInsertRequestDTO bookInsertRequestDTO = new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
         mockMvc.perform(post(postBookPath)
@@ -69,10 +65,7 @@ class BookManagementAPIInvalidRequestBody {
     void insertBook_paramIsbnIsEmpty_returnsBadRequest(String isbn) {
         // given
         final String postBookPath = BOOK_PATH + "/insert-book";
-        BookInsertRequestDTO bookInsertRequestDTO = new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
         mockMvc.perform(post(postBookPath)
@@ -89,10 +82,7 @@ class BookManagementAPIInvalidRequestBody {
     void insertBook_paramIsbnIsNull_returnsBadRequest(String isbn) {
         // given
         final String postBookPath = BOOK_PATH + "/insert-book";
-        BookInsertRequestDTO bookInsertRequestDTO = new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
         mockMvc.perform(post(postBookPath)
@@ -110,10 +100,7 @@ class BookManagementAPIInvalidRequestBody {
         // given
         final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO =
-                new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
-                        BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                        BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                        BookTestData.AUTHOR_DTOS, officeName);
+                BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
         mockMvc.perform(post(postBookPath)
@@ -131,10 +118,7 @@ class BookManagementAPIInvalidRequestBody {
         // given
         final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO =
-                new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
-                        BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                        BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                        BookTestData.AUTHOR_DTOS, officeName);
+                BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
         mockMvc.perform(post(postBookPath)
@@ -152,10 +136,7 @@ class BookManagementAPIInvalidRequestBody {
         // given
         final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO =
-                new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
-                        BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                        BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                        BookTestData.AUTHOR_DTOS, officeName);
+                BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
         mockMvc.perform(post(postBookPath)

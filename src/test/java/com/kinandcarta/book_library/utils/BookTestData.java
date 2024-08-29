@@ -11,6 +11,8 @@ import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -158,5 +160,43 @@ public class BookTestData {
 
     public BookIdDTO getBookIdDto() {
         return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
+    }
+
+    public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsInvalidIsbn() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN);
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForDeletion() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        return queryParamsValues;
+    }
+
+    public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
+        return new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
+                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
+                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
+                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+    }
+
+    public static BookInsertRequestDTO createBookInsertRequestDTOPassingOfficeName(String officeName) {
+        return new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
+                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
+                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
+                BookTestData.AUTHOR_DTOS, officeName);
     }
 }

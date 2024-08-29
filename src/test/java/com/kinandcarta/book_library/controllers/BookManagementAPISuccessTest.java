@@ -6,8 +6,6 @@ import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.SharedControllerTestData;
-import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -52,7 +49,6 @@ class BookManagementAPISuccessTest {
 
         given(bookManagementService.createBookWithAuthors(any())).willReturn(BookTestData.getBookDisplayDTO());
 
-
         // when
         String jsonResult = mockMvc.perform(post(postBookPath)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -76,9 +72,8 @@ class BookManagementAPISuccessTest {
 
         given(bookManagementService.deleteBook(anyString(), anyString())).willReturn(BookTestData.getBookIdDto());
 
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForDeletion();
+
         // when
         String jsonResult = mockMvc.perform(delete(deleteBookPath)
                         .queryParams(queryParamsValues)
