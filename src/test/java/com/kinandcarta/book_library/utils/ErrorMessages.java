@@ -11,5 +11,4 @@ public class ErrorMessages {
     public static final String TITLE_SEARCH_TERM_NOT_PRESENT = "Required parameter 'titleSearchTerm' is not present.";
     public static final String LANGUAGE_NOT_PRESENT = "Required parameter 'language' is not present.";
     public static final String GENRES_NOT_PRESENT = "Required parameter 'genres' is not present.";
-    public static final String BOOK_NOT_FOUND_EXCEPTION_MESSAGE = "Book with ISBN: invalidISBN not found";
 }
