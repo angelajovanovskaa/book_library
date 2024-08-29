@@ -53,8 +53,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_fullNameIsInvalid_returnsBadRequest(String fullName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingFullName(fullName);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -71,8 +71,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_fullNameIsEmpty_returnsBadRequest(String fullName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingFullName(fullName);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -89,8 +89,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_fullNameIsNull_returnsBadRequest(String fullName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingFullName(fullName);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -107,8 +107,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_emailIsInvalid_returnsBadRequest(String email) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingEmail(email);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -125,8 +125,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_emailIsEmpty_returnsBadRequest(String email) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingEmail(email);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -143,8 +143,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_emailIsNull_returnsBadRequest(String email) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingEmail(email);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -161,8 +161,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_officeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingOfficeName(officeName);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -179,8 +179,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_officeNameIsEmpty_returnsBadRequest(String officeName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingOfficeName(officeName);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -197,8 +197,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_officeNameIsNull_returnsBadRequest(String officeName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingOfficeName(officeName);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -215,8 +215,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_passwordIsInvalid_returnsBadRequest(String password) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingPassword(password);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -233,8 +233,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_passwordIsEmpty_returnsBadRequest(String password) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingPassword(password);;
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -251,8 +251,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_passwordIsNull_returnsBadRequest(String password) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
+        UserRegistrationRequestDTO registrationRequestDTO =
+                UserTestData.createUserRegistrationRequestPassingPassword(password);
 
         // when & then
         mockMvc.perform(post(registerUserPath)
@@ -269,7 +269,7 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_userEmailIsInvalid_returnsBadRequest(String userEmail) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
+        UserLoginRequestDTO userLoginRequestDTO = UserTestData.createUserLoginRequestDTOPassingUserEmail(userEmail);
 
         // when & then
         mockMvc.perform(post(loginUserPath)
@@ -286,7 +286,7 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_userEmailIsEmpty_returnsBadRequest(String userEmail) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
+        UserLoginRequestDTO userLoginRequestDTO = UserTestData.createUserLoginRequestDTOPassingUserEmail(userEmail);
 
         // when && then
         mockMvc.perform(post(loginUserPath)
@@ -303,7 +303,7 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_userEmailIsNull_returnsBadRequest(String userEmail) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
+        UserLoginRequestDTO userLoginRequestDTO = UserTestData.createUserLoginRequestDTOPassingUserEmail(userEmail);
 
         // when && then
         mockMvc.perform(post(loginUserPath)
@@ -320,7 +320,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_passwordIsInvalid_returnsBadRequest(String userPassword) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_PASSWORD, userPassword);
+        UserLoginRequestDTO userLoginRequestDTO =
+                UserTestData.createUserLoginRequestDTOPassingUserPassword(userPassword);
 
         // when & then
         mockMvc.perform(post(loginUserPath)
@@ -337,7 +338,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_passwordIsEmpty_returnsBadRequest(String userPassword) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_PASSWORD, userPassword);
+        UserLoginRequestDTO userLoginRequestDTO =
+                UserTestData.createUserLoginRequestDTOPassingUserPassword(userPassword);
 
         // when & then
         mockMvc.perform(post(loginUserPath)
@@ -354,7 +356,8 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_passwordIsNull_returnsBadRequest(String userPassword) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_PASSWORD, userPassword);
+        UserLoginRequestDTO userLoginRequestDTO =
+                UserTestData.createUserLoginRequestDTOPassingUserPassword(userPassword);
 
         // when & then
         mockMvc.perform(post(loginUserPath)
@@ -442,7 +445,7 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
+                UserTestData.createUserUserChangePasswordRequestDTOPassingOldPassword(oldPassword);
 
         // when & then
         mockMvc.perform(patch(changePasswordUserPath)
@@ -460,7 +463,7 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
+                UserTestData.createUserUserChangePasswordRequestDTOPassingOldPassword(oldPassword);
 
         // when & then
         mockMvc.perform(patch(changePasswordUserPath)
@@ -478,7 +481,7 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
+                UserTestData.createUserUserChangePasswordRequestDTOPassingOldPassword(oldPassword);
 
         // when & then
         mockMvc.perform(patch(changePasswordUserPath)
@@ -496,7 +499,7 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
+                UserTestData.createUserUserChangePasswordRequestDTOPassingNewPassword(newPassword);
 
         // when & then
         mockMvc.perform(patch(changePasswordUserPath)
@@ -514,7 +517,7 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
+                UserTestData.createUserUserChangePasswordRequestDTOPassingNewPassword(newPassword);
 
         // when & then
         mockMvc.perform(patch(changePasswordUserPath)
@@ -532,7 +535,7 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
+                UserTestData.createUserUserChangePasswordRequestDTOPassingNewPassword(newPassword);
 
         // when & then
         mockMvc.perform(patch(changePasswordUserPath)
