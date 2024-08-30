@@ -11,4 +11,7 @@ public class ErrorMessages {
     public static final String TITLE_SEARCH_TERM_NOT_PRESENT = "Required parameter 'titleSearchTerm' is not present.";
     public static final String LANGUAGE_NOT_PRESENT = "Required parameter 'language' is not present.";
     public static final String GENRES_NOT_PRESENT = "Required parameter 'genres' is not present.";
+    public static final String FULL_NAME_NOT_PRESENT = "Required parameter 'fullName' is not present.";
+    public static final String USER_ID_NOT_PRESENT = "Required parameter 'userId' is not present.";
+    public static final String USER_ID_FAIL_CONVERT = "Failed to convert 'userId' with value: '%s'";
 }
