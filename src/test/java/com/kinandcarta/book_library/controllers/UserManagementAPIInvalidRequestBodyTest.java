@@ -433,7 +433,7 @@ class UserManagementAPIInvalidRequestBodyTest {
 
     private void performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
             throws Exception {
-         mockMvc.perform(post(path)
+        mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
@@ -443,7 +443,7 @@ class UserManagementAPIInvalidRequestBodyTest {
 
     private void performPatchAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
             throws Exception {
-         mockMvc.perform(patch(path)
+        mockMvc.perform(patch(path)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
