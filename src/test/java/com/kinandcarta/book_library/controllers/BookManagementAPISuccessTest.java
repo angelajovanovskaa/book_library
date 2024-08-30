@@ -27,6 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookManagementAPISuccessTest {
     private static final String BOOK_PATH = "/books";
+    private static final String INSERT_BOOK_PATH = BOOK_PATH + "/insert-book";
+    private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -45,12 +47,10 @@ class BookManagementAPISuccessTest {
     @SneakyThrows
     void createBook_insertIsValid_returnsBookInsertRequestDTO() {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
-
         given(bookManagementService.createBookWithAuthors(any())).willReturn(BookTestData.getBookDisplayDTO());
 
         // when
-        String jsonResult = mockMvc.perform(post(postBookPath)
+        String jsonResult = mockMvc.perform(post(INSERT_BOOK_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(BookTestData.getBookInsertRequestDTO())))
                 .andExpect(status().isCreated())
@@ -68,14 +68,12 @@ class BookManagementAPISuccessTest {
     @SneakyThrows
     void deleteBook_deletionIsSuccessful_deletesBook() {
         // given
-        final String deleteBookPath = BOOK_PATH + "/delete";
-
         given(bookManagementService.deleteBook(anyString(), anyString())).willReturn(BookTestData.getBookIdDto());
 
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForDeletion();
 
         // when
-        String jsonResult = mockMvc.perform(delete(deleteBookPath)
+        String jsonResult = mockMvc.perform(delete(DELETE_BOOK_PATH)
                         .queryParams(queryParamsValues)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

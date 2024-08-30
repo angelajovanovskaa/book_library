@@ -26,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookManagementAPIInvalidRequestBody {
     private static final String BOOK_PATH = "/books";
+    private static final String INSERT_BOOK_PATH = BOOK_PATH + "/insert-book";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -47,11 +48,10 @@ class BookManagementAPIInvalidRequestBody {
     @SneakyThrows
     void insertBook_paramIsbnIsBlank_returnsBadRequest(String isbn) {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.isbn",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.isbn",
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -60,11 +60,10 @@ class BookManagementAPIInvalidRequestBody {
     @SneakyThrows
     void insertBook_paramIsbnIsEmpty_returnsBadRequest(String isbn) {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.isbn",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.isbn",
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -73,11 +72,10 @@ class BookManagementAPIInvalidRequestBody {
     @SneakyThrows
     void insertBook_paramIsbnIsNull_returnsBadRequest(String isbn) {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.isbn",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.isbn",
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -86,12 +84,11 @@ class BookManagementAPIInvalidRequestBody {
     @SneakyThrows
     void insertBook_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO =
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.officeName",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.officeName",
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -100,12 +97,11 @@ class BookManagementAPIInvalidRequestBody {
     @SneakyThrows
     void insertBook_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO =
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.officeName",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.officeName",
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -114,12 +110,11 @@ class BookManagementAPIInvalidRequestBody {
     @SneakyThrows
     void insertBook_paramOfficeNameIsNull_returnsBadRequest(String officeName) {
         // given
-        final String postBookPath = BOOK_PATH + "/insert-book";
         BookInsertRequestDTO bookInsertRequestDTO =
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.officeName",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.officeName",
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 

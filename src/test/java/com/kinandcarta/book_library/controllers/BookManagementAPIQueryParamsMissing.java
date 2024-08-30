@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookManagementAPIQueryParamsMissing {
     private static final String BOOK_PATH = "/books";
+    private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -43,12 +44,10 @@ class BookManagementAPIQueryParamsMissing {
     @SneakyThrows
     void deleteBook_paramIsbnIsBlank_returnsBadRequest(String isbn) {
         // given
-        final String deleteBookPath = BOOK_PATH + "/delete";
-
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
-        performDeleteAndExpectBadRequest(deleteBookPath, queryParamsValues,
+        performDeleteAndExpectBadRequest(DELETE_BOOK_PATH, queryParamsValues,
                 "$.errorFields['deleteBook.isbn']", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -57,12 +56,10 @@ class BookManagementAPIQueryParamsMissing {
     @SneakyThrows
     void deleteBook_paramIsbnIsEmpty_returnsBadRequest(String isbn) {
         // given
-        final String deleteBookPath = BOOK_PATH + "/delete";
-
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
-        performDeleteAndExpectBadRequest(deleteBookPath, queryParamsValues,
+        performDeleteAndExpectBadRequest(DELETE_BOOK_PATH, queryParamsValues,
                 "$.errorFields['deleteBook.isbn']", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -71,12 +68,10 @@ class BookManagementAPIQueryParamsMissing {
     @SneakyThrows
     void deleteBook_paramIsbnIsNull_returnsBadRequest(String isbn) {
         // given
-        final String deleteBookPath = BOOK_PATH + "/delete";
-
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
-        mockMvc.perform(delete(deleteBookPath)
+        mockMvc.perform(delete(DELETE_BOOK_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())

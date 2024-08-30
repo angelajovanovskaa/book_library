@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookManagementAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
+    private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -41,7 +42,6 @@ class BookManagementAPINotFoundTest {
     @SneakyThrows
     void deleteBook_isbnNotFound_returnsNotFoundRequest() {
         // given
-        final String deleteBookPath = BOOK_PATH + "/delete";
         BookNotFoundException bookNotFoundException = new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN);
 
         given(bookManagementService.deleteBook(anyString(), anyString())).willThrow(bookNotFoundException);
@@ -49,7 +49,7 @@ class BookManagementAPINotFoundTest {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsInvalidIsbn();
 
         // when
-        mockMvc.perform(delete(deleteBookPath)
+        mockMvc.perform(delete(DELETE_BOOK_PATH)
                         .queryParams(queryParamsValues))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
