@@ -149,7 +149,7 @@ class UserManagementAPISuccessTest {
         assertThat(result).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
     }
 
-    String performPatchAndExpectConfirmationMessage(String path, Record DTO) throws Exception {
+    private String performPatchAndExpectConfirmationMessage(String path, Record DTO) throws Exception {
         return mockMvc.perform(patch(path)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))

@@ -431,9 +431,9 @@ class UserManagementAPIInvalidRequestBodyTest {
                 "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    private Object performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+    private void performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
             throws Exception {
-        return mockMvc.perform(post(path)
+         mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
@@ -441,9 +441,9 @@ class UserManagementAPIInvalidRequestBodyTest {
                 .andExpect(jsonPath(errorField).value(errorMessage));
     }
 
-    private Object performPatchAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+    private void performPatchAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
             throws Exception {
-        return mockMvc.perform(patch(path)
+         mockMvc.perform(patch(path)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
