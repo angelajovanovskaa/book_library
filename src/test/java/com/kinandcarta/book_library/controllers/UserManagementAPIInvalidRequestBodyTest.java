@@ -34,6 +34,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 class UserManagementAPIInvalidRequestBodyTest {
     private static final String USERS_PATH = "/users";
+    private static final String USERS_PATH_REGISTER = USERS_PATH + "/register";
+    private static final String USERS_PATH_LOGIN = USERS_PATH + "/login";
+    private static final String USERS_PATH_UPDATE_ROLE = USERS_PATH + "/update-role";
+    private static final String USERS_PATH_CHANGE_PASSWORD = USERS_PATH + "/change-password";
+
+    private static final String ERROR_FIELD_FULL_NAME = "$.errorFields.fullName";
+    private static final String ERROR_FIELD_EMAIL = "$.errorFields.email";
+    private static final String ERROR_FIELD_OFFICE_NAME = "$.errorFields.officeName";
+    private static final String ERROR_FIELD_PASSWORD = "$.errorFields.password";
+    private static final String ERROR_FIELD_USER_EMAIL = "$.errorFields.userEmail";
+    private static final String ERROR_FIELD_USER_PASSWORD = "$.errorFields.userPassword";
+    private static final String ERROR_FIELD_USER_ID = "$.errorFields.userId";
+    private static final String ERROR_FIELD_OLD_PASSWORD = "$.errorFields.oldPassword";
+    private static final String ERROR_FIELD_NEW_PASSWORD = "$.errorFields.newPassword";
 
     @MockBean
     private UserQueryServiceImpl userQueryService;
@@ -52,12 +66,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_fullNameIsInvalid_returnsBadRequest(String fullName) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_FULL_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -66,12 +79,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_fullNameIsEmpty_returnsBadRequest(String fullName) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_FULL_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -80,12 +92,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_fullNameIsNull_returnsBadRequest(String fullName) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_FULL_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -94,12 +105,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_emailIsInvalid_returnsBadRequest(String email) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_EMAIL,
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
@@ -108,12 +118,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_emailIsEmpty_returnsBadRequest(String email) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_EMAIL,
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
@@ -122,12 +131,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_emailIsNull_returnsBadRequest(String email) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_EMAIL,
                 ErrorMessages.MUST_NOT_BE_NULL, true);
     }
 
@@ -136,12 +144,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_officeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -150,12 +157,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_officeNameIsEmpty_returnsBadRequest(String officeName) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -164,12 +170,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_officeNameIsNull_returnsBadRequest(String officeName) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -178,12 +183,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_passwordIsInvalid_returnsBadRequest(String password) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -192,12 +196,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_passwordIsEmpty_returnsBadRequest(String password) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -206,12 +209,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void registerUser_passwordIsNull_returnsBadRequest(String password) {
         // given
-        final String registerUserPath = USERS_PATH + "/register";
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+        performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -220,11 +222,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void loginUser_userEmailIsInvalid_returnsBadRequest(String userEmail) {
         // given
-        final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+        performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_EMAIL,
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
@@ -233,11 +234,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void loginUser_userEmailIsEmpty_returnsBadRequest(String userEmail) {
         // given
-        final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when && then
-        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+        performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_EMAIL,
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
@@ -246,11 +246,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void loginUser_userEmailIsNull_returnsBadRequest(String userEmail) {
         // given
-        final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when && then
-        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+        performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_EMAIL,
                 ErrorMessages.MUST_NOT_BE_NULL, true);
     }
 
@@ -259,11 +258,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void loginUser_passwordIsInvalid_returnsBadRequest(String userPassword) {
         // given
-        final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+        performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -272,11 +270,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void loginUser_passwordIsEmpty_returnsBadRequest(String userPassword) {
         // given
-        final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+        performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -285,11 +282,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void loginUser_passwordIsNull_returnsBadRequest(String userPassword) {
         // given
-        final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+        performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
@@ -303,7 +299,7 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_FULL_NAME, null);
 
         // when & then
-        performRequestAndExpectBadRequest(updateDataUserPath, userUpdateDataRequestDTO, "$.errorFields.userId",
+        performRequestAndExpectBadRequest(updateDataUserPath, userUpdateDataRequestDTO, ERROR_FIELD_USER_ID,
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
@@ -312,11 +308,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateUserRole_userIdIsNull_returnsBadRequest(UUID userId) {
         // given
-        final String updateRoleUserPath = USERS_PATH + "/update-role";
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(userId, UserRole.USER);
 
         // when & then
-        performRequestAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.userId",
+        performRequestAndExpectBadRequest(USERS_PATH_UPDATE_ROLE, userUpdateRoleRequestDTO, ERROR_FIELD_USER_ID,
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
@@ -325,11 +320,10 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateUserRole_roleIsNull_returnsBadRequest(UserRole role) {
         // given
-        final String updateRoleUserPath = USERS_PATH + "/update-role";
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(UserTestData.USER_ID, role);
 
         // when & then
-        performRequestAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.role",
+        performRequestAndExpectBadRequest(USERS_PATH_UPDATE_ROLE, userUpdateRoleRequestDTO, "$.errorFields.role",
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
@@ -338,12 +332,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_userIdIsNull_returnsBadRequest(UUID userId) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(userId, UserTestData.USER_PASSWORD, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO, "$.errorFields.userId",
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO, ERROR_FIELD_USER_ID,
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
@@ -352,13 +345,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_oldPasswordIsInvalid_returnsBadRequest(String oldPassword) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
+                ERROR_FIELD_OLD_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -366,13 +358,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_oldPasswordIsEmpty_returnsBadRequest(String oldPassword) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
+                ERROR_FIELD_OLD_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -380,13 +371,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_oldPasswordIsNull_returnsBadRequest(String oldPassword) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
+                ERROR_FIELD_OLD_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -394,13 +384,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_newPasswordIsInvalid_returnsBadRequest(String newPassword) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
+                ERROR_FIELD_NEW_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -408,13 +397,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_newPasswordIsEmpty_returnsBadRequest(String newPassword) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
+                ERROR_FIELD_NEW_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -422,13 +410,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void changeUserPassword_newPasswordIsNull_returnsBadRequest(String newPassword) {
         // given
-        final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
+        performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
+                ERROR_FIELD_NEW_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     private void performRequestAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage,
