@@ -87,7 +87,7 @@ class BookItemManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_NULL));
+                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest

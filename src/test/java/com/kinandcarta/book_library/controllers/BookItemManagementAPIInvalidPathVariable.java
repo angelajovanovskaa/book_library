@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookItemController.class)
-class BookItemManagementAPIInvalidPathVariable {
+class BookItemManagementAPIInvalidPathVariableTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
 
     @Autowired

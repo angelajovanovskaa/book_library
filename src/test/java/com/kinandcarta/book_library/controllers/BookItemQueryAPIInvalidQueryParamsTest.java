@@ -107,6 +107,6 @@ class BookItemQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.MUST_NOT_BE_NULL));
+                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
     }
 }
