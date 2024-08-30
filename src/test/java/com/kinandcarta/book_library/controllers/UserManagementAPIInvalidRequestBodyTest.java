@@ -10,6 +10,7 @@ import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,16 +53,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_fullNameIsInvalid_returnsBadRequest(String fullName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingFullName(fullName);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.fullName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -70,16 +67,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_fullNameIsEmpty_returnsBadRequest(String fullName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingFullName(fullName);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.fullName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -88,16 +81,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_fullNameIsNull_returnsBadRequest(String fullName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingFullName(fullName);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.fullName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -106,16 +95,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_emailIsInvalid_returnsBadRequest(String email) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingEmail(email);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.email").value(ErrorMessages.EMAIL_BAD_FORMAT));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+                ErrorMessages.EMAIL_BAD_FORMAT);
     }
 
     @ParameterizedTest
@@ -124,16 +109,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_emailIsEmpty_returnsBadRequest(String email) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingEmail(email);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.email").value(ErrorMessages.EMAIL_BAD_FORMAT));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+                ErrorMessages.EMAIL_BAD_FORMAT);
     }
 
     @ParameterizedTest
@@ -142,16 +123,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_emailIsNull_returnsBadRequest(String email) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingEmail(email);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.email").value(ErrorMessages.MUST_NOT_BE_NULL));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -160,16 +137,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_officeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingOfficeName(officeName);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -178,16 +151,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_officeNameIsEmpty_returnsBadRequest(String officeName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingOfficeName(officeName);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -196,16 +165,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_officeNameIsNull_returnsBadRequest(String officeName) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingOfficeName(officeName);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -214,16 +179,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_passwordIsInvalid_returnsBadRequest(String password) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingPassword(password);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.password").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -232,17 +193,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_passwordIsEmpty_returnsBadRequest(String password) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingPassword(password);
-        ;
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.password").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -251,16 +207,12 @@ class UserManagementAPIInvalidRequestBodyTest {
     void registerUser_passwordIsNull_returnsBadRequest(String password) {
         // given
         final String registerUserPath = USERS_PATH + "/register";
-        UserRegistrationRequestDTO registrationRequestDTO =
-                UserTestData.createUserRegistrationRequestPassingPassword(password);
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        mockMvc.perform(post(registerUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(registrationRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.password").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -269,15 +221,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_userEmailIsInvalid_returnsBadRequest(String userEmail) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = UserTestData.createUserLoginRequestDTOPassingUserEmail(userEmail);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(post(loginUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.EMAIL_BAD_FORMAT));
+        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+                ErrorMessages.EMAIL_BAD_FORMAT);
     }
 
     @ParameterizedTest
@@ -286,15 +234,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_userEmailIsEmpty_returnsBadRequest(String userEmail) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = UserTestData.createUserLoginRequestDTOPassingUserEmail(userEmail);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when && then
-        mockMvc.perform(post(loginUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.EMAIL_BAD_FORMAT));
+        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+                ErrorMessages.EMAIL_BAD_FORMAT);
     }
 
     @ParameterizedTest
@@ -303,15 +247,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_userEmailIsNull_returnsBadRequest(String userEmail) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO = UserTestData.createUserLoginRequestDTOPassingUserEmail(userEmail);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when && then
-        mockMvc.perform(post(loginUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_NULL));
+        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -320,16 +260,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_passwordIsInvalid_returnsBadRequest(String userPassword) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO =
-                UserTestData.createUserLoginRequestDTOPassingUserPassword(userPassword);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        mockMvc.perform(post(loginUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -338,16 +273,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_passwordIsEmpty_returnsBadRequest(String userPassword) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO =
-                UserTestData.createUserLoginRequestDTOPassingUserPassword(userPassword);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        mockMvc.perform(post(loginUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -356,16 +286,11 @@ class UserManagementAPIInvalidRequestBodyTest {
     void loginUser_passwordIsNull_returnsBadRequest(String userPassword) {
         // given
         final String loginUserPath = USERS_PATH + "/login";
-        UserLoginRequestDTO userLoginRequestDTO =
-                UserTestData.createUserLoginRequestDTOPassingUserPassword(userPassword);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        mockMvc.perform(post(loginUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -378,12 +303,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_FULL_NAME, null);
 
         // when & then
-        mockMvc.perform(patch(updateDataUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateDataRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value(ErrorMessages.MUST_NOT_BE_NULL));
+        performPatchAndExpectBadRequest(updateDataUserPath, userUpdateDataRequestDTO, "$.errorFields.userId",
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -395,12 +316,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(userId, UserRole.USER);
 
         // when & then
-        mockMvc.perform(patch(updateRoleUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateRoleRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value(ErrorMessages.MUST_NOT_BE_NULL));
+        performPatchAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.userId",
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -412,12 +329,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(UserTestData.USER_ID, role);
 
         // when & then
-        mockMvc.perform(patch(updateRoleUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateRoleRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.role").value(ErrorMessages.MUST_NOT_BE_NULL));
+        performPatchAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.role",
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -430,12 +343,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(userId, UserTestData.USER_PASSWORD, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value(ErrorMessages.MUST_NOT_BE_NULL));
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO, "$.errorFields.userId",
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -445,15 +354,11 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.createUserUserChangePasswordRequestDTOPassingOldPassword(oldPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.oldPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -463,15 +368,11 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.createUserUserChangePasswordRequestDTOPassingOldPassword(oldPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.oldPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -481,15 +382,11 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.createUserUserChangePasswordRequestDTOPassingOldPassword(oldPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.oldPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -499,15 +396,11 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.createUserUserChangePasswordRequestDTOPassingNewPassword(newPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.newPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -517,15 +410,11 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.createUserUserChangePasswordRequestDTOPassingNewPassword(newPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.newPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -535,14 +424,30 @@ class UserManagementAPIInvalidRequestBodyTest {
         // given
         final String changePasswordUserPath = USERS_PATH + "/change-password";
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                UserTestData.createUserUserChangePasswordRequestDTOPassingNewPassword(newPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        mockMvc.perform(patch(changePasswordUserPath)
+        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+    }
+
+    private Object performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+            throws Exception {
+        return mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
+                        .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.newPassword").value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(errorField).value(errorMessage));
+    }
+
+    private Object performPatchAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+            throws Exception {
+        return mockMvc.perform(patch(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(DTO)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }

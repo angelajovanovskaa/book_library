@@ -138,42 +138,4 @@ public class UserTestData {
                 UserRole.ADMIN
         );
     }
-
-    public static UserRegistrationRequestDTO createUserRegistrationRequestPassingFullName(String fullName) {
-        return new UserRegistrationRequestDTO(fullName, UserTestData.USER_EMAIL,
-                SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
-    }
-
-    public static UserRegistrationRequestDTO createUserRegistrationRequestPassingEmail(String email) {
-        return new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
-    }
-
-    public static UserRegistrationRequestDTO createUserRegistrationRequestPassingOfficeName(String officeName) {
-        return new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
-    }
-
-    public static UserRegistrationRequestDTO createUserRegistrationRequestPassingPassword(String password) {
-        return new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
-    }
-
-    public static UserLoginRequestDTO createUserLoginRequestDTOPassingUserEmail(String userEmail) {
-        return new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
-    }
-
-    public static UserLoginRequestDTO createUserLoginRequestDTOPassingUserPassword(String userPassword) {
-        return new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
-    }
-
-    public static UserChangePasswordRequestDTO createUserUserChangePasswordRequestDTOPassingOldPassword(
-            String oldPassword) {
-        return new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
-    }
-
-    public static UserChangePasswordRequestDTO createUserUserChangePasswordRequestDTOPassingNewPassword(
-            String newPassword) {
-        return new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
-    }
 }

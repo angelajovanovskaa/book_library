@@ -95,12 +95,7 @@ class UserManagementAPISuccessTest {
         given(userManagementService.updateUserData(any())).willReturn(UserResponseMessages.USER_DATA_UPDATED_RESPONSE);
 
         // when
-        String result = mockMvc.perform(patch(updateDataUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateDataRequestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
-                .andReturn().getResponse().getContentAsString();
+        String result = performPatchAndExpectConfirmationMessage(updateDataUserPath, userUpdateDataRequestDTO);
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_DATA_UPDATED_RESPONSE);
@@ -115,12 +110,7 @@ class UserManagementAPISuccessTest {
         given(userManagementService.updateUserRole(any())).willReturn(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
 
         // when
-        String result = mockMvc.perform(patch(updateRoleUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateRoleRequestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
-                .andReturn().getResponse().getContentAsString();
+        String result = performPatchAndExpectConfirmationMessage(updateRoleUserPath, userUpdateRoleRequestDTO);
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_ROLE_UPDATED_RESPONSE);
@@ -153,14 +143,18 @@ class UserManagementAPISuccessTest {
                 UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
 
         // when
-        String result = mockMvc.perform(patch(changePasswordUserPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userChangePasswordRequestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
-                .andReturn().getResponse().getContentAsString();
+        String result = performPatchAndExpectConfirmationMessage(changePasswordUserPath, userChangePasswordRequestDTO);
 
         // then
         assertThat(result).isEqualTo(UserResponseMessages.USER_PASSWORD_UPDATED_RESPONSE);
+    }
+
+    String performPatchAndExpectConfirmationMessage(String path, Record DTO) throws Exception {
+        return mockMvc.perform(patch(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(DTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
     }
 }
