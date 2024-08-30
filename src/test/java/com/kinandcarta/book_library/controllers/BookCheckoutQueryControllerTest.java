@@ -281,7 +281,7 @@ class BookCheckoutQueryControllerTest {
                 new BookCheckoutReturnReminderResponseDTO(UserTestData.USER_ID, BookTestData.BOOK_TITLE,
                         SharedServiceTestData.DATE_NOW.plusDays(2));
 
-        given(bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(anyString())).willReturn(
+        given(bookCheckoutQueryService.getAllBookCheckoutsNearReturnDate(anyString())).willReturn(
                 List.of(bookCheckoutDTO));
 
         // when
