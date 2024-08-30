@@ -27,6 +27,9 @@ class BookManagementAPIQueryParamsMissing {
     private static final String BOOK_PATH = "/books";
     private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
 
+    private static final String ERROR_FIELD_ISBN = "$.errorFields['deleteBook.isbn']";
+    private static final String DETAIL = "$.detail";
+
     @MockBean
     private BookManagementServiceImpl bookManagementService;
 
@@ -48,7 +51,7 @@ class BookManagementAPIQueryParamsMissing {
 
         // when & then
         performDeleteAndExpectBadRequest(DELETE_BOOK_PATH, queryParamsValues,
-                "$.errorFields['deleteBook.isbn']", ErrorMessages.MUST_NOT_BE_BLANK);
+                ERROR_FIELD_ISBN, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -60,7 +63,7 @@ class BookManagementAPIQueryParamsMissing {
 
         // when & then
         performDeleteAndExpectBadRequest(DELETE_BOOK_PATH, queryParamsValues,
-                "$.errorFields['deleteBook.isbn']", ErrorMessages.MUST_NOT_BE_BLANK);
+                ERROR_FIELD_ISBN, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -76,10 +79,9 @@ class BookManagementAPIQueryParamsMissing {
                         .queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail")
+                .andExpect(jsonPath(DETAIL)
                         .value(ErrorMessages.ISBN_NOT_PRESENT));
     }
-
 
     private void performDeleteAndExpectBadRequest(String path, MultiValueMap<String, String> queryParams,
                                                   String errorField, String errorMessage)

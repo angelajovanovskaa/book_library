@@ -26,6 +26,8 @@ class BookManagementAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
     private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
 
+    private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
+
     @MockBean
     private BookManagementServiceImpl bookManagementService;
 
@@ -53,7 +55,7 @@ class BookManagementAPINotFoundTest {
                         .queryParams(queryParamsValues))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage")
+                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE)
                         .value(bookNotFoundException.getMessage()));
     }
 }

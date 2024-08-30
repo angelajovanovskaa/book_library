@@ -28,6 +28,9 @@ class BookManagementAPIInvalidRequestBody {
     private static final String BOOK_PATH = "/books";
     private static final String INSERT_BOOK_PATH = BOOK_PATH + "/insert-book";
 
+    private static final String ERROR_FIELD_ISBN = "$.errorFields.isbn";
+    private static final String ERROR_FIELD_OFFICE_NAME = "$.errorFields.officeName";
+
     @MockBean
     private BookManagementServiceImpl bookManagementService;
 
@@ -51,7 +54,7 @@ class BookManagementAPIInvalidRequestBody {
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.isbn",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -63,7 +66,7 @@ class BookManagementAPIInvalidRequestBody {
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.isbn",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -75,7 +78,7 @@ class BookManagementAPIInvalidRequestBody {
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.isbn",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -88,7 +91,7 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.officeName",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -101,7 +104,7 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.officeName",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -114,7 +117,7 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, "$.errorFields.officeName",
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
