@@ -107,5 +107,4 @@ public class ReviewManagementAPINotFoundTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
     }
-
 }
