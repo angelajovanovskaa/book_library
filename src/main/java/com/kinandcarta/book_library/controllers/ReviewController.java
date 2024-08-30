@@ -6,7 +6,6 @@ import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,7 +70,7 @@ public class ReviewController {
     }
 
     @DeleteMapping("/delete/{reviewId}")
-    public ResponseEntity<String> deleteReview(@PathVariable @NotNull UUID reviewId) {
+    public ResponseEntity<String> deleteReview(@PathVariable UUID reviewId) {
         UUID response = reviewManagementService.deleteReviewById(reviewId);
 
         return ResponseEntity.ok("Successfully deleted review with id " + response);
