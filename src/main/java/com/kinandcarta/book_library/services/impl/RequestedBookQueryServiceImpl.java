@@ -8,10 +8,11 @@ import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.exceptions.RequestedBookNotFoundException;
 import com.kinandcarta.book_library.repositories.RequestedBookRepository;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Service implementation for querying {@link RequestedBook} data.
@@ -37,7 +38,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      */
     @Override
     public List<RequestedBookResponseDTO> getRequestedBooksByOfficeName(String officeName) {
-        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByBookOfficeNameOrderByRequestedDateDescBookTitleAsc(officeName);
+        List<RequestedBook> requestedBooks = requestedBookRepository.findAllByOfficeName(officeName);
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookResponseDTO)
                 .toList();
@@ -55,7 +56,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
     public List<RequestedBookResponseDTO> getRequestedBooksByBookStatusAndOfficeName(BookStatus bookStatus,
                                                                                      String officeName) {
         List<RequestedBook> requestedBooks = requestedBookRepository
-                .findAllByBookBookStatusAndBookOfficeNameOrderByLikeCounterDescRequestedDateDesc(bookStatus, officeName);
+                .findAllByBookStatusAndOfficeName(bookStatus, officeName);
         return requestedBooks.stream()
                 .map(requestedBookConverter::toRequestedBookResponseDTO)
                 .toList();
@@ -86,8 +87,8 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      * @throws RequestedBookNotFoundException if no requested book exists for the given ISBN and office name.
      */
     @Override
-    public RequestedBookResponseDTO getRequestedBookByIsbnAndOfficeName(String isbn, String officeName) {
-        RequestedBook requestedBook = requestedBookRepository.findByBookIsbnAndBookOfficeName(isbn, officeName)
+    public RequestedBookResponseDTO getRequestedBookByISBNAndOfficeName(String isbn, String officeName) {
+        RequestedBook requestedBook = requestedBookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new RequestedBookNotFoundException(isbn, officeName));
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
