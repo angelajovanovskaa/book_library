@@ -42,7 +42,6 @@ class BookManagementAPISuccessTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Test
     @SneakyThrows
     void createBook_insertIsValid_returnsBookInsertRequestDTO() {
