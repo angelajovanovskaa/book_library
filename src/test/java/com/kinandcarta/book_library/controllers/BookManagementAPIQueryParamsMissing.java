@@ -48,13 +48,8 @@ class BookManagementAPIQueryParamsMissing {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
-        mockMvc.perform(delete(deleteBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .queryParams(queryParamsValues))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['deleteBook.isbn']")
-                        .value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performDeleteAndExpectBadRequest(deleteBookPath, queryParamsValues,
+                "$.errorFields['deleteBook.isbn']", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -67,13 +62,8 @@ class BookManagementAPIQueryParamsMissing {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
 
         // when & then
-        mockMvc.perform(delete(deleteBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .queryParams(queryParamsValues))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['deleteBook.isbn']")
-                        .value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performDeleteAndExpectBadRequest(deleteBookPath, queryParamsValues,
+                "$.errorFields['deleteBook.isbn']", ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -93,5 +83,17 @@ class BookManagementAPIQueryParamsMissing {
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath("$.detail")
                         .value(ErrorMessages.ISBN_NOT_PRESENT));
+    }
+
+
+    private void performDeleteAndExpectBadRequest(String path, MultiValueMap<String, String> queryParams,
+                                                  String errorField, String errorMessage)
+            throws Exception {
+        mockMvc.perform(delete(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .queryParams(queryParams))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }

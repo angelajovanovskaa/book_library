@@ -51,12 +51,8 @@ class BookManagementAPIInvalidRequestBody {
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        mockMvc.perform(post(postBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.isbn",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -68,12 +64,8 @@ class BookManagementAPIInvalidRequestBody {
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        mockMvc.perform(post(postBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.isbn",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -85,12 +77,8 @@ class BookManagementAPIInvalidRequestBody {
         BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
-        mockMvc.perform(post(postBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.isbn",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -103,12 +91,8 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        mockMvc.perform(post(postBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -121,12 +105,8 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        mockMvc.perform(post(postBookPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @ParameterizedTest
@@ -139,11 +119,17 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        mockMvc.perform(post(postBookPath)
+        performPostAndExpectBadRequest(postBookPath, bookInsertRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK);
+    }
+
+    private void performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+            throws Exception {
+        mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookInsertRequestDTO)))
+                        .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }
