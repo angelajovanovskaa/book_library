@@ -57,8 +57,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -71,8 +71,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -85,8 +85,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.fullName",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -99,8 +99,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
-                ErrorMessages.EMAIL_BAD_FORMAT);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+                ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
     @ParameterizedTest
@@ -113,8 +113,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
-                ErrorMessages.EMAIL_BAD_FORMAT);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+                ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
     @ParameterizedTest
@@ -127,8 +127,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.email",
+                ErrorMessages.MUST_NOT_BE_NULL, true);
     }
 
     @ParameterizedTest
@@ -141,8 +141,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -155,8 +155,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -169,8 +169,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.officeName",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -183,8 +183,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -197,8 +197,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -211,8 +211,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
 
         // when & then
-        performPostAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(registerUserPath, registrationRequestDTO, "$.errorFields.password",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -224,8 +224,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
-                ErrorMessages.EMAIL_BAD_FORMAT);
+        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+                ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
     @ParameterizedTest
@@ -237,8 +237,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when && then
-        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
-                ErrorMessages.EMAIL_BAD_FORMAT);
+        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+                ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
     @ParameterizedTest
@@ -250,8 +250,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
 
         // when && then
-        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userEmail",
+                ErrorMessages.MUST_NOT_BE_NULL, true);
     }
 
     @ParameterizedTest
@@ -263,8 +263,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -276,8 +276,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -289,8 +289,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
 
         // when & then
-        performPostAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
-                ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(loginUserPath, userLoginRequestDTO, "$.errorFields.userPassword",
+                ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
     @ParameterizedTest
@@ -303,8 +303,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 UserTestData.USER_FULL_NAME, null);
 
         // when & then
-        performPatchAndExpectBadRequest(updateDataUserPath, userUpdateDataRequestDTO, "$.errorFields.userId",
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performRequestAndExpectBadRequest(updateDataUserPath, userUpdateDataRequestDTO, "$.errorFields.userId",
+                ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
     @ParameterizedTest
@@ -316,8 +316,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(userId, UserRole.USER);
 
         // when & then
-        performPatchAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.userId",
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performRequestAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.userId",
+                ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
     @ParameterizedTest
@@ -329,8 +329,8 @@ class UserManagementAPIInvalidRequestBodyTest {
         UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(UserTestData.USER_ID, role);
 
         // when & then
-        performPatchAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.role",
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performRequestAndExpectBadRequest(updateRoleUserPath, userUpdateRoleRequestDTO, "$.errorFields.role",
+                ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
     @ParameterizedTest
@@ -343,8 +343,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(userId, UserTestData.USER_PASSWORD, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO, "$.errorFields.userId",
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO, "$.errorFields.userId",
+                ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
     @ParameterizedTest
@@ -357,8 +357,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -371,8 +371,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -385,8 +385,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.oldPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -399,8 +399,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -413,8 +413,8 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
     @ParameterizedTest
@@ -427,23 +427,13 @@ class UserManagementAPIInvalidRequestBodyTest {
                 new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
 
         // when & then
-        performPatchAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
-                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK);
+        performRequestAndExpectBadRequest(changePasswordUserPath, userChangePasswordRequestDTO,
+                "$.errorFields.newPassword", ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
-    private void performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
-            throws Exception {
-        mockMvc.perform(post(path)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(DTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(errorField).value(errorMessage));
-    }
-
-    private void performPatchAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
-            throws Exception {
-        mockMvc.perform(patch(path)
+    private void performRequestAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage,
+                                                   boolean isPost) throws Exception {
+        mockMvc.perform((isPost ? post(path) : patch(path))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
