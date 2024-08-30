@@ -40,21 +40,29 @@ class BookItemQueryAPIQueryParamsMissingTest {
     @SneakyThrows
     void getBookItems_paramOfficeNameIsMissing_returnsBadRequest(){
         // given & when & then
-        mockMvc.perform(get(BOOK_ITEM_PATH)
-                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        performGetBookItemsWithMissingParam(
+                SharedControllerTestData.BOOK_ISBN_PARAM,
+                BookTestData.BOOK_ISBN,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT
+        );
     }
 
     @Test
     @SneakyThrows
     void getBookItems_paramIsbnIsMissing_returnsBadRequest(){
         // given & when & then
+        performGetBookItemsWithMissingParam(
+                SharedControllerTestData.OFFICE_PARAM,
+                SharedServiceTestData.SKOPJE_OFFICE_NAME,
+                ErrorMessages.ISBN_NOT_PRESENT
+        );
+    }
+
+    private void performGetBookItemsWithMissingParam(String missingParamName, String missingParamValue, String expectedErrorMessage) throws Exception {
         mockMvc.perform(get(BOOK_ITEM_PATH)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                        .queryParam(missingParamName, missingParamValue))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
+                .andExpect(jsonPath("$.detail").value(expectedErrorMessage));
     }
 }

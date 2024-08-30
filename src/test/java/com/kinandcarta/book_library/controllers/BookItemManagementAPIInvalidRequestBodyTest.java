@@ -43,40 +43,45 @@ class BookItemManagementAPIInvalidRequestBodyTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void createBookItem_isbnIsInvalid_returnsBadRequest(String isbn){
-        // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
-        BookIdDTO bookIdDTO = new BookIdDTO(isbn, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-
-        // when & then
-        mockMvc.perform(post(insertBookItemPath)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(bookIdDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequestIsbn(isbn);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
     void createBookItem_isbnIsEmpty_returnsBadRequest(String isbn){
-        // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
-        BookIdDTO bookIdDTO = new BookIdDTO(isbn, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-
-        // when & then
-        mockMvc.perform(post(insertBookItemPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookIdDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performPostAndExpectBadRequestIsbn(isbn);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
     void createBookItem_isbnIsNull_returnsBadRequest(String isbn){
+        performPostAndExpectBadRequestIsbn(isbn);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"  ", "\t", "\n"})
+    @SneakyThrows
+    void createBookItem_officeNameIsInvalid_returnsBadRequest(String officeName){
+        performPostAndExpectBadRequestOfficeName(officeName);
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    @SneakyThrows
+    void createBookItem_officeNameIsEmpty_returnsBadRequest(String officeName){
+        performPostAndExpectBadRequestOfficeName(officeName);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @SneakyThrows
+    void createBookItem_officeNameIsNull_returnsBadRequest(String officeName){
+        performPostAndExpectBadRequestOfficeName(officeName);
+    }
+
+    private void performPostAndExpectBadRequestIsbn(String isbn) throws Exception {
         // given
         final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
         BookIdDTO bookIdDTO = new BookIdDTO(isbn, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -90,10 +95,7 @@ class BookItemManagementAPIInvalidRequestBodyTest {
                 .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void createBookItem_officeNameIsInvalid_returnsBadRequest(String officeName){
+    private void performPostAndExpectBadRequestOfficeName(String officeName) throws Exception {
         // given
         final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
         BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, officeName);
@@ -107,37 +109,4 @@ class BookItemManagementAPIInvalidRequestBodyTest {
                 .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @EmptySource
-    @SneakyThrows
-    void createBookItem_officeNameIsEmpty_returnsBadRequest(String officeName){
-        // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
-        BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, officeName);
-
-        // when & then
-        mockMvc.perform(post(insertBookItemPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookIdDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @SneakyThrows
-    void createBookItem_officeNameIsNull_returnsBadRequest(String officeName){
-        // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
-        BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, officeName);
-
-        // when & then
-        mockMvc.perform(post(insertBookItemPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookIdDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
-    }
 }

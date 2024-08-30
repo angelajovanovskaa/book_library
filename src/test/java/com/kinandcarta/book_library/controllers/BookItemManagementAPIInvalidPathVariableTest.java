@@ -56,9 +56,7 @@ class BookItemManagementAPIInvalidPathVariableTest {
         final String reportBookItemPathAsDamaged = BOOK_ITEM_PATH + "/report-damage/" + bookItemId;
 
         // when & then
-        mockMvc.perform(patch(reportBookItemPathAsDamaged, bookItemId))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Failed to convert 'bookItemId' with value: 'null'"));
+        performInvalidBookItemIdPatchRequest(reportBookItemPathAsDamaged, bookItemId);
     }
 
     @ParameterizedTest
@@ -69,9 +67,12 @@ class BookItemManagementAPIInvalidPathVariableTest {
         final String reportBookItemPathAsLost = BOOK_ITEM_PATH + "/report-lost/" + bookItemId;
 
         // when & then
-        mockMvc.perform(patch(reportBookItemPathAsLost, bookItemId))
+        performInvalidBookItemIdPatchRequest(reportBookItemPathAsLost, bookItemId);
+    }
+
+    private void performInvalidBookItemIdPatchRequest(String path, UUID bookItemId) throws Exception {
+        mockMvc.perform(patch(path, bookItemId))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Failed to convert 'bookItemId' with value: 'null'"));
-
     }
 }

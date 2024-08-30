@@ -81,12 +81,7 @@ class BookItemManagementAPISuccessTest {
         given(bookItemManagementService.deleteById(any())).willReturn(bookItemId);
 
         // when
-        String resultJson = mockMvc.perform(delete(deleteBookItemPath, bookItemId))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andReturn().getResponse().getContentAsString();
-
-        UUID result = objectMapper.readValue(resultJson, UUID.class);
+        UUID result = performDeleteAndExpectOk(deleteBookItemPath, bookItemId);
 
         // then
         assertThat(result).isEqualTo(bookItemId);
@@ -102,14 +97,12 @@ class BookItemManagementAPISuccessTest {
 
         given(bookItemManagementService.reportBookItemAsDamaged(any())).willReturn(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
 
-        // when
-        String result = mockMvc.perform(patch(returnBookItemPathAsDamaged, bookItemId))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
-                .andReturn().getResponse().getContentAsString();
-
-        // then
-        assertThat(result).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
+        // when & then
+        performPatchAndExpectOk(
+                returnBookItemPathAsDamaged,
+                bookItemId,
+                BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED
+        );
     }
 
     @Test
@@ -122,13 +115,29 @@ class BookItemManagementAPISuccessTest {
 
         given(bookItemManagementService.reportBookItemAsLost(any())).willReturn(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
 
-        // when
-        String result = mockMvc.perform(patch(returnBookItemPathAsLost, bookItemId))
+        // when & then
+        performPatchAndExpectOk(
+                returnBookItemPathAsLost,
+                bookItemId,
+                BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST
+        );
+    }
+
+    private UUID performDeleteAndExpectOk(String path, UUID id) throws Exception{
+        String resultJson = mockMvc.perform(delete(path, id))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn().getResponse().getContentAsString();
+
+        return objectMapper.readValue(resultJson, UUID.class);
+    }
+
+    private void performPatchAndExpectOk(String path, UUID id, String expectedResponse) throws Exception {
+        String result = mockMvc.perform(patch(path, id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
                 .andReturn().getResponse().getContentAsString();
 
-        // then
-        assertThat(result).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
+        assertThat(result).isEqualTo(expectedResponse);
     }
 }
