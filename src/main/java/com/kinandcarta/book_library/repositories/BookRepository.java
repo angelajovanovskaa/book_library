@@ -61,8 +61,6 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     Optional<Book> findByIsbnAndOfficeName(@Param("isbn") String isbn,
                                            @Param("officeName") String officeName);
 
-    Optional<Book> findByIsbn(String isbn);
-
     @Query("SELECT b FROM Book b " +
             "JOIN FETCH b.office " +
             "WHERE b.title LIKE %:title% AND b.office.name = :officeName")
@@ -84,13 +82,10 @@ public interface BookRepository extends JpaRepository<Book, BookId> {
     List<Book> findBooksByGenresContaining(@Param("genres") String[] genres,
                                            @Param("officeName") String officeName);
 
-    void deleteByIsbnAndOfficeName(String isbn, String officeName);
-
     @Modifying
     @Query("update Book b " +
             "set b.ratingFromFirm = :rating " +
             "where b.isbn = :isbn and b.office.name = :officeName")
     void updateRatingByIsbnAndOfficeName(double rating, String isbn, String officeName);
 
-    boolean existsByIsbnAndOfficeName(String isbn, String officeName);
 }
