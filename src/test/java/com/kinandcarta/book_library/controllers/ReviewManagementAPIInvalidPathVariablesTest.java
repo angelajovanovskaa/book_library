@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,7 +32,7 @@ public class ReviewManagementAPIInvalidPathVariablesTest {
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void deleteReview_reviewIdIsNotValid_returnsBadRequest(String reviewId) {
+    void deleteReview_reviewIdIsEmpty_returnsBadRequest(String reviewId) {
         // given
 
         // when & then
@@ -47,6 +48,30 @@ public class ReviewManagementAPIInvalidPathVariablesTest {
 
         // when & then
         mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + null))
+                .andExpect(status().isBadRequest())
+                .andExpect(
+                        jsonPath("$.detail").value("Failed to convert 'reviewId' with value: 'null'"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\t", "\n"})
+    @SneakyThrows
+    void getReviewById_reviewIdIsNotValid_returnsBadRequest(String reviewId) {
+        // given
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + reviewId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Required path variable 'reviewId' is not present."));
+    }
+
+    @Test
+    @SneakyThrows
+    void getReviewById_reviewIdIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + null))
                 .andExpect(status().isBadRequest())
                 .andExpect(
                         jsonPath("$.detail").value("Failed to convert 'reviewId' with value: 'null'"));

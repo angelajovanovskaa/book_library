@@ -30,16 +30,6 @@ public class ReviewQueryAPINotFoundTest {
 
     @Test
     @SneakyThrows
-    void getReviewById_reviewIdParamIsEmpty_returnsNotFound() {
-        // given
-
-        // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @SneakyThrows
     void getReviewById_reviewDoesNotExist_returnsNotFound() {
         // given
         given(reviewQueryService.getReviewById(ReviewTestData.REVIEW_ID)).willThrow(

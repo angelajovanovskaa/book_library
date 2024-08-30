@@ -36,7 +36,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewsForBook_officeNameParamIsInvalid_returnsBadRequest(String officeName) {
+    void getReviewsForBook_officeNameParamIsEmpty_returnsBadRequest(String officeName) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, officeName);
@@ -45,7 +45,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value("must not be blank"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value("must not be blank"));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewsForBook_isbnParamIsInvalid_returnsBadRequest(String isbn) {
+    void getReviewsForBook_isbnParamIsEmpty_returnsBadRequest(String isbn) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -88,7 +88,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value("must not be blank"));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value("must not be blank"));
     }
 
     @Test
@@ -122,31 +122,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewById_reviewIdParamIsNotValid_returnsBadRequest(String reviewId) {
-        // given
-
-        // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + reviewId))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required path variable 'reviewId' is not present."));
-    }
-
-    @Test
-    @SneakyThrows
-    void getReviewById_reviewIdParamIsNull_returnsBadRequest() {
-        // given
-
-        // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + null))
-                .andExpect(status().isBadRequest())
-                .andExpect(
-                        jsonPath("$.detail").value("Failed to convert 'reviewId' with value: 'null'"));
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {" ", "\t", "\n"})
-    @SneakyThrows
-    void getTopReviewsForBook_officeNameParamIsInvalid_returnsBadRequest(String officeName) {
+    void getTopReviewsForBook_officeNameParamIsEmpty_returnsBadRequest(String officeName) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, officeName);
@@ -155,7 +131,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value("must not be blank"));
     }
 
     @Test
@@ -169,7 +145,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value("must not be blank"));
     }
 
     @Test
@@ -189,7 +165,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getTopReviewsForBook_isbnParamIsInvalid_returnsBadRequest(String isbn) {
+    void getTopReviewsForBook_isbnParamIsEmpty_returnsBadRequest(String isbn) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -198,7 +174,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value("must not be blank"));
     }
 
     @Test
@@ -212,7 +188,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Validation failure"));
+                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value("must not be blank"));
     }
 
     @Test

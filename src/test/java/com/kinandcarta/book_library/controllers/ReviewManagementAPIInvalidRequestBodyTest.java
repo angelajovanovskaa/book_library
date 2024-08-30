@@ -39,7 +39,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
+    void insertReview_bookIsbnIsEmpty_returnsBadRequest(String invalidIsbn) {
         // given
 
         // when & then
@@ -69,7 +69,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
+    void insertReview_userEmailIsEmpty_returnsBadRequest(String invalidEmail) {
         // given
 
         // when & then
@@ -99,7 +99,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
+    void insertReview_messageIsEmpty_returnsBadRequest(String invalidMessage) {
         // given
 
         // when & then
@@ -143,7 +143,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_bookIsbnIsInvalid_returnsBadRequest(String invalidIsbn) {
+    void updateReview_bookIsbnIsEmpty_returnsBadRequest(String invalidIsbn) {
         // given
 
         // when & then
@@ -173,7 +173,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_userEmailIsInvalid_returnsBadRequest(String invalidEmail) {
+    void updateReview_userEmailIsEmpty_returnsBadRequest(String invalidEmail) {
         // given
 
         // when & then
@@ -203,7 +203,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_messageIsInvalid_returnsBadRequest(String invalidMessage) {
+    void updateReview_messageIsEmpty_returnsBadRequest(String invalidMessage) {
         // given
 
         // when & then
