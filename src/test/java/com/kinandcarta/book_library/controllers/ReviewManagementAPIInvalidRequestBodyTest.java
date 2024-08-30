@@ -4,10 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,22 +48,35 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.bookISBN").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.bookISBN").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
+    @Test
     @SneakyThrows
-    void insertReview_bookIsbnIsNullOrEmpty_returnsBadRequest(String invalidIsbn) {
+    void insertReview_bookIsbnIsEmpty_returnsBadRequest() {
         // given
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("", "email", "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.bookISBN").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.bookISBN").value(ErrorMessages.MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @SneakyThrows
+    void insertReview_bookIsbnIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO(null, "email", "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.bookISBN").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -78,22 +91,35 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
+    @Test
     @SneakyThrows
-    void insertReview_userEmailIsNullOrEmpty_returnsBadRequest(String invalidEmail) {
+    void insertReview_userEmailIsEmpty_returnsBadRequest() {
         // given
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "", "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @SneakyThrows
+    void insertReview_userEmailIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", null, "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -108,22 +134,35 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.message").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.message").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
+    @Test
     @SneakyThrows
-    void insertReview_messageIsNullOrEmpty_returnsBadRequest(String invalidMessage) {
+    void insertReview_messageIsEmpty_returnsBadRequest() {
         // given
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", ""
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.message").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.message").value(ErrorMessages.MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @SneakyThrows
+    void insertReview_messageIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", null
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.message").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -137,7 +176,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content("{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", " +
                                 "\"rating\": 0}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.rating").value("must be greater than or equal to 1"));
+                .andExpect(jsonPath("$.errorFields.rating").value(ErrorMessages.MUST_BE_GREATER_THAN_1));
     }
 
     @ParameterizedTest
@@ -152,22 +191,35 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.bookISBN").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.bookISBN").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
+    @Test
     @SneakyThrows
-    void updateReview_bookIsbnIsNullOrEmpty_returnsBadRequest(String invalidIsbn) {
+    void updateReview_bookIsbnIsEmpty_returnsBadRequest() {
         // given
 
         // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("", "email", "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.bookISBN").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.bookISBN").value(ErrorMessages.MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @SneakyThrows
+    void updateReview_bookIsbnIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO(null, "email", "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.bookISBN").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -182,22 +234,35 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
+    @Test
     @SneakyThrows
-    void updateReview_userEmailIsNullOrEmpty_returnsBadRequest(String invalidEmail) {
+    void updateReview_userEmailIsEmpty_returnsBadRequest() {
         // given
 
         // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "", "message"
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.userEmail").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @SneakyThrows
+    void updateReview_userEmailIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", null, "message"
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.userEmail").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @ParameterizedTest
@@ -212,22 +277,35 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.message").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.message").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
+    @Test
     @SneakyThrows
-    void updateReview_messageIsNullOrEmpty_returnsBadRequest(String invalidMessage) {
+    void updateReview_messageIsEmpty_returnsBadRequest() {
         // given
 
         // when & then
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", ""
                                 , 5))))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.message").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields.message").value(ErrorMessages.MUST_NOT_BE_BLANK));
+    }
+
+    @Test
+    @SneakyThrows
+    void updateReview_messageIsNull_returnsBadRequest() {
+        // given
+
+        // when & then
+        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", null
+                                , 5))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorFields.message").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -241,6 +319,6 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
                         .content("{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", " +
                                 "\"rating\": 0}"))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields.rating").value("must be greater than or equal to 1"));
+                .andExpect(jsonPath("$.errorFields.rating").value(ErrorMessages.MUST_BE_GREATER_THAN_1));
     }
 }

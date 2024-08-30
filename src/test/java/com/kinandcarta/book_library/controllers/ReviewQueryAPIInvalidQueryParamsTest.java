@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.controllers;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ReviewController.class)
 public class ReviewQueryAPIInvalidQueryParamsTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String REVIEW_BASE_PATH = "/reviews";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -45,7 +46,8 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -59,7 +61,8 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -73,7 +76,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @ParameterizedTest
@@ -88,7 +91,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -102,7 +105,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -116,7 +119,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
     }
 
     @ParameterizedTest
@@ -131,7 +134,8 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -145,7 +149,8 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value("must not be blank"));
+                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -159,7 +164,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @ParameterizedTest
@@ -174,7 +179,8 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value("must not be blank"));
+                .andExpect(
+                        jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -188,7 +194,8 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value("must not be blank"));
+                .andExpect(
+                        jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     @Test
@@ -202,6 +209,6 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
     }
 }

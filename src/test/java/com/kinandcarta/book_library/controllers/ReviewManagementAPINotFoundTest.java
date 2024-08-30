@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -47,68 +46,66 @@ public class ReviewManagementAPINotFoundTest {
     @SneakyThrows
     void insertReview_userNotFound_returnsNotFound() {
         // given
-        given(reviewManagementService.insertReview(any())).willThrow(
-                new UserNotFoundException(UserTestData.USER_EMAIL));
+        UserNotFoundException exception = new UserNotFoundException(UserTestData.USER_EMAIL);
+
+        given(reviewManagementService.insertReview(any())).willThrow(exception);
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
     }
 
     @Test
     @SneakyThrows
     void insertReview_bookNotFound_returnsNotFound() {
         // given
-        given(reviewManagementService.insertReview(any())).willThrow(new BookNotFoundException(BookTestData.BOOK_ISBN
-                , SharedServiceTestData.SKOPJE_OFFICE_NAME));
+        BookNotFoundException exception = new BookNotFoundException(BookTestData.BOOK_ISBN
+                , SharedServiceTestData.SKOPJE_OFFICE_NAME);
+
+        given(reviewManagementService.insertReview(any())).willThrow(exception);
 
         // when & then
         mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
     }
 
     @Test
     @SneakyThrows
     void updateReview_reviewNotFound_returnsNotFound() {
         // given
-        ReviewRequestDTO reviewRequestDTO = ReviewTestData.getReviewRequestDTO();
+        ReviewNotFoundException exception = new ReviewNotFoundException(UserTestData.USER_EMAIL,
+                BookTestData.BOOK_ISBN);
 
-        given(reviewManagementService.updateReview(any()))
-                .willThrow(new ReviewNotFoundException(UserTestData.USER_EMAIL, BookTestData.BOOK_ISBN));
+        given(reviewManagementService.updateReview(any())).willThrow(exception);
 
         // when & then
-        String jsonContent = new ObjectMapper().writeValueAsString(reviewRequestDTO);
+        String jsonContent = new ObjectMapper().writeValueAsString(ReviewTestData.getReviewRequestDTO());
 
         mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonContent))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @SneakyThrows
-    void deleteReview_reviewIdIsEmpty_returnsBadRequest() {
-        // given
-
-        // when & then
-        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.detail").value("No static resource reviews/delete."));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
     }
 
     @Test
     @SneakyThrows
-    void deleteReview_reviewDoesNotExist_returnsNotFound() {
+    void deleteReview_reviewNotFound_returnsNotFound() {
         // given
-        given(reviewManagementService.deleteReviewById(ReviewTestData.REVIEW_ID)).willThrow(
-                new ReviewNotFoundException(ReviewTestData.REVIEW_ID));
+        ReviewNotFoundException exception = new ReviewNotFoundException(ReviewTestData.REVIEW_ID);
 
-        // when & then
-        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/"))
-                .andExpect(status().isNotFound());
+        given(reviewManagementService.deleteReviewById(ReviewTestData.REVIEW_ID)).willThrow(exception);
+
+        //when & then
+        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + ReviewTestData.REVIEW_ID))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
     }
+
 }

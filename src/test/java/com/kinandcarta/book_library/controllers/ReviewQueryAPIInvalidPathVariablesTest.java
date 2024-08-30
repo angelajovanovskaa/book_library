@@ -1,23 +1,23 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
-import com.kinandcarta.book_library.utils.ReviewTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewQueryAPINotFoundTest {
+public class ReviewQueryAPIInvalidPathVariablesTest {
     public static final String REVIEW_BASE_PATH = "/reviews";
 
     @MockBean
@@ -29,17 +29,26 @@ public class ReviewQueryAPINotFoundTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @ParameterizedTest
+    @ValueSource(strings = {" ", "\t", "\n"})
+    @SneakyThrows
+    void getReviewById_reviewIdIsNotValid_returnsBadRequest(String reviewId) {
+        // given
+
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + reviewId))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT));
+    }
+
     @Test
     @SneakyThrows
-    void getReviewById_reviewDoesNotExist_returnsNotFound() {
+    void getReviewById_reviewIdIsNull_returnsBadRequest() {
         // given
-        ReviewNotFoundException exception = new ReviewNotFoundException(ReviewTestData.REVIEW_ID);
 
-        given(reviewQueryService.getReviewById(ReviewTestData.REVIEW_ID)).willThrow(exception);
-
-        //when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + ReviewTestData.REVIEW_ID))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+        // when & then
+        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + null))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT));
     }
 }

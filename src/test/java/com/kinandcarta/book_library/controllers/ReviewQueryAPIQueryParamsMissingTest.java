@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.controllers;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
@@ -40,7 +41,7 @@ public class ReviewQueryAPIQueryParamsMissingTest {
                                 BookTestData.BOOK_ISBN))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -51,7 +52,7 @@ public class ReviewQueryAPIQueryParamsMissingTest {
                         SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
     }
 
     @Test
@@ -61,7 +62,7 @@ public class ReviewQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
@@ -72,6 +73,6 @@ public class ReviewQueryAPIQueryParamsMissingTest {
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'isbn' is not present."));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
     }
 }
