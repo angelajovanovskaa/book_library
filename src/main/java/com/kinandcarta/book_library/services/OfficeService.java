@@ -4,6 +4,6 @@ import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
 
 import java.util.List;
 
-public interface OfficeQueryService {
-     List<OfficeResponseDTO> getOffices();
+public interface OfficeService {
+     List<OfficeResponseDTO> getAllOffices();
 }

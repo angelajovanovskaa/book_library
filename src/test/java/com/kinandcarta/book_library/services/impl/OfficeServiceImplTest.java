@@ -15,13 +15,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class OfficeQueryServiceImplTest {
+class OfficeServiceImplTest {
 
     @Mock
     private OfficeRepository officeRepository;
 
     @InjectMocks
-    private OfficeQueryServiceImpl officeQueryService;
+    private OfficeServiceImpl officeService;
 
     @Test
     void getAllOffices_atLeastOneOfficeExists_returnsListOfOfficeResponseDTO() {
@@ -30,7 +30,7 @@ class OfficeQueryServiceImplTest {
                 List.of(SharedServiceTestData.SKOPJE_OFFICE, SharedServiceTestData.SOFIJA_OFFICE));
 
         // when
-        List<OfficeResponseDTO> actualResult = officeQueryService.getOffices();
+        List<OfficeResponseDTO> actualResult = officeService.getAllOffices();
 
         //then
         assertThat(actualResult).containsExactly(SharedServiceTestData.SKOPJE_OFFICE_DTO,
