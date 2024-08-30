@@ -10,6 +10,8 @@ import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.UserRole;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.UUID;
@@ -137,5 +139,21 @@ public class UserTestData {
                 USER_ID,
                 UserRole.ADMIN
         );
+    }
+
+    public static  MultiValueMap<String, String> getUsersByFullNameDefaultQueryParams(){
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
+
+        return queryParamsValues;
+    }
+
+    public static  MultiValueMap<String, String> getUsersByFullNameQueryParamsPassingOfficeName(String officeName){
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
+
+        return queryParamsValues;
     }
 }
