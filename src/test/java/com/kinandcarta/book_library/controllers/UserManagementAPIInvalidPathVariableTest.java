@@ -4,8 +4,7 @@ import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -28,17 +27,16 @@ class UserManagementAPIInvalidPathVariableTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void deleteUser_userIdIsInvalid_returnsBadRequest(String userId) {
+    void deleteUser_userIdIsInvalid_returnsBadRequest() {
         // given
-        final String deleteUserPath = USERS_PATH + "/delete/" + userId;
+        final String deleteUserPath = USERS_PATH + "/delete/" + null;
 
         // when & then
-        mockMvc.perform(post(deleteUserPath, userId))
+        mockMvc.perform(post(deleteUserPath))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(String.format(ErrorMessages.USER_ID_FAIL_CONVERT, userId)));
+                .andExpect(jsonPath("$.detail").value(String.format(ErrorMessages.USER_ID_FAIL_CONVERT, null)));
 
     }
 }
