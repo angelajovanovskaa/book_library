@@ -5,6 +5,7 @@ import com.kinandcarta.book_library.exceptions.CustomNotFoundException;
 import com.kinandcarta.book_library.exceptions.CustomUnprocessableEntityException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
@@ -44,6 +46,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ExceptionMessage exceptionMessage = new ExceptionMessage(errorFields);
+        log.error("Validation failed for fields: {}", errorFields);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -52,6 +55,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             @NonNull HttpMessageNotReadableException ex, @NonNull HttpHeaders headers, @NonNull HttpStatusCode status,
             @NonNull WebRequest request) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(ex.getMessage());
+        log.error("Failed to read HTTP message: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -60,7 +64,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomBadRequestException(
             CustomBadRequestException customBadRequestException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customBadRequestException.getMessage());
-
+        log.error("Custom bad request: {}", customBadRequestException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -69,7 +73,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomIllegalArgumentException(
             IllegalArgumentException illegalArgumentException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(illegalArgumentException.getMessage());
-
+        log.error("Illegal argument: {}", illegalArgumentException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -88,7 +92,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ExceptionMessage exceptionMessage = new ExceptionMessage(errorFields);
-
+        log.error("Constraint violations: {}", errorFields);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -97,7 +101,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomNotFoundException(
             CustomNotFoundException customNotFoundException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customNotFoundException.getMessage());
-
+        log.error("Custom not found: {}", customNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionMessage);
     }
 
@@ -106,7 +110,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomUnprocessableEntityException(
             CustomUnprocessableEntityException customUnprocessableEntityException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customUnprocessableEntityException.getMessage());
-
+        log.error("Unprocessable entity: {}", customUnprocessableEntityException.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exceptionMessage);
     }
 }
