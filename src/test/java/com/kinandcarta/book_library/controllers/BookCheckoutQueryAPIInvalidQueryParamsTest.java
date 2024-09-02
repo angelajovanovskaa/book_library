@@ -6,9 +6,8 @@ import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -56,22 +55,20 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, SharedControllerTestData.OFFICE_PARAM,
-                officeName, "$.errorFields['getBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                "", "$.errorFields['getBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, SharedControllerTestData.OFFICE_PARAM, null,
                 ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
@@ -85,22 +82,20 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsPaginated_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBookCheckoutsPaginated_ParamOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAGINATED, SharedControllerTestData.OFFICE_PARAM,
-                officeName, "$.errorFields['getBookCheckoutsPaginated.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                "", "$.errorFields['getBookCheckoutsPaginated.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsPaginated_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getBookCheckoutsPaginated_ParamOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAGINATED, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAGINATED, SharedControllerTestData.OFFICE_PARAM, null,
                 ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
@@ -114,22 +109,20 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getActiveBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getActiveBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_ACTIVE, SharedControllerTestData.OFFICE_PARAM,
-                officeName, "$.errorFields['getActiveBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                "", "$.errorFields['getActiveBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getActiveBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getActiveBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_ACTIVE, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_ACTIVE, SharedControllerTestData.OFFICE_PARAM, null,
                 ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
@@ -143,22 +136,20 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getPastBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getPastBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAST, SharedControllerTestData.OFFICE_PARAM,
-                officeName, "$.errorFields['getPastBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                "", "$.errorFields['getPastBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getPastBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getPastBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAST, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAST, SharedControllerTestData.OFFICE_PARAM, null,
                 ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
@@ -172,23 +163,21 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 ErrorMessages.MUST_NOT_BE_BLANK, MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsNearReturnDate_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBookCheckoutsNearReturnDate_ParamOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_NEAR_RETURN, SharedControllerTestData.OFFICE_PARAM,
-                officeName, "$.errorFields['getBookCheckoutsNearReturnDate.officeName']",
+                "", "$.errorFields['getBookCheckoutsNearReturnDate.officeName']",
                 ErrorMessages.MUST_NOT_BE_BLANK, MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsNearReturnDate_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getBookCheckoutsNearReturnDate_ParamOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_NEAR_RETURN, SharedControllerTestData.OFFICE_PARAM,
-                officeName, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
+                null, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
                 MediaType.APPLICATION_PROBLEM_JSON);
     }
 
@@ -207,13 +196,12 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsByTitleContaining_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBookCheckoutsByTitleContaining_ParamOfficeNameIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, "");
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, "");
 
         // when & then
@@ -222,37 +210,34 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 MediaType.APPLICATION_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsByTitleContaining_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getBookCheckoutsByTitleContaining_ParamOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_BY_TITLE, SharedControllerTestData.OFFICE_PARAM,
-                officeName, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
+                null, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
                 MediaType.APPLICATION_PROBLEM_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsByUser_ParamUserIdMissingOrEmpty_returnsBadRequest(String userId) {
+    void getBookCheckoutsByUser_ParamUserIdMissingOrEmpty_returnsBadRequest() {
         // given
         final String getUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/by-user";
 
         // when & then
-        performGetAndExpectBadRequest(getUsersBookCheckoutPath, SharedControllerTestData.USER_ID_PARAM, userId,
+        performGetAndExpectBadRequest(getUsersBookCheckoutPath, SharedControllerTestData.USER_ID_PARAM, null,
                 ERROR_FIELD_DETAIL, ErrorMessages.USER_ID_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookCheckoutsByUserAndTitleContaining_ParamUserIdMissingOrEmpty_returnsBadRequest(String userId) {
+    void getBookCheckoutsByUserAndTitleContaining_ParamUserIdMissingOrEmpty_returnsBadRequest() {
         // given
         final String getUsersBookCheckoutByTitlePath = BOOK_CHECKOUTS_PATH + "/by-user-and-title";
 
         // when & then
-        performGetAndExpectBadRequest(getUsersBookCheckoutByTitlePath, SharedControllerTestData.USER_ID_PARAM, userId,
+        performGetAndExpectBadRequest(getUsersBookCheckoutByTitlePath, SharedControllerTestData.USER_ID_PARAM, null,
                 ERROR_FIELD_DETAIL, ErrorMessages.USER_ID_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 

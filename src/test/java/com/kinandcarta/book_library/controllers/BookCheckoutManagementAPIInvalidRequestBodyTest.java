@@ -8,15 +8,12 @@ import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -44,48 +41,44 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void borrowBookItem_userIdIsNull_returnsBadRequest(UUID userId) {
+    void borrowBookItem_userIdIsNull_returnsBadRequest() {
         // given
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(userId, BookItemTestData.BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(null, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
         performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID,
                 ErrorMessages.MUST_NOT_BE_NULL);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void borrowBookItem_bookItemIdIsNull_returnsBadRequest(UUID bookItemId) {
+    void borrowBookItem_bookItemIdIsNull_returnsBadRequest() {
         // given
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, null);
 
         // when && then
         performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID,
                 ErrorMessages.MUST_NOT_BE_NULL);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void returnBookItem_userIdIsNull_returnsBadRequest(UUID userId) {
+    void returnBookItem_userIdIsNull_returnsBadRequest() {
         // given
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(userId, BookItemTestData.BOOK_ITEM_ID);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(null, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
         performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID,
                 ErrorMessages.MUST_NOT_BE_NULL);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void returnBookItem_bookItemIdIsNull_returnsBadRequest(UUID bookItemId) {
+    void returnBookItem_bookItemIdIsNull_returnsBadRequest() {
         // given
-        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, bookItemId);
+        BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, null);
 
         // when && then
         performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID,
