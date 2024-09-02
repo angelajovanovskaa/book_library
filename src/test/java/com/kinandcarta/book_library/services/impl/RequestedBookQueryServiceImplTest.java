@@ -108,7 +108,7 @@ class RequestedBookQueryServiceImplTest {
 
         // when
         RequestedBookResponseDTO actualResult =
-                requestedBookQueryService.getRequestedBookByISBNAndOfficeName(BookTestData.BOOK_ISBN,
+                requestedBookQueryService.getRequestedBookByIsbnAndOfficeName(BookTestData.BOOK_ISBN,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
@@ -122,7 +122,7 @@ class RequestedBookQueryServiceImplTest {
 
         // when & then
         Assertions.assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookQueryService.getRequestedBookByISBNAndOfficeName(
+                .isThrownBy(() -> requestedBookQueryService.getRequestedBookByIsbnAndOfficeName(
                         BookTestData.BOOK_INVALID_ISBN,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME));
     }

@@ -137,7 +137,7 @@ class BookCheckoutQueryServiceImplTest {
     }
 
     @Test
-    void getAllBookCheckoutsNearingReturnDate_ValidMatches_returnsListOfBookCheckoutReturnReminderResponseDTO() {
+    void getAllBookCheckoutsNearReturnDate_ValidMatches_returnsListOfBookCheckoutReturnReminderResponseDTO() {
         // given
         BookCheckout bookCheckout = BookCheckoutTestData.getBookCheckout();
         bookCheckout.setScheduledReturnDate(SharedServiceTestData.DATE_IN_2_DAYS);
@@ -148,7 +148,7 @@ class BookCheckoutQueryServiceImplTest {
 
         // when
         List<BookCheckoutReturnReminderResponseDTO> result =
-                bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(SharedServiceTestData.SKOPJE_OFFICE_NAME);
+                bookCheckoutQueryService.getAllBookCheckoutsNearReturnDate(SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
         assertThat(result).containsExactly(BookCheckoutTestData.getBookCheckoutReturnReminderResponseDTO());
