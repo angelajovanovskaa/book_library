@@ -11,8 +11,11 @@ import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +41,8 @@ public class BookTestData {
             , new HashSet<>(getBooks()));
     public static final Set<Author> AUTHORS = new HashSet<>(List.of(AUTHOR));
     public static final Set<AuthorDTO> AUTHOR_DTOS = new HashSet<>(List.of(AUTHOR_DTO));
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String GENRES_PARAM = "genres";
 
     public static List<Book> getBooks() {
         Book book1 = new Book(
@@ -155,4 +160,98 @@ public class BookTestData {
                 SharedServiceTestData.SKOPJE_OFFICE.getName()
         );
     }
+
+    public MultiValueMap<String, String> createQueryParamsForGetBookSuccess() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGetPaginatedBookSuccess() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.PAGE_SIZE_PARAM,
+                String.valueOf(SharedServiceTestData.PAGE_SIZE));
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGetBooksBySearchTitleSuccess() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGetBooksByLanguageSuccess() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
+
+        return queryParamsValues;
+    }
+    public MultiValueMap<String, String> createQueryParamsForGetBooksByGenresSuccess() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BookTestData.BOOK_GENRES));
+
+        return queryParamsValues;
+    }
+    public MultiValueMap<String, String> createQueryParamsForGetBookMissingOfficeName(String officeName) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGetBookMissingIsbn(String isbn) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
+
+        return queryParamsValues;
+    }
+    public MultiValueMap<String, String> createQueryParamsForTitleMissingOfficeName(String officeName) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForTitleMissingTitleSearchTerm(String titleSearchTerm) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, titleSearchTerm);
+
+        return queryParamsValues;
+    }
+    public MultiValueMap<String, String> createQueryParamsForLanguageMissingOfficeName(String officeName) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForLanguageMissingLanguage(String language) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(LANGUAGE_PARAM, language);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGenresMissingOfficeName(String officeName) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BOOK_GENRES));
+
+        return queryParamsValues;
+    }
+
 }

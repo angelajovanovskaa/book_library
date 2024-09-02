@@ -22,6 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookQueryAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
+    private static final String getBookPath = BOOK_PATH + "/get-book";
+
+    private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -36,7 +39,6 @@ class BookQueryAPINotFoundTest {
     @SneakyThrows
     void getBook_bookDoesNotExists_returnsNotFound() {
         // given
-        final String getBookPath = BOOK_PATH + "/get-book";
         final String isbn = BookTestData.BOOK_INVALID_ISBN;
 
         BookNotFoundException bookNotFoundException = new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN);
@@ -49,6 +51,6 @@ class BookQueryAPINotFoundTest {
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(bookNotFoundException.getMessage()));
+                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE).value(bookNotFoundException.getMessage()));
     }
 }

@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Arrays;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,6 +26,14 @@ class BookQueryAPIQueryParamsMissingTest {
     private static final String BOOK_PATH = "/books";
     private static final String GENRES_PARAM = "genres";
     private static final String LANGUAGE_PARAM = "language";
+    private static final String GET_BOOK_PATH = BOOK_PATH + "/get-book";
+    private static final String GET_AVAILABLE_BOOK_PATH = BOOK_PATH + "/available";
+    private static final String GET_REQUESTED_BOOK_PATH = BOOK_PATH + "/requested";
+    private static final String GET_PAGINATED_AVAILABLE_BOOK_PATH = BOOK_PATH + "/paginated";
+    private static final String GET_BY_TITLE_BOOK_PATH = BOOK_PATH + "/by-title";
+    private static final String GET_BY_LANGUAGE_BOOK_PATH = BOOK_PATH + "/by-language";
+    private static final String GET_BY_GENRES_BOOK_PATH = BOOK_PATH + "/by-genres";
+    private static final String DETAIL = "$.detail";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
@@ -38,131 +48,119 @@ class BookQueryAPIQueryParamsMissingTest {
     @SneakyThrows
     void getBooks_paramOfficeNameIsMissing_returnsBadRequest() {
         // given & when & then
-        mockMvc.perform(get(BOOK_PATH))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        performGetRequestAndExpectBadRequest(BOOK_PATH, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
+    }
+
+    @Test
+    @SneakyThrows
+    void getBook_paramIsbnIsMissing_returnsBadRequest() {
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BOOK_PATH, DETAIL, ErrorMessages.ISBN_NOT_PRESENT);
+    }
+
+    @Test
+    @SneakyThrows
+    void getBook_paramOfficeNameIsMissing_returnsBadRequest() {
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BOOK_PATH, SharedControllerTestData.BOOK_ISBN_PARAM,
+                BookTestData.BOOK_ISBN, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getAvailableBooks_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given
-        final String getAvailableBooksPath = BOOK_PATH + "/available";
-
-        // when & then
-        mockMvc.perform(get(getAvailableBooksPath))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_AVAILABLE_BOOK_PATH, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getRequestedBooks_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given
-        final String getRequestedBooksPath = BOOK_PATH + "/requested";
-
-        // when & then
-        mockMvc.perform(get(getRequestedBooksPath))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_REQUESTED_BOOK_PATH, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getPaginatedAvailableBooks_missingRequiredQueryParam_returnsBadRequest() {
-        // given
-        final String getPaginatedAvailableBooksPath = BOOK_PATH + "/paginated";
-
-        //when & then
-        mockMvc.perform(get(getPaginatedAvailableBooksPath))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_PAGINATED_AVAILABLE_BOOK_PATH, DETAIL,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getBooksBySearchTitle_paramTitleSearchTermIsMissing_returnsBadRequest() {
-        // given
-        final String getBooksBySearchTitlePath = BOOK_PATH + "/by-title";
-
-        // when & then
-        mockMvc.perform(get(getBooksBySearchTitlePath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BY_TITLE_BOOK_PATH,
+                SharedControllerTestData.OFFICE_PARAM,
+                SharedServiceTestData.SKOPJE_OFFICE_NAME, DETAIL,
+                ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getBooksBySearchTitle_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given
-        final String getBooksBySearchTitlePath = BOOK_PATH + "/by-title";
-
-        // when & then
-        mockMvc.perform(get(getBooksBySearchTitlePath).queryParam(SharedControllerTestData.BOOK_TITLE_PARAM,
-                        BookTestData.BOOK_TITLE))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BY_TITLE_BOOK_PATH,
+                SharedControllerTestData.BOOK_TITLE_PARAM,
+                BookTestData.BOOK_TITLE, DETAIL,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getBooksByLanguage_paramLanguageIsMissing_returnsBadRequest() {
-        // given
-        final String getBooksByLanguagePath = BOOK_PATH + "/by-language";
-
-        // when & then
-        mockMvc.perform(get(getBooksByLanguagePath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.LANGUAGE_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BY_LANGUAGE_BOOK_PATH,
+                SharedControllerTestData.OFFICE_PARAM,
+                SharedServiceTestData.SKOPJE_OFFICE_NAME, DETAIL,
+                ErrorMessages.LANGUAGE_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getBooksByLanguage_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given
-        final String getBooksByLanguagePath = BOOK_PATH + "/by-language";
-
-        // when & then
-        mockMvc.perform(get(getBooksByLanguagePath).queryParam(LANGUAGE_PARAM,
-                        BookTestData.BOOK_LANGUAGE))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BY_LANGUAGE_BOOK_PATH, LANGUAGE_PARAM,
+                BookTestData.BOOK_LANGUAGE, DETAIL,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getBooksByGenres_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given
-        final String getBooksByGenresPath = BOOK_PATH + "/by-genres";
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BY_GENRES_BOOK_PATH, GENRES_PARAM,
+                Arrays.toString(BookTestData.BOOK_GENRES), DETAIL,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
 
-        // when & then
-        mockMvc.perform(get(getBooksByGenresPath).queryParam(GENRES_PARAM, BookTestData.BOOK_GENRES))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @Test
     @SneakyThrows
     void getBooksByGenres_paramGenresIsMissing_returnsBadRequest() {
-        // given
-        final String getBooksByGenresPath = BOOK_PATH + "/by-genres";
+        // given & when & then
+        performGetRequestAndExpectBadRequest(GET_BY_GENRES_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
+                SharedServiceTestData.SKOPJE_OFFICE_NAME, DETAIL,
+                ErrorMessages.GENRES_NOT_PRESENT);
+    }
 
-        // when & then
-        mockMvc.perform(get(getBooksByGenresPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
+    private void performGetRequestAndExpectBadRequest(String path, String errorField,
+                                                      String errorMessage) throws Exception {
+        mockMvc.perform(get(path))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.GENRES_NOT_PRESENT));
+                .andExpect(jsonPath(errorField).value(errorMessage));
+    }
+
+    private void performGetRequestAndExpectBadRequest(String path,
+                                                      String param, String paramValue,
+                                                      String errorField, String errorMessages)
+            throws Exception {
+        mockMvc.perform(get(path).queryParam(param, paramValue))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
+                .andExpect(jsonPath(errorField).value(errorMessages));
     }
 }
