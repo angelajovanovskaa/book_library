@@ -6,9 +6,9 @@ import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -66,12 +66,11 @@ class BookManagementAPIQueryParamsMissing {
                 ERROR_FIELD_ISBN, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void deleteBook_paramIsbnIsNull_returnsBadRequest(String isbn) {
+    void deleteBook_paramIsbnIsNull_returnsBadRequest() {
         // given
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(null);
 
         // when & then
         mockMvc.perform(delete(DELETE_BOOK_PATH)

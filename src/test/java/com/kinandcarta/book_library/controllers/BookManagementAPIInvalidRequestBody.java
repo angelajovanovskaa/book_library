@@ -8,9 +8,9 @@ import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -70,12 +70,11 @@ class BookManagementAPIInvalidRequestBody {
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void insertBook_paramIsbnIsNull_returnsBadRequest(String isbn) {
+    void insertBook_paramIsbnIsNull_returnsBadRequest() {
         // given
-        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(null);
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
@@ -108,13 +107,12 @@ class BookManagementAPIInvalidRequestBody {
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void insertBook_paramOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void insertBook_paramOfficeNameIsNull_returnsBadRequest() {
         // given
         BookInsertRequestDTO bookInsertRequestDTO =
-                BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
+                BookTestData.createBookInsertRequestDTOPassingOfficeName(null);
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,
