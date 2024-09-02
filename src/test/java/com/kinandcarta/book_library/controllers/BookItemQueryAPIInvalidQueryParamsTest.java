@@ -8,9 +8,8 @@ import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,21 +47,19 @@ class BookItemQueryAPIInvalidQueryParamsTest {
         performGetAndExpectBadRequest(officeName);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBookItems_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBookItems_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(officeName);
+        performGetAndExpectBadRequest("");
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookItems_paramOfficeNameIsNull_returnsBadRequest(String officeName) {
+    void getBookItems_paramOfficeNameIsNull_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequestForNullParam(
-                officeName,
+                null,
                 BookTestData.BOOK_ISBN,
                 ErrorMessages.OFFICE_NAME_NOT_PRESENT
         );
@@ -76,22 +73,20 @@ class BookItemQueryAPIInvalidQueryParamsTest {
         performGetAndExpectBadRequestForIsbn(isbn);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBookItems_paramIsbnIsEmpty_returnsBadRequest(String isbn) {
+    void getBookItems_paramIsbnIsEmpty_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequestForIsbn(isbn);
+        performGetAndExpectBadRequestForIsbn("");
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBookItems_paramIsbnIsNull_returnsBadRequest(String isbn) {
+    void getBookItems_paramIsbnIsNull_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequestForNullParam(
                 SharedServiceTestData.SKOPJE_OFFICE_NAME,
-                isbn,
+                null,
                 "Required parameter 'isbn' is not present."
         );
     }

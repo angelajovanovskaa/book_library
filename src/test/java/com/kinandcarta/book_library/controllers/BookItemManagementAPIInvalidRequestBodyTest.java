@@ -8,9 +8,8 @@ import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -26,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementAPIInvalidRequestBodyTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String INSERT_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/insert";
 
     @Autowired
     private MockMvc mockMvc;
@@ -46,18 +46,16 @@ class BookItemManagementAPIInvalidRequestBodyTest {
         performPostAndExpectBadRequestIsbn(isbn);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void createBookItem_isbnIsEmpty_returnsBadRequest(String isbn) {
-        performPostAndExpectBadRequestIsbn(isbn);
+    void createBookItem_isbnIsEmpty_returnsBadRequest() {
+        performPostAndExpectBadRequestIsbn("");
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void createBookItem_isbnIsNull_returnsBadRequest(String isbn) {
-        performPostAndExpectBadRequestIsbn(isbn);
+    void createBookItem_isbnIsNull_returnsBadRequest() {
+        performPostAndExpectBadRequestIsbn(null);
     }
 
     @ParameterizedTest
@@ -67,27 +65,24 @@ class BookItemManagementAPIInvalidRequestBodyTest {
         performPostAndExpectBadRequestOfficeName(officeName);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void createBookItem_officeNameIsEmpty_returnsBadRequest(String officeName) {
-        performPostAndExpectBadRequestOfficeName(officeName);
+    void createBookItem_officeNameIsEmpty_returnsBadRequest() {
+        performPostAndExpectBadRequestOfficeName("");
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void createBookItem_officeNameIsNull_returnsBadRequest(String officeName) {
-        performPostAndExpectBadRequestOfficeName(officeName);
+    void createBookItem_officeNameIsNull_returnsBadRequest() {
+        performPostAndExpectBadRequestOfficeName(null);
     }
 
     private void performPostAndExpectBadRequestIsbn(String isbn) throws Exception {
         // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
         BookIdDTO bookIdDTO = new BookIdDTO(isbn, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // when & then
-        mockMvc.perform(post(insertBookItemPath)
+        mockMvc.perform(post(INSERT_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isBadRequest())
@@ -97,16 +92,14 @@ class BookItemManagementAPIInvalidRequestBodyTest {
 
     private void performPostAndExpectBadRequestOfficeName(String officeName) throws Exception {
         // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
         BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, officeName);
 
         // when & then
-        mockMvc.perform(post(insertBookItemPath)
+        mockMvc.perform(post(INSERT_BOOK_ITEM_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
-
 }

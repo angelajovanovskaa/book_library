@@ -4,14 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.BookItemManagementService;
 import com.kinandcarta.book_library.services.BookItemQueryService;
 import lombok.SneakyThrows;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -21,6 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementAPIInvalidPathVariableTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String DETAIL_JSON_PATH = "$.detail";
+    private static final String ERROR_MESSAGE = "Failed to convert 'bookItemId' with value: 'null'";
 
     @Autowired
     private MockMvc mockMvc;
@@ -34,45 +33,41 @@ class BookItemManagementAPIInvalidPathVariableTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void deleteBookItem_bookItemIdIsInvalid_returnsBadRequest(UUID bookItemId) {
+    void deleteBookItem_bookItemIdIsInvalid_returnsBadRequest() {
         // given
-        final String deleteBookItemPath = BOOK_ITEM_PATH + "/delete/" + bookItemId;
+        final String deleteBookItemPath = BOOK_ITEM_PATH + "/delete/" + null;
 
         // when & then
-        mockMvc.perform(delete(deleteBookItemPath, bookItemId))
+        mockMvc.perform(delete(deleteBookItemPath))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Failed to convert 'bookItemId' with value: 'null'"));
-
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(ERROR_MESSAGE));
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void reportBookItemAsDamaged_bookItemIdIsInvalid_returnsBadRequest(UUID bookItemId) {
+    void reportBookItemAsDamaged_bookItemIdIsInvalid_returnsBadRequest() {
         // given
-        final String reportBookItemPathAsDamaged = BOOK_ITEM_PATH + "/report-damage/" + bookItemId;
+        final String reportBookItemPathAsDamaged = BOOK_ITEM_PATH + "/report-damage/" + null;
 
         // when & then
-        performInvalidBookItemIdPatchRequest(reportBookItemPathAsDamaged, bookItemId);
+        performInvalidBookItemIdPatchRequest(reportBookItemPathAsDamaged);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void reportBookItemAsLost_bookItemIdIsInvalid_returnsBadRequest(UUID bookItemId) {
+    void reportBookItemAsLost_bookItemIdIsInvalid_returnsBadRequest() {
         // given
-        final String reportBookItemPathAsLost = BOOK_ITEM_PATH + "/report-lost/" + bookItemId;
+        final String reportBookItemPathAsLost = BOOK_ITEM_PATH + "/report-lost/" + null;
 
         // when & then
-        performInvalidBookItemIdPatchRequest(reportBookItemPathAsLost, bookItemId);
+        performInvalidBookItemIdPatchRequest(reportBookItemPathAsLost);
     }
 
-    private void performInvalidBookItemIdPatchRequest(String path, UUID bookItemId) throws Exception {
-        mockMvc.perform(patch(path, bookItemId))
+    private void performInvalidBookItemIdPatchRequest(String path) throws Exception {
+        mockMvc.perform(patch(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value("Failed to convert 'bookItemId' with value: 'null'"));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(ERROR_MESSAGE));
     }
 }
