@@ -9,8 +9,6 @@ import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -71,12 +69,11 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooks_paramOfficeIsEmpty_returnsBadRequest(String officeName) {
+    void getBooks_paramOfficeIsEmpty_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(BOOK_PATH, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(BOOK_PATH, SharedControllerTestData.OFFICE_PARAM, "",
                 ERROR_FIELD_GET_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -101,13 +98,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 .andExpect(jsonPath(ERROR_FIELD_GET_BOOK_OFFICE_NAME).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBook_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBook_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForGetBookMissingOfficeName(officeName);
+                BookTestData.createQueryParamsForGetBookMissingOfficeName("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BOOK_PATH, queryParamsValues,
@@ -139,12 +135,11 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBook_paramIsbnIsEmpty_returnsBadRequest(String isbn) {
+    void getBook_paramIsbnIsEmpty_returnsBadRequest() {
         // given
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetBookMissingIsbn(isbn);
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetBookMissingIsbn("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BOOK_PATH, queryParamsValues, ERROR_FIELD_GET_BOOK_ISBN,
@@ -171,12 +166,11 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_AVAILABLE_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getAvailableBooks_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getAvailableBooks_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(GET_AVAILABLE_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(GET_AVAILABLE_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM, "",
                 ERROR_FIELD_GET_AVAILABLE_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -197,12 +191,11 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_REQUESTED_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getRequestedBooks_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getRequestedBooks_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest(GET_REQUESTED_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM, officeName,
+        performGetAndExpectBadRequest(GET_REQUESTED_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM, "",
                 ERROR_FIELD_GET_REQUESTED_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -224,14 +217,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_PAGINATED_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getPaginatedAvailableBooks_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getPaginatedAvailableBooks_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
-
         performGetAndExpectBadRequest(GET_PAGINATED_AVAILABLE_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
-                officeName,
+                "",
                 ERROR_FIELD_GET_PAGINATED_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -257,13 +248,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_BY_TITLE_SEARCH_TERM_BOOKS_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooksBySearchTitle_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBooksBySearchTitle_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForTitleMissingOfficeName(officeName);
+                BookTestData.createQueryParamsForTitleMissingOfficeName("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BY_TITLE_BOOK_PATH, queryParamsValues,
@@ -295,13 +285,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_BY_TITLE_SEARCH_TERM_BOOKS_TITLE_SEARCH_TERM, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooksBySearchTitle_paramSearchTitleIsEmpty_returnsBadRequest(String titleSearchTerm) {
+    void getBooksBySearchTitle_paramSearchTitleIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForTitleMissingTitleSearchTerm(titleSearchTerm);
+                BookTestData.createQueryParamsForTitleMissingTitleSearchTerm("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BY_TITLE_BOOK_PATH, queryParamsValues,
@@ -333,13 +322,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_BY_LANGUAGE_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooksByLanguage_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBooksByLanguage_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForLanguageMissingOfficeName(officeName);
+                BookTestData.createQueryParamsForLanguageMissingOfficeName("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BY_LANGUAGE_BOOK_PATH, queryParamsValues,
@@ -372,13 +360,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_BY_LANGUAGE_LANGUAGE, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooksByLanguage_paramLanguageIsEmpty_returnsBadRequest(String language) {
+    void getBooksByLanguage_paramLanguageIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForLanguageMissingLanguage(language);
+                BookTestData.createQueryParamsForLanguageMissingLanguage("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BY_LANGUAGE_BOOK_PATH, queryParamsValues,
@@ -410,13 +397,12 @@ class BookQueryAPIInvalidQueryParamsTest {
                 ERROR_FIELD_GET_BY_GENRES_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooksByGenres_paramOfficeNameIsEmpty_returnsBadRequest(String officeName) {
+    void getBooksByGenres_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForGenresMissingOfficeName(officeName);
+                BookTestData.createQueryParamsForGenresMissingOfficeName("");
 
         // when & then
 
@@ -451,31 +437,25 @@ class BookQueryAPIInvalidQueryParamsTest {
                                 ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void getBooksByGenres_paramGenresIsEmpty_returnsBadRequest(String genre) {
+    void getBooksByGenres_paramGenresIsEmpty_returnsBadRequest() {
         // given
-        String[] genres = {genre};
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGenresMissingGenres("");
 
         // when & then
-        mockMvc.perform(get(GET_BY_GENRES_BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME).queryParam(GENRES_PARAM, genres))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath(ERROR_FIELD_GET_BY_GENRES_GENRES).value(ErrorMessages.MUST_NOT_BE_EMPTY));
+        performGetAndExpectBadRequest(GET_BY_GENRES_BOOK_PATH, queryParamsValues, ERROR_FIELD_GET_BY_GENRES_GENRES,
+                ErrorMessages.MUST_NOT_BE_EMPTY);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void getBooksByGenres_paramGenresIsNull_returnsBadRequest(String genre) {
+    void getBooksByGenres_paramGenresIsNull_returnsBadRequest() {
         // given
-        String[] genres = {genre};
-
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGenresMissingGenres(null);
         // when & then
-        mockMvc.perform(get(GET_BY_GENRES_BOOK_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME).queryParam(GENRES_PARAM, genres))
-                .andExpect(status().isBadRequest()).andExpect(jsonPath(DETAIL).value(ErrorMessages.GENRES_NOT_PRESENT));
+        performGetAndExpectBadRequest(GET_BY_GENRES_BOOK_PATH, queryParamsValues, DETAIL,
+                ErrorMessages.GENRES_NOT_PRESENT);
     }
 
     private void performGetAndExpectBadRequest(String path, String param, String paramValue, String errorField, String

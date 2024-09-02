@@ -254,6 +254,13 @@ public class BookTestData {
         return queryParamsValues;
     }
 
+    public MultiValueMap<String, String> createQueryParamsForGenresMissingGenres(String genre) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(GENRES_PARAM, genre);
+
+        return queryParamsValues;
+    }
 
     public BookIdDTO getBookIdDto() {
         return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
