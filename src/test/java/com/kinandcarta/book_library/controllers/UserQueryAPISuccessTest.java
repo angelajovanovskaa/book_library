@@ -15,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;
@@ -50,12 +49,8 @@ class UserQueryAPISuccessTest {
         given(userService.getUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME)).willReturn(userWithRoleDTOs);
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(USERS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(USERS_PATH, SharedControllerTestData.OFFICE_PARAM
+                , SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<UserWithRoleDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -73,16 +68,9 @@ class UserQueryAPISuccessTest {
         given(userService.getUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
                 UserTestData.USER_FULL_NAME)).willReturn(List.of(userWithRoleDTO));
 
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
-
         // when
-        final String jsonResult =
-                mockMvc.perform(get(getUsersByFullNamePath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getUsersByFullNamePath,
+                UserTestData.getUsersByFullNameDefaultQueryParams());
 
         List<UserWithRoleDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -100,16 +88,27 @@ class UserQueryAPISuccessTest {
         given(userService.getUserProfile(UserTestData.USER_ID)).willReturn(userProfileDTO);
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(getUserProfilePath).queryParam(SharedControllerTestData.USER_ID_PARAM,
-                                UserTestData.USER_ID.toString()))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getUserProfilePath,
+                SharedControllerTestData.USER_ID_PARAM, UserTestData.USER_ID.toString());
 
         UserProfileDTO result = objectMapper.readValue(jsonResult, UserProfileDTO.class);
 
         // then
         assertThat(result).isEqualTo(userProfileDTO);
+    }
+
+    private String performRequestAndExpectJsonResult(String path, String param, String paramValue) throws Exception {
+        return mockMvc.perform(get(path).queryParam(param, paramValue))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    private String performRequestAndExpectJsonResult(String path, MultiValueMap<String, String> paramValues)
+            throws Exception {
+        return mockMvc.perform(get(path).queryParams(paramValues))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
     }
 }
