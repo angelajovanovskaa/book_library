@@ -25,5 +25,5 @@ public interface BookCheckoutQueryService {
 
     List<BookCheckoutResponseDTO> getAllBookCheckoutsFromUserWithId(UUID userId);
 
-    List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearingReturnDate(String officeName);
+    List<BookCheckoutReturnReminderResponseDTO> getAllBookCheckoutsNearReturnDate(String officeName);
 }

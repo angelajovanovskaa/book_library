@@ -10,6 +10,8 @@ import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.UserRole;
 import lombok.experimental.UtilityClass;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,7 +25,7 @@ public class UserTestData {
     private static final String USER_IMAGE_PATH = "classpath:image/profile-picture.png";
     public static final UUID USER_ID = UUID.fromString("d393861b-c1e1-4d21-bffe-8cf4c4f3c141");
     public static final String USER_FULL_NAME = "fullname1";
-    public static final String USER_EMAIL = "user1@gmail.com";
+    public static final String USER_EMAIL = "user.user1@kinandcarta.com";
     public static final String USER_PASSWORD = "password";
     public static final byte[] USER_IMAGE_BYTES = USER_IMAGE_PATH.getBytes();
 
@@ -103,7 +105,7 @@ public class UserTestData {
 
     public static UserLoginRequestDTO getUserLoginRequestDTO() {
         return new UserLoginRequestDTO(
-                USER_FULL_NAME,
+                USER_EMAIL,
                 USER_PASSWORD
         );
     }
@@ -137,5 +139,21 @@ public class UserTestData {
                 USER_ID,
                 UserRole.ADMIN
         );
+    }
+
+    public static  MultiValueMap<String, String> getUsersByFullNameDefaultQueryParams(){
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
+
+        return queryParamsValues;
+    }
+
+    public static  MultiValueMap<String, String> getUsersByFullNameQueryParamsPassingOfficeName(String officeName){
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
+
+        return queryParamsValues;
     }
 }

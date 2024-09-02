@@ -87,7 +87,7 @@ public class RequestedBookQueryServiceImpl implements RequestedBookQueryService 
      * @throws RequestedBookNotFoundException if no requested book exists for the given ISBN and office name.
      */
     @Override
-    public RequestedBookResponseDTO getRequestedBookByISBNAndOfficeName(String isbn, String officeName) {
+    public RequestedBookResponseDTO getRequestedBookByIsbnAndOfficeName(String isbn, String officeName) {
         RequestedBook requestedBook = requestedBookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new RequestedBookNotFoundException(isbn, officeName));
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
