@@ -5,6 +5,7 @@ import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookItemTestData;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -27,6 +28,10 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
     private static final String BORROW_BOOK_ITEM_PATH = "/book-checkouts/borrow";
     private static final String RETURN_BOOK_ITEM_PATH = "/book-checkouts/return";
 
+    private static final String ERROR_FIELD_USER_ID = "$.errorFields.userId";
+    private static final String ERROR_FIELD_BOOK_ITEM_ID = "$.errorFields.bookItemId";
+
+
     @MockBean
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
 
@@ -47,12 +52,8 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(userId, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value("must not be null"));
+        performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID,
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -63,12 +64,8 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, bookItemId);
 
         // when && then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.bookItemId").value("must not be null"));
+        performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID,
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -79,12 +76,8 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(userId, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
-        mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.userId").value("must not be null"));
+        performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID,
+                ErrorMessages.MUST_NOT_BE_NULL);
     }
 
     @ParameterizedTest
@@ -95,11 +88,17 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, bookItemId);
 
         // when && then
-        mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
+        performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID,
+                ErrorMessages.MUST_NOT_BE_NULL);
+    }
+
+    private void performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+            throws Exception {
+        mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
+                        .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.bookItemId").value("must not be null"));
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }

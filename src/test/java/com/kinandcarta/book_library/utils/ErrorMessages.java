@@ -12,4 +12,5 @@ public class ErrorMessages {
     public static final String USER_ID_NOT_PRESENT = "Required parameter 'userId' is not present.";
     public static final String USER_ID_FAIL_CONVERT = "Failed to convert 'userId' with value: '%s'";
     public static final String EMAIL_BAD_FORMAT = "must be a well-formed email address";
+    public static final String TITLE_SEARCH_TERM_NOT_PRESENT = "Required parameter 'titleSearchTerm' is not present.";
 }

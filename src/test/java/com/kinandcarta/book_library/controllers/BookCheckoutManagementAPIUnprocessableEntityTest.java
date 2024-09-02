@@ -53,13 +53,8 @@ class BookCheckoutManagementAPIUnprocessableEntityTest {
                 new EntitiesInDifferentOfficesException());
 
         // when & then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "You can't borrow a book from a different office!"));
+        performPostAndExpectUnprocessableEntity(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO,
+                new EntitiesInDifferentOfficesException().getMessage());
     }
 
     @Test
@@ -71,13 +66,8 @@ class BookCheckoutManagementAPIUnprocessableEntityTest {
                 new BookItemAlreadyBorrowedException(BookItemTestData.BOOK_ITEM_ID));
 
         // when & then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The bookItem with id: " + BookItemTestData.BOOK_ITEM_ID + " is already booked"));
+        performPostAndExpectUnprocessableEntity(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO,
+                new BookItemAlreadyBorrowedException(BookItemTestData.BOOK_ITEM_ID).getMessage());
     }
 
     @Test
@@ -89,14 +79,8 @@ class BookCheckoutManagementAPIUnprocessableEntityTest {
                 new BookAlreadyBorrowedByUserException(BookTestData.BOOK_ISBN));
 
         // when & then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The user already has an instance borrowed from the book with isbn: " +
-                                BookTestData.BOOK_ISBN));
+        performPostAndExpectUnprocessableEntity(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO,
+                new BookAlreadyBorrowedByUserException(BookTestData.BOOK_ISBN).getMessage());
     }
 
     @Test
@@ -108,13 +92,9 @@ class BookCheckoutManagementAPIUnprocessableEntityTest {
                 new LimitReachedForBorrowedBooksException(BookCheckoutTestData.MAX_NUMBER_OF_BORROWED_BOOKS));
 
         // when & then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isUnprocessableEntity())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "You have reached the maximum number of borrowed books. 3 books borrowed already."));
+        performPostAndExpectUnprocessableEntity(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO,
+                new LimitReachedForBorrowedBooksException(
+                        BookCheckoutTestData.MAX_NUMBER_OF_BORROWED_BOOKS).getMessage());
     }
 
     @Test
@@ -126,13 +106,17 @@ class BookCheckoutManagementAPIUnprocessableEntityTest {
                 new BookItemIsNotBorrowedException(BookItemTestData.BOOK_ITEM_ID));
 
         // when & then
-        mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
+        performPostAndExpectUnprocessableEntity(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO,
+                new BookItemIsNotBorrowedException(BookItemTestData.BOOK_ITEM_ID).getMessage());
+    }
+
+    private void performPostAndExpectUnprocessableEntity(String path, Record DTO, String errorMessage)
+            throws Exception {
+        mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
+                        .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The bookItem with id " + BookItemTestData.BOOK_ITEM_ID + " can't" +
-                                " be returned because it is not borrowed."));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(errorMessage));
     }
 }

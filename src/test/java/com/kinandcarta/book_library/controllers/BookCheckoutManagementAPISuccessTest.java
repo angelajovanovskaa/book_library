@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ class BookCheckoutManagementAPISuccessTest {
 
     @Test
     @SneakyThrows
-    void borrowBookItem_validRequest_returnsConfirmationMessage() {
+    void borrowBookItem_validRequest_returnsBookCheckoutResponseDTO() {
         // given
         BookCheckoutRequestDTO bookCheckoutRequestDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
         BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
@@ -49,12 +50,8 @@ class BookCheckoutManagementAPISuccessTest {
         given(bookCheckoutManagementService.borrowBookItem(any())).willReturn(bookCheckoutResponseDTO);
 
         // when
-        String jsonResult = mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutRequestDTO)))
-                .andExpect(status().isCreated())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
+        String jsonResult = performPostAndExpectJsonResult(BORROW_BOOK_ITEM_PATH, bookCheckoutRequestDTO,
+                status().isCreated());
 
         BookCheckoutResponseDTO result = objectMapper.readValue(jsonResult, BookCheckoutResponseDTO.class);
 
@@ -64,7 +61,7 @@ class BookCheckoutManagementAPISuccessTest {
 
     @Test
     @SneakyThrows
-    void returnBookItem_validRequest_returnsConfirmationMessage() {
+    void returnBookItem_validRequest_returnsBookCheckoutResponseDTO() {
         // given
         BookCheckoutRequestDTO bookCheckoutRequestDTO = BookCheckoutTestData.getBookCheckoutRequestDTO();
         BookCheckoutResponseDTO bookCheckoutResponseDTO = getBookCheckoutResponseDTO();
@@ -72,16 +69,21 @@ class BookCheckoutManagementAPISuccessTest {
         given(bookCheckoutManagementService.returnBookItem(any())).willReturn(bookCheckoutResponseDTO);
 
         // when
-        String jsonResult = mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutRequestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
+        String jsonResult = performPostAndExpectJsonResult(RETURN_BOOK_ITEM_PATH, bookCheckoutRequestDTO,
+                status().isOk());
 
         BookCheckoutResponseDTO result = objectMapper.readValue(jsonResult, BookCheckoutResponseDTO.class);
 
         // then
         assertThat(result).isEqualTo(bookCheckoutResponseDTO);
+    }
+
+    private String performPostAndExpectJsonResult(String path, Record DTO, ResultMatcher status) throws Exception {
+        return mockMvc.perform(post(path)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(DTO)))
+                .andExpect(status)
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
     }
 }

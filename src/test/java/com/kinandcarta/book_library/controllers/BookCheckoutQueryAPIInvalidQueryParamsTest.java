@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
+import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -23,6 +26,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookCheckoutController.class)
 class BookCheckoutQueryAPIInvalidQueryParamsTest {
     private static final String BOOK_CHECKOUTS_PATH = "/book-checkouts";
+    private static final String BOOK_CHECKOUTS_PATH_PAGINATED = BOOK_CHECKOUTS_PATH + "/paginated";
+    private static final String BOOK_CHECKOUTS_PATH_ACTIVE = BOOK_CHECKOUTS_PATH + "/active";
+    private static final String BOOK_CHECKOUTS_PATH_PAST = BOOK_CHECKOUTS_PATH + "/past";
+    private static final String BOOK_CHECKOUTS_PATH_NEAR_RETURN = BOOK_CHECKOUTS_PATH + "/near-return-date";
+    private static final String BOOK_CHECKOUTS_PATH_BY_TITLE = BOOK_CHECKOUTS_PATH + "/by-title";
+
+    private static final String ERROR_FIELD_DETAIL = "$.detail";
 
     @MockBean
     private BookCheckoutQueryServiceImpl bookCheckoutQueryService;
@@ -41,10 +51,9 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
     @SneakyThrows
     void getBookCheckouts_ParamOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given & when & then
-        mockMvc.perform(get(BOOK_CHECKOUTS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookCheckouts.officeName']").value("must not be blank"));
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
@@ -52,10 +61,9 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
     @SneakyThrows
     void getBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
         // given & when & then
-        mockMvc.perform(get(BOOK_CHECKOUTS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookCheckouts.officeName']").value("must not be blank"));
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
@@ -63,191 +71,125 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
     @SneakyThrows
     void getBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
         // given & when & then
-        mockMvc.perform(get(BOOK_CHECKOUTS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, SharedControllerTestData.OFFICE_PARAM, officeName,
+                ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void getBookCheckoutsPaginated_ParamOfficeNameIsInvalid_returnsBadRequest(String officeName) {
-        // given
-        final String getPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/paginated";
-
-        // when & then
-        mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(
-                        jsonPath("$.errorFields['getBookCheckoutsPaginated.officeName']").value("must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAGINATED, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getBookCheckoutsPaginated.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
     void getBookCheckoutsPaginated_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/paginated";
-
-        // when & then
-        mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(
-                        jsonPath("$.errorFields['getBookCheckoutsPaginated.officeName']").value("must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAGINATED, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getBookCheckoutsPaginated.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
     void getBookCheckoutsPaginated_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
-        // given
-        final String getPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/paginated";
-
-        // when & then
-        mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAGINATED, SharedControllerTestData.OFFICE_PARAM, officeName,
+                ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void getActiveBookCheckouts_ParamOfficeNameIsInvalid_returnsBadRequest(String officeName) {
-        // given
-        final String getActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/active";
-
-        // when & then
-        mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getActiveBookCheckouts.officeName']").value("must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_ACTIVE, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getActiveBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
     void getActiveBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/active";
-
-        // when & then
-        mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getActiveBookCheckouts.officeName']").value("must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_ACTIVE, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getActiveBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
     void getActiveBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
-        // given
-        final String getActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/active";
-
-        // when & then
-        mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_ACTIVE, SharedControllerTestData.OFFICE_PARAM, officeName,
+                ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void getPastBookCheckouts_ParamOfficeNameIsInvalid_returnsBadRequest(String officeName) {
-        // given
-        final String getPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/past";
-
-        // when & then
-        mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getPastBookCheckouts.officeName']").value("must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAST, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getPastBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
     void getPastBookCheckouts_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/past";
-
-        // when & then
-        mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getPastBookCheckouts.officeName']").value("must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAST, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getPastBookCheckouts.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
     void getPastBookCheckouts_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
-        // given
-        final String getPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/past";
-
-        // when & then
-        mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_PAST, SharedControllerTestData.OFFICE_PARAM, officeName,
+                ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void getBookCheckoutsNearReturnDate_ParamOfficeNameIsInvalid_returnsBadRequest(String officeName) {
-        // given
-        final String getNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/near-return-date";
-
-        // when & then
-        mockMvc.perform(
-                        get(getNearReturnDateBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookCheckoutsNearReturnDate.officeName']").value(
-                        "must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_NEAR_RETURN, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getBookCheckoutsNearReturnDate.officeName']",
+                ErrorMessages.MUST_NOT_BE_BLANK, MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
     void getBookCheckoutsNearReturnDate_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/near-return-date";
-
-        // when & then
-        mockMvc.perform(
-                        get(getNearReturnDateBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookCheckoutsNearReturnDate.officeName']").value(
-                        "must not be blank"));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_NEAR_RETURN, SharedControllerTestData.OFFICE_PARAM,
+                officeName, "$.errorFields['getBookCheckoutsNearReturnDate.officeName']",
+                ErrorMessages.MUST_NOT_BE_BLANK, MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
     void getBookCheckoutsNearReturnDate_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
-        // given
-        final String getNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/near-return-date";
-
-        // when & then
-        mockMvc.perform(
-                        get(getNearReturnDateBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                officeName))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_NEAR_RETURN, SharedControllerTestData.OFFICE_PARAM,
+                officeName, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
+                MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
@@ -255,15 +197,14 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
     @SneakyThrows
     void getBookCheckoutsByTitleContaining_ParamOfficeNameIsInvalid_returnsBadRequest(String officeName) {
         // given
-        final String getBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/by-title";
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, "");
 
         // when & then
-        mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName).queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookCheckoutsByTitleContaining.officeName']").value(
-                        "must not be blank"));
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_BY_TITLE, queryParamsValues,
+                "$.errorFields['getBookCheckoutsByTitleContaining.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
@@ -271,30 +212,24 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
     @SneakyThrows
     void getBookCheckoutsByTitleContaining_ParamOfficeNameIsEmpty_returnsBadRequest(String officeName) {
         // given
-        final String getBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/by-title";
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, "");
 
         // when & then
-        mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName).queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookCheckoutsByTitleContaining.officeName']").value(
-                        "must not be blank"));
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_BY_TITLE, queryParamsValues,
+                "$.errorFields['getBookCheckoutsByTitleContaining.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
+                MediaType.APPLICATION_JSON);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
     void getBookCheckoutsByTitleContaining_ParamOfficeNameIsNull_returnsBadRequest(String officeName) {
-        // given
-        final String getBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/by-title";
-
-        // when & then
-        mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName).queryParam(SharedControllerTestData.BOOK_TITLE_PARAM, ""))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'officeName' is not present."));
+        // given & when & then
+        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_BY_TITLE, SharedControllerTestData.OFFICE_PARAM,
+                officeName, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
+                MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
@@ -305,10 +240,8 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
         final String getUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/by-user";
 
         // when & then
-        mockMvc.perform(get(getUsersBookCheckoutPath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'userId' is not present."));
+        performGetAndExpectBadRequest(getUsersBookCheckoutPath, SharedControllerTestData.USER_ID_PARAM, userId,
+                ERROR_FIELD_DETAIL, ErrorMessages.USER_ID_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @ParameterizedTest
@@ -319,9 +252,24 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
         final String getUsersBookCheckoutByTitlePath = BOOK_CHECKOUTS_PATH + "/by-user-and-title";
 
         // when & then
-        mockMvc.perform(get(getUsersBookCheckoutByTitlePath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
+        performGetAndExpectBadRequest(getUsersBookCheckoutByTitlePath, SharedControllerTestData.USER_ID_PARAM, userId,
+                ERROR_FIELD_DETAIL, ErrorMessages.USER_ID_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
+    }
+
+    private void performGetAndExpectBadRequest(String path, String param, String paramValue, String errorField,
+                                               String errorMessage, MediaType mediaType) throws Exception {
+        mockMvc.perform(get(path).queryParam(param, paramValue))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value("Required parameter 'userId' is not present."));
+                .andExpect(content().contentType(mediaType))
+                .andExpect(jsonPath(errorField).value(errorMessage));
+    }
+
+    private void performGetAndExpectBadRequest(String path, MultiValueMap<String, String> queryParamsValues,
+                                               String errorField, String errorMessage, MediaType mediaType)
+            throws Exception {
+        mockMvc.perform(get(path).queryParams(queryParamsValues))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(mediaType))
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }

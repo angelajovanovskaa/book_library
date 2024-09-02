@@ -15,7 +15,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,13 +48,7 @@ class BookCheckoutManagementAPINotFoundTest {
                 new BookItemNotFoundException(BookItemTestData.BOOK_ITEM_ID));
 
         // when & then
-        mockMvc.perform(post(BORROW_BOOK_ITEM_PATH)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The bookItem with id: " + BookItemTestData.BOOK_ITEM_ID + " doesn't exist"));
+        performPostAndExpectNotFound(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO);
     }
 
     @Test
@@ -67,12 +60,17 @@ class BookCheckoutManagementAPINotFoundTest {
                 new BookItemNotFoundException(BookItemTestData.BOOK_ITEM_ID));
 
         // when & then
-        mockMvc.perform(post(RETURN_BOOK_ITEM_PATH)
+        performPostAndExpectNotFound(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO);
+    }
+
+    private void performPostAndExpectNotFound(String path, Record DTO)
+            throws Exception {
+        mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(bookCheckoutDTO)))
+                        .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isNotFound())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        "The bookItem with id: " + BookItemTestData.BOOK_ITEM_ID + " doesn't exist"));
+                        new BookItemNotFoundException(BookItemTestData.BOOK_ITEM_ID).getMessage()));
     }
 }
