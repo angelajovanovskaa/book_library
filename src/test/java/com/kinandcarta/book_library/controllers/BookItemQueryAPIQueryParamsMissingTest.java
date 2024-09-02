@@ -38,7 +38,7 @@ class BookItemQueryAPIQueryParamsMissingTest {
 
     @Test
     @SneakyThrows
-    void getBookItems_paramOfficeNameIsMissing_returnsBadRequest(){
+    void getBookItems_paramOfficeNameIsMissing_returnsBadRequest() {
         // given & when & then
         performGetBookItemsWithMissingParam(
                 SharedControllerTestData.BOOK_ISBN_PARAM,
@@ -49,16 +49,17 @@ class BookItemQueryAPIQueryParamsMissingTest {
 
     @Test
     @SneakyThrows
-    void getBookItems_paramIsbnIsMissing_returnsBadRequest(){
+    void getBookItems_paramIsbnIsMissing_returnsBadRequest() {
         // given & when & then
         performGetBookItemsWithMissingParam(
                 SharedControllerTestData.OFFICE_PARAM,
                 SharedServiceTestData.SKOPJE_OFFICE_NAME,
-                ErrorMessages.ISBN_NOT_PRESENT
+                ErrorMessages.ISBN_NOT_PRESENT + "."
         );
     }
 
-    private void performGetBookItemsWithMissingParam(String missingParamName, String missingParamValue, String expectedErrorMessage) throws Exception {
+    private void performGetBookItemsWithMissingParam(String missingParamName, String missingParamValue,
+                                                     String expectedErrorMessage) throws Exception {
         mockMvc.perform(get(BOOK_ITEM_PATH)
                         .queryParam(missingParamName, missingParamValue))
                 .andExpect(status().isBadRequest())

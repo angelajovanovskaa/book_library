@@ -114,7 +114,8 @@ class BookItemQueryAPIInvalidQueryParamsTest {
                 .andExpect(jsonPath("$.errorFields['getBookItems.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    private void performGetAndExpectBadRequestForNullParam(String officeName, String isbn, String expectedErrorMessage) throws Exception {
+    private void performGetAndExpectBadRequestForNullParam(String officeName, String isbn, String expectedErrorMessage)
+            throws Exception {
         mockMvc.perform(get(BookItemQueryAPIInvalidQueryParamsTest.BOOK_ITEM_PATH)
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))

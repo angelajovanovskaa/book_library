@@ -44,7 +44,8 @@ class BookItemManagementAPIUnprocessableEntityTest {
         final UUID bookItemId = UUID.randomUUID();
         final String deleteBookItemPath = BOOK_ITEM_PATH + "/delete/" + bookItemId;
 
-        BookItemAlreadyBorrowedException bookItemAlreadyBorrowedException = new BookItemAlreadyBorrowedException(bookItemId);
+        BookItemAlreadyBorrowedException bookItemAlreadyBorrowedException =
+                new BookItemAlreadyBorrowedException(bookItemId);
 
         given(bookItemManagementService.deleteById(any())).willThrow(bookItemAlreadyBorrowedException);
 

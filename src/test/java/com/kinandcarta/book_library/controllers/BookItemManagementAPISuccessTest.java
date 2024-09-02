@@ -46,7 +46,7 @@ class BookItemManagementAPISuccessTest {
 
     @Test
     @SneakyThrows
-    void createBookItem_BookItemCreated_returnBookItemDTO(){
+    void createBookItem_BookItemCreated_returnBookItemDTO() {
         // given
         final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
 
@@ -58,7 +58,7 @@ class BookItemManagementAPISuccessTest {
 
         // when
         String jsonResult = mockMvc.perform(post(insertBookItemPath)
-                .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -95,7 +95,8 @@ class BookItemManagementAPISuccessTest {
 
         UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
 
-        given(bookItemManagementService.reportBookItemAsDamaged(any())).willReturn(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
+        given(bookItemManagementService.reportBookItemAsDamaged(any())).willReturn(
+                BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
 
         // when & then
         performPatchAndExpectOk(
@@ -113,7 +114,8 @@ class BookItemManagementAPISuccessTest {
 
         UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
 
-        given(bookItemManagementService.reportBookItemAsLost(any())).willReturn(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
+        given(bookItemManagementService.reportBookItemAsLost(any())).willReturn(
+                BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
 
         // when & then
         performPatchAndExpectOk(
@@ -123,7 +125,7 @@ class BookItemManagementAPISuccessTest {
         );
     }
 
-    private UUID performDeleteAndExpectOk(String path, UUID id) throws Exception{
+    private UUID performDeleteAndExpectOk(String path, UUID id) throws Exception {
         String resultJson = mockMvc.perform(delete(path, id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))

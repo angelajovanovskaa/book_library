@@ -53,7 +53,8 @@ class BookItemQueryAPISuccessTest {
         final String jsonResult =
                 mockMvc.perform(get(BOOK_ITEM_PATH)
                                 .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN)
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME))
+                                .queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
                         .andExpect(status().isOk())
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andReturn().getResponse().getContentAsString();

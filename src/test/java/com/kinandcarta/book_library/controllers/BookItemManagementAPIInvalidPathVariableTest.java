@@ -51,7 +51,7 @@ class BookItemManagementAPIInvalidPathVariableTest {
     @ParameterizedTest
     @NullSource
     @SneakyThrows
-    void  reportBookItemAsDamaged_bookItemIdIsInvalid_returnsBadRequest(UUID bookItemId) {
+    void reportBookItemAsDamaged_bookItemIdIsInvalid_returnsBadRequest(UUID bookItemId) {
         // given
         final String reportBookItemPathAsDamaged = BOOK_ITEM_PATH + "/report-damage/" + bookItemId;
 

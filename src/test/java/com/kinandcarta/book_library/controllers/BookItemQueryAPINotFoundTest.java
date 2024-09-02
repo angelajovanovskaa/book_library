@@ -39,16 +39,18 @@ class BookItemQueryAPINotFoundTest {
 
     @Test
     @SneakyThrows
-    void getBookItem_bookItemDoesNotExist_returnsNotFoundRequest(){
+    void getBookItem_bookItemDoesNotExist_returnsNotFoundRequest() {
         // given
         final String isbn = BookTestData.BOOK_INVALID_ISBN;
-        given(bookItemQueryService.getBookItemsByBookIsbn(anyString(),anyString()))
+        given(bookItemQueryService.getBookItemsByBookIsbn(anyString(), anyString()))
                 .willThrow(new BookItemNotFoundException(BookItemTestData.BOOK_ITEM_DIFFERENT_OFFICE_ID));
 
         // when & then
-        mockMvc.perform(get(BOOK_ITEM_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
+        mockMvc.perform(get(BOOK_ITEM_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME)
+                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value("The bookItem with id: " + BookItemTestData.BOOK_ITEM_DIFFERENT_OFFICE_ID + " doesn't exist"));
+                .andExpect(jsonPath("$.generalExceptionMessage").value(
+                        "The bookItem with id: " + BookItemTestData.BOOK_ITEM_DIFFERENT_OFFICE_ID + " doesn't exist"));
     }
 }

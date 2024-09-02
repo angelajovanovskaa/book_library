@@ -42,42 +42,42 @@ class BookItemManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void createBookItem_isbnIsInvalid_returnsBadRequest(String isbn){
+    void createBookItem_isbnIsInvalid_returnsBadRequest(String isbn) {
         performPostAndExpectBadRequestIsbn(isbn);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
-    void createBookItem_isbnIsEmpty_returnsBadRequest(String isbn){
+    void createBookItem_isbnIsEmpty_returnsBadRequest(String isbn) {
         performPostAndExpectBadRequestIsbn(isbn);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
-    void createBookItem_isbnIsNull_returnsBadRequest(String isbn){
+    void createBookItem_isbnIsNull_returnsBadRequest(String isbn) {
         performPostAndExpectBadRequestIsbn(isbn);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void createBookItem_officeNameIsInvalid_returnsBadRequest(String officeName){
+    void createBookItem_officeNameIsInvalid_returnsBadRequest(String officeName) {
         performPostAndExpectBadRequestOfficeName(officeName);
     }
 
     @ParameterizedTest
     @EmptySource
     @SneakyThrows
-    void createBookItem_officeNameIsEmpty_returnsBadRequest(String officeName){
+    void createBookItem_officeNameIsEmpty_returnsBadRequest(String officeName) {
         performPostAndExpectBadRequestOfficeName(officeName);
     }
 
     @ParameterizedTest
     @NullSource
     @SneakyThrows
-    void createBookItem_officeNameIsNull_returnsBadRequest(String officeName){
+    void createBookItem_officeNameIsNull_returnsBadRequest(String officeName) {
         performPostAndExpectBadRequestOfficeName(officeName);
     }
 
