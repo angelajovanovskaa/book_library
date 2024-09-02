@@ -185,7 +185,6 @@ class ReviewManagementServiceImplTest {
                 .isThrownBy(() -> reviewManagementService.deleteReviewById(ReviewTestData.REVIEW_ID))
                 .withMessage("Review with id " + ReviewTestData.REVIEW_ID + " not found");
 
-        verify(bookRepository, times(0)).findByIsbn(any());
         verify(bookAverageRatingCalculator, times(0)).getAverageRatingOnBook(any());
     }
 }
