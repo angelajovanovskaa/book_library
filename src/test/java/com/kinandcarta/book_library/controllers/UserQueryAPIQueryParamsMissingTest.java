@@ -22,6 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserQueryAPIQueryParamsMissingTest {
     private static final String USERS_PATH = "/users";
 
+    private static final String ERROR_FIELD_DETAIL = "$.detail";
+
     @MockBean
     private UserQueryServiceImpl userService;
 
@@ -35,10 +37,8 @@ class UserQueryAPIQueryParamsMissingTest {
     @SneakyThrows
     void getUsers_paramOfficeNameIsMissing_returnsBadRequest() {
         // given & when & then
-        mockMvc.perform(get(USERS_PATH))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        performGetRequestAndExpectBadRequest(USERS_PATH, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
+
     }
 
     @Test
@@ -48,10 +48,8 @@ class UserQueryAPIQueryParamsMissingTest {
         final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
 
         // when & then
-        mockMvc.perform(get(getUsersByFullNamePath))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        performGetRequestAndExpectBadRequest(getUsersByFullNamePath, ERROR_FIELD_DETAIL,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
@@ -75,9 +73,14 @@ class UserQueryAPIQueryParamsMissingTest {
         final String getUserProfilePath = USERS_PATH + "/profile";
 
         // when & then
-        mockMvc.perform(get(getUserProfilePath))
+        performGetRequestAndExpectBadRequest(getUserProfilePath, ERROR_FIELD_DETAIL, ErrorMessages.USER_ID_NOT_PRESENT);
+    }
+
+    private void performGetRequestAndExpectBadRequest(String path, String errorField, String errorMessage)
+            throws Exception {
+        mockMvc.perform(get(path))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.USER_ID_NOT_PRESENT));
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }
