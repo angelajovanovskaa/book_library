@@ -91,7 +91,7 @@ class BookManagementAPIInvalidRequestBody {
                 BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
-        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
+        performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
