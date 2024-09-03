@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -22,18 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-class BookManagementAPIQueryParamsMissing {
+class BookManagementAPIQueryParamsMissingTest {
     private static final String BOOK_PATH = "/books";
     private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
-
     private static final String ERROR_FIELD_ISBN = "$.errorFields['deleteBook.isbn']";
     private static final String DETAIL = "$.detail";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
-
-    @MockBean
-    private BookRepository bookRepository;
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
