@@ -161,15 +161,11 @@ public class BookTestData {
         );
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGetBookSuccess() {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
-
-        return queryParamsValues;
+    public BookIdDTO getBookIdDto() {
+        return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGetPaginatedBookSuccess() {
+    public MultiValueMap<String, String> createQueryParamsForGetPaginatedBook() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(SharedControllerTestData.PAGE_SIZE_PARAM,
@@ -178,7 +174,7 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGetBooksBySearchTitleSuccess() {
+    public MultiValueMap<String, String> createQueryParamsForGetBySearchTitle() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE);
@@ -186,21 +182,23 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGetBooksByLanguageSuccess() {
+    public MultiValueMap<String, String> createQueryParamsForGetByLanguage() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
 
         return queryParamsValues;
     }
-    public MultiValueMap<String, String> createQueryParamsForGetBooksByGenresSuccess() {
+
+    public MultiValueMap<String, String> createQueryParamsForGetByGenres() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(GENRES_PARAM, Arrays.toString(BookTestData.BOOK_GENRES));
 
         return queryParamsValues;
     }
-    public MultiValueMap<String, String> createQueryParamsForGetBookMissingOfficeName(String officeName) {
+
+    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameForGetBook(String officeName) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
         queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
@@ -208,14 +206,7 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGetBookMissingIsbn(String isbn) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
-
-        return queryParamsValues;
-    }
-    public MultiValueMap<String, String> createQueryParamsForTitleMissingOfficeName(String officeName) {
+    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameForGetByTitle(String officeName) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM);
@@ -223,14 +214,15 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForTitleMissingTitleSearchTerm(String titleSearchTerm) {
+    public MultiValueMap<String, String> createQueryParamsMissingTitleSearchTermForGetByTitle(String titleSearchTerm) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, titleSearchTerm);
 
         return queryParamsValues;
     }
-    public MultiValueMap<String, String> createQueryParamsForLanguageMissingOfficeName(String officeName) {
+
+    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameForGetByLanguage(String officeName) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
         queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
@@ -238,7 +230,7 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForLanguageMissingLanguage(String language) {
+    public MultiValueMap<String, String> createQueryParamsMissingLanguageForGetByLanguage(String language) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(LANGUAGE_PARAM, language);
@@ -246,7 +238,7 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGenresMissingOfficeName(String officeName) {
+    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameGetByGenres(String officeName) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
         queryParamsValues.add(GENRES_PARAM, Arrays.toString(BOOK_GENRES));
@@ -254,16 +246,12 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForGenresMissingGenres(String genre) {
+    public MultiValueMap<String, String> createQueryParamsMissingGenresGetByGenres(String genre) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(GENRES_PARAM, genre);
 
         return queryParamsValues;
-    }
-
-    public BookIdDTO getBookIdDto() {
-        return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
     }
 
     public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {

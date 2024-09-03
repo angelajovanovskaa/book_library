@@ -35,9 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookController.class)
 class BookQueryAPISuccessTest {
     private static final String BOOK_PATH = "/books";
-    private static final String GENRES_PARAM = "genres";
-    private static final String LANGUAGE_PARAM = "language";
-
     private static final String GET_BOOK_PATH = BOOK_PATH + "/get-book";
     private static final String GET_AVAILABLE_BOOK_PATH = BOOK_PATH + "/available";
     private static final String GET_REQUESTED_BOOK_PATH = BOOK_PATH + "/requested";
@@ -45,6 +42,7 @@ class BookQueryAPISuccessTest {
     private static final String GET_BY_TITLE_BOOK_PATH = BOOK_PATH + "/by-title";
     private static final String GET_BY_LANGUAGE_BOOK_PATH = BOOK_PATH + "/by-language";
     private static final String GET_BY_GENRES_BOOK_PATH = BOOK_PATH + "/by-genres";
+
     @MockBean
     private BookManagementServiceImpl bookManagementService;
 
@@ -85,7 +83,7 @@ class BookQueryAPISuccessTest {
 
         given(bookQueryService.getBookByIsbn(anyString(), anyString())).willReturn(bookDetailsDTO);
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetBookSuccess();
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsWithOfficeAndISBN();
 
         // when
         final String jsonResult = performRequestAndExpectJsonResult(GET_BOOK_PATH, queryParamsValues);
@@ -147,7 +145,7 @@ class BookQueryAPISuccessTest {
         given(bookQueryService.getPaginatedAvailableBooks(anyInt(), anyInt(), anyString())).willReturn(
                 bookDisplayDTOsPaginated);
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetPaginatedBookSuccess();
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetPaginatedBook();
 
         // when
         final String jsonResult = performRequestAndExpectJsonResult(GET_PAGINATED_AVAILABLE_BOOK_PATH,
@@ -174,7 +172,7 @@ class BookQueryAPISuccessTest {
         given(bookQueryService.getBooksByTitle(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
 
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForGetBooksBySearchTitleSuccess();
+                BookTestData.createQueryParamsForGetBySearchTitle();
 
         // when
         final String jsonResult = performRequestAndExpectJsonResult(GET_BY_TITLE_BOOK_PATH, queryParamsValues);
@@ -194,7 +192,7 @@ class BookQueryAPISuccessTest {
 
         given(bookQueryService.getBooksByLanguage(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetBooksByLanguageSuccess();
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetByLanguage();
 
         // when
         final String jsonResult = performRequestAndExpectJsonResult(GET_BY_LANGUAGE_BOOK_PATH, queryParamsValues);
@@ -214,7 +212,7 @@ class BookQueryAPISuccessTest {
 
         given(bookQueryService.getBooksByGenresContaining(any(), anyString())).willReturn(List.of(bookDisplayDTO));
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetBooksByGenresSuccess();
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetByGenres();
 
         // when
         final String jsonResult = performRequestAndExpectJsonResult(GET_BY_GENRES_BOOK_PATH, queryParamsValues);

@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookQueryAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
     private static final String getBookPath = BOOK_PATH + "/get-book";
-
     private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
 
     @MockBean
