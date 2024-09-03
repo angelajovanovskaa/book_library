@@ -80,29 +80,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Deletes a requested book by the provided ID.
-     * <p>
-     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
-     * {@link RequestedBook} are deleted as well.
-     * </p>
-     *
-     * @param requestedBookId ID of the {@link RequestedBook}
-     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
-     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
-     */
-    @Transactional
-    @Override
-    public UUID deleteRequestedBook(UUID requestedBookId) {
-        if (!requestedBookRepository.existsById(requestedBookId)) {
-            throw new RequestedBookNotFoundException(requestedBookId);
-        }
-
-        requestedBookRepository.deleteById(requestedBookId);
-
-        return requestedBookId;
-    }
-
-    /**
      * Sets the status of a requested book to "IN_STOCK" and removes the requested book record.
      * <p>
      * This method performs the following operations within a single transaction:
@@ -126,7 +103,7 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         Book book = requestedBook.getBook();
         Book bookWithUpdatedBookStatus = updateBookStatus(book, BookStatus.IN_STOCK);
 
-        deleteRequestedBook(requestedBookId);
+        requestedBookRepository.deleteById(requestedBookId);
 
         Office office = bookWithUpdatedBookStatus.getOffice();
         String officeName = office.getName();
@@ -199,24 +176,8 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
 
-    /**
-     * Updates and saves {@link BookStatus} of a provided {@link Book}.
-     * <p>
-     * This method check if the {@link BookStatus} transitions are valid and if so updates and saves the targeted
-     * book with the new {@link BookStatus}.
-     * </p>
-     *
-     * @param book          Targeted {@link Book} object.
-     * @param newBookStatus New status to transition to.
-     * @return The {@link Book} that we added to IN_STOCK.
-     * @throws RequestedBookStatusException If the status transition is not valid.
-     */
     private Book updateBookStatus(Book book, BookStatus newBookStatus) {
         BookStatus currentBookStatus = book.getBookStatus();
-
-        if (currentBookStatus == newBookStatus) {
-            return book;
-        }
 
         if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
             throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
