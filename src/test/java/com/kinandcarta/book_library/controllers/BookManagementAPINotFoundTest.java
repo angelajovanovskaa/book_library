@@ -50,7 +50,7 @@ class BookManagementAPINotFoundTest {
 
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsInvalidIsbn();
 
-        // when
+        // when & then
         mockMvc.perform(delete(DELETE_BOOK_PATH)
                         .queryParams(queryParamsValues))
                 .andExpect(status().isNotFound())

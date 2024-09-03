@@ -59,7 +59,6 @@ class BookManagementAPISuccessTest {
         BookDisplayDTO actualResult = objectMapper.readValue(jsonResult, BookDisplayDTO.class);
 
         // then
-
         assertThat(actualResult).isEqualTo(BookTestData.getBookDisplayDTO());
     }
 
