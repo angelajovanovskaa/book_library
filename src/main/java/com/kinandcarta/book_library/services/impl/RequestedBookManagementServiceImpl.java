@@ -80,6 +80,29 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
+     * Deletes a requested book by the provided ID.
+     * <p>
+     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
+     * {@link RequestedBook} are deleted as well.
+     * </p>
+     *
+     * @param requestedBookId ID of the {@link RequestedBook}
+     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
+     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
+     */
+    @Transactional
+    @Override
+    public UUID deleteRequestedBook(UUID requestedBookId) {
+        if (!requestedBookRepository.existsById(requestedBookId)) {
+            throw new RequestedBookNotFoundException(requestedBookId);
+        }
+
+        requestedBookRepository.deleteById(requestedBookId);
+
+        return requestedBookId;
+    }
+
+    /**
      * Sets the status of a requested book to "IN_STOCK" and removes the requested book record.
      * <p>
      * This method performs the following operations within a single transaction:
@@ -174,29 +197,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         requestedBookRepository.save(requestedBook);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
-    }
-
-    /**
-     * Deletes a requested book by the provided ID.
-     * <p>
-     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
-     * {@link RequestedBook} are deleted as well.
-     * </p>
-     *
-     * @param requestedBookId ID of the {@link RequestedBook}
-     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
-     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
-     */
-    @Transactional
-    @Override
-    public UUID deleteRequestedBook(UUID requestedBookId) {
-        if (!requestedBookRepository.existsById(requestedBookId)) {
-            throw new RequestedBookNotFoundException(requestedBookId);
-        }
-
-        requestedBookRepository.deleteById(requestedBookId);
-
-        return requestedBookId;
     }
 
     /**
