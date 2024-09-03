@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BookLibraryApplicatioon" type="Application" factoryName="Application">
+    <envs>
+      <env name="password" value="{password}" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.kinandcarta.book_library.BookLibraryApplication" />
+    <module name="book_library" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
