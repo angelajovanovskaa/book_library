@@ -3,19 +3,19 @@ package com.kinandcarta.book_library.services.impl;
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
-import com.kinandcarta.book_library.services.OfficeService;
+import com.kinandcarta.book_library.services.OfficeQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 /**
- * Implementation of {@link OfficeService}.<br>
+ * Implementation of {@link OfficeQueryService}.<br>
  * This service provides operations related to accessing office information
  */
 @Service
 @RequiredArgsConstructor
-public class OfficeServiceImpl implements OfficeService {
+public class OfficeQueryServiceImpl implements OfficeQueryService {
     private final OfficeRepository officeRepository;
 
     /**
@@ -23,7 +23,7 @@ public class OfficeServiceImpl implements OfficeService {
      *
      * @return A list of {@link OfficeResponseDTO} objects, each containing the office name.
      */
-    public List<OfficeResponseDTO> getAllOffices() {
+    public List<OfficeResponseDTO> getOffices() {
         List<Office> offices = officeRepository.findAll();
         return offices.stream().map(office -> new OfficeResponseDTO(office.getName())).toList();
     }
