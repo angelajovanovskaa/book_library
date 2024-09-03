@@ -31,6 +31,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementAPISuccessTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String BOOK_ITEM_INSERT_PATH = BOOK_ITEM_PATH + "/insert";
+    private static final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/{bookItemId}";
+    private static final String REPORT_BOOK_ITEM_AS_DAMAGED_PATH = BOOK_ITEM_PATH + "/report-damage/{bookItemId}";
+    private static final String REPORT_BOOK_ITEM_AS_LOST_PATH = BOOK_ITEM_PATH + "/report-lost/{bookItemId}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +52,7 @@ class BookItemManagementAPISuccessTest {
     @SneakyThrows
     void createBookItem_BookItemCreated_returnBookItemDTO() {
         // given
-        final String insertBookItemPath = BOOK_ITEM_PATH + "/insert";
+        final String insertBookItemPath = BOOK_ITEM_INSERT_PATH;
         BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         BookItemDTO expectedBookItemDTO = BookItemTestData.getBookItemDTO();
 
@@ -73,7 +77,7 @@ class BookItemManagementAPISuccessTest {
     @SneakyThrows
     void deleteBookItem_deleteIsSuccessful_deletesBookItem() {
         // given
-        final String deleteBookItem = BOOK_ITEM_PATH + "/delete/{bookItemId}";
+        final String deleteBookItem = DELETE_BOOK_ITEM_PATH;
         UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
 
         given(bookItemManagementService.deleteById(any())).willReturn(bookItemId);
@@ -89,7 +93,7 @@ class BookItemManagementAPISuccessTest {
     @SneakyThrows
     void reportBookItemAsDamaged_reportIsSuccessful_returnsConfirmationMessage() {
         // given
-        final String returnBookItemAsDamaged = BOOK_ITEM_PATH + "/report-damage/{bookItemId}";
+        final String returnBookItemAsDamaged = REPORT_BOOK_ITEM_AS_DAMAGED_PATH;
         UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
 
         given(bookItemManagementService.reportBookItemAsDamaged(any())).willReturn(
@@ -107,7 +111,7 @@ class BookItemManagementAPISuccessTest {
     @SneakyThrows
     void reportBookItemAsLost_reportIsSuccessful_returnsConfirmationMessage() {
         // given
-        final String returnBookItemAsLost = BOOK_ITEM_PATH + "/report-lost/{bookItemId}";
+        final String returnBookItemAsLost = REPORT_BOOK_ITEM_AS_LOST_PATH;
         UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
 
         given(bookItemManagementService.reportBookItemAsLost(any())).willReturn(

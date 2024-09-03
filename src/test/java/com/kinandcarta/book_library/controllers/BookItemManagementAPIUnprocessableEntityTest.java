@@ -25,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementAPIUnprocessableEntityTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/{bookItemId}";
+    private static final String REPORT_BOOK_ITEM_AS_DAMAGED_PATH = BOOK_ITEM_PATH + "/report-damage/{bookItemId}";
+    private static final String REPORT_BOOK_ITEM_AS_LOST_PATH = BOOK_ITEM_PATH + "/report-lost/{bookItemId}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,7 +45,7 @@ class BookItemManagementAPIUnprocessableEntityTest {
     void deleteBookItem_alreadyBorrowed_returnsUnprocessableEntity() throws Exception {
         // given
         final UUID bookItemId = UUID.randomUUID();
-        final String deleteBookItemPath = BOOK_ITEM_PATH + "/delete/" + bookItemId;
+        final String deleteBookItemPath = DELETE_BOOK_ITEM_PATH;
 
         BookItemAlreadyBorrowedException bookItemAlreadyBorrowedException =
                 new BookItemAlreadyBorrowedException(bookItemId);
@@ -60,7 +63,7 @@ class BookItemManagementAPIUnprocessableEntityTest {
     void reportBookItemAsDamaged_notBorrowed_returnsUnprocessableEntity() throws Exception {
         // given
         final UUID bookItemId = UUID.randomUUID();
-        final String reportBookItemPathAsDamaged = BOOK_ITEM_PATH + "/report-damage/" + bookItemId;
+        final String reportBookItemPathAsDamaged = REPORT_BOOK_ITEM_AS_DAMAGED_PATH;
 
         BookItemIsNotBorrowedException bookItemIsNotBorrowedException = new BookItemIsNotBorrowedException(bookItemId);
 
@@ -77,7 +80,7 @@ class BookItemManagementAPIUnprocessableEntityTest {
     void reportBookItemAsLost_notBorrowed_returnsUnprocessableEntity() throws Exception {
         // given
         final UUID bookItemId = UUID.randomUUID();
-        final String reportBookItemPathAsLost = BOOK_ITEM_PATH + "/report-lost/" + bookItemId;
+        final String reportBookItemPathAsLost = REPORT_BOOK_ITEM_AS_LOST_PATH;
 
         BookItemIsNotBorrowedException bookItemIsNotBorrowedException = new BookItemIsNotBorrowedException(bookItemId);
 

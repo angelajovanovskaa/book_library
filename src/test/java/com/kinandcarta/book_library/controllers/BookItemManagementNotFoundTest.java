@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementNotFoundTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static  final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/";
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +41,7 @@ class BookItemManagementNotFoundTest {
     void deleteBookItem_bookItemDoesNotExist_returnsNotFound() throws Exception {
         // given
         final UUID nonExistentBookItemId = UUID.randomUUID();
-        final String deleteBookItemPath = BOOK_ITEM_PATH + "/delete/" + nonExistentBookItemId;
+        final String deleteBookItemPath = DELETE_BOOK_ITEM_PATH + nonExistentBookItemId;
 
         BookItemNotFoundException bookItemNotFoundException = new BookItemNotFoundException(nonExistentBookItemId);
 
