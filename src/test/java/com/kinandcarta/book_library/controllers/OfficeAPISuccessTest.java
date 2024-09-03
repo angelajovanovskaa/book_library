@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OfficeController.class)
-class OfficeControllerTest {
+class OfficeAPISuccessTest {
     private static final String OFFICES_PATH = "/offices";
 
     @Autowired
