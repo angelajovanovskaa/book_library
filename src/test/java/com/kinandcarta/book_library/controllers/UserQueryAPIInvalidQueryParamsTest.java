@@ -77,9 +77,8 @@ class UserQueryAPIInvalidQueryParamsTest {
                 UserTestData.getUsersByFullNameQueryParamsPassingOfficeName(officeName);
 
         // when & then
-        performGetAndExpectBadRequest(USER_PATH_BY_FULL_NAME, queryParamsValues,
-                ERROR_FIELD_GET_USER_BY_FULL_NAME_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK,
-                MediaType.APPLICATION_JSON);
+        performGetAndExpectBadRequest(queryParamsValues, ERROR_FIELD_GET_USER_BY_FULL_NAME_OFFICE_NAME,
+                ErrorMessages.MUST_NOT_BE_BLANK, MediaType.APPLICATION_JSON);
     }
 
     @Test
@@ -90,9 +89,8 @@ class UserQueryAPIInvalidQueryParamsTest {
                 UserTestData.getUsersByFullNameQueryParamsPassingOfficeName("");
 
         // when & then
-        performGetAndExpectBadRequest(USER_PATH_BY_FULL_NAME, queryParamsValues,
-                ERROR_FIELD_GET_USER_BY_FULL_NAME_OFFICE_NAME, ErrorMessages.MUST_NOT_BE_BLANK,
-                MediaType.APPLICATION_JSON);
+        performGetAndExpectBadRequest(queryParamsValues, ERROR_FIELD_GET_USER_BY_FULL_NAME_OFFICE_NAME,
+                ErrorMessages.MUST_NOT_BE_BLANK, MediaType.APPLICATION_JSON);
     }
 
     @Test
@@ -103,8 +101,8 @@ class UserQueryAPIInvalidQueryParamsTest {
                 UserTestData.getUsersByFullNameQueryParamsPassingOfficeName(null);
 
         // when & then
-        performGetAndExpectBadRequest(USER_PATH_BY_FULL_NAME, queryParamsValues, ERROR_FIELD_DETAIL,
-                ErrorMessages.OFFICE_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
+        performGetAndExpectBadRequest(queryParamsValues, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT,
+                MediaType.APPLICATION_PROBLEM_JSON);
     }
 
     @Test
@@ -116,7 +114,7 @@ class UserQueryAPIInvalidQueryParamsTest {
         queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, null);
 
         // when & then
-        performGetAndExpectBadRequest(USER_PATH_BY_FULL_NAME, queryParamsValues, ERROR_FIELD_DETAIL,
+        performGetAndExpectBadRequest(queryParamsValues, ERROR_FIELD_DETAIL,
                 ErrorMessages.FULL_NAME_NOT_PRESENT, MediaType.APPLICATION_PROBLEM_JSON);
     }
 
@@ -148,10 +146,10 @@ class UserQueryAPIInvalidQueryParamsTest {
                 .andExpect(jsonPath(errorField).value(errorMessage));
     }
 
-    private void performGetAndExpectBadRequest(String path, MultiValueMap<String, String> queryParamsValues,
+    private void performGetAndExpectBadRequest(MultiValueMap<String, String> queryParamsValues,
                                                String errorField, String errorMessage, MediaType mediaType)
             throws Exception {
-        mockMvc.perform(get(path).queryParams(queryParamsValues))
+        mockMvc.perform(get(USER_PATH_BY_FULL_NAME).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(mediaType))
                 .andExpect(jsonPath(errorField).value(errorMessage));

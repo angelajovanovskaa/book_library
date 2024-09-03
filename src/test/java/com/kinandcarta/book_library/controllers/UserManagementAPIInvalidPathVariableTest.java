@@ -36,7 +36,8 @@ class UserManagementAPIInvalidPathVariableTest {
         // when & then
         mockMvc.perform(post(deleteUserPath))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(String.format(ErrorMessages.USER_ID_FAIL_CONVERT, null)));
+                .andExpect(
+                        jsonPath("$.detail").value(String.format(ErrorMessages.USER_ID_FAIL_CONVERT, (String) null)));
 
     }
 }
