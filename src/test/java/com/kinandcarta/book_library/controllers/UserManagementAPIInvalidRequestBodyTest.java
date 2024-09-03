@@ -13,17 +13,14 @@ import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EmptySource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -74,12 +71,11 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void registerUser_fullNameIsEmpty_returnsBadRequest(String fullName) {
+    void registerUser_fullNameIsEmpty_returnsBadRequest() {
         // given
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO("",
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
@@ -87,12 +83,11 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void registerUser_fullNameIsNull_returnsBadRequest(String fullName) {
+    void registerUser_fullNameIsNull_returnsBadRequest() {
         // given
-        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(fullName,
+        UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(null,
                 UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
@@ -113,26 +108,24 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void registerUser_emailIsEmpty_returnsBadRequest(String email) {
+    void registerUser_emailIsEmpty_returnsBadRequest() {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+                "", SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_EMAIL,
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void registerUser_emailIsNull_returnsBadRequest(String email) {
+    void registerUser_emailIsNull_returnsBadRequest() {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                email, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
+                null, SharedServiceTestData.SKOPJE_OFFICE_NAME, UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_EMAIL,
@@ -152,26 +145,24 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void registerUser_officeNameIsEmpty_returnsBadRequest(String officeName) {
+    void registerUser_officeNameIsEmpty_returnsBadRequest() {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
+                UserTestData.USER_EMAIL, "", UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_OFFICE_NAME,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void registerUser_officeNameIsNull_returnsBadRequest(String officeName) {
+    void registerUser_officeNameIsNull_returnsBadRequest() {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, officeName, UserTestData.USER_PASSWORD);
+                UserTestData.USER_EMAIL, null, UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_OFFICE_NAME,
@@ -191,26 +182,24 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void registerUser_passwordIsEmpty_returnsBadRequest(String password) {
+    void registerUser_passwordIsEmpty_returnsBadRequest() {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, "");
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void registerUser_passwordIsNull_returnsBadRequest(String password) {
+    void registerUser_passwordIsNull_returnsBadRequest() {
         // given
         UserRegistrationRequestDTO registrationRequestDTO = new UserRegistrationRequestDTO(UserTestData.USER_FULL_NAME,
-                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, password);
+                UserTestData.USER_EMAIL, SharedServiceTestData.SKOPJE_OFFICE_NAME, null);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_REGISTER, registrationRequestDTO, ERROR_FIELD_PASSWORD,
@@ -229,24 +218,22 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void loginUser_userEmailIsEmpty_returnsBadRequest(String userEmail) {
+    void loginUser_userEmailIsEmpty_returnsBadRequest() {
         // given
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO("", UserTestData.USER_PASSWORD);
 
         // when && then
         performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_EMAIL,
                 ErrorMessages.EMAIL_BAD_FORMAT, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void loginUser_userEmailIsNull_returnsBadRequest(String userEmail) {
+    void loginUser_userEmailIsNull_returnsBadRequest() {
         // given
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(userEmail, UserTestData.USER_PASSWORD);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(null, UserTestData.USER_PASSWORD);
 
         // when && then
         performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_EMAIL,
@@ -265,37 +252,34 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void loginUser_passwordIsEmpty_returnsBadRequest(String userPassword) {
+    void loginUser_passwordIsEmpty_returnsBadRequest() {
         // given
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, "");
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void loginUser_passwordIsNull_returnsBadRequest(String userPassword) {
+    void loginUser_passwordIsNull_returnsBadRequest() {
         // given
-        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, userPassword);
+        UserLoginRequestDTO userLoginRequestDTO = new UserLoginRequestDTO(UserTestData.USER_EMAIL, null);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_LOGIN, userLoginRequestDTO, ERROR_FIELD_USER_PASSWORD,
                 ErrorMessages.MUST_NOT_BE_BLANK, true);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void updateUserData_userIdIsNull_returnsBadRequest(UUID userId) {
+    void updateUserData_userIdIsNull_returnsBadRequest() {
         // given
         final String updateDataUserPath = USERS_PATH + "/update-data";
-        UserUpdateDataRequestDTO userUpdateDataRequestDTO = new UserUpdateDataRequestDTO(userId,
+        UserUpdateDataRequestDTO userUpdateDataRequestDTO = new UserUpdateDataRequestDTO(null,
                 UserTestData.USER_FULL_NAME, null);
 
         // when & then
@@ -303,37 +287,34 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void updateUserRole_userIdIsNull_returnsBadRequest(UUID userId) {
+    void updateUserRole_userIdIsNull_returnsBadRequest() {
         // given
-        UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(userId, UserRole.USER);
+        UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(null, UserRole.USER);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_UPDATE_ROLE, userUpdateRoleRequestDTO, ERROR_FIELD_USER_ID,
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void updateUserRole_roleIsNull_returnsBadRequest(UserRole role) {
+    void updateUserRole_roleIsNull_returnsBadRequest() {
         // given
-        UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(UserTestData.USER_ID, role);
+        UserUpdateRoleRequestDTO userUpdateRoleRequestDTO = new UserUpdateRoleRequestDTO(UserTestData.USER_ID, null);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_UPDATE_ROLE, userUpdateRoleRequestDTO, "$.errorFields.role",
                 ErrorMessages.MUST_NOT_BE_NULL, false);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void changeUserPassword_userIdIsNull_returnsBadRequest(UUID userId) {
+    void changeUserPassword_userIdIsNull_returnsBadRequest() {
         // given
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(userId, UserTestData.USER_PASSWORD, UserTestData.USER_PASSWORD);
+                new UserChangePasswordRequestDTO(null, UserTestData.USER_PASSWORD, UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO, ERROR_FIELD_USER_ID,
@@ -353,26 +334,24 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ERROR_FIELD_OLD_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void changeUserPassword_oldPasswordIsEmpty_returnsBadRequest(String oldPassword) {
+    void changeUserPassword_oldPasswordIsEmpty_returnsBadRequest() {
         // given
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, "", UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
                 ERROR_FIELD_OLD_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void changeUserPassword_oldPasswordIsNull_returnsBadRequest(String oldPassword) {
+    void changeUserPassword_oldPasswordIsNull_returnsBadRequest() {
         // given
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, oldPassword, UserTestData.USER_PASSWORD);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, null, UserTestData.USER_PASSWORD);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
@@ -392,26 +371,24 @@ class UserManagementAPIInvalidRequestBodyTest {
                 ERROR_FIELD_NEW_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
-    @ParameterizedTest
-    @EmptySource
+    @Test
     @SneakyThrows
-    void changeUserPassword_newPasswordIsEmpty_returnsBadRequest(String newPassword) {
+    void changeUserPassword_newPasswordIsEmpty_returnsBadRequest() {
         // given
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, "");
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
                 ERROR_FIELD_NEW_PASSWORD, ErrorMessages.MUST_NOT_BE_BLANK, false);
     }
 
-    @ParameterizedTest
-    @NullSource
+    @Test
     @SneakyThrows
-    void changeUserPassword_newPasswordIsNull_returnsBadRequest(String newPassword) {
+    void changeUserPassword_newPasswordIsNull_returnsBadRequest() {
         // given
         UserChangePasswordRequestDTO userChangePasswordRequestDTO =
-                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, newPassword);
+                new UserChangePasswordRequestDTO(UserTestData.USER_ID, UserTestData.USER_PASSWORD, null);
 
         // when & then
         performRequestAndExpectBadRequest(USERS_PATH_CHANGE_PASSWORD, userChangePasswordRequestDTO,
