@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(OfficeController.class)
-class OfficeControllerTest {
+class OfficeAPISuccessTest {
     private static final String OFFICES_PATH = "/offices";
 
     @Autowired
@@ -38,14 +38,17 @@ class OfficeControllerTest {
     @SneakyThrows
     void getOffices_atLeastOneOffice_Exists_returnListOfOffices() {
         // given
-        final List<OfficeResponseDTO> officeResponseDTOS =
-                List.of(SharedServiceTestData.SKOPJE_OFFICE_DTO, SharedServiceTestData.SOFIJA_OFFICE_DTO);
+        final List<OfficeResponseDTO> officeResponseDTOS = List.of(
+                SharedServiceTestData.SKOPJE_OFFICE_DTO,
+                SharedServiceTestData.SOFIJA_OFFICE_DTO
+        );
         given(officeQueryService.getOffices()).willReturn(officeResponseDTOS);
 
         // when
-        final String jsonResult = mockMvc.perform(get(OFFICES_PATH)).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn().getResponse()
-                .getContentAsString();
+        final String jsonResult = mockMvc.perform(get(OFFICES_PATH))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
 
         List<OfficeResponseDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
