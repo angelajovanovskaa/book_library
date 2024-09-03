@@ -38,7 +38,6 @@ class BookCheckoutQueryAPIParamsMissingTest {
     void getBookCheckouts_ParamOfficeNameMissing_returnsBadRequest() {
         // given & when & then
         performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-
     }
 
     @Test
@@ -69,7 +68,6 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
         // when && then
         performGetAndExpectBadRequest(getPastBookCheckoutsPath, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-
     }
 
     @Test
@@ -80,7 +78,6 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
         // when && then
         performGetAndExpectBadRequest(getNearReturnDateBookCheckoutsPath, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-
     }
 
     @Test
@@ -91,7 +88,6 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
         // when && then
         performGetAndExpectBadRequest(getBookCheckoutsByTitleContainingPath, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-
     }
 
     @Test

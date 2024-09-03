@@ -29,7 +29,6 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
     private static final String BOOK_CHECKOUTS_PATH_PAST = BOOK_CHECKOUTS_PATH + "/past";
     private static final String BOOK_CHECKOUTS_PATH_NEAR_RETURN = BOOK_CHECKOUTS_PATH + "/near-return-date";
     private static final String BOOK_CHECKOUTS_PATH_BY_TITLE = BOOK_CHECKOUTS_PATH + "/by-title";
-
     private static final String ERROR_FIELD_DETAIL = "$.detail";
 
     @MockBean

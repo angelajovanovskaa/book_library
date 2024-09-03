@@ -24,10 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookCheckoutManagementAPIInvalidRequestBodyTest {
     private static final String BORROW_BOOK_ITEM_PATH = "/book-checkouts/borrow";
     private static final String RETURN_BOOK_ITEM_PATH = "/book-checkouts/return";
-
     private static final String ERROR_FIELD_USER_ID = "$.errorFields.userId";
     private static final String ERROR_FIELD_BOOK_ITEM_ID = "$.errorFields.bookItemId";
-
 
     @MockBean
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
