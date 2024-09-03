@@ -1,10 +1,11 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.BookItemManagementService;
 import com.kinandcarta.book_library.services.BookItemQueryService;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementAPIInvalidPathVariableTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/";
     private static final String DETAIL_JSON_PATH = "$.detail";
     private static final String ERROR_MESSAGE = "Failed to convert 'bookItemId' with value: 'null'";
 
@@ -30,14 +32,11 @@ class BookItemManagementAPIInvalidPathVariableTest {
     @MockBean
     private BookItemManagementService bookItemManagementService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @SneakyThrows
-    void deleteBookItem_bookItemIdIsInvalid_returnsBadRequest() {
+    void deleteBookItem_bookItemIdIsNull_returnsBadRequest() {
         // given
-        final String deleteBookItemPath = BOOK_ITEM_PATH + "/delete/" + null;
+        final String deleteBookItemPath = DELETE_BOOK_ITEM_PATH + null;
 
         // when & then
         mockMvc.perform(delete(deleteBookItemPath))
@@ -45,24 +44,15 @@ class BookItemManagementAPIInvalidPathVariableTest {
                 .andExpect(jsonPath(DETAIL_JSON_PATH).value(ERROR_MESSAGE));
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"/report-damage/", "/report-lost/"})
     @SneakyThrows
-    void reportBookItemAsDamaged_bookItemIdIsInvalid_returnsBadRequest() {
+    void reportBookItem_bookItemIdIsNull_returnsBadRequest(String pathSuffix) {
         // given
-        final String reportBookItemPathAsDamaged = BOOK_ITEM_PATH + "/report-damage/" + null;
+        final String path = BOOK_ITEM_PATH + pathSuffix + null;
 
         // when & then
-        performInvalidBookItemIdPatchRequest(reportBookItemPathAsDamaged);
-    }
-
-    @Test
-    @SneakyThrows
-    void reportBookItemAsLost_bookItemIdIsInvalid_returnsBadRequest() {
-        // given
-        final String reportBookItemPathAsLost = BOOK_ITEM_PATH + "/report-lost/" + null;
-
-        // when & then
-        performInvalidBookItemIdPatchRequest(reportBookItemPathAsLost);
+        performInvalidBookItemIdPatchRequest(path);
     }
 
     private void performInvalidBookItemIdPatchRequest(String path) throws Exception {

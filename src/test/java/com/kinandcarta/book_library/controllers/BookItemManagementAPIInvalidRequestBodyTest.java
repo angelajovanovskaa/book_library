@@ -42,7 +42,7 @@ class BookItemManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void createBookItem_isbnIsInvalid_returnsBadRequest(String isbn) {
+    void createBookItem_isbnIsBlank_returnsBadRequest(String isbn) {
         performPostAndExpectBadRequestIsbn(isbn);
     }
 
@@ -61,7 +61,7 @@ class BookItemManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void createBookItem_officeNameIsInvalid_returnsBadRequest(String officeName) {
+    void createBookItem_officeNameIsBlank_returnsBadRequest(String officeName) {
         performPostAndExpectBadRequestOfficeName(officeName);
     }
 
