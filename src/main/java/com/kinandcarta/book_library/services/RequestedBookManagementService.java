@@ -16,6 +16,4 @@ public interface RequestedBookManagementService {
     RequestedBookResponseDTO changeBookStatus(RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO);
 
     RequestedBookResponseDTO handleRequestedBookLike(RequestedBookRequestDTO requestedBookRequestDTO);
-
-    UUID deleteRequestedBook(UUID requestedBookId);
 }
