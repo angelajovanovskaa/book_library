@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
@@ -41,9 +40,6 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
@@ -191,9 +187,7 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, "");
 
         // when & then
-        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_BY_TITLE, queryParamsValues,
-                "$.errorFields['getBookCheckoutsByTitleContaining.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
-                MediaType.APPLICATION_JSON);
+        performGetAndExpectBadRequest(queryParamsValues);
     }
 
     @Test
@@ -205,9 +199,7 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, "");
 
         // when & then
-        performGetAndExpectBadRequest(BOOK_CHECKOUTS_PATH_BY_TITLE, queryParamsValues,
-                "$.errorFields['getBookCheckoutsByTitleContaining.officeName']", ErrorMessages.MUST_NOT_BE_BLANK,
-                MediaType.APPLICATION_JSON);
+        performGetAndExpectBadRequest(queryParamsValues);
     }
 
     @Test
@@ -249,12 +241,11 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
                 .andExpect(jsonPath(errorField).value(errorMessage));
     }
 
-    private void performGetAndExpectBadRequest(String path, MultiValueMap<String, String> queryParamsValues,
-                                               String errorField, String errorMessage, MediaType mediaType)
-            throws Exception {
-        mockMvc.perform(get(path).queryParams(queryParamsValues))
+    private void performGetAndExpectBadRequest(MultiValueMap<String, String> queryParamsValues) throws Exception {
+        mockMvc.perform(get(BOOK_CHECKOUTS_PATH_BY_TITLE).queryParams(queryParamsValues))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(mediaType))
-                .andExpect(jsonPath(errorField).value(errorMessage));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.errorFields['getBookCheckoutsByTitleContaining.officeName']").value(
+                        ErrorMessages.MUST_NOT_BE_BLANK));
     }
 }

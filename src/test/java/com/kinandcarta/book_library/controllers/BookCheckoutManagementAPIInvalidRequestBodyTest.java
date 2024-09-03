@@ -48,8 +48,7 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(null, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
-        performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID,
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID);
     }
 
     @Test
@@ -59,8 +58,7 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, null);
 
         // when && then
-        performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID,
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performPostAndExpectBadRequest(BORROW_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID);
     }
 
     @Test
@@ -70,8 +68,7 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(null, BookItemTestData.BOOK_ITEM_ID);
 
         // when && then
-        performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID,
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_USER_ID);
     }
 
     @Test
@@ -81,17 +78,16 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
         BookCheckoutRequestDTO bookCheckoutDTO = new BookCheckoutRequestDTO(UserTestData.USER_ID, null);
 
         // when && then
-        performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID,
-                ErrorMessages.MUST_NOT_BE_NULL);
+        performPostAndExpectBadRequest(RETURN_BOOK_ITEM_PATH, bookCheckoutDTO, ERROR_FIELD_BOOK_ITEM_ID);
     }
 
-    private void performPostAndExpectBadRequest(String path, Record DTO, String errorField, String errorMessage)
+    private void performPostAndExpectBadRequest(String path, Record DTO, String errorField)
             throws Exception {
         mockMvc.perform(post(path)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(errorField).value(errorMessage));
+                .andExpect(jsonPath(errorField).value(ErrorMessages.MUST_NOT_BE_NULL));
     }
 }

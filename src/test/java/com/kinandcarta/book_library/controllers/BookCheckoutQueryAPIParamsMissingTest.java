@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
@@ -33,9 +32,6 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @SneakyThrows
@@ -106,7 +102,7 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
         // when && then
         performGetAndExpectBadRequest(getBookCheckoutsByTitleContainingPath, SharedControllerTestData.OFFICE_PARAM,
-                SharedServiceTestData.SKOPJE_OFFICE_NAME, ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT);
+                SharedServiceTestData.SKOPJE_OFFICE_NAME);
     }
 
     @Test
@@ -139,7 +135,7 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
         // when && then
         performGetAndExpectBadRequest(getUsersBookCheckoutByTitlePath, SharedControllerTestData.USER_ID_PARAM,
-                UserTestData.USER_ID.toString(), ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT);
+                UserTestData.USER_ID.toString());
     }
 
     private void performGetAndExpectBadRequest(String path, String errorMessage)
@@ -150,11 +146,11 @@ class BookCheckoutQueryAPIParamsMissingTest {
                 .andExpect(jsonPath("$.detail").value(errorMessage));
     }
 
-    private void performGetAndExpectBadRequest(String path, String param, String paramValue, String errorMessage)
+    private void performGetAndExpectBadRequest(String path, String param, String paramValue)
             throws Exception {
         mockMvc.perform(get(path).queryParam(param, paramValue))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(errorMessage));
+                .andExpect(jsonPath("$.detail").value(ErrorMessages.TITLE_SEARCH_TERM_NOT_PRESENT));
     }
 }
