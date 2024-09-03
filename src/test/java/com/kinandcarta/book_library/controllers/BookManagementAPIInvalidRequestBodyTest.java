@@ -2,7 +2,6 @@ package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
-import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -23,18 +22,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-class BookManagementAPIInvalidRequestBody {
+class BookManagementAPIInvalidRequestBodyTest {
     private static final String BOOK_PATH = "/books";
     private static final String INSERT_BOOK_PATH = BOOK_PATH + "/insert-book";
-
     private static final String ERROR_FIELD_ISBN = "$.errorFields.isbn";
     private static final String ERROR_FIELD_OFFICE_NAME = "$.errorFields.officeName";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
-
-    @MockBean
-    private BookRepository bookRepository;
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
