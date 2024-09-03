@@ -64,7 +64,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomBadRequestException(
             CustomBadRequestException customBadRequestException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customBadRequestException.getMessage());
-        log.error("Custom bad request: {}", customBadRequestException.getMessage());
+        log.error("Custom bad request exception: {}", customBadRequestException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomIllegalArgumentException(
             IllegalArgumentException illegalArgumentException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(illegalArgumentException.getMessage());
-        log.error("Illegal argument: {}", illegalArgumentException.getMessage());
+        log.error("Illegal argument exception: {}", illegalArgumentException.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exceptionMessage);
     }
 
@@ -101,7 +101,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomNotFoundException(
             CustomNotFoundException customNotFoundException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customNotFoundException.getMessage());
-        log.error("Custom not found: {}", customNotFoundException.getMessage());
+        log.error("Custom not found exception: {}", customNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exceptionMessage);
     }
 
@@ -110,7 +110,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ExceptionMessage> handleCustomUnprocessableEntityException(
             CustomUnprocessableEntityException customUnprocessableEntityException) {
         ExceptionMessage exceptionMessage = new ExceptionMessage(customUnprocessableEntityException.getMessage());
-        log.error("Unprocessable entity: {}", customUnprocessableEntityException.getMessage());
+        log.error("Unprocessable entity exception: {}", customUnprocessableEntityException.getMessage());
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(exceptionMessage);
     }
 }
