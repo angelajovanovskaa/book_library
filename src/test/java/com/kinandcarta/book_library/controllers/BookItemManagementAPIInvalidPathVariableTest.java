@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookItemManagementAPIInvalidPathVariableTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
     private static final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/";
+    private static final String REPORT_BOOK_ITEM_AS_DAMAGED = BOOK_ITEM_PATH + "/report-damage/";
+    private static final String REPORT_BOOK_ITEM_AS_LOST = BOOK_ITEM_PATH + "/report-lost/";
     private static final String DETAIL_JSON_PATH = "$.detail";
     private static final String ERROR_MESSAGE = "Failed to convert 'bookItemId' with value: 'null'";
 
@@ -45,17 +47,13 @@ class BookItemManagementAPIInvalidPathVariableTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"/report-damage/", "/report-lost/"})
+    @ValueSource(strings = {REPORT_BOOK_ITEM_AS_DAMAGED, REPORT_BOOK_ITEM_AS_LOST})
     @SneakyThrows
     void reportBookItem_bookItemIdIsNull_returnsBadRequest(String pathSuffix) {
         // given
-        final String path = BOOK_ITEM_PATH + pathSuffix + null;
+        final String path = pathSuffix + null;
 
         // when & then
-        performInvalidBookItemIdPatchRequest(path);
-    }
-
-    private void performInvalidBookItemIdPatchRequest(String path) throws Exception {
         mockMvc.perform(patch(path))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(DETAIL_JSON_PATH).value(ERROR_MESSAGE));
