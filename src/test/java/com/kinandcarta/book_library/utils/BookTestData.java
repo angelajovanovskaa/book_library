@@ -178,7 +178,7 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public MultiValueMap<String, String> createQueryParamsForDeletion() {
+    public MultiValueMap<String, String> createQueryParamsWithOfficeAndISBN() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);

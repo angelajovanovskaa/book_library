@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
-import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -25,14 +24,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookManagementAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
     private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
-
     private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
 
     @MockBean
     private BookManagementServiceImpl bookManagementService;
-
-    @MockBean
-    private BookRepository bookRepository;
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
