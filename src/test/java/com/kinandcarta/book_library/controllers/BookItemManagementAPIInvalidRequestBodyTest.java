@@ -43,41 +43,41 @@ class BookItemManagementAPIInvalidRequestBodyTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void createBookItem_isbnIsBlank_returnsBadRequest(String isbn) {
-        performPostAndExpectBadRequestIsbn(isbn);
+        performPostAndExpectBadRequestForInvalidIsbn(isbn);
     }
 
     @Test
     @SneakyThrows
     void createBookItem_isbnIsEmpty_returnsBadRequest() {
-        performPostAndExpectBadRequestIsbn("");
+        performPostAndExpectBadRequestForInvalidIsbn("");
     }
 
     @Test
     @SneakyThrows
     void createBookItem_isbnIsNull_returnsBadRequest() {
-        performPostAndExpectBadRequestIsbn(null);
+        performPostAndExpectBadRequestForInvalidIsbn(null);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void createBookItem_officeNameIsBlank_returnsBadRequest(String officeName) {
-        performPostAndExpectBadRequestOfficeName(officeName);
+        performPostAndExpectBadRequestForInvalidOfficeName(officeName);
     }
 
     @Test
     @SneakyThrows
     void createBookItem_officeNameIsEmpty_returnsBadRequest() {
-        performPostAndExpectBadRequestOfficeName("");
+        performPostAndExpectBadRequestForInvalidOfficeName("");
     }
 
     @Test
     @SneakyThrows
     void createBookItem_officeNameIsNull_returnsBadRequest() {
-        performPostAndExpectBadRequestOfficeName(null);
+        performPostAndExpectBadRequestForInvalidOfficeName(null);
     }
 
-    private void performPostAndExpectBadRequestIsbn(String isbn) throws Exception {
+    private void performPostAndExpectBadRequestForInvalidIsbn(String isbn) throws Exception {
         // given
         BookIdDTO bookIdDTO = new BookIdDTO(isbn, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
@@ -90,7 +90,7 @@ class BookItemManagementAPIInvalidRequestBodyTest {
                 .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
-    private void performPostAndExpectBadRequestOfficeName(String officeName) throws Exception {
+    private void performPostAndExpectBadRequestForInvalidOfficeName(String officeName) throws Exception {
         // given
         BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, officeName);
 
