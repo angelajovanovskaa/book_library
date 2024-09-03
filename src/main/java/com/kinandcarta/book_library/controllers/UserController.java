@@ -75,11 +75,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String authenticateAndGetToken(@Valid @RequestBody UserLoginRequestDTO authRequest) throws IOException {
+    public ResponseEntity<String> authenticateAndGetToken(@Valid @RequestBody UserLoginRequestDTO authRequest) throws IOException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.userEmail(), authRequest.userPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.userEmail());
+            return ResponseEntity.ok(jwtService.generateToken(authRequest.userEmail()));
         } else {
             throw new InvalidUserCredentialsException();
         }
