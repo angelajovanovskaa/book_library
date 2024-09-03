@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookCheckoutController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookCheckoutQueryAPIInvalidQueryParamsTest {
     private static final String BOOK_CHECKOUTS_PATH = "/book-checkouts";
     private static final String BOOK_CHECKOUTS_PATH_PAGINATED = BOOK_CHECKOUTS_PATH + "/paginated";

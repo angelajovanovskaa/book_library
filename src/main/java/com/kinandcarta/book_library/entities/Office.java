@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -12,7 +13,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Entity
-public class Office {
+public class Office implements Serializable {
     @Id
     private String name;
 

@@ -1,5 +1,6 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
@@ -7,14 +8,18 @@ import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
-import com.kinandcarta.book_library.services.UserQueryService;
+import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.services.UserManagementService;
+import com.kinandcarta.book_library.services.UserQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -36,6 +41,8 @@ import java.util.UUID;
 public class UserController {
     private final UserQueryService userQueryService;
     private final UserManagementService userManagementService;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @GetMapping
     ResponseEntity<List<UserWithRoleDTO>> getUsers(@RequestParam @NotBlank String officeName) {
@@ -68,10 +75,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
-        String userFullName = userManagementService.loginUser(userLoginRequestDTO);
-
-        return ResponseEntity.ok(userFullName);
+    public String authenticateAndGetToken(@Valid @RequestBody UserLoginRequestDTO authRequest) throws IOException {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.userEmail(), authRequest.userPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.userEmail());
+        } else {
+            throw new InvalidUserCredentialsException();
+        }
     }
 
     @PatchMapping("/update-data")

@@ -1,28 +1,31 @@
 package com.kinandcarta.book_library.services.impl;
 
 
-import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
+import com.kinandcarta.book_library.converters.UserConverter;
+import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
-import com.kinandcarta.book_library.services.UserManagementService;
-import jakarta.transaction.Transactional;
-import com.kinandcarta.book_library.converters.UserConverter;
-import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.enums.UserRole;
+import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
-import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.UserManagementService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -39,13 +42,14 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class UserManagementServiceImpl implements UserManagementService {
+public class UserManagementServiceImpl implements UserManagementService, UserDetailsService {
     private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
     private final OfficeRepository officeRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
      * This method is used for registering a new user<br>
@@ -66,6 +70,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         }
 
         User user = userConverter.toUserEntity(userDTO);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Office office = officeRepository.getReferenceById(userDTO.officeName());
         user.setOffice(office);
@@ -81,15 +86,14 @@ public class UserManagementServiceImpl implements UserManagementService {
      * This method is used for login in the user in the application<br>
      * All the users will have access to this method.
      *
-     * @param userDTO the DTO where we have data needed for login.
+     * @param email needed for login.
      * @return {@code fullName} of the logged in {@link User}.
      */
     @Override
-    public String loginUser(UserLoginRequestDTO userDTO) {
-        User user = userRepository.findByEmailAndPassword(userDTO.userEmail(), userDTO.userPassword()).orElseThrow(
-                InvalidUserCredentialsException::new);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
 
-        return user.getFullName();
+        return user.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 
     /**

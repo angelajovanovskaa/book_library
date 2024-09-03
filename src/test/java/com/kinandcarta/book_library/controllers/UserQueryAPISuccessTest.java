@@ -2,6 +2,7 @@ package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
@@ -11,9 +12,11 @@ import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MultiValueMap;
 
@@ -26,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserQueryAPISuccessTest {
     private static final String USERS_PATH = "/users";
 
@@ -34,6 +38,12 @@ class UserQueryAPISuccessTest {
 
     @MockBean
     private UserManagementServiceImpl userManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private MockMvc mockMvc;

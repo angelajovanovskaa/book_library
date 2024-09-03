@@ -7,6 +7,7 @@ import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserQueryService;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +24,6 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class UserQueryServiceImpl implements UserQueryService {
-
     private final UserRepository userRepository;
     private final UserConverter userConverter;
 
@@ -32,10 +32,10 @@ public class UserQueryServiceImpl implements UserQueryService {
      * This method will only be accessible by the admin.
      * The list is sorted by roles, so the first accounts are with role ADMIN, and the rest are with role USER.
      *
-     * @param officeName the name of the office where the user searching belongs.
      * @return A list of {@link UserWithRoleDTO}
      */
     @Override
+    @SneakyThrows
     public List<UserWithRoleDTO> getUsers(String officeName) {
         List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
 
@@ -56,7 +56,6 @@ public class UserQueryServiceImpl implements UserQueryService {
         List<User> users =
                 userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
                         fullNameSearchTerm);
-
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
 

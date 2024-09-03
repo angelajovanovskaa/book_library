@@ -2,14 +2,12 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
-import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
-import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -22,6 +20,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -89,27 +89,26 @@ class UserManagementServiceImplTest {
     }
 
     @Test
-    void loginUser_loginIsValid_returnsConfirmationMessage() {
+    void loadUserByUsername_loginIsValid_returnsConfirmationMessage() {
         // given
-        given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(
-                Optional.of(UserTestData.getUser()));
+        given(userRepository.findByEmail(anyString())).willReturn(Optional.of(UserTestData.getUser()));
 
         // when
-        String result = userManagementService.loginUser(UserTestData.getUserLoginRequestDTO());
+        UserDetails result = userManagementService.loadUserByUsername(UserTestData.USER_EMAIL);
 
         // then
-        assertThat(result).isEqualTo(UserTestData.USER_FULL_NAME);
+        assertThat(result).isEqualTo(UserTestData.getUser());
     }
 
     @Test
-    void loginUser_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
+    void loadUserByUsername_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
         // given
-        UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
+        given(userRepository.findByEmail(anyString())).willReturn(Optional.empty());
 
-        // when && then
-        assertThatExceptionOfType(InvalidUserCredentialsException.class)
-                .isThrownBy(() -> userManagementService.loginUser(userLoginRequestDTO))
-                .withMessage("The credentials that you have entered don't match.");
+        // when & then
+        assertThatExceptionOfType(UsernameNotFoundException.class)
+                .isThrownBy(() -> userManagementService.loadUserByUsername(UserTestData.USER_EMAIL))
+                .withMessage("User not found: " + UserTestData.USER_EMAIL);
     }
 
     @Test

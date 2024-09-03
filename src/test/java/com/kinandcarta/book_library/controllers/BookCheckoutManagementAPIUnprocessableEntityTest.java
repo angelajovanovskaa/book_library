@@ -15,6 +15,7 @@ import com.kinandcarta.book_library.utils.BookTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookCheckoutController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookCheckoutManagementAPIUnprocessableEntityTest {
     private static final String BORROW_BOOK_ITEM_PATH = "/book-checkouts/borrow";
     private static final String RETURN_BOOK_ITEM_PATH = "/book-checkouts/return";

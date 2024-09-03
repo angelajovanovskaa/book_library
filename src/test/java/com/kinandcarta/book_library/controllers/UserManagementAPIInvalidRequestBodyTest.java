@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
@@ -17,9 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -29,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserManagementAPIInvalidRequestBodyTest {
     private static final String USERS_PATH = "/users";
     private static final String USERS_PATH_REGISTER = USERS_PATH + "/register";
@@ -51,6 +55,12 @@ class UserManagementAPIInvalidRequestBodyTest {
 
     @MockBean
     private UserManagementServiceImpl userManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private MockMvc mockMvc;

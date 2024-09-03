@@ -8,8 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByEmailAndPassword(String email, String password);
-
     Optional<User> findByEmail(String email);
 
     List<User> findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(String officeName,

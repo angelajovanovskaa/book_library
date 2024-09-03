@@ -7,6 +7,7 @@ import com.kinandcarta.book_library.utils.BookTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookManagementAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
     private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
