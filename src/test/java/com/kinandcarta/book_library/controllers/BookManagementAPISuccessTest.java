@@ -68,7 +68,7 @@ class BookManagementAPISuccessTest {
         // given
         given(bookManagementService.deleteBook(anyString(), anyString())).willReturn(BookTestData.getBookIdDto());
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForDeletion();
+        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsWithOfficeAndISBN();
 
         // when
         String jsonResult = mockMvc.perform(delete(DELETE_BOOK_PATH)
