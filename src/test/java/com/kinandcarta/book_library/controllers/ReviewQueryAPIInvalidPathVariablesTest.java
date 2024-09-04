@@ -36,7 +36,8 @@ public class ReviewQueryAPIInvalidPathVariablesTest {
         // given
 
         // when & then
-        performRequestAndExpectBadRequest(REVIEW_BASE_PATH + "/" + reviewId, ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH + "/" + reviewId,
+                ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
 
     }
 
@@ -46,7 +47,8 @@ public class ReviewQueryAPIInvalidPathVariablesTest {
         // given
 
         // when & then
-        performRequestAndExpectBadRequest(REVIEW_BASE_PATH + "/" + null, ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH + "/" + null,
+                ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
     }
 
     private void performRequestAndExpectBadRequest(String path, String message) throws Exception {
