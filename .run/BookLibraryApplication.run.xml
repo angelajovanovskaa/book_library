@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="BookLibraryApplicatioon" type="Application" factoryName="Application">
+  <configuration default="false" name=" BookLibraryApplication" type="Application" factoryName="Application">
     <envs>
       <env name="password" value="{password}" />
     </envs>
