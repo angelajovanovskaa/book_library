@@ -101,10 +101,19 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     public RequestedBookResponseDTO changeBookStatus(
             RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
         BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
+
         UUID requestedBookId = requestedBookChangeStatusRequestDTO.requestedBookId();
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
+        RequestedBook requestedBook = requestedBookRepository.findById(requestedBookId)
+                .orElseThrow(() -> new RequestedBookNotFoundException(requestedBookId));
+
         Book book = requestedBook.getBook();
-        updateBookStatus(book, newBookStatus);
+        BookStatus currentBookStatus = book.getBookStatus();
+        if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
+            throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
+        }
+        book.setBookStatus(newBookStatus);
+
+        bookRepository.save(book);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
@@ -123,8 +132,9 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
      */
     @Override
     public RequestedBookResponseDTO handleRequestedBookLike(RequestedBookRequestDTO requestedBookRequestDTO) {
-        String userEmail = requestedBookRequestDTO.userEmail();
-        User user = getUser(userEmail);
+        String email = requestedBookRequestDTO.userEmail();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
         Office office = user.getOffice();
         String officeName = office.getName();
         String isbn = requestedBookRequestDTO.bookIsbn();
@@ -141,27 +151,5 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         requestedBookRepository.save(requestedBook);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
-    }
-
-    private Book updateBookStatus(Book book, BookStatus newBookStatus) {
-        BookStatus currentBookStatus = book.getBookStatus();
-
-        if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
-            throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
-        }
-        book.setBookStatus(newBookStatus);
-
-        bookRepository.save(book);
-
-        return book;
-    }
-
-    private RequestedBook getRequestedBook(UUID requestedBookId) {
-        return requestedBookRepository.findById(requestedBookId)
-                .orElseThrow(() -> new RequestedBookNotFoundException(requestedBookId));
-    }
-
-    private User getUser(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 }
