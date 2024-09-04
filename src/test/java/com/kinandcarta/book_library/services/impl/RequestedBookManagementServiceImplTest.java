@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -57,48 +56,6 @@ class RequestedBookManagementServiceImplTest {
 
     @Captor
     private ArgumentCaptor<RequestedBook> requestedBookCaptor;
-
-    @Test
-    void setRequestedBookToInStock_validTransition_returnBookIdDTO() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(
-                Optional.of(RequestedBookTestData.getRequestedBook()));
-        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
-
-        // when
-        BookIdDTO actualResult =
-                requestedBookManagementService.setRequestedBookToInStock(RequestedBookTestData.REQUESTED_BOOK_ID);
-
-        // then
-        assertThat(actualResult).isEqualTo(SharedServiceTestData.BOOK_ID_DTO);
-    }
-
-    @Test
-    void setRequestedBookToInStock_requestedBookDoesNotExist_throwsException() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
-                        RequestedBookTestData.REQUESTED_BOOK_ID))
-                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
-    }
-
-    @Test
-    void setRequestedBookToInStock_bookStatusIsNotPendingPurchase_throwsException() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(
-                Optional.of(RequestedBookTestData.getRequestedBook()));
-        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookStatusException.class)
-                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
-                        RequestedBookTestData.REQUESTED_BOOK_ID))
-                .withMessage("Transition from status " + BookStatus.REQUESTED + " to status " + BookStatus.IN_STOCK +
-                        " for requested book is not feasible");
-    }
 
     @Test
     void changeBookStatus_validTransition_returnRequestedBookDTO() {

@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
@@ -77,38 +76,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         // the books liked_by
 
         return null;
-    }
-
-    /**
-     * Sets the status of a requested book to "IN_STOCK" and removes the requested book record.
-     * <p>
-     * This method performs the following operations within a single transaction:
-     * <ul>
-     *     <li>Retrieves the {@link RequestedBook} associated with the given ID.</li>
-     *     <li>Changes the status of the associated {@link Book} to {@link BookStatus#IN_STOCK} if it is not already
-     *     set to that status.</li>
-     *     <li>Deletes the {@link RequestedBook} record from the database.</li>
-     * </ul>
-     * </p>
-     *
-     * @param requestedBookId the unique identifier of the requested book to be set to "IN_STOCK"
-     * @return {@link BookIdDTO} containing the ISBN of the book and the name of the associated office
-     * @throws RequestedBookNotFoundException if no {@link RequestedBook} exists with the provided ID
-     * @throws RequestedBookStatusException   if the status transition to "IN_STOCK" is not allowed
-     */
-    @Transactional
-    @Override
-    public BookIdDTO setRequestedBookToInStock(UUID requestedBookId) {
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
-        Book book = requestedBook.getBook();
-        Book bookWithUpdatedBookStatus = updateBookStatus(book, BookStatus.IN_STOCK);
-
-        requestedBookRepository.deleteById(requestedBookId);
-
-        Office office = bookWithUpdatedBookStatus.getOffice();
-        String officeName = office.getName();
-
-        return new BookIdDTO(bookWithUpdatedBookStatus.getIsbn(), officeName);
     }
 
     /**

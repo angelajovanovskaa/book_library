@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,15 +53,6 @@ public class RequestedBookController {
                 requestedBookManagementService.changeBookStatus(requestedBookChangeStatusRequestDTO);
 
         return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/set-in-stock")
-    ResponseEntity<BookIdDTO> setRequestedBookInStock(@RequestParam @NotNull UUID requestedBookId) {
-        //todo: uncomment when dev (issue #48) is merged
-//        BookIdDTO response = requestedBookManagementService.setRequestedBookToInStock(requestedBookId);
-//
-//        return ResponseEntity.ok(response);
-        return ResponseEntity.ok(null);
     }
 
     @PostMapping("/handle-like")
