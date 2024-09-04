@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
@@ -81,38 +80,6 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     }
 
     /**
-     * Sets the status of a requested book to "IN_STOCK" and removes the requested book record.
-     * <p>
-     * This method performs the following operations within a single transaction:
-     * <ul>
-     *     <li>Retrieves the {@link RequestedBook} associated with the given ID.</li>
-     *     <li>Changes the status of the associated {@link Book} to {@link BookStatus#IN_STOCK} if it is not already
-     *     set to that status.</li>
-     *     <li>Deletes the {@link RequestedBook} record from the database.</li>
-     * </ul>
-     * </p>
-     *
-     * @param requestedBookId the unique identifier of the requested book to be set to "IN_STOCK"
-     * @return {@link BookIdDTO} containing the ISBN of the book and the name of the associated office
-     * @throws RequestedBookNotFoundException if no {@link RequestedBook} exists with the provided ID
-     * @throws RequestedBookStatusException   if the status transition to "IN_STOCK" is not allowed
-     */
-    @Transactional
-    @Override
-    public BookIdDTO setRequestedBookToInStock(UUID requestedBookId) {
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
-        Book book = requestedBook.getBook();
-        Book bookWithUpdatedBookStatus = updateBookStatus(book, BookStatus.IN_STOCK);
-
-        deleteRequestedBook(requestedBookId);
-
-        Office office = bookWithUpdatedBookStatus.getOffice();
-        String officeName = office.getName();
-
-        return new BookIdDTO(bookWithUpdatedBookStatus.getIsbn(), officeName);
-    }
-
-    /**
      * Changes the status of a {@link RequestedBook}.
      * <p>
      * The method updates the status of the book associated with the requested book and validates the transition.
@@ -135,10 +102,19 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     public RequestedBookResponseDTO changeBookStatus(
             RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
         BookStatus newBookStatus = requestedBookChangeStatusRequestDTO.newBookStatus();
+
         UUID requestedBookId = requestedBookChangeStatusRequestDTO.requestedBookId();
-        RequestedBook requestedBook = getRequestedBook(requestedBookId);
+        RequestedBook requestedBook = requestedBookRepository.findById(requestedBookId)
+                .orElseThrow(() -> new RequestedBookNotFoundException(requestedBookId));
+
         Book book = requestedBook.getBook();
-        updateBookStatus(book, newBookStatus);
+        BookStatus currentBookStatus = book.getBookStatus();
+        if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
+            throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
+        }
+        book.setBookStatus(newBookStatus);
+
+        bookRepository.save(book);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
     }
@@ -158,8 +134,9 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
     @Transactional
     @Override
     public RequestedBookResponseDTO handleRequestedBookLike(RequestedBookRequestDTO requestedBookRequestDTO) {
-        String userEmail = requestedBookRequestDTO.userEmail();
-        User user = getUser(userEmail);
+        String email = requestedBookRequestDTO.userEmail();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
         Office office = user.getOffice();
         String officeName = office.getName();
         String isbn = requestedBookRequestDTO.bookIsbn();
@@ -176,66 +153,5 @@ public class RequestedBookManagementServiceImpl implements RequestedBookManageme
         requestedBookRepository.save(requestedBook);
 
         return requestedBookConverter.toRequestedBookResponseDTO(requestedBook);
-    }
-
-    /**
-     * Deletes a requested book by the provided ID.
-     * <p>
-     * With the deletion of the {@link RequestedBook} entry, the associated liked_by entries with the corresponding
-     * {@link RequestedBook} are deleted as well.
-     * </p>
-     *
-     * @param requestedBookId ID of the {@link RequestedBook}
-     * @return {@code UUID} the ID of the deleted {@link RequestedBook}.
-     * @throws RequestedBookNotFoundException If a requested book with the given ID does not exist.
-     */
-    @Transactional
-    @Override
-    public UUID deleteRequestedBook(UUID requestedBookId) {
-        if (!requestedBookRepository.existsById(requestedBookId)) {
-            throw new RequestedBookNotFoundException(requestedBookId);
-        }
-
-        requestedBookRepository.deleteById(requestedBookId);
-
-        return requestedBookId;
-    }
-
-    /**
-     * Updates and saves {@link BookStatus} of a provided {@link Book}.
-     * <p>
-     * This method check if the {@link BookStatus} transitions are valid and if so updates and saves the targeted
-     * book with the new {@link BookStatus}.
-     * </p>
-     *
-     * @param book          Targeted {@link Book} object.
-     * @param newBookStatus New status to transition to.
-     * @return The {@link Book} that we added to IN_STOCK.
-     * @throws RequestedBookStatusException If the status transition is not valid.
-     */
-    private Book updateBookStatus(Book book, BookStatus newBookStatus) {
-        BookStatus currentBookStatus = book.getBookStatus();
-
-        if (currentBookStatus == newBookStatus) {
-            return book;
-        }
-
-        if (!bookStatusTransitionValidator.isValid(currentBookStatus, newBookStatus)) {
-            throw new RequestedBookStatusException(currentBookStatus.name(), newBookStatus.name());
-        }
-        book.setBookStatus(newBookStatus);
-
-        bookRepository.save(book);
-
-        return book;
-    }
-
-    private RequestedBook getRequestedBook(UUID requestedBookId) {
-        return requestedBookRepository.findById(requestedBookId)
-                .orElseThrow(() -> new RequestedBookNotFoundException(requestedBookId));
-    }
-
-    private User getUser(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
     }
 }

@@ -13,5 +13,5 @@ public interface RequestedBookQueryService {
 
     RequestedBookResponseDTO getRequestedBookById(UUID id);
 
-    RequestedBookResponseDTO getRequestedBookByISBNAndOfficeName(String isbn, String officeName);
+    RequestedBookResponseDTO getRequestedBookByIsbnAndOfficeName(String isbn, String officeName);
 }

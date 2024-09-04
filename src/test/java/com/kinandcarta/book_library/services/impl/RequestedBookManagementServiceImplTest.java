@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.RequestedBookConverter;
-import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.entities.Book;
 import com.kinandcarta.book_library.entities.RequestedBook;
@@ -28,7 +27,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
@@ -60,64 +58,6 @@ class RequestedBookManagementServiceImplTest {
     private ArgumentCaptor<RequestedBook> requestedBookCaptor;
 
     @Test
-    void setRequestedBookToInStock_validTransition_returnBookIdDTO() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(
-                Optional.of(RequestedBookTestData.getRequestedBook()));
-        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
-        given(requestedBookRepository.existsById(any())).willReturn(true);
-
-        // when
-        BookIdDTO actualResult =
-                requestedBookManagementService.setRequestedBookToInStock(RequestedBookTestData.REQUESTED_BOOK_ID);
-
-        // then
-        assertThat(actualResult).isEqualTo(SharedServiceTestData.BOOK_ID_DTO);
-    }
-
-    @Test
-    void setRequestedBookToInStock_requestedBookDoesNotExist_throwsException() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
-                        RequestedBookTestData.REQUESTED_BOOK_ID))
-                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
-    }
-
-    @Test
-    void setRequestedBookToInStock_bookStatusIsNotPendingPurchase_throwsException() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(
-                Optional.of(RequestedBookTestData.getRequestedBook()));
-        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(false);
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookStatusException.class)
-                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
-                        RequestedBookTestData.REQUESTED_BOOK_ID))
-                .withMessage("Transition from status " + BookStatus.REQUESTED + " to status " + BookStatus.IN_STOCK +
-                        " for requested book is not feasible");
-    }
-
-    @Test
-    void setRequestedBookToInStock_requestedBookIsNotPresent_throwsException() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(
-                Optional.of(RequestedBookTestData.getRequestedBook()));
-        given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
-        given(requestedBookRepository.existsById(any())).willReturn(false);
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.setRequestedBookToInStock(
-                        RequestedBookTestData.REQUESTED_BOOK_ID))
-                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
-    }
-
-    @Test
     void changeBookStatus_validTransition_returnRequestedBookDTO() {
         // given
         RequestedBook requestedBook = RequestedBookTestData.getRequestedBook();
@@ -126,23 +66,6 @@ class RequestedBookManagementServiceImplTest {
 
         given(requestedBookRepository.findById(any())).willReturn(Optional.of(requestedBook));
         given(bookStatusTransitionValidator.isValid(any(), any())).willReturn(true);
-        given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
-                RequestedBookTestData.getRequestedBookResponseDTO());
-
-        // when
-        RequestedBookResponseDTO
-                actualResult = requestedBookManagementService.changeBookStatus(
-                RequestedBookTestData.getRequestedBookChangeStatusRequestDTO());
-
-        // then
-        assertThat(actualResult).isEqualTo(RequestedBookTestData.getRequestedBookResponseDTO());
-    }
-
-    @Test
-    void changeBookStatus_bookStatusIsSame_returnRequestedBookDTO() {
-        // given
-        given(requestedBookRepository.findById(any())).willReturn(
-                Optional.of(RequestedBookTestData.getRequestedBook()));
         given(requestedBookConverter.toRequestedBookResponseDTO(any())).willReturn(
                 RequestedBookTestData.getRequestedBookResponseDTO());
 
@@ -275,29 +198,5 @@ class RequestedBookManagementServiceImplTest {
                         RequestedBookTestData.getRequestedBookRequestDTO()))
                 .withMessage("RequestedBook with ISBN " + BookTestData.BOOK_ISBN + " for office " +
                         SharedServiceTestData.SKOPJE_OFFICE_NAME + " not found");
-    }
-
-    @Test
-    void deleteRequestedBook_requestedBookExists_returnUUID() {
-        // given
-        given(requestedBookRepository.existsById(any())).willReturn(true);
-
-        // when
-        UUID actualResult = requestedBookManagementService.deleteRequestedBook(RequestedBookTestData.REQUESTED_BOOK_ID);
-
-        // then
-        assertThat(actualResult).isEqualTo(RequestedBookTestData.REQUESTED_BOOK_ID);
-    }
-
-    @Test
-    void deleteRequestedBook_requestedBookDoesNotExist_throwsException() {
-        // given
-        given(requestedBookRepository.existsById(any())).willReturn(false);
-
-        // when & then
-        assertThatExceptionOfType(RequestedBookNotFoundException.class)
-                .isThrownBy(() -> requestedBookManagementService.deleteRequestedBook(
-                        RequestedBookTestData.REQUESTED_BOOK_ID))
-                .withMessage("RequestedBook with id " + RequestedBookTestData.REQUESTED_BOOK_ID + " not found");
     }
 }

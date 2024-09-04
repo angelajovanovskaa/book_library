@@ -14,9 +14,6 @@ import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,7 +27,6 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.kinandcarta.book_library.utils.BookCheckoutTestData.getBookCheckoutResponseDTO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -41,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookCheckoutController.class)
-class BookCheckoutQueryControllerTest {
+class BookCheckoutQueryAPISuccessTest {
     private static final String BOOK_CHECKOUTS_PATH = "/book-checkouts";
 
     @MockBean
@@ -56,109 +52,6 @@ class BookCheckoutQueryControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBookCheckouts_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given && when && then
-        mockMvc.perform(get(BOOK_CHECKOUTS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBookCheckoutsPaginated_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getPaginatedBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/paginated";
-
-        // when && then
-        mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                officeName)).andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getActiveBookCheckouts_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getActiveBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/active";
-
-        // when && then
-        mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                officeName)).andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getPastBookCheckouts_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getPastBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/past";
-
-        // when && then
-        mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM, officeName))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBookCheckoutsNearReturnDate_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getNearReturnDateBookCheckoutsPath = BOOK_CHECKOUTS_PATH + "/near-return-date";
-
-        // when && then
-        mockMvc.perform(get(getNearReturnDateBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                officeName)).andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBookCheckoutsByTitleContaining_ParamOfficeNameMissingOrEmpty_returnsBadRequest(String officeName) {
-        // given
-        final String getBookCheckoutsByTitleContainingPath = BOOK_CHECKOUTS_PATH + "/by-title";
-
-        // when && then
-        mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        officeName))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBookCheckoutsByUser_ParamUserIdMissingOrEmpty_returnsBadRequest(String userId) {
-        // given
-        final String getUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/by-user";
-
-        // when && then
-        mockMvc.perform(get(getUsersBookCheckoutPath).queryParam(SharedControllerTestData.USER_ID_PARAM, userId))
-                .andExpect(status().isBadRequest());
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"  ", "\t", "\n"})
-    @SneakyThrows
-    void getBookCheckoutsByUserAndTitleContaining_ParamUserIdMissingOrEmpty_returnsBadRequest(String userId) {
-        // given
-        final String getUsersBookCheckoutByTitlePath =
-                BOOK_CHECKOUTS_PATH + "/by-user-and-title";
-
-        // when && then
-        mockMvc.perform(get(getUsersBookCheckoutByTitlePath).queryParam(SharedControllerTestData.USER_ID_PARAM,
-                userId)).andExpect(status().isBadRequest());
-    }
-
     @Test
     @SneakyThrows
     void getBookCheckouts_atLeastOneCheckoutExists_returnsListOfBookCheckoutWithUserAndBookItemInfoResponseDTO() {
@@ -169,12 +62,8 @@ class BookCheckoutQueryControllerTest {
         given(bookCheckoutQueryService.getAllBookCheckouts(anyString())).willReturn(List.of(bookCheckoutDTO));
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(BOOK_CHECKOUTS_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(BOOK_CHECKOUTS_PATH,
+                SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result = objectMapper.readValue(jsonResult,
                 new TypeReference<>() {
@@ -203,11 +92,7 @@ class BookCheckoutQueryControllerTest {
                 String.valueOf(SharedServiceTestData.PAGE_SIZE));
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(getPaginatedBookCheckoutsPath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getPaginatedBookCheckoutsPath, queryParamsValues);
 
         Map<String, Object> resultMap = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -232,11 +117,8 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getActiveBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+                performRequestAndExpectJsonResult(getActiveBookCheckoutsPath, SharedControllerTestData.OFFICE_PARAM,
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result = objectMapper.readValue(jsonResult,
                 new TypeReference<>() {
@@ -258,11 +140,8 @@ class BookCheckoutQueryControllerTest {
 
         // when
         final String jsonResult =
-                mockMvc.perform(get(getPastBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+                performRequestAndExpectJsonResult(getPastBookCheckoutsPath, SharedControllerTestData.OFFICE_PARAM,
+                        SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result = objectMapper.readValue(jsonResult,
                 new TypeReference<>() {
@@ -281,17 +160,12 @@ class BookCheckoutQueryControllerTest {
                 new BookCheckoutReturnReminderResponseDTO(UserTestData.USER_ID, BookTestData.BOOK_TITLE,
                         SharedServiceTestData.DATE_NOW.plusDays(2));
 
-        given(bookCheckoutQueryService.getAllBookCheckoutsNearingReturnDate(anyString())).willReturn(
+        given(bookCheckoutQueryService.getAllBookCheckoutsNearReturnDate(anyString())).willReturn(
                 List.of(bookCheckoutDTO));
 
         // when
-        final String jsonResult =
-                mockMvc.perform(
-                                get(getNearReturnDateBookCheckoutsPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getNearReturnDateBookCheckoutsPath,
+                SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookCheckoutReturnReminderResponseDTO> result = objectMapper.readValue(jsonResult,
                 new TypeReference<>() {
@@ -317,11 +191,8 @@ class BookCheckoutQueryControllerTest {
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(getBookCheckoutsByTitleContainingPath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getBookCheckoutsByTitleContainingPath,
+                queryParamsValues);
 
         List<BookCheckoutWithUserAndBookItemInfoResponseDTO> result = objectMapper.readValue(jsonResult,
                 new TypeReference<>() {
@@ -336,18 +207,14 @@ class BookCheckoutQueryControllerTest {
     void getBookCheckoutsByUser_atLeastOneCheckoutExists_returnsBookCheckoutResponseDTO() {
         // given
         final String getUsersBookCheckoutPath = BOOK_CHECKOUTS_PATH + "/by-user";
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
+        BookCheckoutResponseDTO bookCheckoutDTO = BookCheckoutTestData.getBookCheckoutResponseDTO();
 
         given(bookCheckoutQueryService.getAllBookCheckoutsFromUserWithId(any())).willReturn(
                 List.of(bookCheckoutDTO));
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(getUsersBookCheckoutPath).queryParam(SharedControllerTestData.USER_ID_PARAM,
-                                UserTestData.USER_ID.toString()))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getUsersBookCheckoutPath,
+                SharedControllerTestData.USER_ID_PARAM, UserTestData.USER_ID.toString());
 
         List<BookCheckoutResponseDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -362,7 +229,7 @@ class BookCheckoutQueryControllerTest {
         // given
         final String getUsersBookCheckoutByTitlePath =
                 BOOK_CHECKOUTS_PATH + "/by-user-and-title";
-        BookCheckoutResponseDTO bookCheckoutDTO = getBookCheckoutResponseDTO();
+        BookCheckoutResponseDTO bookCheckoutDTO = BookCheckoutTestData.getBookCheckoutResponseDTO();
 
         given(bookCheckoutQueryService.getAllBookCheckoutsFromUserForBook(any(), anyString())).willReturn(
                 List.of(bookCheckoutDTO));
@@ -372,16 +239,27 @@ class BookCheckoutQueryControllerTest {
         queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE);
 
         // when
-        final String jsonResult =
-                mockMvc.perform(get(getUsersBookCheckoutByTitlePath).queryParams(queryParamsValues))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        final String jsonResult = performRequestAndExpectJsonResult(getUsersBookCheckoutByTitlePath, queryParamsValues);
 
         List<BookCheckoutResponseDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
 
         // then
         assertThat(result).containsExactly(bookCheckoutDTO);
+    }
+
+    private String performRequestAndExpectJsonResult(String path, String param, String paramValue) throws Exception {
+        return mockMvc.perform(get(path).queryParam(param, paramValue))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
+    }
+
+    private String performRequestAndExpectJsonResult(String path, MultiValueMap<String, String> paramValues)
+            throws Exception {
+        return mockMvc.perform(get(path).queryParams(paramValues))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
     }
 }
