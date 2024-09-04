@@ -90,10 +90,10 @@ public class ReviewManagementAPISuccessTest {
         assertThat(jsonResult).isEqualTo("Successfully deleted review with id " + ReviewTestData.REVIEW_ID);
     }
 
-    private String performRequestAndExpectSuccess(boolean isPost, String path, ReviewRequestDTO DTO) throws Exception {
+    private String performRequestAndExpectSuccess(boolean isPost, String path, ReviewRequestDTO reviewRequestDTO) throws Exception {
         return mockMvc.perform((isPost ? post(path) : put(path))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(DTO)))
+                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
                 .andExpect(isPost ? status().isCreated() : status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse().getContentAsString();

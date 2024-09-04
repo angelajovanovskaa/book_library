@@ -100,11 +100,11 @@ public class ReviewManagementAPINotFoundTest {
                 .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
     }
 
-    private void performRequestAndExpectNotFound(boolean isPost, String path, ReviewRequestDTO DTO,
+    private void performRequestAndExpectNotFound(boolean isPost, String path, ReviewRequestDTO reviewRequestDTO,
                                                  String exceptionMessage) throws Exception {
-        mockMvc.perform(((isPost ? post(path) : put(path)))
+        mockMvc.perform((isPost ? post(path) : put(path))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(DTO)))
+                        .content(objectMapper.writeValueAsString(reviewRequestDTO)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.generalExceptionMessage").value(exceptionMessage));
     }
