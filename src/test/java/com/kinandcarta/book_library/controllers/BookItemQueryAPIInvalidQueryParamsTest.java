@@ -23,10 +23,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BookItemController.class)
 class BookItemQueryAPIInvalidQueryParamsTest {
-
     private static final String BOOK_ITEM_PATH = "/book-items";
-    private static final String JSON_PATH_OFFICE_NAME_ERROR = "$.errorFields['getBookItems.officeName']";
-    private static final String JSON_PATH_ISBN_ERROR = "$.errorFields['getBookItems.isbn']";
+    private static final String OFFICE_NAME_ERROR_JSON_PATH = "$.errorFields['getBookItems.officeName']";
+    private static final String ISBN_ERROR_JSON_PATH = "$.errorFields['getBookItems.isbn']";
     private static final String DETAIL_JSON_PATH = "$.detail";
 
     @Autowired
@@ -96,7 +95,7 @@ class BookItemQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(JSON_PATH_OFFICE_NAME_ERROR).value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(OFFICE_NAME_ERROR_JSON_PATH).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     private void performGetAndExpectBadRequestForIsbn(String isbn) throws Exception {
@@ -105,7 +104,7 @@ class BookItemQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(JSON_PATH_ISBN_ERROR).value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(ISBN_ERROR_JSON_PATH).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     private void performGetAndExpectBadRequestForNullParam(String officeName, String isbn, String expectedErrorMessage)

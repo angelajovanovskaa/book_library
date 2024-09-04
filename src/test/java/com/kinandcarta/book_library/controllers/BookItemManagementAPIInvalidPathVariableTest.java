@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemManagementAPIInvalidPathVariableTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
-    private static final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/";
+    private static final String DELETE_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/delete/" + null;
     private static final String REPORT_BOOK_ITEM_AS_DAMAGED = BOOK_ITEM_PATH + "/report-damage/";
     private static final String REPORT_BOOK_ITEM_AS_LOST = BOOK_ITEM_PATH + "/report-lost/";
     private static final String DETAIL_JSON_PATH = "$.detail";
@@ -37,11 +37,8 @@ class BookItemManagementAPIInvalidPathVariableTest {
     @Test
     @SneakyThrows
     void deleteBookItem_bookItemIdIsNull_returnsBadRequest() {
-        // given
-        final String deleteBookItemPath = DELETE_BOOK_ITEM_PATH + null;
-
-        // when & then
-        mockMvc.perform(delete(deleteBookItemPath))
+        // given & when & then
+        mockMvc.perform(delete(DELETE_BOOK_ITEM_PATH))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath(DETAIL_JSON_PATH).value(ERROR_MESSAGE));
     }
