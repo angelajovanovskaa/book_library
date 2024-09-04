@@ -37,8 +37,7 @@ class UserQueryAPIQueryParamsMissingTest {
     @SneakyThrows
     void getUsers_paramOfficeNameIsMissing_returnsBadRequest() {
         // given & when & then
-        performGetRequestAndExpectBadRequest(USERS_PATH, ERROR_FIELD_DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-
+        performGetRequestAndExpectBadRequest(USERS_PATH, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
@@ -48,8 +47,7 @@ class UserQueryAPIQueryParamsMissingTest {
         final String getUsersByFullNamePath = USERS_PATH + "/by-full-name";
 
         // when & then
-        performGetRequestAndExpectBadRequest(getUsersByFullNamePath, ERROR_FIELD_DETAIL,
-                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
+        performGetRequestAndExpectBadRequest(getUsersByFullNamePath, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
@@ -73,14 +71,14 @@ class UserQueryAPIQueryParamsMissingTest {
         final String getUserProfilePath = USERS_PATH + "/profile";
 
         // when & then
-        performGetRequestAndExpectBadRequest(getUserProfilePath, ERROR_FIELD_DETAIL, ErrorMessages.USER_ID_NOT_PRESENT);
+        performGetRequestAndExpectBadRequest(getUserProfilePath, ErrorMessages.USER_ID_NOT_PRESENT);
     }
 
-    private void performGetRequestAndExpectBadRequest(String path, String errorField, String errorMessage)
+    private void performGetRequestAndExpectBadRequest(String path, String errorMessage)
             throws Exception {
         mockMvc.perform(get(path))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath(errorField).value(errorMessage));
+                .andExpect(jsonPath(ERROR_FIELD_DETAIL).value(errorMessage));
     }
 }
