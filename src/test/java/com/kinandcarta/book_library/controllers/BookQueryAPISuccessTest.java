@@ -65,7 +65,7 @@ class BookQueryAPISuccessTest {
 
         // when
         final String jsonResult =
-                performRequestAndExpectJsonResult(BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
+                performRequestWithSingleQueryParamAndExpectJsonResult(BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
@@ -86,9 +86,11 @@ class BookQueryAPISuccessTest {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsWithOfficeAndISBN();
 
         // when
-        final String jsonResult = performRequestAndExpectJsonResult(GET_BOOK_PATH, queryParamsValues);
+        final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BOOK_PATH, queryParamsValues);
 
-        BookDetailsDTO content = objectMapper.readValue(jsonResult, BookDetailsDTO.class);
+        BookDetailsDTO content = objectMapper.readValue(jsonResult,
+                new TypeReference<>() {
+                });
 
         // then
         assertThat(content).isEqualTo(bookDetailsDTO);
@@ -104,7 +106,7 @@ class BookQueryAPISuccessTest {
 
         // when
         final String jsonResult =
-                performRequestAndExpectJsonResult(GET_AVAILABLE_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
+                performRequestWithSingleQueryParamAndExpectJsonResult(GET_AVAILABLE_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
@@ -124,7 +126,7 @@ class BookQueryAPISuccessTest {
 
         // when
         final String jsonResult =
-                performRequestAndExpectJsonResult(GET_REQUESTED_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
+                performRequestWithSingleQueryParamAndExpectJsonResult(GET_REQUESTED_BOOK_PATH, SharedControllerTestData.OFFICE_PARAM,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         List<BookDisplayDTO> result = objectMapper.readValue(jsonResult, new TypeReference<>() {
@@ -148,7 +150,7 @@ class BookQueryAPISuccessTest {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetPaginatedBook();
 
         // when
-        final String jsonResult = performRequestAndExpectJsonResult(GET_PAGINATED_AVAILABLE_BOOK_PATH,
+        final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_PAGINATED_AVAILABLE_BOOK_PATH,
                 queryParamsValues);
 
         Map<String, Object> resultMap = objectMapper.readValue(jsonResult, new TypeReference<>() {
@@ -175,11 +177,11 @@ class BookQueryAPISuccessTest {
                 BookTestData.createQueryParamsForGetBySearchTitle();
 
         // when
-        final String jsonResult = performRequestAndExpectJsonResult(GET_BY_TITLE_BOOK_PATH, queryParamsValues);
+        final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BY_TITLE_BOOK_PATH, queryParamsValues);
 
         List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
-
+                new TypeReference<>() {
+                });
         // then
         assertThat(content).containsExactly(bookDisplayDTO);
     }
@@ -195,10 +197,11 @@ class BookQueryAPISuccessTest {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetByLanguage();
 
         // when
-        final String jsonResult = performRequestAndExpectJsonResult(GET_BY_LANGUAGE_BOOK_PATH, queryParamsValues);
+        final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BY_LANGUAGE_BOOK_PATH, queryParamsValues);
 
         List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
+                new TypeReference<>() {
+                });
 
         // then
         assertThat(content).containsExactly(bookDisplayDTO);
@@ -215,25 +218,26 @@ class BookQueryAPISuccessTest {
         MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetByGenres();
 
         // when
-        final String jsonResult = performRequestAndExpectJsonResult(GET_BY_GENRES_BOOK_PATH, queryParamsValues);
+        final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BY_GENRES_BOOK_PATH, queryParamsValues);
 
         List<BookDisplayDTO> content = objectMapper.readValue(jsonResult,
-                objectMapper.getTypeFactory().constructCollectionType(List.class, BookDisplayDTO.class));
+                new TypeReference<>() {
+                });
 
         // then
         assertThat(content).containsExactly(bookDisplayDTO);
     }
 
-    private String performRequestAndExpectJsonResult(String path,
-                                                     MultiValueMap<String, String> queryParamValues) throws Exception {
+    private String performRequestWithQueryParamsAndExpectJsonResult(String path,
+                                                                    MultiValueMap<String, String> queryParamValues) throws Exception {
         return mockMvc.perform(get(path).queryParams(queryParamValues))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse().getContentAsString();
     }
 
-    private String performRequestAndExpectJsonResult(String path,
-                                                     String param, String value) throws Exception {
+    private String performRequestWithSingleQueryParamAndExpectJsonResult(String path,
+                                                                         String param, String value) throws Exception {
         return mockMvc.perform(get(path).queryParam(param, value))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))

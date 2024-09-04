@@ -165,6 +165,19 @@ public class BookTestData {
         return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
     }
 
+    public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
+        return new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
+                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
+                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
+                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+    }
+
+    public static BookInsertRequestDTO createBookInsertRequestDTOPassingOfficeName(String officeName) {
+        return new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
+                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
+                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
+                BookTestData.AUTHOR_DTOS, officeName);
+    }
     public MultiValueMap<String, String> createQueryParamsForGetPaginatedBook() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -197,71 +210,6 @@ public class BookTestData {
 
         return queryParamsValues;
     }
-
-    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameForGetBook(String officeName) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameForGetByTitle(String officeName) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
-        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE_SEARCH_TERM);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsMissingTitleSearchTermForGetByTitle(String titleSearchTerm) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, titleSearchTerm);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameForGetByLanguage(String officeName) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
-        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsMissingLanguageForGetByLanguage(String language) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(LANGUAGE_PARAM, language);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsMissingOfficeNameGetByGenres(String officeName) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
-        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BOOK_GENRES));
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsMissingGenresGetByGenres(String genre) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(GENRES_PARAM, genre);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
-
-        return queryParamsValues;
-    }
-
     public MultiValueMap<String, String> createQueryParamsInvalidIsbn() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN);
@@ -278,17 +226,11 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
-        return new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-    }
+    public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
 
-    public static BookInsertRequestDTO createBookInsertRequestDTOPassingOfficeName(String officeName) {
-        return new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, officeName);
+        return queryParamsValues;
     }
 }

@@ -38,8 +38,6 @@ class BookQueryAPINotFoundTest {
     @SneakyThrows
     void getBook_bookDoesNotExists_returnsNotFound() {
         // given
-        final String isbn = BookTestData.BOOK_INVALID_ISBN;
-
         BookNotFoundException bookNotFoundException = new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN);
 
         given(bookQueryService.getBookByIsbn(anyString(), anyString()))
@@ -48,7 +46,7 @@ class BookQueryAPINotFoundTest {
         // when & then
         mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
                                 SharedServiceTestData.SKOPJE_OFFICE_NAME)
-                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
+                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE).value(bookNotFoundException.getMessage()));
     }

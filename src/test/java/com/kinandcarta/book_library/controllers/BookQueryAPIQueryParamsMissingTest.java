@@ -82,7 +82,7 @@ class BookQueryAPIQueryParamsMissingTest {
 
     @Test
     @SneakyThrows
-    void getPaginatedAvailableBooks_missingRequiredQueryParam_returnsBadRequest() {
+    void getPaginatedAvailableBooks_paramOfficeNameIsMissing_returnsBadRequest() {
         // given & when & then
         performGetRequestAndExpectBadRequest(GET_PAGINATED_AVAILABLE_BOOK_PATH, DETAIL,
                 ErrorMessages.OFFICE_NAME_NOT_PRESENT);
@@ -134,7 +134,6 @@ class BookQueryAPIQueryParamsMissingTest {
         performGetRequestAndExpectBadRequest(GET_BY_GENRES_BOOK_PATH, GENRES_PARAM,
                 Arrays.toString(BookTestData.BOOK_GENRES), DETAIL,
                 ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-
     }
 
     @Test
