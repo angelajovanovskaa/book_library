@@ -6,6 +6,7 @@ import com.kinandcarta.book_library.dtos.RequestedBookResponseDTO;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +49,7 @@ public class RequestedBookController {
 
     @PatchMapping("/change-book-status")
     ResponseEntity<RequestedBookResponseDTO> changeBookStatus(
-            @RequestBody RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
+            @RequestBody @Valid RequestedBookChangeStatusRequestDTO requestedBookChangeStatusRequestDTO) {
         RequestedBookResponseDTO response =
                 requestedBookManagementService.changeBookStatus(requestedBookChangeStatusRequestDTO);
 
@@ -57,7 +58,7 @@ public class RequestedBookController {
 
     @PostMapping("/handle-like")
     ResponseEntity<RequestedBookResponseDTO> handleRequestedBookLike(
-            @RequestBody RequestedBookRequestDTO requestedBookRequestDTO) {
+            @RequestBody @Valid RequestedBookRequestDTO requestedBookRequestDTO) {
         RequestedBookResponseDTO response =
                 requestedBookManagementService.handleRequestedBookLike(requestedBookRequestDTO);
 
