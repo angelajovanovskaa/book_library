@@ -56,13 +56,8 @@ class RequestedBookAPINotFoundTest {
                 requestedBookNotFoundException);
 
         // when & then
-        mockMvc.perform(patch(changeBookStatusPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestedBookChangeStatusRequestDTO)))
-                .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.generalExceptionMessage").value(
-                        requestedBookNotFoundException.getMessage()));
+        performRequestAndExpectNotFound(changeBookStatusPath, requestedBookChangeStatusRequestDTO,
+                requestedBookNotFoundException, false);
     }
 
     @Test
@@ -79,8 +74,8 @@ class RequestedBookAPINotFoundTest {
                 requestedBookNotFoundException);
 
         // when & then
-        performPostAndExpectNotFound(handleRequestedBookLikePath, requestedBookRequestDTO,
-                requestedBookNotFoundException);
+        performRequestAndExpectNotFound(handleRequestedBookLikePath, requestedBookRequestDTO,
+                requestedBookNotFoundException, true);
     }
 
     @Test
@@ -96,11 +91,13 @@ class RequestedBookAPINotFoundTest {
                 userNotFoundException);
 
         // when & then
-        performPostAndExpectNotFound(handleRequestedBookLikePath, requestedBookRequestDTO, userNotFoundException);
+        performRequestAndExpectNotFound(handleRequestedBookLikePath, requestedBookRequestDTO, userNotFoundException,
+                true);
     }
 
-    private void performPostAndExpectNotFound(String path, Record DTO, Exception exception) throws Exception {
-        mockMvc.perform(post(path)
+    private void performRequestAndExpectNotFound(String path, Record DTO, Exception exception, boolean isPost)
+            throws Exception {
+        mockMvc.perform((isPost ? post(path) : patch(path))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isNotFound())

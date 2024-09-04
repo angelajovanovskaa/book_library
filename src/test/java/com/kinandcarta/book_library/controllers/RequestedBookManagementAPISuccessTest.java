@@ -51,12 +51,8 @@ class RequestedBookManagementAPISuccessTest {
                 requestedBookResponseDTO);
 
         // when
-        String jsonResult = mockMvc.perform(patch(changeBookStatusPath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestedBookChangeStatusRequestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
+        String jsonResult = performRequestAndExpectRequestedBookResponseDTO(changeBookStatusPath,
+                requestedBookChangeStatusRequestDTO, false);
 
         RequestedBookResponseDTO result = objectMapper.readValue(jsonResult, RequestedBookResponseDTO.class);
 
@@ -76,16 +72,22 @@ class RequestedBookManagementAPISuccessTest {
                 requestedBookResponseDTO);
 
         // when
-        String jsonResult = mockMvc.perform(post(handleRequestedBookLikePath)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(requestedBookRequestDTO)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
+        String jsonResult = performRequestAndExpectRequestedBookResponseDTO(handleRequestedBookLikePath,
+                requestedBookRequestDTO, true);
 
         RequestedBookResponseDTO result = objectMapper.readValue(jsonResult, RequestedBookResponseDTO.class);
 
         // then
         assertThat(result).isEqualTo(requestedBookResponseDTO);
+    }
+
+    private String performRequestAndExpectRequestedBookResponseDTO(String path, Record DTO, boolean isPost)
+            throws Exception {
+        return mockMvc.perform((isPost ? post(path) : patch(path))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(DTO)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
     }
 }
