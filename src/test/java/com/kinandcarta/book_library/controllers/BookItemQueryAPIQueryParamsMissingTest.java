@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.BookItemManagementService;
 import com.kinandcarta.book_library.services.BookItemQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -23,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookItemController.class)
 class BookItemQueryAPIQueryParamsMissingTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String DETAIL_JSON_PATH = "$.detail";
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,9 +32,6 @@ class BookItemQueryAPIQueryParamsMissingTest {
 
     @MockBean
     private BookItemManagementService bookItemManagementService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     @SneakyThrows
@@ -54,7 +51,7 @@ class BookItemQueryAPIQueryParamsMissingTest {
         performGetBookItemsWithMissingParam(
                 SharedControllerTestData.OFFICE_PARAM,
                 SharedServiceTestData.SKOPJE_OFFICE_NAME,
-                ErrorMessages.ISBN_NOT_PRESENT + "."
+                ErrorMessages.ISBN_NOT_PRESENT
         );
     }
 
@@ -64,6 +61,6 @@ class BookItemQueryAPIQueryParamsMissingTest {
                         .queryParam(missingParamName, missingParamValue))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(expectedErrorMessage));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(expectedErrorMessage));
     }
 }

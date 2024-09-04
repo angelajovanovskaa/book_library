@@ -52,7 +52,6 @@ class BookItemManagementAPISuccessTest {
     @SneakyThrows
     void createBookItem_BookItemCreated_returnBookItemDTO() {
         // given
-        final String insertBookItemPath = BOOK_ITEM_INSERT_PATH;
         BookIdDTO bookIdDTO = new BookIdDTO(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         BookItemDTO expectedBookItemDTO = BookItemTestData.getBookItemDTO();
 
@@ -60,7 +59,7 @@ class BookItemManagementAPISuccessTest {
                 .willReturn(expectedBookItemDTO);
 
         // when
-        String jsonResult = mockMvc.perform(post(insertBookItemPath)
+        String jsonResult = mockMvc.perform(post(BOOK_ITEM_INSERT_PATH)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isCreated())
@@ -77,69 +76,57 @@ class BookItemManagementAPISuccessTest {
     @SneakyThrows
     void deleteBookItem_deleteIsSuccessful_deletesBookItem() {
         // given
-        final String deleteBookItem = DELETE_BOOK_ITEM_PATH;
-        UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
-
-        given(bookItemManagementService.deleteById(any())).willReturn(bookItemId);
+        given(bookItemManagementService.deleteById(any())).willReturn(BookItemTestData.BOOK_ITEM_ID);
 
         // when
-        UUID result = performDeleteAndExpectOk(deleteBookItem, bookItemId);
+        String resultJson = mockMvc.perform(delete(DELETE_BOOK_ITEM_PATH, BookItemTestData.BOOK_ITEM_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn().getResponse().getContentAsString();
 
+        UUID result = objectMapper.readValue(resultJson, UUID.class);
         // then
-        assertThat(result).isEqualTo(bookItemId);
+        assertThat(result).isEqualTo(BookItemTestData.BOOK_ITEM_ID);
     }
 
     @Test
     @SneakyThrows
     void reportBookItemAsDamaged_reportIsSuccessful_returnsConfirmationMessage() {
         // given
-        final String returnBookItemAsDamaged = REPORT_BOOK_ITEM_AS_DAMAGED_PATH;
-        UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
-
         given(bookItemManagementService.reportBookItemAsDamaged(any())).willReturn(
                 BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
 
-        // when & then
-        performPatchAndExpectOk(
-                returnBookItemAsDamaged,
-                bookItemId,
-                BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED
+        // when
+        String result = performPatchAndExpectJsonResult(
+                REPORT_BOOK_ITEM_AS_DAMAGED_PATH,
+                BookItemTestData.BOOK_ITEM_ID
         );
+
+        // then
+        assertThat(result).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_DAMAGED);
     }
 
     @Test
     @SneakyThrows
     void reportBookItemAsLost_reportIsSuccessful_returnsConfirmationMessage() {
         // given
-        final String returnBookItemAsLost = REPORT_BOOK_ITEM_AS_LOST_PATH;
-        UUID bookItemId = BookItemTestData.BOOK_ITEM_ID;
-
         given(bookItemManagementService.reportBookItemAsLost(any())).willReturn(
                 BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
 
-        // when & then
-        performPatchAndExpectOk(
-                returnBookItemAsLost,
-                bookItemId,
-                BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST
+        // when
+        String result = performPatchAndExpectJsonResult(
+                REPORT_BOOK_ITEM_AS_LOST_PATH,
+                BookItemTestData.BOOK_ITEM_ID
         );
+
+        // then
+        assertThat(result).isEqualTo(BookItemResponseMessages.BOOK_ITEM_REPORTED_AS_LOST);
     }
 
-    private UUID performDeleteAndExpectOk(String path, UUID id) throws Exception {
-        String resultJson = mockMvc.perform(delete(path, id))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andReturn().getResponse().getContentAsString();
-
-        return objectMapper.readValue(resultJson, UUID.class);
-    }
-
-    private void performPatchAndExpectOk(String path, UUID id, String expectedResponse) throws Exception {
-        String result = mockMvc.perform(patch(path, id))
+    private String performPatchAndExpectJsonResult(String path, UUID id) throws Exception {
+        return mockMvc.perform(patch(path, id))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
                 .andReturn().getResponse().getContentAsString();
-
-        assertThat(result).isEqualTo(expectedResponse);
     }
 }

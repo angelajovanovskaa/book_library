@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.services.BookItemManagementService;
 import com.kinandcarta.book_library.services.BookItemQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
@@ -26,6 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookItemQueryAPIInvalidQueryParamsTest {
 
     private static final String BOOK_ITEM_PATH = "/book-items";
+    private static final String JSON_PATH_OFFICE_NAME_ERROR = "$.errorFields['getBookItems.officeName']";
+    private static final String JSON_PATH_ISBN_ERROR = "$.errorFields['getBookItems.isbn']";
+    private static final String DETAIL_JSON_PATH = "$.detail";
 
     @Autowired
     private MockMvc mockMvc;
@@ -36,22 +38,19 @@ class BookItemQueryAPIInvalidQueryParamsTest {
     @MockBean
     private BookItemManagementService bookItemManagementService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void getBookItems_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
         // given & when & then
-        performGetAndExpectBadRequest(officeName);
+        performGetAndExpectBadRequestForOfficeName(officeName);
     }
 
     @Test
     @SneakyThrows
     void getBookItems_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given & when & then
-        performGetAndExpectBadRequest("");
+        performGetAndExpectBadRequestForOfficeName("");
     }
 
     @Test
@@ -87,17 +86,17 @@ class BookItemQueryAPIInvalidQueryParamsTest {
         performGetAndExpectBadRequestForNullParam(
                 SharedServiceTestData.SKOPJE_OFFICE_NAME,
                 null,
-                "Required parameter 'isbn' is not present."
+                ErrorMessages.ISBN_NOT_PRESENT
         );
     }
 
-    private void performGetAndExpectBadRequest(String officeName) throws Exception {
+    private void performGetAndExpectBadRequestForOfficeName(String officeName) throws Exception {
         mockMvc.perform(get(BookItemQueryAPIInvalidQueryParamsTest.BOOK_ITEM_PATH)
                         .queryParam(SharedControllerTestData.OFFICE_PARAM, officeName)
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookItems.officeName']").value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(JSON_PATH_OFFICE_NAME_ERROR).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     private void performGetAndExpectBadRequestForIsbn(String isbn) throws Exception {
@@ -106,7 +105,7 @@ class BookItemQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields['getBookItems.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(JSON_PATH_ISBN_ERROR).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     private void performGetAndExpectBadRequestForNullParam(String officeName, String isbn, String expectedErrorMessage)
@@ -116,6 +115,6 @@ class BookItemQueryAPIInvalidQueryParamsTest {
                         .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, isbn))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE))
-                .andExpect(jsonPath("$.detail").value(expectedErrorMessage));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(expectedErrorMessage));
     }
 }
