@@ -55,7 +55,6 @@ public class UserQueryServiceImpl implements UserQueryService {
     public List<UserWithRoleDTO> getUsersWithFullName(String officeName, String fullNameSearchTerm) {
         List<User> users = userRepository.findByOfficeNameAndFullNameContaining(officeName, fullNameSearchTerm);
 
-
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
 
