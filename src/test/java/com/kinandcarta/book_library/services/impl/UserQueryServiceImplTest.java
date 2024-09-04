@@ -35,9 +35,8 @@ class UserQueryServiceImplTest {
         // given
         List<UserWithRoleDTO> userWithRoleDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
-        given(userRepository.findAllByOffice_NameOrderByRoleAsc(anyString())).willReturn(UserTestData.getUsers());
-        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleDTOs.get(0),
-                userWithRoleDTOs.get(1));
+        given(userRepository.findAll(anyString())).willReturn(UserTestData.getUsers());
+        given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleDTOs.get(0), userWithRoleDTOs.get(1));
 
         // when
         List<UserWithRoleDTO> result = userQueryService.getUsers(SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -51,15 +50,13 @@ class UserQueryServiceImplTest {
         // given
         List<UserWithRoleDTO> userWithRoleResponseDTOs = UserTestData.getUserWithRoleResponseDTOs();
 
-        given(userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(any(), any())).willReturn(
-                UserTestData.getUsers());
+        given(userRepository.findByOfficeNameAndFullNameContaining(any(), any())).willReturn(UserTestData.getUsers());
         given(userConverter.toUserWithRoleDTO(any())).willReturn(userWithRoleResponseDTOs.get(0),
                 userWithRoleResponseDTOs.get(1));
 
         // when
-        List<UserWithRoleDTO> result =
-                userQueryService.getUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
-                        UserTestData.USER_FULL_NAME);
+        List<UserWithRoleDTO> result = userQueryService.getUsersWithFullName(SharedServiceTestData.SKOPJE_OFFICE_NAME,
+                UserTestData.USER_FULL_NAME);
 
         // then
         assertThat(result).isEqualTo(UserTestData.getUserWithRoleResponseDTOs());
