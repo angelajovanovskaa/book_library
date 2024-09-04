@@ -22,8 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewQueryAPIInvalidQueryParamsTest {
+class ReviewQueryAPIInvalidQueryParamsTest {
     private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String TOP_REVIEWS_PATH = REVIEW_BASE_PATH + "/top-reviews";
+
+    private static final String ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK = "$.errorFields['getReviewsForBook.%s']";
+    private static final String ERROR_FIELD_TEMPLATE_TOP_REVIEWS = "$.errorFields['getTopReviewsForBook.%s']";
+    private static final String DETAIL = "$.detail";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -44,10 +49,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value(
-                        ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "officeName"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -59,10 +63,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.officeName']").value(
-                        ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "officeName"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -89,9 +92,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "isbn"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -103,9 +106,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, "");
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "isbn"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -117,9 +120,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, null);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params, DETAIL, ErrorMessages.ISBN_NOT_PRESENT);
     }
 
     @ParameterizedTest
@@ -132,10 +133,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value(
-                        ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "officeName"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -147,10 +147,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.errorFields['getTopReviewsForBook.officeName']").value(
-                        ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "officeName"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -162,9 +161,7 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @ParameterizedTest
@@ -177,10 +174,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(
-                        jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "isbn"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -192,10 +188,9 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, "");
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                .andExpect(status().isBadRequest())
-                .andExpect(
-                        jsonPath("$.errorFields['getTopReviewsForBook.isbn']").value(ErrorMessages.MUST_NOT_BE_BLANK));
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "isbn"),
+                ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
     @Test
@@ -207,8 +202,13 @@ public class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, null);
 
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, DETAIL, ErrorMessages.ISBN_NOT_PRESENT);
+    }
+
+    private void performRequestAndExpectBadRequest(String path, MultiValueMap<String, String> params,
+                                                   String errorField, String errorMessage) throws Exception {
+        mockMvc.perform(get(path).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
+                .andExpect(jsonPath(errorField).value(errorMessage));
     }
 }

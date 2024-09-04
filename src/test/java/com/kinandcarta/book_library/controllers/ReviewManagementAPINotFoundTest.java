@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
@@ -29,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ReviewController.class)
 public class ReviewManagementAPINotFoundTest {
     public static final String REVIEW_BASE_PATH = "/reviews";
+    public static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
+    public static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -51,11 +54,8 @@ public class ReviewManagementAPINotFoundTest {
         given(reviewManagementService.insertReview(any())).willThrow(exception);
 
         // when & then
-        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+        performRequestAndExpectNotFound(true, INSERT_REVIEW_PATH, ReviewTestData.getReviewRequestDTO(),
+                exception.getMessage());
     }
 
     @Test
@@ -68,11 +68,8 @@ public class ReviewManagementAPINotFoundTest {
         given(reviewManagementService.insertReview(any())).willThrow(exception);
 
         // when & then
-        mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+        performRequestAndExpectNotFound(true, INSERT_REVIEW_PATH, ReviewTestData.getReviewRequestDTO(),
+                exception.getMessage());
     }
 
     @Test
@@ -85,13 +82,8 @@ public class ReviewManagementAPINotFoundTest {
         given(reviewManagementService.updateReview(any())).willThrow(exception);
 
         // when & then
-        String jsonContent = new ObjectMapper().writeValueAsString(ReviewTestData.getReviewRequestDTO());
-
-        mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+        performRequestAndExpectNotFound(false, UPDATE_REVIEW_PATH, ReviewTestData.getReviewRequestDTO(),
+                exception.getMessage());
     }
 
     @Test
@@ -106,5 +98,14 @@ public class ReviewManagementAPINotFoundTest {
         mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + ReviewTestData.REVIEW_ID))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+    }
+
+    private void performRequestAndExpectNotFound(boolean isPost, String path, ReviewRequestDTO DTO,
+                                                 String exceptionMessage) throws Exception {
+        mockMvc.perform(((isPost ? post(path) : put(path)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(DTO)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.generalExceptionMessage").value(exceptionMessage));
     }
 }

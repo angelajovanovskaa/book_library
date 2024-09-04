@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewQueryAPISuccessTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
+class ReviewQueryAPISuccessTest {
+    private static final String REVIEW_BASE_PATH = "/reviews";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -56,11 +56,7 @@ public class ReviewQueryAPISuccessTest {
                 List.of(ReviewTestData.getReviewResponseDTO()));
 
         // when
-        String jsonResult =
-                mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        String jsonResult = performRequestAndExpectSuccess(REVIEW_BASE_PATH, params);
 
         List<ReviewResponseDTO> actualResult = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -76,11 +72,7 @@ public class ReviewQueryAPISuccessTest {
         given(reviewQueryService.getReviewById(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
         // when
-        String jsonResult =
-                mockMvc.perform(get(REVIEW_BASE_PATH + "/" + ReviewTestData.REVIEW_ID))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        String jsonResult = performRequestAndExpectSuccess(REVIEW_BASE_PATH + "/" + ReviewTestData.REVIEW_ID, null);
 
         ReviewResponseDTO actualResult = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -101,16 +93,20 @@ public class ReviewQueryAPISuccessTest {
                 List.of(ReviewTestData.getReviewResponseDTO()));
 
         // when
-        String jsonResult =
-                mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews").queryParams(params))
-                        .andExpect(status().isOk())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+        String jsonResult = performRequestAndExpectSuccess(REVIEW_BASE_PATH + "/top-reviews", params);
 
         List<ReviewResponseDTO> actualResult = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
 
         // then
         assertThat(actualResult).containsExactly(ReviewTestData.getReviewResponseDTO());
+    }
+
+    private String performRequestAndExpectSuccess(String path, MultiValueMap<String, String> params)
+            throws Exception {
+        return mockMvc.perform((params == null ? get(path) : get(path).queryParams(params)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
     }
 }

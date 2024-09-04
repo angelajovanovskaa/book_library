@@ -13,6 +13,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -20,8 +22,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewQueryAPIQueryParamsMissingTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
+class ReviewQueryAPIQueryParamsMissingTest {
+    private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String TOP_REVIEWS_PATH = REVIEW_BASE_PATH + "/top-reviews";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -36,43 +39,47 @@ public class ReviewQueryAPIQueryParamsMissingTest {
     @SneakyThrows
     void getReviewsForBook_officeNameParamIsMissing_returnsBadRequest() {
         // when & then
-        mockMvc.perform(
-                        get(REVIEW_BASE_PATH).queryParam(SharedControllerTestData.BOOK_ISBN_PARAM,
-                                BookTestData.BOOK_ISBN))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getReviewsForBook_isbnParamIsMissing_returnsBadRequest() {
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH).queryParam(SharedControllerTestData.OFFICE_PARAM,
-                        SharedServiceTestData.SKOPJE_OFFICE_NAME))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params, ErrorMessages.ISBN_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getTopReviewsForBook_officeNameParamIsMissing_returnsBadRequest() {
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews"))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
+
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
     @SneakyThrows
     void getTopReviewsForBook_isbnParamIsMissing_returnsBadRequest() {
         // when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/top-reviews")
-                        .queryParam(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME))
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, ErrorMessages.ISBN_NOT_PRESENT);
+    }
+
+    private void performRequestAndExpectBadRequest(String path, MultiValueMap<String, String> params,
+                                                   String errorMessage) throws Exception {
+        mockMvc.perform(get(path).queryParams(params))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.ISBN_NOT_PRESENT));
+                .andExpect(jsonPath("$.detail").value(errorMessage));
     }
 }

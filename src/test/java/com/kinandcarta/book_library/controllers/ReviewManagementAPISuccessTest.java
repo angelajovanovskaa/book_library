@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.dtos.ReviewResponseDTO;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
@@ -25,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ReviewController.class)
 public class ReviewManagementAPISuccessTest {
     public static final String REVIEW_BASE_PATH = "/reviews";
+    public static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
+    public static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -46,12 +49,7 @@ public class ReviewManagementAPISuccessTest {
 
         // when
         String jsonResult =
-                mockMvc.perform(post(REVIEW_BASE_PATH + "/insert")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
-                        .andExpect(status().isCreated())
-                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                        .andReturn().getResponse().getContentAsString();
+                performRequestAndExpectSuccess(true, INSERT_REVIEW_PATH, ReviewTestData.getReviewRequestDTO());
 
         ReviewResponseDTO actualResult = objectMapper.readValue(jsonResult, ReviewResponseDTO.class);
 
@@ -66,12 +64,8 @@ public class ReviewManagementAPISuccessTest {
         given(reviewManagementService.updateReview(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
         // when
-        String jsonResult = mockMvc.perform(put(REVIEW_BASE_PATH + "/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(ReviewTestData.getReviewRequestDTO())))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andReturn().getResponse().getContentAsString();
+        String jsonResult =
+                performRequestAndExpectSuccess(false, UPDATE_REVIEW_PATH, ReviewTestData.getReviewRequestDTO());
 
         ReviewResponseDTO actualResponse = objectMapper.readValue(jsonResult, ReviewResponseDTO.class);
 
@@ -94,5 +88,14 @@ public class ReviewManagementAPISuccessTest {
 
         // then
         assertThat(jsonResult).isEqualTo("Successfully deleted review with id " + ReviewTestData.REVIEW_ID);
+    }
+
+    private String performRequestAndExpectSuccess (boolean isPost, String path, ReviewRequestDTO DTO) throws Exception {
+        return mockMvc.perform((isPost ? post(path) : put(path))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(DTO)))
+                .andExpect(isPost ? status().isCreated() : status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse().getContentAsString();
     }
 }

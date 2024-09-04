@@ -36,9 +36,7 @@ public class ReviewManagementAPIInvalidPathVariablesTest {
         // given
 
         // when & then
-        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + reviewId))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT));
+        performRequestAndBadRequest(REVIEW_BASE_PATH + "/delete/" + reviewId, ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
     }
 
     @Test
@@ -47,8 +45,12 @@ public class ReviewManagementAPIInvalidPathVariablesTest {
         // given
 
         // when & then
-        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + null))
+        performRequestAndBadRequest(REVIEW_BASE_PATH + "/delete/" + null, ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
+    }
+
+    private void performRequestAndBadRequest(String path, String errorMessage) throws Exception {
+        mockMvc.perform(delete(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT));
+                .andExpect(jsonPath("$.detail").value(errorMessage));
     }
 }
