@@ -37,7 +37,7 @@ public class UserQueryServiceImpl implements UserQueryService {
      */
     @Override
     public List<UserWithRoleDTO> getUsers(String officeName) {
-        List<User> users = userRepository.findAllByOffice_NameOrderByRoleAsc(officeName);
+        List<User> users = userRepository.findAll(officeName);
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
@@ -53,9 +53,8 @@ public class UserQueryServiceImpl implements UserQueryService {
      */
     @Override
     public List<UserWithRoleDTO> getUsersWithFullName(String officeName, String fullNameSearchTerm) {
-        List<User> users =
-                userRepository.findByOffice_NameAndFullNameContainingIgnoreCaseOrderByRoleAsc(officeName,
-                        fullNameSearchTerm);
+        List<User> users = userRepository.findByOfficeNameAndFullNameContaining(officeName, fullNameSearchTerm);
+
 
         return users.stream().map(userConverter::toUserWithRoleDTO).toList();
     }
@@ -73,5 +72,4 @@ public class UserQueryServiceImpl implements UserQueryService {
 
         return userConverter.toUserProfileDTO(user);
     }
-
 }
