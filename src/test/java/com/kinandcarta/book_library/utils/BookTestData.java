@@ -15,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +41,8 @@ public class BookTestData {
             , new HashSet<>(getBooks()));
     public static final Set<Author> AUTHORS = new HashSet<>(List.of(AUTHOR));
     public static final Set<AuthorDTO> AUTHOR_DTOS = new HashSet<>(List.of(AUTHOR_DTO));
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String GENRES_PARAM = "genres";
 
     public static List<Book> getBooks() {
         Book book1 = new Book(
@@ -162,14 +165,51 @@ public class BookTestData {
         return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
     }
 
-    public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {
+    public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
+        return new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
+                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
+                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
+                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+    }
+
+    public static BookInsertRequestDTO createBookInsertRequestDTOPassingOfficeName(String officeName) {
+        return new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
+                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
+                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
+                BookTestData.AUTHOR_DTOS, officeName);
+    }
+    public MultiValueMap<String, String> createQueryParamsForGetPaginatedBook() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
+        queryParamsValues.add(SharedControllerTestData.PAGE_SIZE_PARAM,
+                String.valueOf(SharedServiceTestData.PAGE_SIZE));
 
         return queryParamsValues;
     }
 
+    public MultiValueMap<String, String> createQueryParamsForGetBySearchTitle() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_TITLE_PARAM, BookTestData.BOOK_TITLE);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGetByLanguage() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE);
+
+        return queryParamsValues;
+    }
+
+    public MultiValueMap<String, String> createQueryParamsForGetByGenres() {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(GENRES_PARAM, Arrays.toString(BookTestData.BOOK_GENRES));
+
+        return queryParamsValues;
+    }
     public MultiValueMap<String, String> createQueryParamsInvalidIsbn() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN);
@@ -186,17 +226,11 @@ public class BookTestData {
         return queryParamsValues;
     }
 
-    public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
-        return new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-    }
+    public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {
+        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
+        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
 
-    public static BookInsertRequestDTO createBookInsertRequestDTOPassingOfficeName(String officeName) {
-        return new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, officeName);
+        return queryParamsValues;
     }
 }
