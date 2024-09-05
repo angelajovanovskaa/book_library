@@ -17,8 +17,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewQueryAPIInvalidPathVariablesTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
+class ReviewQueryAPIInvalidPathVariablesTest {
+    private static final String GET_REVIEW_PATH = "/reviews/";
+    private static final String DETAIL_JSON_PATH = "$.detail";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -32,13 +33,12 @@ public class ReviewQueryAPIInvalidPathVariablesTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewById_reviewIdIsNotValid_returnsBadRequest(String reviewId) {
+    void getReviewById_reviewIdIsBlank_returnsBadRequest(String reviewId) {
         // given
 
         // when & then
-        performRequestAndExpectBadRequest(REVIEW_BASE_PATH + "/" + reviewId,
+        performRequestAndExpectBadRequest(GET_REVIEW_PATH + reviewId,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
-
     }
 
     @Test
@@ -47,13 +47,13 @@ public class ReviewQueryAPIInvalidPathVariablesTest {
         // given
 
         // when & then
-        performRequestAndExpectBadRequest(REVIEW_BASE_PATH + "/" + null,
+        performRequestAndExpectBadRequest(GET_REVIEW_PATH + null,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
     }
 
     private void performRequestAndExpectBadRequest(String path, String message) throws Exception {
         mockMvc.perform(get(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(message));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(message));
     }
 }

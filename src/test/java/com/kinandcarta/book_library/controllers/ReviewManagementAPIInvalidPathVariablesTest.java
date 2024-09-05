@@ -17,8 +17,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewManagementAPIInvalidPathVariablesTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
+class ReviewManagementAPIInvalidPathVariablesTest {
+    private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String REVIEW_DELETE_PATH = REVIEW_BASE_PATH + "/delete/";
+    private static final String DETAIL_JSON_PATH = "$.detail";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -32,11 +34,11 @@ public class ReviewManagementAPIInvalidPathVariablesTest {
     @ParameterizedTest
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
-    void deleteReview_reviewIdIsEmpty_returnsBadRequest(String reviewId) {
+    void deleteReview_reviewIdIsBlank_returnsBadRequest(String reviewId) {
         // given
 
         // when & then
-        performRequestAndBadRequest(REVIEW_BASE_PATH + "/delete/" + reviewId,
+        performDeleteAndExpectBadRequest(REVIEW_DELETE_PATH + reviewId,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
     }
 
@@ -46,13 +48,13 @@ public class ReviewManagementAPIInvalidPathVariablesTest {
         // given
 
         // when & then
-        performRequestAndBadRequest(REVIEW_BASE_PATH + "/delete/" + null,
+        performDeleteAndExpectBadRequest(REVIEW_DELETE_PATH + null,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
     }
 
-    private void performRequestAndBadRequest(String path, String errorMessage) throws Exception {
+    private void performDeleteAndExpectBadRequest(String path, String errorMessage) throws Exception {
         mockMvc.perform(delete(path))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(errorMessage));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(errorMessage));
     }
 }

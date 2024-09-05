@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReviewQueryAPIQueryParamsMissingTest {
     private static final String REVIEW_BASE_PATH = "/reviews";
     private static final String TOP_REVIEWS_PATH = REVIEW_BASE_PATH + "/top-reviews";
+    private static final String DETAIL_JSON_PATH = "$.detail";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -80,6 +81,6 @@ class ReviewQueryAPIQueryParamsMissingTest {
         mockMvc.perform(get(path).queryParams(params))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
-                .andExpect(jsonPath("$.detail").value(errorMessage));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(errorMessage));
     }
 }

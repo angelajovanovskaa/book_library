@@ -28,10 +28,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewManagementAPINotFoundTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
-    public static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
-    public static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
+class ReviewManagementAPINotFoundTest {
+    private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String DELETE_REVIEW_PATH = REVIEW_BASE_PATH + "/delete/";
+    private static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
+    private static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
+    private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -62,8 +64,8 @@ public class ReviewManagementAPINotFoundTest {
     @SneakyThrows
     void insertReview_bookNotFound_returnsNotFound() {
         // given
-        BookNotFoundException exception = new BookNotFoundException(BookTestData.BOOK_ISBN
-                , SharedServiceTestData.SKOPJE_OFFICE_NAME);
+        BookNotFoundException exception =
+                new BookNotFoundException(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         given(reviewManagementService.insertReview(any())).willThrow(exception);
 
@@ -76,8 +78,8 @@ public class ReviewManagementAPINotFoundTest {
     @SneakyThrows
     void updateReview_reviewNotFound_returnsNotFound() {
         // given
-        ReviewNotFoundException exception = new ReviewNotFoundException(UserTestData.USER_EMAIL,
-                BookTestData.BOOK_ISBN);
+        ReviewNotFoundException exception =
+                new ReviewNotFoundException(UserTestData.USER_EMAIL, BookTestData.BOOK_ISBN);
 
         given(reviewManagementService.updateReview(any())).willThrow(exception);
 
@@ -95,9 +97,9 @@ public class ReviewManagementAPINotFoundTest {
         given(reviewManagementService.deleteReviewById(ReviewTestData.REVIEW_ID)).willThrow(exception);
 
         //when & then
-        mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + ReviewTestData.REVIEW_ID))
+        mockMvc.perform(delete(DELETE_REVIEW_PATH + ReviewTestData.REVIEW_ID))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE).value(exception.getMessage()));
     }
 
     private void performRequestAndExpectNotFound(boolean isPost, String path, ReviewRequestDTO reviewRequestDTO,
@@ -106,6 +108,6 @@ public class ReviewManagementAPINotFoundTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewRequestDTO)))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exceptionMessage));
+                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE).value(exceptionMessage));
     }
 }

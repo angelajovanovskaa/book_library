@@ -31,6 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ReviewController.class)
 class ReviewQueryAPISuccessTest {
     private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String GET_REVIEW_PATH = "/reviews/";
+    private static final String TOP_REVIEWS_PATH = REVIEW_BASE_PATH + "/top-reviews";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -72,7 +74,7 @@ class ReviewQueryAPISuccessTest {
         given(reviewQueryService.getReviewById(any())).willReturn(ReviewTestData.getReviewResponseDTO());
 
         // when
-        String jsonResult = performRequestAndExpectSuccess(REVIEW_BASE_PATH + "/" + ReviewTestData.REVIEW_ID, null);
+        String jsonResult = performRequestAndExpectSuccess(GET_REVIEW_PATH + ReviewTestData.REVIEW_ID, null);
 
         ReviewResponseDTO actualResult = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });
@@ -93,7 +95,7 @@ class ReviewQueryAPISuccessTest {
                 List.of(ReviewTestData.getReviewResponseDTO()));
 
         // when
-        String jsonResult = performRequestAndExpectSuccess(REVIEW_BASE_PATH + "/top-reviews", params);
+        String jsonResult = performRequestAndExpectSuccess(TOP_REVIEWS_PATH, params);
 
         List<ReviewResponseDTO> actualResult = objectMapper.readValue(jsonResult, new TypeReference<>() {
         });

@@ -24,10 +24,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewManagementAPISuccessTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
-    public static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
-    public static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
+class ReviewManagementAPISuccessTest {
+    private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String REVIEW_DELETE_PATH = REVIEW_BASE_PATH + "/delete/";
+    private static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
+    private static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -79,18 +80,15 @@ public class ReviewManagementAPISuccessTest {
         // given
         given(reviewManagementService.deleteReviewById(any())).willReturn(ReviewTestData.REVIEW_ID);
 
-        // when
-        String jsonResult =
-                mockMvc.perform(delete(REVIEW_BASE_PATH + "/delete/" + ReviewTestData.REVIEW_ID))
-                        .andExpect(status().isOk())
-                        .andExpect(content().string("Successfully deleted review with id " + ReviewTestData.REVIEW_ID))
-                        .andReturn().getResponse().getContentAsString();
-
-        // then
-        assertThat(jsonResult).isEqualTo("Successfully deleted review with id " + ReviewTestData.REVIEW_ID);
+        // when & then
+        mockMvc.perform(delete(REVIEW_DELETE_PATH + ReviewTestData.REVIEW_ID))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Successfully deleted review with id " + ReviewTestData.REVIEW_ID))
+                .andReturn().getResponse().getContentAsString();
     }
 
-    private String performRequestAndExpectSuccess(boolean isPost, String path, ReviewRequestDTO reviewRequestDTO) throws Exception {
+    private String performRequestAndExpectSuccess(boolean isPost, String path, ReviewRequestDTO reviewRequestDTO)
+            throws Exception {
         return mockMvc.perform((isPost ? post(path) : put(path))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(reviewRequestDTO)))

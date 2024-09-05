@@ -25,10 +25,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ReviewQueryAPIInvalidQueryParamsTest {
     private static final String REVIEW_BASE_PATH = "/reviews";
     private static final String TOP_REVIEWS_PATH = REVIEW_BASE_PATH + "/top-reviews";
-
     private static final String ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK = "$.errorFields['getReviewsForBook.%s']";
     private static final String ERROR_FIELD_TEMPLATE_TOP_REVIEWS = "$.errorFields['getTopReviewsForBook.%s']";
-    private static final String DETAIL = "$.detail";
+    private static final String DETAIL_JSON_PATH = "$.detail";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -42,7 +41,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewsForBook_officeNameParamIsEmpty_returnsBadRequest(String officeName) {
+    void getReviewsForBook_officeNameParamIsBlank_returnsBadRequest(String officeName) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, officeName);
@@ -50,7 +49,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "officeName"),
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, SharedControllerTestData.OFFICE_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -64,7 +63,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "officeName"),
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, SharedControllerTestData.OFFICE_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -85,7 +84,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getReviewsForBook_isbnParamIsEmpty_returnsBadRequest(String isbn) {
+    void getReviewsForBook_isbnParamIsBlank_returnsBadRequest(String isbn) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -93,7 +92,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "isbn"),
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, SharedControllerTestData.BOOK_ISBN_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -107,7 +106,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, "isbn"),
+                String.format(ERROR_FIELD_TEMPLATE_REVIEWS_FOR_BOOK, SharedControllerTestData.BOOK_ISBN_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -120,13 +119,13 @@ class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, null);
 
         // when & then
-        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params, DETAIL, ErrorMessages.ISBN_NOT_PRESENT);
+        performRequestAndExpectBadRequest(REVIEW_BASE_PATH, params, DETAIL_JSON_PATH, ErrorMessages.ISBN_NOT_PRESENT);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getTopReviewsForBook_officeNameParamIsEmpty_returnsBadRequest(String officeName) {
+    void getTopReviewsForBook_officeNameParamIsBlank_returnsBadRequest(String officeName) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, officeName);
@@ -134,7 +133,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "officeName"),
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, SharedControllerTestData.OFFICE_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -148,7 +147,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "officeName"),
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, SharedControllerTestData.OFFICE_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -161,13 +160,14 @@ class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
         // when & then
-        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, DETAIL_JSON_PATH,
+                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void getTopReviewsForBook_isbnParamIsEmpty_returnsBadRequest(String isbn) {
+    void getTopReviewsForBook_isbnParamIsBlank_returnsBadRequest(String isbn) {
         // given
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
@@ -175,7 +175,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "isbn"),
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, SharedControllerTestData.BOOK_ISBN_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -189,7 +189,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
 
         // when & then
         performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params,
-                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, "isbn"),
+                String.format(ERROR_FIELD_TEMPLATE_TOP_REVIEWS, SharedControllerTestData.BOOK_ISBN_PARAM),
                 ErrorMessages.MUST_NOT_BE_BLANK);
     }
 
@@ -202,7 +202,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, null);
 
         // when & then
-        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, DETAIL, ErrorMessages.ISBN_NOT_PRESENT);
+        performRequestAndExpectBadRequest(TOP_REVIEWS_PATH, params, DETAIL_JSON_PATH, ErrorMessages.ISBN_NOT_PRESENT);
     }
 
     private void performRequestAndExpectBadRequest(String path, MultiValueMap<String, String> params,

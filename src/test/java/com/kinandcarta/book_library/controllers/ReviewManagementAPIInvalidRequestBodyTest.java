@@ -22,14 +22,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewManagementAPIInvalidRequestBodyTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
-    public static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
-    public static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
-    public static final String ERROR_FIELD_RATING = "$.errorFields.rating";
+class ReviewManagementAPIInvalidRequestBodyTest {
+    private static final String REVIEW_BASE_PATH = "/reviews";
+    private static final String INSERT_REVIEW_PATH = REVIEW_BASE_PATH + "/insert";
+    private static final String UPDATE_REVIEW_PATH = REVIEW_BASE_PATH + "/update";
+    private static final String ERROR_FIELD_RATING = "$.errorFields.rating";
     private static final String ERROR_FIELD_MESSAGE = "$.errorFields.message";
     private static final String ERROR_FIELD_EMAIL = "$.errorFields.userEmail";
     private static final String ERROR_FIELD_ISBN = "$.errorFields.bookISBN";
+    private static final String REVIEW_REQUEST_DTO_WITH_RATING_OUT_OF_BOUNDS =
+            "{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", \"rating\": 0}";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -46,10 +48,9 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_bookIsbnIsEmpty_returnsBadRequest(String invalidIsbn) {
+    void insertReview_bookIsbnIsBlank_returnsBadRequest(String invalidIsbn) {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_ISBN,
@@ -60,8 +61,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_bookIsbnIsEmpty_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("", "email", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("", "email", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_ISBN,
@@ -72,8 +72,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_bookIsbnIsNull_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(null, "email", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(null, "email", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_ISBN,
@@ -83,10 +82,9 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_userEmailIsEmpty_returnsBadRequest(String invalidEmail) {
+    void insertReview_userEmailIsBlank_returnsBadRequest(String invalidEmail) {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_EMAIL,
@@ -97,8 +95,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_userEmailIsEmpty_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_EMAIL,
@@ -109,8 +106,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_userEmailIsNull_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", null, "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", null, "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_EMAIL,
@@ -120,10 +116,9 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void insertReview_messageIsEmpty_returnsBadRequest(String invalidMessage) {
+    void insertReview_messageIsBlank_returnsBadRequest(String invalidMessage) {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage, 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_MESSAGE,
@@ -134,8 +129,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_messageIsEmpty_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", ""
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", "", 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_MESSAGE,
@@ -146,8 +140,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_messageIsNull_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", null
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", null, 5));
 
         // when & then
         performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_MESSAGE,
@@ -158,21 +151,19 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertReview_ratingIsOutOfBounds_returnsBadRequest() {
         // given
-        String requestBody = "{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", " +
-                "\"rating\": 0}";
 
         // when & then
-        performRequestAndExpectBadRequest(INSERT_REVIEW_PATH, requestBody, ERROR_FIELD_RATING,
-                ErrorMessages.MUST_BE_GREATER_THAN_1, true);
+        performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, REVIEW_REQUEST_DTO_WITH_RATING_OUT_OF_BOUNDS,
+                ERROR_FIELD_RATING,
+                ErrorMessages.MUST_BE_GREATER_THAN_1, false);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_bookIsbnIsEmpty_returnsBadRequest(String invalidIsbn) {
+    void updateReview_bookIsbnIsBlank_returnsBadRequest(String invalidIsbn) {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(invalidIsbn, "email", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_ISBN,
@@ -183,8 +174,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_bookIsbnIsEmpty_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("", "email", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("", "email", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_ISBN,
@@ -195,8 +185,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_bookIsbnIsNull_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(null, "email", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO(null, "email", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_ISBN,
@@ -206,10 +195,9 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_userEmailIsEmpty_returnsBadRequest(String invalidEmail) {
+    void updateReview_userEmailIsBlank_returnsBadRequest(String invalidEmail) {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", invalidEmail, "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_EMAIL,
@@ -220,8 +208,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_userEmailIsEmpty_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "", "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "", "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_EMAIL,
@@ -232,8 +219,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_userEmailIsNull_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", null, "message"
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", null, "message", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_EMAIL,
@@ -243,10 +229,9 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @ParameterizedTest
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
-    void updateReview_messageIsEmpty_returnsBadRequest(String invalidMessage) {
+    void updateReview_messageIsBlank_returnsBadRequest(String invalidMessage) {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", invalidMessage, 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_MESSAGE,
@@ -257,8 +242,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_messageIsEmpty_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", ""
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", "", 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_MESSAGE,
@@ -269,8 +253,7 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_messageIsNull_returnsBadRequest() {
         // given
-        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", null
-                , 5));
+        String requestBody = objectMapper.writeValueAsString(new ReviewRequestDTO("isbn", "email", null, 5));
 
         // when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_MESSAGE,
@@ -281,11 +264,10 @@ public class ReviewManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void updateReview_ratingIsOutOfBounds_returnsBadRequest() {
         // given
-        String requestBody = "{\"bookISBN\": \"isbn\", \"userEmail\": \"email\", \"message\": \"message\", " +
-                "\"rating\": 0}";
 
         // when & then
-        performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, requestBody, ERROR_FIELD_RATING,
+        performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, REVIEW_REQUEST_DTO_WITH_RATING_OUT_OF_BOUNDS,
+                ERROR_FIELD_RATING,
                 ErrorMessages.MUST_BE_GREATER_THAN_1, false);
     }
 

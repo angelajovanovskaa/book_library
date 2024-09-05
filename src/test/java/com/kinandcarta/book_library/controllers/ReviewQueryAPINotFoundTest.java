@@ -17,8 +17,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
-public class ReviewQueryAPINotFoundTest {
-    public static final String REVIEW_BASE_PATH = "/reviews";
+class ReviewQueryAPINotFoundTest {
+    private static final String GET_REVIEW_PATH = "/reviews/";
+    private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
 
     @MockBean
     private ReviewQueryService reviewQueryService;
@@ -38,8 +39,8 @@ public class ReviewQueryAPINotFoundTest {
         given(reviewQueryService.getReviewById(ReviewTestData.REVIEW_ID)).willThrow(exception);
 
         //when & then
-        mockMvc.perform(get(REVIEW_BASE_PATH + "/" + ReviewTestData.REVIEW_ID))
+        mockMvc.perform(get(GET_REVIEW_PATH + ReviewTestData.REVIEW_ID))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.generalExceptionMessage").value(exception.getMessage()));
+                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE).value(exception.getMessage()));
     }
 }
