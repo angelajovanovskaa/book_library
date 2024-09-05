@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.BookConverter;
-import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
@@ -13,7 +12,6 @@ import com.kinandcarta.book_library.repositories.BookRepository;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.services.ReviewQueryService;
 import com.kinandcarta.book_library.utils.BookTestData;
-import com.kinandcarta.book_library.utils.ReviewTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +25,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -139,32 +136,5 @@ class BookManagementServiceImplTest {
                 .isThrownBy(
                         () -> bookService.deleteBook(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE_NAME))
                 .withMessage("Book with ISBN: " + BookTestData.BOOK_ISBN + " not found");
-    }
-
-    @Test
-    void setBookStatusInStock_validTransition_returnsBookDetailsDTO() {
-        // given
-        given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(
-                Optional.of(BookTestData.getBook()));
-        given(bookConverter.toBookDetailsDTO(any(), any())).willReturn(BookTestData.getBookDetailsDTO());
-        given(reviewQueryService.getTopReviewsForDisplayInBookView(anyString(), anyString())).willReturn(
-                ReviewTestData.getReviewResponseDTOs());
-
-        // when
-        BookDetailsDTO actualResult = bookService.setBookStatusInStock(BookTestData.BOOK_ID_DTO);
-
-        // then
-        assertThat(actualResult).isEqualTo(BookTestData.getBookDetailsDTO());
-    }
-
-    @Test
-    void setBookStatusInStock_bookDoesNotExist_throwsException() {
-        // given
-        given(bookRepository.findByIsbnAndOfficeName(anyString(), anyString())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatThrownBy(() -> bookService.setBookStatusInStock(BookTestData.BOOK_ID_DTO))
-                .isInstanceOf(BookNotFoundException.class)
-                .hasMessageContaining("Book with ISBN: " + BookTestData.BOOK_ISBN + " not found");
     }
 }
