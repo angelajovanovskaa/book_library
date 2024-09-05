@@ -78,11 +78,10 @@ public class UserController {
     public ResponseEntity<String> authenticateAndGetToken(@Valid @RequestBody UserLoginRequestDTO authRequest) throws IOException {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequest.userEmail(), authRequest.userPassword()));
-        if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok(jwtService.generateToken(authRequest.userEmail()));
-        } else {
+        if (!authentication.isAuthenticated()) {
             throw new InvalidUserCredentialsException();
         }
+        return ResponseEntity.ok(jwtService.generateToken(authRequest.userEmail()));
     }
 
     @PatchMapping("/update-data")

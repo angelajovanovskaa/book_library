@@ -7,9 +7,13 @@ import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.services.UserQueryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -22,7 +26,7 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class UserQueryServiceImpl implements UserQueryService {
+public class UserQueryServiceImpl implements UserQueryService, UserDetailsService {
     private final UserRepository userRepository;
     private final UserConverter userConverter;
 
@@ -69,5 +73,19 @@ public class UserQueryServiceImpl implements UserQueryService {
         User user = userRepository.getReferenceById(userId);
 
         return userConverter.toUserProfileDTO(user);
+    }
+
+    /**
+     * This method is used for login in the user in the application<br>
+     * All the users will have access to this method.
+     *
+     * @param email needed for login.
+     * @return {@code fullName} of the logged in {@link User}.
+     */
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        return user.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 }

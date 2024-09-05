@@ -20,8 +20,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -86,29 +84,6 @@ class UserManagementServiceImplTest {
         assertThatExceptionOfType(EmailAlreadyInUseException.class)
                 .isThrownBy(() -> userManagementService.registerUser(userRegistrationDTO))
                 .withMessage("The email: " + UserTestData.USER_EMAIL + " is already in use.");
-    }
-
-    @Test
-    void loadUserByUsername_loginIsValid_returnsConfirmationMessage() {
-        // given
-        given(userRepository.findByEmail(anyString())).willReturn(Optional.of(UserTestData.getUser()));
-
-        // when
-        UserDetails result = userManagementService.loadUserByUsername(UserTestData.USER_EMAIL);
-
-        // then
-        assertThat(result).isEqualTo(UserTestData.getUser());
-    }
-
-    @Test
-    void loadUserByUsername_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
-        // given
-        given(userRepository.findByEmail(anyString())).willReturn(Optional.empty());
-
-        // when & then
-        assertThatExceptionOfType(UsernameNotFoundException.class)
-                .isThrownBy(() -> userManagementService.loadUserByUsername(UserTestData.USER_EMAIL))
-                .withMessage("User not found: " + UserTestData.USER_EMAIL);
     }
 
     @Test

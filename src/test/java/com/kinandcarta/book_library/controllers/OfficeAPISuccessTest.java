@@ -2,8 +2,10 @@ package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.dtos.OfficeResponseDTO;
 import com.kinandcarta.book_library.services.impl.OfficeQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,12 @@ class OfficeAPISuccessTest {
 
     @MockBean
     private OfficeQueryServiceImpl officeQueryService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private ObjectMapper objectMapper;

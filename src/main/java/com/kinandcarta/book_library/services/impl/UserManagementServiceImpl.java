@@ -21,10 +21,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -42,14 +38,14 @@ import java.util.UUID;
  */
 @Service
 @RequiredArgsConstructor
-public class UserManagementServiceImpl implements UserManagementService, UserDetailsService {
+public class UserManagementServiceImpl implements UserManagementService {
     private static final String IMAGE_PATH = "classpath:image/profile-picture.png";
 
     private final UserRepository userRepository;
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
     private final OfficeRepository officeRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * This method is used for registering a new user<br>
@@ -80,20 +76,6 @@ public class UserManagementServiceImpl implements UserManagementService, UserDet
 
         userRepository.save(user);
         return userConverter.toUserWithRoleDTO(user);
-    }
-
-    /**
-     * This method is used for login in the user in the application<br>
-     * All the users will have access to this method.
-     *
-     * @param email needed for login.
-     * @return {@code fullName} of the logged in {@link User}.
-     */
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByEmail(email);
-
-        return user.orElseThrow(() -> new UsernameNotFoundException("User not found: " + email));
     }
 
     /**
@@ -160,7 +142,6 @@ public class UserManagementServiceImpl implements UserManagementService, UserDet
      * @return A message confirming that the delete operation is successful.
      */
     @Override
-    @Transactional
     public String deleteAccount(UUID userId) {
         userRepository.deleteById(userId);
 

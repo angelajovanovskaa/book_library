@@ -1,8 +1,10 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import lombok.SneakyThrows;
@@ -34,6 +36,12 @@ class BookManagementAPINotFoundTest {
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     MockMvc mockMvc;

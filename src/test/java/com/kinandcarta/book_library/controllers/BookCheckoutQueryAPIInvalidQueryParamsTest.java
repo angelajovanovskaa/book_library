@@ -1,7 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import lombok.SneakyThrows;
@@ -38,6 +40,12 @@ class BookCheckoutQueryAPIInvalidQueryParamsTest {
 
     @MockBean
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private MockMvc mockMvc;
