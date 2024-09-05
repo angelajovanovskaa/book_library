@@ -49,7 +49,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "office_name")
     @ToString.Exclude
     private Office office;
