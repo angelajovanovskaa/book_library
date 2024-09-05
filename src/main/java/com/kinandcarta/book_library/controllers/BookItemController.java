@@ -7,6 +7,7 @@ import com.kinandcarta.book_library.services.BookItemQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,9 +42,9 @@ public class BookItemController {
 
     @PostMapping("/insert")
     ResponseEntity<BookItemDTO> createBookItem(@Valid @RequestBody BookIdDTO bookIdDTO) {
-        BookItemDTO result = bookItemManagementService.insertBookItem(bookIdDTO);
+        BookItemDTO response = bookItemManagementService.insertBookItem(bookIdDTO);
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/delete/{bookItemId}")

@@ -92,9 +92,12 @@ public class BookController {
     }
 
     @GetMapping("/by-genres")
-    ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(@RequestParam @NotEmpty String[] genres,
-                                                          @RequestParam @NotBlank String officeName) {
-        List<BookDisplayDTO> result = bookQueryService.getBooksByGenresContaining(genres, officeName);
+    ResponseEntity<List<BookDisplayDTO>> getBooksByGenres(
+            @RequestParam @NotEmpty List<@NotBlank String> genres,
+            @RequestParam @NotBlank String officeName) {
+        String[] genresArray = genres.toArray(new String[0]);
+
+        List<BookDisplayDTO> result = bookQueryService.getBooksByGenresContaining(genresArray, officeName);
 
         return ResponseEntity.ok(result);
     }

@@ -5,6 +5,7 @@ import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.dtos.BookIdDTO;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class BookManagementAPISuccessTest {
         // given
         given(bookManagementService.deleteBook(anyString(), anyString())).willReturn(BookTestData.getBookIdDto());
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsWithOfficeAndISBN();
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsWithOfficeAndISBN();
 
         // when
         String jsonResult = mockMvc.perform(delete(DELETE_BOOK_PATH)
