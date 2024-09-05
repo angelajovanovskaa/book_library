@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
-import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
+import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ class BookManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertBook_paramIsbnIsBlank_returnsBadRequest(String isbn) {
         // given
-        BookInsertRequestDTO bookInsertRequestDTO = BookQueryParamsTestData.createBookInsertRequestDTOPassingIsbn(isbn);
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(isbn);
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
@@ -56,7 +56,7 @@ class BookManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertBook_paramIsbnIsEmpty_returnsBadRequest() {
         // given
-        BookInsertRequestDTO bookInsertRequestDTO = BookQueryParamsTestData.createBookInsertRequestDTOPassingIsbn("");
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn("");
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
@@ -67,7 +67,7 @@ class BookManagementAPIInvalidRequestBodyTest {
     @SneakyThrows
     void insertBook_paramIsbnIsNull_returnsBadRequest() {
         // given
-        BookInsertRequestDTO bookInsertRequestDTO = BookQueryParamsTestData.createBookInsertRequestDTOPassingIsbn(null);
+        BookInsertRequestDTO bookInsertRequestDTO = BookTestData.createBookInsertRequestDTOPassingIsbn(null);
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_ISBN,
@@ -80,7 +80,7 @@ class BookManagementAPIInvalidRequestBodyTest {
     void insertBook_paramOfficeNameIsBlank_returnsBadRequest(String officeName) {
         // given
         BookInsertRequestDTO bookInsertRequestDTO =
-                BookQueryParamsTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
+                BookTestData.createBookInsertRequestDTOPassingOfficeName(officeName);
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,
@@ -92,7 +92,7 @@ class BookManagementAPIInvalidRequestBodyTest {
     void insertBook_paramOfficeNameIsEmpty_returnsBadRequest() {
         // given
         BookInsertRequestDTO bookInsertRequestDTO =
-                BookQueryParamsTestData.createBookInsertRequestDTOPassingOfficeName("");
+                BookTestData.createBookInsertRequestDTOPassingOfficeName("");
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,
@@ -104,7 +104,7 @@ class BookManagementAPIInvalidRequestBodyTest {
     void insertBook_paramOfficeNameIsNull_returnsBadRequest() {
         // given
         BookInsertRequestDTO bookInsertRequestDTO =
-                BookQueryParamsTestData.createBookInsertRequestDTOPassingOfficeName(null);
+                BookTestData.createBookInsertRequestDTOPassingOfficeName(null);
 
         // when & then
         performPostAndExpectBadRequest(INSERT_BOOK_PATH, bookInsertRequestDTO, ERROR_FIELD_OFFICE_NAME,

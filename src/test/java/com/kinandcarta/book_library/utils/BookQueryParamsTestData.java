@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.utils;
 
-import com.kinandcarta.book_library.dtos.BookInsertRequestDTO;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -84,20 +83,6 @@ public class BookQueryParamsTestData {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, "");
         return params;
-    }
-
-    public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
-        return new BookInsertRequestDTO(isbn, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-    }
-
-    public static BookInsertRequestDTO createBookInsertRequestDTOPassingOfficeName(String officeName) {
-        return new BookInsertRequestDTO(BookTestData.BOOK_ISBN, BookTestData.BOOK_TITLE,
-                BookTestData.BOOK_DESCRIPTION, BookTestData.BOOK_LANGUAGE, BookTestData.BOOK_GENRES,
-                BookTestData.BOOK_TOTAL_PAGES, BookTestData.BOOK_IMAGE, BookTestData.BOOK_RATING,
-                BookTestData.AUTHOR_DTOS, officeName);
     }
 
     public MultiValueMap<String, String> createQueryParamsForGetPaginatedBook() {
