@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -114,15 +113,6 @@ public class BookController {
     public ResponseEntity<BookIdDTO> deleteBook(@RequestParam @NotBlank String isbn,
                                                 @RequestParam @NotBlank String officeName) {
         BookIdDTO response = bookManagementService.deleteBook(isbn, officeName);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @PatchMapping("/set-book-in-stock")
-    public ResponseEntity<BookDetailsDTO> setBookStatus(@RequestParam @NotBlank String isbn,
-                                                        @RequestParam @NotBlank String officeName) {
-        BookIdDTO bookIdDTO = new BookIdDTO(isbn, officeName);
-        BookDetailsDTO response = bookManagementService.setBookStatusInStock(bookIdDTO);
 
         return ResponseEntity.ok(response);
     }
