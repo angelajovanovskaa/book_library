@@ -56,14 +56,14 @@ public class ReviewController {
     }
 
     @PostMapping("/insert")
-    public ResponseEntity<ReviewResponseDTO> insertReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
+    public ResponseEntity<ReviewResponseDTO> insertReview(@RequestBody @Valid ReviewRequestDTO reviewRequestDTO) {
         ReviewResponseDTO response = reviewManagementService.insertReview(reviewRequestDTO);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<ReviewResponseDTO> updateReview(@Valid @RequestBody ReviewRequestDTO reviewRequestDTO) {
+    public ResponseEntity<ReviewResponseDTO> updateReview(@RequestBody @Valid ReviewRequestDTO reviewRequestDTO) {
         ReviewResponseDTO response = reviewManagementService.updateReview(reviewRequestDTO);
 
         return ResponseEntity.ok(response);
