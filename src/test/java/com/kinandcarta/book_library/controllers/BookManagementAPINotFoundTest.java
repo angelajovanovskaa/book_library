@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.controllers;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ class BookManagementAPINotFoundTest {
 
         given(bookManagementService.deleteBook(anyString(), anyString())).willThrow(bookNotFoundException);
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsInvalidIsbn();
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsInvalidIsbn();
 
         // when & then
         mockMvc.perform(delete(DELETE_BOOK_PATH)

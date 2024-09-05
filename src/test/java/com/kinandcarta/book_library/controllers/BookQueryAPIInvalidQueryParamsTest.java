@@ -3,7 +3,6 @@ package com.kinandcarta.book_library.controllers;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
-import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -98,7 +97,7 @@ class BookQueryAPIInvalidQueryParamsTest {
     @SneakyThrows
     void getBook_paramIsbnIsEmpty_returnsBadRequest() {
         // given
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn("");
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsIsbn("");
 
         // when & then
         performGetAndExpectBadRequest(GET_BOOK_PATH, queryParamsValues, ERROR_FIELD_GET_BOOK_ISBN,

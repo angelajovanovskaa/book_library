@@ -2,7 +2,7 @@ package com.kinandcarta.book_library.controllers;
 
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
-import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ class BookManagementAPIQueryParamsMissingTest {
     @SneakyThrows
     void deleteBook_paramIsbnIsBlank_returnsBadRequest(String isbn) {
         // given
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(isbn);
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsIsbn(isbn);
 
         // when & then
         performDeleteAndExpectBadRequest(DELETE_BOOK_PATH, queryParamsValues,
@@ -52,7 +52,7 @@ class BookManagementAPIQueryParamsMissingTest {
     @SneakyThrows
     void deleteBook_paramIsbnIsEmpty_returnsBadRequest() {
         // given
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn("");
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsIsbn("");
 
         // when & then
         performDeleteAndExpectBadRequest(DELETE_BOOK_PATH, queryParamsValues,
@@ -63,7 +63,7 @@ class BookManagementAPIQueryParamsMissingTest {
     @SneakyThrows
     void deleteBook_paramIsbnIsNull_returnsBadRequest() {
         // given
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsIsbn(null);
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsIsbn(null);
 
         // when & then
         mockMvc.perform(delete(DELETE_BOOK_PATH)
