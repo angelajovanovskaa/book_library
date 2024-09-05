@@ -8,6 +8,10 @@ import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -44,11 +49,23 @@ class BookQueryAPIQueryParamsMissingTest {
     @Autowired
     MockMvc mockMvc;
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(
+            strings = {BOOK_PATH, GET_AVAILABLE_BOOK_PATH, GET_REQUESTED_BOOK_PATH,
+                    GET_PAGINATED_AVAILABLE_BOOK_PATH})
     @SneakyThrows
-    void getBooks_paramOfficeNameIsMissing_returnsBadRequest() {
+    void getOperation_paramOfficeNameIsMissing_returnsBadRequest(String path) {
         // given & when & then
-        performGetRequestAndExpectBadRequest(BOOK_PATH, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
+        performGetRequestAndExpectBadRequest(path, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
+    }
+
+    @ParameterizedTest
+    @MethodSource("providePathsForGetOperationsWithMissingOfficeParam")
+    @SneakyThrows
+    void getOperation_WithVariousParams_paramOfficeNameIsMissing_returnsBadRequestForQueryParams(String path,
+                                                                               String param, String value) {
+        // given & when & then
+        performGetRequestAndExpectBadRequest(path, param, value, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
@@ -56,36 +73,6 @@ class BookQueryAPIQueryParamsMissingTest {
     void getBook_paramIsbnIsMissing_returnsBadRequest() {
         // given & when & then
         performGetRequestAndExpectBadRequest(GET_BOOK_PATH, DETAIL, ErrorMessages.ISBN_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
-    void getBook_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_BOOK_PATH, SharedControllerTestData.BOOK_ISBN_PARAM,
-                BookTestData.BOOK_ISBN, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
-    void getAvailableBooks_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_AVAILABLE_BOOK_PATH, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
-    void getRequestedBooks_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_REQUESTED_BOOK_PATH, DETAIL, ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
-    void getPaginatedAvailableBooks_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_PAGINATED_AVAILABLE_BOOK_PATH, DETAIL,
-                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
@@ -100,40 +87,12 @@ class BookQueryAPIQueryParamsMissingTest {
 
     @Test
     @SneakyThrows
-    void getBooksBySearchTitle_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_BY_TITLE_BOOK_PATH,
-                SharedControllerTestData.BOOK_TITLE_PARAM,
-                BookTestData.BOOK_TITLE, DETAIL,
-                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
     void getBooksByLanguage_paramLanguageIsMissing_returnsBadRequest() {
         // given & when & then
         performGetRequestAndExpectBadRequest(GET_BY_LANGUAGE_BOOK_PATH,
                 SharedControllerTestData.OFFICE_PARAM,
                 SharedServiceTestData.SKOPJE_OFFICE_NAME, DETAIL,
                 ErrorMessages.LANGUAGE_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
-    void getBooksByLanguage_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_BY_LANGUAGE_BOOK_PATH, LANGUAGE_PARAM,
-                BookTestData.BOOK_LANGUAGE, DETAIL,
-                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
-    }
-
-    @Test
-    @SneakyThrows
-    void getBooksByGenres_paramOfficeNameIsMissing_returnsBadRequest() {
-        // given & when & then
-        performGetRequestAndExpectBadRequest(GET_BY_GENRES_BOOK_PATH, GENRES_PARAM,
-                Arrays.toString(BookTestData.BOOK_GENRES), DETAIL,
-                ErrorMessages.OFFICE_NAME_NOT_PRESENT);
     }
 
     @Test
@@ -161,5 +120,17 @@ class BookQueryAPIQueryParamsMissingTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_PROBLEM_JSON))
                 .andExpect(jsonPath(errorField).value(errorMessages));
+    }
+
+    private static Stream<Arguments> providePathsForGetOperationsWithMissingOfficeParam() {
+        return Stream.of(
+                Arguments.of(GET_BOOK_PATH, SharedControllerTestData.BOOK_ISBN_PARAM,
+                        BookTestData.BOOK_ISBN),
+                Arguments.of(GET_BY_LANGUAGE_BOOK_PATH, LANGUAGE_PARAM, BookTestData.BOOK_LANGUAGE),
+                Arguments.of(GET_BY_GENRES_BOOK_PATH, GENRES_PARAM,
+                        Arrays.toString(BookTestData.BOOK_GENRES)),
+                Arguments.of(GET_BY_TITLE_BOOK_PATH, SharedControllerTestData.BOOK_TITLE_PARAM,
+                        BookTestData.BOOK_TITLE)
+        );
     }
 }

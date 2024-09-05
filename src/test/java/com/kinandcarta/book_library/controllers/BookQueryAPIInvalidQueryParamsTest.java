@@ -165,9 +165,10 @@ class BookQueryAPIInvalidQueryParamsTest {
                 .andExpect(jsonPath(errorField).value(errorMessage));
     }
 
-    static Stream<Arguments> providePathsForGetOperationsWithNullOfficeParam() {
+    private static Stream<Arguments> providePathsForGetOperationsWithNullOfficeParam() {
         return Stream.of(
-                Arguments.of(GET_BOOK_PATH, BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName(null)),
+                Arguments.of(GET_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName(null)),
                 Arguments.of(GET_BY_LANGUAGE_BOOK_PATH,
                         BookQueryParamsTestData.createQueryParamsForGetByLanguageWithCustomOfficeName(null)),
                 Arguments.of(GET_BY_GENRES_BOOK_PATH,
@@ -177,17 +178,21 @@ class BookQueryAPIInvalidQueryParamsTest {
                 Arguments.of(BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithNullOfficeName()),
                 Arguments.of(GET_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithNullOfficeName()),
                 Arguments.of(GET_REQUESTED_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithNullOfficeName()),
-                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithNullOfficeName())
+                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithNullOfficeName())
         );
     }
 
-    static Stream<Arguments> providePathsForGetOperationsWithBlankOfficeParam() {
+    private static Stream<Arguments> providePathsForGetOperationsWithBlankOfficeParam() {
         return Stream.of(
-                Arguments.of(GET_BOOK_PATH, BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName("  "),
+                Arguments.of(GET_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName("  "),
                         ERROR_FIELD_GET_BOOK_OFFICE_NAME),
-                Arguments.of(GET_BOOK_PATH, BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName("\t"),
+                Arguments.of(GET_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName("\t"),
                         ERROR_FIELD_GET_BOOK_OFFICE_NAME),
-                Arguments.of(GET_BOOK_PATH, BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName("\n"),
+                Arguments.of(GET_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName("\n"),
                         ERROR_FIELD_GET_BOOK_OFFICE_NAME),
                 Arguments.of(GET_BY_TITLE_BOOK_PATH,
                         BookQueryParamsTestData.createQueryParamsForGetByTitleWithCustomOfficeName("  "),
@@ -222,28 +227,37 @@ class BookQueryAPIInvalidQueryParamsTest {
                         ERROR_FIELD_GET_BOOKS_OFFICE_NAME),
                 Arguments.of(BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
                         ERROR_FIELD_GET_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("  "),
+                Arguments.of(GET_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("  "),
                         ERROR_FIELD_GET_AVAILABLE_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\t"),
+                Arguments.of(GET_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\t"),
                         ERROR_FIELD_GET_AVAILABLE_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
+                Arguments.of(GET_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
                         ERROR_FIELD_GET_AVAILABLE_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_REQUESTED_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("  "),
+                Arguments.of(GET_REQUESTED_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("  "),
                         ERROR_FIELD_GET_REQUESTED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_REQUESTED_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\t"),
+                Arguments.of(GET_REQUESTED_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\t"),
                         ERROR_FIELD_GET_REQUESTED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_REQUESTED_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
+                Arguments.of(GET_REQUESTED_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
                         ERROR_FIELD_GET_REQUESTED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("  "),
+                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("  "),
                         ERROR_FIELD_GET_PAGINATED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\t"),
+                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\t"),
                         ERROR_FIELD_GET_PAGINATED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
+                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithBlankOfficeName("\n"),
                         ERROR_FIELD_GET_PAGINATED_BOOKS_OFFICE_NAME)
         );
     }
 
-    static Stream<Arguments> providePathsForGetOperationsWithEmptyOfficeParam() {
+    private static Stream<Arguments> providePathsForGetOperationsWithEmptyOfficeParam() {
         return Stream.of(
                 Arguments.of(BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithEmptyOfficeName(),
                         ERROR_FIELD_GET_BOOKS_OFFICE_NAME),
@@ -251,9 +265,11 @@ class BookQueryAPIInvalidQueryParamsTest {
                         ERROR_FIELD_GET_AVAILABLE_BOOKS_OFFICE_NAME),
                 Arguments.of(GET_REQUESTED_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithEmptyOfficeName(),
                         ERROR_FIELD_GET_REQUESTED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH, BookQueryParamsTestData.createQueryParamsWithEmptyOfficeName(),
+                Arguments.of(GET_PAGINATED_AVAILABLE_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsWithEmptyOfficeName(),
                         ERROR_FIELD_GET_PAGINATED_BOOKS_OFFICE_NAME),
-                Arguments.of(GET_BOOK_PATH, BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName(""),
+                Arguments.of(GET_BOOK_PATH,
+                        BookQueryParamsTestData.createQueryParamsForGetByBookWithCustomOfficeName(""),
                         ERROR_FIELD_GET_BOOK_OFFICE_NAME),
                 Arguments.of(GET_BY_TITLE_BOOK_PATH,
                         BookQueryParamsTestData.createQueryParamsForGetByTitleWithCustomOfficeName(""),
