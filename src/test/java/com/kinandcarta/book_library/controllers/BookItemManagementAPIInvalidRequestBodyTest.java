@@ -26,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookItemManagementAPIInvalidRequestBodyTest {
     private static final String BOOK_ITEM_PATH = "/book-items";
     private static final String INSERT_BOOK_ITEM_PATH = BOOK_ITEM_PATH + "/insert";
+    private static final String ERROR_FIELD_ISBN_PATH = "$.errorFields.isbn";
+    private static final String ERROR_FIELD_OFFICE_NAME_PATH = "$.errorFields.officeName";
 
     @Autowired
     private MockMvc mockMvc;
@@ -87,7 +89,7 @@ class BookItemManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.isbn").value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(ERROR_FIELD_ISBN_PATH).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 
     private void performPostAndExpectBadRequestForInvalidOfficeName(String officeName) throws Exception {
@@ -100,6 +102,6 @@ class BookItemManagementAPIInvalidRequestBodyTest {
                         .content(objectMapper.writeValueAsString(bookIdDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.errorFields.officeName").value(ErrorMessages.MUST_NOT_BE_BLANK));
+                .andExpect(jsonPath(ERROR_FIELD_OFFICE_NAME_PATH).value(ErrorMessages.MUST_NOT_BE_BLANK));
     }
 }
