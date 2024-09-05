@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(RequestedBookController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RequestedBookAPINotFoundTest {
+class RequestedBookManagementAPINotFoundTest {
     private static final String REQUESTED_BOOKS_PATH = "/requested-books";
 
     @MockBean

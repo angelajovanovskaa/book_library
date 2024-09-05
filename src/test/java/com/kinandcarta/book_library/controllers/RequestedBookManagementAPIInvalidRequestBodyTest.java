@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(RequestedBookController.class)
 @AutoConfigureMockMvc(addFilters = false)
-class RequestedBookAPIInvalidRequestBodyTest {
+class RequestedBookManagementAPIInvalidRequestBodyTest {
     private static final String REQUESTED_BOOKS_PATH = "/requested-books";
     private static final String CHANGE_BOOK_STATUS_PATH = REQUESTED_BOOKS_PATH + "/change-book-status";
     private static final String HANDLE_BOOK_LIKE_PATH = REQUESTED_BOOKS_PATH + "/handle-like";
