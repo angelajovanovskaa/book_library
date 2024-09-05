@@ -6,6 +6,7 @@ import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -83,7 +84,7 @@ class BookQueryAPISuccessTest {
 
         given(bookQueryService.getBookByIsbn(anyString(), anyString())).willReturn(bookDetailsDTO);
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsWithOfficeAndISBN();
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsWithOfficeAndISBN();
 
         // when
         final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BOOK_PATH, queryParamsValues);
@@ -147,7 +148,7 @@ class BookQueryAPISuccessTest {
         given(bookQueryService.getPaginatedAvailableBooks(anyInt(), anyInt(), anyString())).willReturn(
                 bookDisplayDTOsPaginated);
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetPaginatedBook();
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsForGetPaginatedBook();
 
         // when
         final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_PAGINATED_AVAILABLE_BOOK_PATH,
@@ -174,7 +175,7 @@ class BookQueryAPISuccessTest {
         given(bookQueryService.getBooksByTitle(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
 
         MultiValueMap<String, String> queryParamsValues =
-                BookTestData.createQueryParamsForGetBySearchTitle();
+                BookQueryParamsTestData.createQueryParamsForGetBySearchTitle();
 
         // when
         final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BY_TITLE_BOOK_PATH, queryParamsValues);
@@ -194,7 +195,7 @@ class BookQueryAPISuccessTest {
 
         given(bookQueryService.getBooksByLanguage(anyString(), anyString())).willReturn(List.of(bookDisplayDTO));
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetByLanguage();
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsForGetByLanguage();
 
         // when
         final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BY_LANGUAGE_BOOK_PATH, queryParamsValues);
@@ -215,7 +216,7 @@ class BookQueryAPISuccessTest {
 
         given(bookQueryService.getBooksByGenresContaining(any(), anyString())).willReturn(List.of(bookDisplayDTO));
 
-        MultiValueMap<String, String> queryParamsValues = BookTestData.createQueryParamsForGetByGenres();
+        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsForGetByGenres();
 
         // when
         final String jsonResult = performRequestWithQueryParamsAndExpectJsonResult(GET_BY_GENRES_BOOK_PATH, queryParamsValues);
