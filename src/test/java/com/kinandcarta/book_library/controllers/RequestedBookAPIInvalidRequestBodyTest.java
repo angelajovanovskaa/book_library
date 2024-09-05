@@ -13,6 +13,7 @@ import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RequestedBookController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class RequestedBookAPIInvalidRequestBodyTest {
     private static final String REQUESTED_BOOKS_PATH = "/requested-books";
     private static final String CHANGE_BOOK_STATUS_PATH = REQUESTED_BOOKS_PATH + "/change-book-status";

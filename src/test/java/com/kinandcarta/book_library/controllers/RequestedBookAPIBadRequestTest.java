@@ -9,6 +9,7 @@ import com.kinandcarta.book_library.utils.RequestedBookTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RequestedBookController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class RequestedBookAPIBadRequestTest {
     private static final String REQUESTED_BOOKS_PATH = "/requested-books";
 
