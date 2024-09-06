@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
+import com.kinandcarta.book_library.services.impl.AuthenticationServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
@@ -16,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.MultiValueMap;
 
@@ -40,10 +40,10 @@ class UserQueryAPISuccessTest {
     private UserManagementServiceImpl userManagementService;
 
     @MockBean
-    private JwtService jwtService;
+    private AuthenticationServiceImpl authenticationService;
 
     @MockBean
-    private AuthenticationManager authenticationManager;
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;

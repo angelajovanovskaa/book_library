@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.kinandcarta.book_library.config.JwtService;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
@@ -8,7 +7,7 @@ import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
-import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
+import com.kinandcarta.book_library.services.AuthenticationService;
 import com.kinandcarta.book_library.services.UserManagementService;
 import com.kinandcarta.book_library.services.UserQueryService;
 import jakarta.validation.Valid;
@@ -17,9 +16,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,8 +37,7 @@ import java.util.UUID;
 public class UserController {
     private final UserQueryService userQueryService;
     private final UserManagementService userManagementService;
-    private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
     ResponseEntity<List<UserWithRoleDTO>> getUsers(@RequestParam @NotBlank String officeName) {
@@ -75,24 +70,22 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateAndGetToken(@Valid @RequestBody UserLoginRequestDTO authRequest) throws IOException {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.userEmail(), authRequest.userPassword()));
-        if (!authentication.isAuthenticated()) {
-            throw new InvalidUserCredentialsException();
-        }
-        return ResponseEntity.ok(jwtService.generateToken(authRequest.userEmail()));
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody @Valid UserLoginRequestDTO userLoginRequestDTO)
+            throws IOException {
+        String response = authenticationService.generateToken(userLoginRequestDTO);
+
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update-data")
-    ResponseEntity<String> updateUserData(@Valid @RequestBody UserUpdateDataRequestDTO userUpdateDataRequestDTO) {
+    ResponseEntity<String> updateUserData(@RequestBody @Valid UserUpdateDataRequestDTO userUpdateDataRequestDTO) {
         String response = userManagementService.updateUserData(userUpdateDataRequestDTO);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update-role")
-    ResponseEntity<String> updateUserRole(@Valid @RequestBody UserUpdateRoleRequestDTO userUpdateRoleRequestDTO) {
+    ResponseEntity<String> updateUserRole(@RequestBody @Valid UserUpdateRoleRequestDTO userUpdateRoleRequestDTO) {
         String response = userManagementService.updateUserRole(userUpdateRoleRequestDTO);
 
         return ResponseEntity.ok(response);
@@ -107,7 +100,7 @@ public class UserController {
 
     @PatchMapping("/change-password")
     ResponseEntity<String> changeUserPassword(
-            @Valid @RequestBody UserChangePasswordRequestDTO userChangePasswordRequestDTO) {
+            @RequestBody @Valid UserChangePasswordRequestDTO userChangePasswordRequestDTO) {
         String response = userManagementService.changeUserPassword(userChangePasswordRequestDTO);
 
         return ResponseEntity.ok(response);

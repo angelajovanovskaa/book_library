@@ -1,5 +1,6 @@
 package com.kinandcarta.book_library.config;
 
+import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,8 +20,7 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -31,26 +31,27 @@ public class JwtService {
     private final UserRepository userRepository;
 
     public String generateToken(String email) throws IOException {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, email);
+        return createToken(email);
     }
 
-    private String createToken(Map<String, Object> claims, String email) throws IOException {
-        if (userRepository.findByEmail(email).isPresent()) {
-            Date currentDate = Date.from(Instant.now());
-            Date tokenValidUntillDate = Date.from(
-                    Instant.now().plus(jwtConfigurationProperties.getJwtExpirationTime(), ChronoUnit.MINUTES));
+    private String createToken(String email) throws IOException {
+        Optional<User> userEmail = userRepository.findByEmail(email);
 
-            return Jwts.builder()
-                    .setClaims(claims)
-                    .setSubject(email)
-                    .setIssuedAt(currentDate)
-                    .setExpiration(tokenValidUntillDate)
-                    .signWith(getSignKey(), SignatureAlgorithm.HS256)
-                    .compact();
-        } else {
+        if (userEmail.isEmpty()) {
             throw new UsernameNotFoundException("Invalid user request!");
         }
+
+        Instant currentInstant = Instant.now();
+        Date currentDate = Date.from(currentInstant);
+        Date tokenExpirationDate = Date.from(
+                currentInstant.plus(jwtConfigurationProperties.getExpirationTimeInMinutes(), ChronoUnit.MINUTES));
+
+        return Jwts.builder()
+                .setSubject(email)
+                .setIssuedAt(currentDate)
+                .setExpiration(tokenExpirationDate)
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public String extractEmail(String token) throws IOException {
@@ -65,13 +66,15 @@ public class JwtService {
                 .getBody();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) throws IOException {
+    public boolean validateToken(String token, UserDetails userDetails) throws IOException {
         final String email = extractEmail(token);
-        return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        boolean emailMatchesUsername = email.equals(userDetails.getUsername());
+        return emailMatchesUsername && !isTokenExpired(token);
     }
 
     private Key getSignKey() throws IOException {
-        Resource resource = resourceLoader.getResource(jwtConfigurationProperties.getSecretKey());
+        String secretKeyPath = jwtConfigurationProperties.getSecretKey();
+        Resource resource = resourceLoader.getResource(secretKeyPath);
         byte[] keyBytes = Files.readAllBytes(Paths.get(resource.getURI()));
         return Keys.hmacShaKeyFor(keyBytes);
     }

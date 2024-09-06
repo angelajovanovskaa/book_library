@@ -1,6 +1,7 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.kinandcarta.book_library.config.JwtService;
+import com.kinandcarta.book_library.services.impl.AuthenticationServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -29,10 +29,10 @@ class UserManagementAPIInvalidPathVariableTest {
     private UserManagementServiceImpl userManagementService;
 
     @MockBean
-    private JwtService jwtService;
+    private AuthenticationServiceImpl authenticationService;
 
     @MockBean
-    private AuthenticationManager authenticationManager;
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;
