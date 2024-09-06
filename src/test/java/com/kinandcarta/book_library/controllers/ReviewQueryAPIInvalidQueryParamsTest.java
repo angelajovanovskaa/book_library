@@ -78,7 +78,7 @@ class ReviewQueryAPIInvalidQueryParamsTest {
         // when & then
         mockMvc.perform(get(REVIEW_BASE_PATH).queryParams(params))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.detail").value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
+                .andExpect(jsonPath(DETAIL_JSON_PATH).value(ErrorMessages.OFFICE_NAME_NOT_PRESENT));
     }
 
     @ParameterizedTest

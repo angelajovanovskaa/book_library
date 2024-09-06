@@ -39,7 +39,7 @@ class ReviewQueryAPIQueryParamsMissingTest {
     @Test
     @SneakyThrows
     void getReviewsForBook_officeNameParamIsMissing_returnsBadRequest() {
-        // when & then
+        // given & when & then
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
@@ -49,7 +49,7 @@ class ReviewQueryAPIQueryParamsMissingTest {
     @Test
     @SneakyThrows
     void getReviewsForBook_isbnParamIsMissing_returnsBadRequest() {
-        // when & then
+        // given & when & then
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
@@ -59,7 +59,7 @@ class ReviewQueryAPIQueryParamsMissingTest {
     @Test
     @SneakyThrows
     void getTopReviewsForBook_officeNameParamIsMissing_returnsBadRequest() {
-        // when & then
+        // given & when & then
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
 
@@ -69,7 +69,7 @@ class ReviewQueryAPIQueryParamsMissingTest {
     @Test
     @SneakyThrows
     void getTopReviewsForBook_isbnParamIsMissing_returnsBadRequest() {
-        // when & then
+        // given & when & then
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
 

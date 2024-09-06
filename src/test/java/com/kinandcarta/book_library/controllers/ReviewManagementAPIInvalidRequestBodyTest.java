@@ -150,9 +150,7 @@ class ReviewManagementAPIInvalidRequestBodyTest {
     @Test
     @SneakyThrows
     void insertReview_ratingIsOutOfBounds_returnsBadRequest() {
-        // given
-
-        // when & then
+        // given & when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, REVIEW_REQUEST_DTO_WITH_RATING_OUT_OF_BOUNDS,
                 ERROR_FIELD_RATING,
                 ErrorMessages.MUST_BE_GREATER_THAN_1, false);
@@ -263,9 +261,7 @@ class ReviewManagementAPIInvalidRequestBodyTest {
     @Test
     @SneakyThrows
     void updateReview_ratingIsOutOfBounds_returnsBadRequest() {
-        // given
-
-        // when & then
+        // given & when & then
         performRequestAndExpectBadRequest(UPDATE_REVIEW_PATH, REVIEW_REQUEST_DTO_WITH_RATING_OUT_OF_BOUNDS,
                 ERROR_FIELD_RATING,
                 ErrorMessages.MUST_BE_GREATER_THAN_1, false);

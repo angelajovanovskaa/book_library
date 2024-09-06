@@ -35,9 +35,7 @@ class ReviewManagementAPIInvalidPathVariablesTest {
     @ValueSource(strings = {"  ", "\t", "\n"})
     @SneakyThrows
     void deleteReview_reviewIdIsBlank_returnsBadRequest(String reviewId) {
-        // given
-
-        // when & then
+        // given & when & then
         performDeleteAndExpectBadRequest(REVIEW_DELETE_PATH + reviewId,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
     }
@@ -45,9 +43,7 @@ class ReviewManagementAPIInvalidPathVariablesTest {
     @Test
     @SneakyThrows
     void deleteReview_reviewIdIsNull_returnsBadRequest() {
-        // given
-
-        // when & then
+        // given & when & then
         performDeleteAndExpectBadRequest(REVIEW_DELETE_PATH + null,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
     }

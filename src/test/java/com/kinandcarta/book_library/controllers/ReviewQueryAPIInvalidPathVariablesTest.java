@@ -34,9 +34,7 @@ class ReviewQueryAPIInvalidPathVariablesTest {
     @ValueSource(strings = {" ", "\t", "\n"})
     @SneakyThrows
     void getReviewById_reviewIdIsBlank_returnsBadRequest(String reviewId) {
-        // given
-
-        // when & then
+        // given & when & then
         performRequestAndExpectBadRequest(GET_REVIEW_PATH + reviewId,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_NOT_PRESENT);
     }
@@ -44,9 +42,7 @@ class ReviewQueryAPIInvalidPathVariablesTest {
     @Test
     @SneakyThrows
     void getReviewById_reviewIdIsNull_returnsBadRequest() {
-        // given
-
-        // when & then
+        // given & when & then
         performRequestAndExpectBadRequest(GET_REVIEW_PATH + null,
                 ErrorMessages.REVIEW_ID_PATH_VARIABLE_FAILED_TO_CONVERT);
     }
