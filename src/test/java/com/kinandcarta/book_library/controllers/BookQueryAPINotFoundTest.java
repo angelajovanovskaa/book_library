@@ -3,28 +3,26 @@ package com.kinandcarta.book_library.controllers;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
-import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
+import com.kinandcarta.book_library.utils.SharedControllerTestData;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.util.MultiValueMap;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
-class BookManagementAPINotFoundTest {
+class BookQueryAPINotFoundTest {
     private static final String BOOK_PATH = "/books";
-    private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
+    private static final String getBookPath = BOOK_PATH + "/get-book";
     private static final String GENERAL_EXCEPTION_MESSAGE = "$.generalExceptionMessage";
 
     @MockBean
@@ -38,20 +36,18 @@ class BookManagementAPINotFoundTest {
 
     @Test
     @SneakyThrows
-    void deleteBook_isbnNotFound_returnsNotFoundRequest() {
+    void getBook_bookDoesNotExists_returnsNotFound() {
         // given
         BookNotFoundException bookNotFoundException = new BookNotFoundException(BookTestData.BOOK_INVALID_ISBN);
 
-        given(bookManagementService.deleteBook(anyString(), anyString())).willThrow(bookNotFoundException);
-
-        MultiValueMap<String, String> queryParamsValues = BookQueryParamsTestData.createQueryParamsInvalidIsbn();
+        given(bookQueryService.getBookByIsbn(anyString(), anyString()))
+                .willThrow(bookNotFoundException);
 
         // when & then
-        mockMvc.perform(delete(DELETE_BOOK_PATH)
-                        .queryParams(queryParamsValues))
+        mockMvc.perform(get(getBookPath).queryParam(SharedControllerTestData.OFFICE_PARAM,
+                                SharedServiceTestData.SKOPJE_OFFICE_NAME)
+                        .queryParam(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN))
                 .andExpect(status().isNotFound())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE)
-                        .value(bookNotFoundException.getMessage()));
+                .andExpect(jsonPath(GENERAL_EXCEPTION_MESSAGE).value(bookNotFoundException.getMessage()));
     }
 }

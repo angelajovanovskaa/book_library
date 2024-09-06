@@ -11,8 +11,6 @@ import com.kinandcarta.book_library.entities.keys.BookId;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.enums.Genre;
 import lombok.experimental.UtilityClass;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +38,8 @@ public class BookTestData {
             , new HashSet<>(getBooks()));
     public static final Set<Author> AUTHORS = new HashSet<>(List.of(AUTHOR));
     public static final Set<AuthorDTO> AUTHOR_DTOS = new HashSet<>(List.of(AUTHOR_DTO));
+    private static final String LANGUAGE_PARAM = "language";
+    private static final String GENRES_PARAM = "genres";
 
     public static List<Book> getBooks() {
         Book book1 = new Book(
@@ -159,31 +159,7 @@ public class BookTestData {
     }
 
     public BookIdDTO getBookIdDto() {
-        return new BookIdDTO(BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
-    }
-
-    public MultiValueMap<String, String> createQueryParamsIsbn(String isbn) {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, isbn);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsInvalidIsbn() {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_INVALID_ISBN);
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-
-        return queryParamsValues;
-    }
-
-    public MultiValueMap<String, String> createQueryParamsWithOfficeAndISBN() {
-        MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
-        queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
-        queryParamsValues.add(SharedControllerTestData.BOOK_ISBN_PARAM, BookTestData.BOOK_ISBN);
-
-        return queryParamsValues;
+        return new BookIdDTO(BookTestData.BOOK_ISBN, SharedServiceTestData.SKOPJE_OFFICE.getName());
     }
 
     public static BookInsertRequestDTO createBookInsertRequestDTOPassingIsbn(String isbn) {
