@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.config;
+package com.kinandcarta.book_library.jwt;
 
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import lombok.RequiredArgsConstructor;

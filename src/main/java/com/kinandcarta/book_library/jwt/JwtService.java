@@ -1,4 +1,4 @@
-package com.kinandcarta.book_library.config;
+package com.kinandcarta.book_library.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

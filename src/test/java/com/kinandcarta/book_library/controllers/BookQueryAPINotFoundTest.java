@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.controllers;
 
-import com.kinandcarta.book_library.config.JwtService;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;

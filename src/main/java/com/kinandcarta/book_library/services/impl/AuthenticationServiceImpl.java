@@ -1,6 +1,6 @@
 package com.kinandcarta.book_library.services.impl;
 
-import com.kinandcarta.book_library.config.JwtService;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
