@@ -89,7 +89,7 @@ class UserContextDataExtractorImplTest {
 
         // when & then
         assertThatExceptionOfType(NullPointerException.class)
-                .isThrownBy(() -> userContextDataExtractor.getAuthenticatedUserId())
+                .isThrownBy(() -> userContextDataExtractor.getAuthenticatedUserOfficeName())
                 .withMessage(
                         "Cannot invoke \"org.springframework.security.core.Authentication.getPrincipal()\" because " +
                                 "\"authentication\" is null");
