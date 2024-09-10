@@ -60,6 +60,7 @@ class UserConverterTest {
         assertThat(actualResult.getPassword()).isEqualTo(password);
         assertThat(actualResult.getOffice()).isEqualTo(office);
         assertThat(actualResult.getProfilePicture()).isEqualTo(profilePicture);
-        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("id", "role");
+        assertThat(actualResult.getRole()).isEqualTo(UserRole.USER);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("id");
     }
 }

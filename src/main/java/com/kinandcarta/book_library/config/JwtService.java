@@ -1,6 +1,5 @@
 package com.kinandcarta.book_library.config;
 
-import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,19 +24,12 @@ import java.util.function.Function;
 public class JwtService {
     private final JwtConfigurationProperties jwtConfigurationProperties;
     private final ResourceLoader resourceLoader;
-    private final UserQueryServiceImpl userQueryService;
 
     public String generateToken(String email) throws IOException {
         return createToken(email);
     }
 
     private String createToken(String email) throws IOException {
-        UserDetails userDetails = userQueryService.loadUserByUsername(email);
-
-        if (userDetails == null) {
-            throw new UsernameNotFoundException("Invalid user request!");
-        }
-
         Instant currentInstant = Instant.now();
         Date currentDate = Date.from(currentInstant);
         int expirationTimeInMinutes = jwtConfigurationProperties.getExpirationTimeInMinutes();
@@ -63,7 +54,7 @@ public class JwtService {
         return emailMatchesUsername && !isTokenExpired(token);
     }
 
-    public Date extractExpiration(String token) throws IOException {
+    private Date extractExpiration(String token) throws IOException {
         return extractClaim(token, Claims::getExpiration);
     }
 

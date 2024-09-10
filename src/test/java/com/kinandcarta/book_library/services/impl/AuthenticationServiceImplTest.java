@@ -9,12 +9,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceImplTest {
@@ -34,6 +36,10 @@ class AuthenticationServiceImplTest {
         // given
         UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
         String userEmail = userLoginRequestDTO.userEmail();
+        String userPassword = userLoginRequestDTO.userPassword();
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userEmail, userPassword);
 
         given(jwtService.generateToken(userEmail)).willReturn(MOCK_TOKEN);
 
@@ -42,6 +48,7 @@ class AuthenticationServiceImplTest {
 
         // then
         assertThat(result).isEqualTo(MOCK_TOKEN);
+        verify(authenticationManager).authenticate(authenticationToken);
     }
 
     @Test
@@ -57,5 +64,4 @@ class AuthenticationServiceImplTest {
                 .isThrownBy(() -> authenticationService.generateToken(userLoginRequestDTO))
                 .withMessage(null);
     }
-
 }

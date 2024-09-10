@@ -26,7 +26,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Date;
 import java.util.List;
 
 import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
@@ -66,11 +65,7 @@ class UserManagementAPISuccessTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        given(jwtService.extractEmail(MOCK_TOKEN)).willReturn(UserTestData.USER_EMAIL);
         given(jwtService.validateToken(eq(MOCK_TOKEN), any(UserDetails.class))).willReturn(true);
-
-        Date date = new Date();
-        given(jwtService.extractExpiration(MOCK_TOKEN)).willReturn(date);
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(
@@ -122,7 +117,6 @@ class UserManagementAPISuccessTest {
         // then
         assertThat(result).isEqualTo(MOCK_TOKEN);
     }
-
 
     @Test
     void updateUserData_updateIsSuccessful_returnsConfirmationMessage() throws Exception {
