@@ -8,6 +8,7 @@ import com.kinandcarta.book_library.entities.User;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * <ul>
@@ -25,6 +26,8 @@ public class ReviewConverter {
      * @return {@link ReviewResponseDTO} converted entity
      */
     public ReviewResponseDTO toReviewResponseDTO(Review review) {
+        UUID reviewId = review.getId();
+
         Book book = review.getBook();
         String bookISBN = book.getIsbn();
 
@@ -35,7 +38,7 @@ public class ReviewConverter {
         String message = review.getMessage();
         Integer rating = review.getRating();
 
-        return new ReviewResponseDTO(bookISBN, userEmail, date, message, rating);
+        return new ReviewResponseDTO(reviewId, bookISBN, userEmail, date, message, rating);
     }
 
     /**

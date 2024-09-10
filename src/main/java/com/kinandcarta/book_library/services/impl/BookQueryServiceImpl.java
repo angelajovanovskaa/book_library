@@ -56,10 +56,7 @@ public class BookQueryServiceImpl implements BookQueryService {
     public BookDetailsDTO getBookByIsbn(String isbn, String officeName) {
         Book book = bookRepository.findByIsbnAndOfficeName(isbn, officeName)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
-
-        List<ReviewResponseDTO> reviewResponseDTOs =
-                reviewQueryService.getTopReviewsForDisplayInBookView(isbn, officeName);
-
+        List<ReviewResponseDTO> reviewResponseDTOs = reviewQueryService.getTopReviewsForBook(isbn, officeName);
         return bookConverter.toBookDetailsDTO(book, reviewResponseDTOs);
     }
 

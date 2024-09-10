@@ -22,6 +22,7 @@ class ReviewConverterTest {
         ReviewResponseDTO actualResult = reviewConverter.toReviewResponseDTO(ReviewTestData.getReview());
 
         // then
+        assertThat(actualResult.reviewId()).isEqualTo(ReviewTestData.REVIEW_ID);
         assertThat(actualResult.bookISBN()).isEqualTo(BookTestData.BOOK_ISBN);
         assertThat(actualResult.userEmail()).isEqualTo(UserTestData.USER_EMAIL);
         assertThat(actualResult.date()).isEqualTo(SharedServiceTestData.DATE_NOW);
