@@ -11,5 +11,5 @@ public interface ReviewQueryService {
 
     List<ReviewResponseDTO> getAllReviewsByBookIsbnAndByOfficeName(String isbn, String officeName);
 
-    List<ReviewResponseDTO> getTopReviewsForDisplayInBookView(String isbn, String officeName);
+    List<ReviewResponseDTO> getTopReviewsForBook(String isbn, String officeName);
 }

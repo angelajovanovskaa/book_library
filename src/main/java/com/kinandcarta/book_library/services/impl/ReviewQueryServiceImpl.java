@@ -93,7 +93,7 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
      * specified ISBN.
      */
     @Override
-    public List<ReviewResponseDTO> getTopReviewsForDisplayInBookView(String isbn, String officeName) {
+    public List<ReviewResponseDTO> getTopReviewsForBook(String isbn, String officeName) {
         List<Review> reviews = reviewRepository.findTop3ByBookIsbnAndOfficeName(isbn, officeName);
         return reviews.stream()
                 .map(reviewConverter::toReviewResponseDTO)

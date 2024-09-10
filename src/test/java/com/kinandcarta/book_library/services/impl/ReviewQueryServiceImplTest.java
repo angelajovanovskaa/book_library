@@ -102,7 +102,7 @@ class ReviewQueryServiceImplTest {
 
         // when
         List<ReviewResponseDTO> actualResult =
-                reviewQueryService.getTopReviewsForDisplayInBookView(BookTestData.BOOK_ISBN,
+                reviewQueryService.getTopReviewsForBook(BookTestData.BOOK_ISBN,
                         SharedServiceTestData.SKOPJE_OFFICE_NAME);
 
         // then
