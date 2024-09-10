@@ -13,8 +13,6 @@ import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import com.kinandcarta.book_library.utils.UserTestData;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
@@ -70,8 +69,8 @@ class UserManagementAPISuccessTest {
         given(jwtService.extractEmail(MOCK_TOKEN)).willReturn(UserTestData.USER_EMAIL);
         given(jwtService.validateToken(eq(MOCK_TOKEN), any(UserDetails.class))).willReturn(true);
 
-        Claims claims = Jwts.claims().setSubject(UserTestData.USER_EMAIL);
-        given(jwtService.extractAllClaims(MOCK_TOKEN)).willReturn(claims);
+        Date date = new Date();
+        given(jwtService.extractExpiration(MOCK_TOKEN)).willReturn(date);
 
         SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
         securityContext.setAuthentication(

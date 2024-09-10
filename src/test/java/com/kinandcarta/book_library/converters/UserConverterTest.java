@@ -2,8 +2,10 @@ package com.kinandcarta.book_library.converters;
 
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.UserRole;
+import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 
@@ -44,14 +46,20 @@ class UserConverterTest {
     @Test
     void toUserEntity_conversionIsDone_returnsUserEntity() {
         // given
+        String password = UserTestData.USER_ENCODED_PASSWORD;
+        byte[] profilePicture = UserTestData.USER_IMAGE_BYTES;
+        Office office = SharedServiceTestData.SKOPJE_OFFICE;
 
         // when
-        User actualResult = userConverter.toUserEntity(UserTestData.getUserRegistrationDTO());
+        User actualResult =
+                userConverter.toUserEntity(UserTestData.getUserRegistrationDTO(), password, office, profilePicture);
 
         // then
         assertThat(actualResult.getFullName()).isEqualTo(UserTestData.USER_FULL_NAME);
         assertThat(actualResult.getEmail()).isEqualTo(UserTestData.USER_EMAIL);
-        assertThat(actualResult.getPassword()).isEqualTo(UserTestData.USER_PASSWORD);
-        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("id", "profilePicture", "role", "office");
+        assertThat(actualResult.getPassword()).isEqualTo(password);
+        assertThat(actualResult.getOffice()).isEqualTo(office);
+        assertThat(actualResult.getProfilePicture()).isEqualTo(profilePicture);
+        assertThat(actualResult).hasNoNullFieldsOrPropertiesExcept("id", "role");
     }
 }

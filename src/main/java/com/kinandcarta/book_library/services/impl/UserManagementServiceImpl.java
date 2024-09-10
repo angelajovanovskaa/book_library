@@ -65,14 +65,12 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw new EmailAlreadyInUseException(userEmail);
         }
 
-        User user = userConverter.toUserEntity(userDTO);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
+        String userPassword = userDTO.password();
+        String encodedPassword = passwordEncoder.encode(userPassword);
         Office office = officeRepository.getReferenceById(userDTO.officeName());
-        user.setOffice(office);
-
         byte[] userProfilePicture = getDefaultProfilePicture();
-        user.setProfilePicture(userProfilePicture);
+
+        User user = userConverter.toUserEntity(userDTO, encodedPassword, office, userProfilePicture);
 
         userRepository.save(user);
         return userConverter.toUserWithRoleDTO(user);

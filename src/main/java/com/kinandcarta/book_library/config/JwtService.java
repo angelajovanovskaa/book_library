@@ -1,7 +1,6 @@
 package com.kinandcarta.book_library.config;
 
-import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -20,7 +19,6 @@ import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.Optional;
 import java.util.function.Function;
 
 @Service
@@ -28,23 +26,24 @@ import java.util.function.Function;
 public class JwtService {
     private final JwtConfigurationProperties jwtConfigurationProperties;
     private final ResourceLoader resourceLoader;
-    private final UserRepository userRepository;
+    private final UserQueryServiceImpl userQueryService;
 
     public String generateToken(String email) throws IOException {
         return createToken(email);
     }
 
     private String createToken(String email) throws IOException {
-        Optional<User> userEmail = userRepository.findByEmail(email);
+        UserDetails userDetails = userQueryService.loadUserByUsername(email);
 
-        if (userEmail.isEmpty()) {
+        if (userDetails == null) {
             throw new UsernameNotFoundException("Invalid user request!");
         }
 
         Instant currentInstant = Instant.now();
         Date currentDate = Date.from(currentInstant);
-        Date tokenExpirationDate = Date.from(
-                currentInstant.plus(jwtConfigurationProperties.getExpirationTimeInMinutes(), ChronoUnit.MINUTES));
+        int expirationTimeInMinutes = jwtConfigurationProperties.getExpirationTimeInMinutes();
+        Instant expirationInstant = currentInstant.plus(expirationTimeInMinutes, ChronoUnit.MINUTES);
+        Date tokenExpirationDate = Date.from(expirationInstant);
 
         return Jwts.builder()
                 .setSubject(email)
@@ -58,18 +57,22 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public Claims extractAllClaims(String token) throws IOException {
+    public boolean validateToken(String token, UserDetails userDetails) throws IOException {
+        final String email = extractEmail(token);
+        boolean emailMatchesUsername = email.equals(userDetails.getUsername());
+        return emailMatchesUsername && !isTokenExpired(token);
+    }
+
+    public Date extractExpiration(String token) throws IOException {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private Claims extractAllClaims(String token) throws IOException {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-    }
-
-    public boolean validateToken(String token, UserDetails userDetails) throws IOException {
-        final String email = extractEmail(token);
-        boolean emailMatchesUsername = email.equals(userDetails.getUsername());
-        return emailMatchesUsername && !isTokenExpired(token);
     }
 
     private Key getSignKey() throws IOException {
@@ -79,16 +82,13 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private Date extractExpiration(String token) throws IOException {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) throws IOException {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Boolean isTokenExpired(String token) throws IOException {
-        return extractExpiration(token).before(new Date());
+    private boolean isTokenExpired(String token) throws IOException {
+        Date tokenExpirationDate = extractExpiration(token);
+        return tokenExpirationDate.before(new Date());
     }
 }

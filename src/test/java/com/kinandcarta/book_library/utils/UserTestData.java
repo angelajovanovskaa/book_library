@@ -27,6 +27,7 @@ public class UserTestData {
     public static final String USER_FULL_NAME = "fullname1";
     public static final String USER_EMAIL = "user.user1@kinandcarta.com";
     public static final String USER_PASSWORD = "password";
+    public static final String USER_ENCODED_PASSWORD = "$2a$10$ae64Qf1t.aUO6F.Ys73Wr.hFxqGCGFlfJaODBlJriy4oWOZJEq.3O";
     public static final byte[] USER_IMAGE_BYTES = USER_IMAGE_PATH.getBytes();
 
     public static List<User> getUsers() {
@@ -141,7 +142,7 @@ public class UserTestData {
         );
     }
 
-    public static  MultiValueMap<String, String> getUsersByFullNameDefaultQueryParams(){
+    public static MultiValueMap<String, String> getUsersByFullNameDefaultQueryParams() {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, SharedServiceTestData.SKOPJE_OFFICE_NAME);
         queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);
@@ -149,7 +150,7 @@ public class UserTestData {
         return queryParamsValues;
     }
 
-    public static  MultiValueMap<String, String> getUsersByFullNameQueryParamsPassingOfficeName(String officeName){
+    public static MultiValueMap<String, String> getUsersByFullNameQueryParamsPassingOfficeName(String officeName) {
         MultiValueMap<String, String> queryParamsValues = new LinkedMultiValueMap<>();
         queryParamsValues.add(SharedControllerTestData.OFFICE_PARAM, officeName);
         queryParamsValues.add(SharedControllerTestData.FULL_NAME_PARAM, UserTestData.USER_FULL_NAME);

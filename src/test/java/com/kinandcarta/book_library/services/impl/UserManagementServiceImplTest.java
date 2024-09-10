@@ -59,13 +59,16 @@ class UserManagementServiceImplTest {
         User user = UserTestData.getUser();
         UserWithRoleDTO userWithRoleDTO = UserTestData.getUserWithRoleResponseDTOs().getFirst();
 
-        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
+        given(passwordEncoder.encode(anyString())).willReturn(UserTestData.USER_ENCODED_PASSWORD);
 
         given(officeRepository.getReferenceById(anyString())).willReturn(SharedServiceTestData.SKOPJE_OFFICE);
 
         Resource mockResource = mock(Resource.class);
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
+
+        given(userConverter.toUserEntity(registrationRequestDTO, UserTestData.USER_ENCODED_PASSWORD,
+                SharedServiceTestData.SKOPJE_OFFICE, UserTestData.USER_IMAGE_BYTES)).willReturn(user);
 
         given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleDTO);
 
