@@ -3,6 +3,7 @@ package com.kinandcarta.book_library.converters;
 import com.kinandcarta.book_library.dtos.UserProfileDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
+import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
 import org.springframework.stereotype.Component;
 
@@ -52,12 +53,15 @@ public class UserConverter {
      * @param userDTO The {@link UserRegistrationRequestDTO} DTO to convert
      * @return a {@link User} entity.
      */
-    public User toUserEntity(UserRegistrationRequestDTO userDTO) {
+    public User toUserEntity(UserRegistrationRequestDTO userDTO, String password, Office office,
+                             byte[] profilePicture) {
         User user = new User();
 
         user.setFullName(userDTO.fullName());
         user.setEmail(userDTO.email());
-        user.setPassword(userDTO.password());
+        user.setPassword(password);
+        user.setOffice(office);
+        user.setProfilePicture(profilePicture);
 
         return user;
     }

@@ -2,10 +2,12 @@ package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.BookDetailsDTO;
 import com.kinandcarta.book_library.dtos.BookDisplayDTO;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
@@ -13,6 +15,7 @@ import com.kinandcarta.book_library.utils.SharedServiceTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
@@ -34,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookQueryAPISuccessTest {
     private static final String BOOK_PATH = "/books";
     private static final String GET_BOOK_PATH = BOOK_PATH + "/get-book";
@@ -49,6 +53,12 @@ class BookQueryAPISuccessTest {
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     MockMvc mockMvc;

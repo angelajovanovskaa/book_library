@@ -1,11 +1,13 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.RequestedBookChangeStatusRequestDTO;
 import com.kinandcarta.book_library.dtos.RequestedBookRequestDTO;
 import com.kinandcarta.book_library.enums.BookStatus;
 import com.kinandcarta.book_library.services.RequestedBookManagementService;
 import com.kinandcarta.book_library.services.RequestedBookQueryService;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.RequestedBookTestData;
@@ -13,6 +15,7 @@ import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -25,7 +28,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RequestedBookController.class)
-class RequestedBookAPIInvalidRequestBodyTest {
+@AutoConfigureMockMvc(addFilters = false)
+class RequestedBookManagementAPIInvalidRequestBodyTest {
     private static final String REQUESTED_BOOKS_PATH = "/requested-books";
     private static final String CHANGE_BOOK_STATUS_PATH = REQUESTED_BOOKS_PATH + "/change-book-status";
     private static final String HANDLE_BOOK_LIKE_PATH = REQUESTED_BOOKS_PATH + "/handle-like";
@@ -35,6 +39,12 @@ class RequestedBookAPIInvalidRequestBodyTest {
 
     @MockBean
     private RequestedBookManagementService requestedBookManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private MockMvc mockMvc;

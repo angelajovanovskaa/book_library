@@ -1,15 +1,18 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.BookCheckoutRequestDTO;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookItemTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookCheckoutController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookCheckoutManagementAPIInvalidRequestBodyTest {
     private static final String BORROW_BOOK_ITEM_PATH = "/book-checkouts/borrow";
     private static final String RETURN_BOOK_ITEM_PATH = "/book-checkouts/return";
@@ -32,6 +36,12 @@ class BookCheckoutManagementAPIInvalidRequestBodyTest {
 
     @MockBean
     private BookCheckoutQueryServiceImpl bookCheckoutQueryService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private MockMvc mockMvc;

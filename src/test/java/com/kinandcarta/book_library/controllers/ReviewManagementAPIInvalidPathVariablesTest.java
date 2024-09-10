@@ -1,13 +1,16 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -17,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ReviewManagementAPIInvalidPathVariablesTest {
     private static final String REVIEW_BASE_PATH = "/reviews";
     private static final String REVIEW_DELETE_PATH = REVIEW_BASE_PATH + "/delete/";
@@ -27,6 +31,12 @@ class ReviewManagementAPIInvalidPathVariablesTest {
 
     @MockBean
     private ReviewManagementService reviewManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private MockMvc mockMvc;

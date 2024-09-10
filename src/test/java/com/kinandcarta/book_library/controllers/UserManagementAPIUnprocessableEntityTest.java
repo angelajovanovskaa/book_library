@@ -1,13 +1,16 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
+import com.kinandcarta.book_library.services.impl.AuthenticationServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(UserController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UserManagementAPIUnprocessableEntityTest {
     private static final String USERS_PATH = "/users";
 
@@ -29,6 +33,12 @@ class UserManagementAPIUnprocessableEntityTest {
 
     @MockBean
     private UserManagementServiceImpl userManagementService;
+
+    @MockBean
+    private AuthenticationServiceImpl authenticationService;
+
+    @MockBean
+    private JwtService jwtService;
 
     @Autowired
     private MockMvc mockMvc;

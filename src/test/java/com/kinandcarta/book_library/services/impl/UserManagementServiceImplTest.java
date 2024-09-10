@@ -2,14 +2,12 @@ package com.kinandcarta.book_library.services.impl;
 
 import com.kinandcarta.book_library.converters.UserConverter;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
-import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.User;
 import com.kinandcarta.book_library.enums.UserRole;
 import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
-import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -22,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -47,6 +46,9 @@ class UserManagementServiceImplTest {
     @Mock
     private OfficeRepository officeRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private UserManagementServiceImpl userManagementService;
 
@@ -57,13 +59,16 @@ class UserManagementServiceImplTest {
         User user = UserTestData.getUser();
         UserWithRoleDTO userWithRoleDTO = UserTestData.getUserWithRoleResponseDTOs().getFirst();
 
-        given(userConverter.toUserEntity(registrationRequestDTO)).willReturn(user);
+        given(passwordEncoder.encode(anyString())).willReturn(UserTestData.USER_ENCODED_PASSWORD);
 
         given(officeRepository.getReferenceById(anyString())).willReturn(SharedServiceTestData.SKOPJE_OFFICE);
 
         Resource mockResource = mock(Resource.class);
         given(mockResource.getContentAsByteArray()).willReturn(UserTestData.USER_IMAGE_BYTES);
         given(resourceLoader.getResource(any())).willReturn(mockResource);
+
+        given(userConverter.toUserEntity(registrationRequestDTO, UserTestData.USER_ENCODED_PASSWORD,
+                SharedServiceTestData.SKOPJE_OFFICE, UserTestData.USER_IMAGE_BYTES)).willReturn(user);
 
         given(userConverter.toUserWithRoleDTO(user)).willReturn(userWithRoleDTO);
 
@@ -86,30 +91,6 @@ class UserManagementServiceImplTest {
         assertThatExceptionOfType(EmailAlreadyInUseException.class)
                 .isThrownBy(() -> userManagementService.registerUser(userRegistrationDTO))
                 .withMessage("The email: " + UserTestData.USER_EMAIL + " is already in use.");
-    }
-
-    @Test
-    void loginUser_loginIsValid_returnsConfirmationMessage() {
-        // given
-        given(userRepository.findByEmailAndPassword(anyString(), anyString())).willReturn(
-                Optional.of(UserTestData.getUser()));
-
-        // when
-        String result = userManagementService.loginUser(UserTestData.getUserLoginRequestDTO());
-
-        // then
-        assertThat(result).isEqualTo(UserTestData.USER_FULL_NAME);
-    }
-
-    @Test
-    void loginUser_thereIsNoUserWithTheCredentials_throwsInvalidUserCredentialsException() {
-        // given
-        UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
-
-        // when && then
-        assertThatExceptionOfType(InvalidUserCredentialsException.class)
-                .isThrownBy(() -> userManagementService.loginUser(userLoginRequestDTO))
-                .withMessage("The credentials that you have entered don't match.");
     }
 
     @Test

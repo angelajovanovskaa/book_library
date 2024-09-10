@@ -10,8 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByEmailAndPassword(String email, String password);
-
     @Query("SELECT u FROM User u " +
             "JOIN FETCH u.office o " +
             "WHERE o.name = :officeName " +

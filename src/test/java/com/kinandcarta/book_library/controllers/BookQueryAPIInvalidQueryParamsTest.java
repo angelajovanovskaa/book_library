@@ -1,7 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
@@ -13,6 +15,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookQueryAPIInvalidQueryParamsTest {
     private static final String BOOK_PATH = "/books";
     private static final String GET_BOOK_PATH = BOOK_PATH + "/get-book";
@@ -60,6 +64,12 @@ class BookQueryAPIInvalidQueryParamsTest {
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     MockMvc mockMvc;

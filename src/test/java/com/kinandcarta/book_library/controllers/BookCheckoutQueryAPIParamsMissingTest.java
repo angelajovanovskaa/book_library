@@ -1,7 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.services.impl.BookCheckoutManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookCheckoutQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import com.kinandcarta.book_library.utils.SharedControllerTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -9,6 +11,7 @@ import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @WebMvcTest(BookCheckoutController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookCheckoutQueryAPIParamsMissingTest {
     private static final String BOOK_CHECKOUTS_PATH = "/book-checkouts";
 
@@ -29,6 +33,12 @@ class BookCheckoutQueryAPIParamsMissingTest {
 
     @MockBean
     private BookCheckoutManagementServiceImpl bookCheckoutManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private MockMvc mockMvc;

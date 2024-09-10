@@ -1,27 +1,39 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
+import com.kinandcarta.book_library.services.impl.AuthenticationServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import com.kinandcarta.book_library.utils.UserTestData;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static com.kinandcarta.book_library.utils.UserTestData.USER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,6 +42,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 class UserManagementAPISuccessTest {
     private static final String USERS_PATH = "/users";
+    private static final String MOCK_TOKEN = "mockedToken";
+    private static final String BEARER_PREFIX = "Bearer ";
 
     @MockBean
     private UserQueryServiceImpl userQueryService;
@@ -37,11 +51,27 @@ class UserManagementAPISuccessTest {
     @MockBean
     private UserManagementServiceImpl userManagementService;
 
+    @MockBean
+    private AuthenticationServiceImpl authenticationService;
+
+    @MockBean
+    private JwtService jwtService;
+
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @BeforeEach
+    void setUp() throws Exception {
+        given(jwtService.validateToken(eq(MOCK_TOKEN), any(UserDetails.class))).willReturn(true);
+
+        SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+        securityContext.setAuthentication(
+                new UsernamePasswordAuthenticationToken(UserTestData.USER_EMAIL, null, List.of()));
+        SecurityContextHolder.setContext(securityContext);
+    }
 
     @Test
     void registerUser_registrationIsSuccessful_returnsUserWithRoleDTO() throws Exception {
@@ -54,6 +84,7 @@ class UserManagementAPISuccessTest {
 
         // when
         String jsonResult = mockMvc.perform(post(registerUserPath)
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRegistrationRequestDTO)))
                 .andExpect(status().isCreated())
@@ -67,15 +98,16 @@ class UserManagementAPISuccessTest {
     }
 
     @Test
-    void loginUser_loginIsSuccessful_returnsConfirmationMessage() throws Exception {
+    void authenticateAndGetToken_loginIsSuccessful_returnsToken() throws Exception {
         // given
         final String loginUserPath = USERS_PATH + "/login";
         UserLoginRequestDTO userLoginRequestDTO = UserTestData.getUserLoginRequestDTO();
 
-        given(userManagementService.loginUser(any())).willReturn(UserTestData.USER_FULL_NAME);
+        given(authenticationService.generateToken(userLoginRequestDTO)).willReturn(MOCK_TOKEN);
 
         // when
         String result = mockMvc.perform(post(loginUserPath)
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userLoginRequestDTO)))
                 .andExpect(status().isOk())
@@ -83,7 +115,7 @@ class UserManagementAPISuccessTest {
                 .andReturn().getResponse().getContentAsString();
 
         // then
-        assertThat(result).isEqualTo(UserTestData.USER_FULL_NAME);
+        assertThat(result).isEqualTo(MOCK_TOKEN);
     }
 
     @Test
@@ -124,7 +156,9 @@ class UserManagementAPISuccessTest {
         given(userManagementService.deleteAccount(any())).willReturn(UserResponseMessages.USER_DELETED_RESPONSE);
 
         // when
-        String result = mockMvc.perform(post(deleteUserPath, USER_ID))
+        String result = mockMvc.perform(post(deleteUserPath, USER_ID)
+                        .with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + MOCK_TOKEN))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"))
                 .andReturn().getResponse().getContentAsString();
@@ -151,6 +185,8 @@ class UserManagementAPISuccessTest {
 
     private String performPatchAndExpectConfirmationMessage(String path, Record DTO) throws Exception {
         return mockMvc.perform(patch(path)
+                        .with(csrf())
+                        .header(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + MOCK_TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(DTO)))
                 .andExpect(status().isOk())

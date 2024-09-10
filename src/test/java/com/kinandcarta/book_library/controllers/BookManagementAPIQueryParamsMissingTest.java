@@ -1,7 +1,9 @@
 package com.kinandcarta.book_library.controllers;
 
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.services.impl.BookManagementServiceImpl;
 import com.kinandcarta.book_library.services.impl.BookQueryServiceImpl;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookQueryParamsTestData;
 import com.kinandcarta.book_library.utils.ErrorMessages;
 import lombok.SneakyThrows;
@@ -9,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -21,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BookController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BookManagementAPIQueryParamsMissingTest {
     private static final String BOOK_PATH = "/books";
     private static final String DELETE_BOOK_PATH = BOOK_PATH + "/delete";
@@ -32,6 +36,12 @@ class BookManagementAPIQueryParamsMissingTest {
 
     @MockBean
     private BookQueryServiceImpl bookQueryService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     MockMvc mockMvc;

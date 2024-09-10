@@ -1,12 +1,14 @@
 package com.kinandcarta.book_library.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kinandcarta.book_library.jwt.JwtService;
 import com.kinandcarta.book_library.dtos.ReviewRequestDTO;
 import com.kinandcarta.book_library.exceptions.BookNotFoundException;
 import com.kinandcarta.book_library.exceptions.ReviewNotFoundException;
 import com.kinandcarta.book_library.exceptions.UserNotFoundException;
 import com.kinandcarta.book_library.services.ReviewManagementService;
 import com.kinandcarta.book_library.services.ReviewQueryService;
+import com.kinandcarta.book_library.services.impl.UserQueryServiceImpl;
 import com.kinandcarta.book_library.utils.BookTestData;
 import com.kinandcarta.book_library.utils.ReviewTestData;
 import com.kinandcarta.book_library.utils.SharedServiceTestData;
@@ -14,6 +16,7 @@ import com.kinandcarta.book_library.utils.UserTestData;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -28,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ReviewController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class ReviewManagementAPINotFoundTest {
     private static final String REVIEW_BASE_PATH = "/reviews";
     private static final String DELETE_REVIEW_PATH = REVIEW_BASE_PATH + "/delete/";
@@ -40,6 +44,12 @@ class ReviewManagementAPINotFoundTest {
 
     @MockBean
     private ReviewManagementService reviewManagementService;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private UserQueryServiceImpl userQueryService;
 
     @Autowired
     private MockMvc mockMvc;

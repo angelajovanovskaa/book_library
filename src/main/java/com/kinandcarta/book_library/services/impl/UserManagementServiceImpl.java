@@ -1,28 +1,27 @@
 package com.kinandcarta.book_library.services.impl;
 
 
-import com.kinandcarta.book_library.dtos.UserLoginRequestDTO;
+import com.kinandcarta.book_library.converters.UserConverter;
+import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
 import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
+import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
 import com.kinandcarta.book_library.entities.Office;
 import com.kinandcarta.book_library.entities.User;
-import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
-import com.kinandcarta.book_library.services.UserManagementService;
-import jakarta.transaction.Transactional;
-import com.kinandcarta.book_library.converters.UserConverter;
-import com.kinandcarta.book_library.dtos.UserChangePasswordRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
-import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.enums.UserRole;
+import com.kinandcarta.book_library.exceptions.EmailAlreadyInUseException;
 import com.kinandcarta.book_library.exceptions.IncorrectPasswordException;
-import com.kinandcarta.book_library.exceptions.InvalidUserCredentialsException;
 import com.kinandcarta.book_library.repositories.OfficeRepository;
 import com.kinandcarta.book_library.repositories.UserRepository;
+import com.kinandcarta.book_library.services.UserManagementService;
 import com.kinandcarta.book_library.utils.UserResponseMessages;
 import io.micrometer.common.util.StringUtils;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -46,6 +45,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     private final UserConverter userConverter;
     private final ResourceLoader resourceLoader;
     private final OfficeRepository officeRepository;
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * This method is used for registering a new user<br>
@@ -65,31 +65,15 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw new EmailAlreadyInUseException(userEmail);
         }
 
-        User user = userConverter.toUserEntity(userDTO);
-
+        String userPassword = userDTO.password();
+        String encodedPassword = passwordEncoder.encode(userPassword);
         Office office = officeRepository.getReferenceById(userDTO.officeName());
-        user.setOffice(office);
-
         byte[] userProfilePicture = getDefaultProfilePicture();
-        user.setProfilePicture(userProfilePicture);
+
+        User user = userConverter.toUserEntity(userDTO, encodedPassword, office, userProfilePicture);
 
         userRepository.save(user);
         return userConverter.toUserWithRoleDTO(user);
-    }
-
-    /**
-     * This method is used for login in the user in the application<br>
-     * All the users will have access to this method.
-     *
-     * @param userDTO the DTO where we have data needed for login.
-     * @return {@code fullName} of the logged in {@link User}.
-     */
-    @Override
-    public String loginUser(UserLoginRequestDTO userDTO) {
-        User user = userRepository.findByEmailAndPassword(userDTO.userEmail(), userDTO.userPassword()).orElseThrow(
-                InvalidUserCredentialsException::new);
-
-        return user.getFullName();
     }
 
     /**
@@ -156,7 +140,6 @@ public class UserManagementServiceImpl implements UserManagementService {
      * @return A message confirming that the delete operation is successful.
      */
     @Override
-    @Transactional
     public String deleteAccount(UUID userId) {
         userRepository.deleteById(userId);
 

@@ -7,8 +7,9 @@ import com.kinandcarta.book_library.dtos.UserRegistrationRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateDataRequestDTO;
 import com.kinandcarta.book_library.dtos.UserUpdateRoleRequestDTO;
 import com.kinandcarta.book_library.dtos.UserWithRoleDTO;
-import com.kinandcarta.book_library.services.UserQueryService;
+import com.kinandcarta.book_library.services.AuthenticationService;
 import com.kinandcarta.book_library.services.UserManagementService;
+import com.kinandcarta.book_library.services.UserQueryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -36,31 +37,32 @@ import java.util.UUID;
 public class UserController {
     private final UserQueryService userQueryService;
     private final UserManagementService userManagementService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping
-    ResponseEntity<List<UserWithRoleDTO>> getUsers(@RequestParam @NotBlank String officeName) {
+    public ResponseEntity<List<UserWithRoleDTO>> getUsers(@RequestParam @NotBlank String officeName) {
         List<UserWithRoleDTO> response = userQueryService.getUsers(officeName);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/by-full-name")
-    ResponseEntity<List<UserWithRoleDTO>> getUsersByFullName(@RequestParam @NotBlank String officeName,
-                                                             @RequestParam String fullName) {
+    public ResponseEntity<List<UserWithRoleDTO>> getUsersByFullName(@RequestParam @NotBlank String officeName,
+                                                                    @RequestParam String fullName) {
         List<UserWithRoleDTO> response = userQueryService.getUsersWithFullName(officeName, fullName);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/profile")
-    ResponseEntity<UserProfileDTO> getUserProfile(@RequestParam @NotNull UUID userId) {
+    public ResponseEntity<UserProfileDTO> getUserProfile(@RequestParam @NotNull UUID userId) {
         UserProfileDTO response = userQueryService.getUserProfile(userId);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
-    ResponseEntity<UserWithRoleDTO> registerUser(
+    public ResponseEntity<UserWithRoleDTO> registerUser(
             @Valid @RequestBody UserRegistrationRequestDTO userRegistrationDTO) throws IOException {
         UserWithRoleDTO response = userManagementService.registerUser(userRegistrationDTO);
 
@@ -68,36 +70,39 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginRequestDTO userLoginRequestDTO) {
-        String userFullName = userManagementService.loginUser(userLoginRequestDTO);
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody @Valid UserLoginRequestDTO userLoginRequestDTO)
+            throws IOException {
+        String response = authenticationService.generateToken(userLoginRequestDTO);
 
-        return ResponseEntity.ok(userFullName);
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update-data")
-    ResponseEntity<String> updateUserData(@Valid @RequestBody UserUpdateDataRequestDTO userUpdateDataRequestDTO) {
+    public ResponseEntity<String> updateUserData(
+            @RequestBody @Valid UserUpdateDataRequestDTO userUpdateDataRequestDTO) {
         String response = userManagementService.updateUserData(userUpdateDataRequestDTO);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/update-role")
-    ResponseEntity<String> updateUserRole(@Valid @RequestBody UserUpdateRoleRequestDTO userUpdateRoleRequestDTO) {
+    public ResponseEntity<String> updateUserRole(
+            @RequestBody @Valid UserUpdateRoleRequestDTO userUpdateRoleRequestDTO) {
         String response = userManagementService.updateUserRole(userUpdateRoleRequestDTO);
 
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/delete/{userId}")
-    ResponseEntity<String> deleteUser(@PathVariable UUID userId) {
+    public ResponseEntity<String> deleteUser(@PathVariable UUID userId) {
         String response = userManagementService.deleteAccount(userId);
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/change-password")
-    ResponseEntity<String> changeUserPassword(
-            @Valid @RequestBody UserChangePasswordRequestDTO userChangePasswordRequestDTO) {
+    public ResponseEntity<String> changeUserPassword(
+            @RequestBody @Valid UserChangePasswordRequestDTO userChangePasswordRequestDTO) {
         String response = userManagementService.changeUserPassword(userChangePasswordRequestDTO);
 
         return ResponseEntity.ok(response);
